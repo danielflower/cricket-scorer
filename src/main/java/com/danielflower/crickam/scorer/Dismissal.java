@@ -30,8 +30,8 @@ public class Dismissal
     }
 
     public String toScorecardString() {
-        String bowler = this.bowler == null ? null : this.getBowler().familyName;
-        String fielder = this.executor == null ? null : this.executor.familyName;
+        String bowler = this.bowler == null ? null : this.getBowler().familyName();
+        String fielder = this.executor == null ? null : this.executor.familyName();
         switch (type) {
             case Bowled:
                 return "b " + bowler;

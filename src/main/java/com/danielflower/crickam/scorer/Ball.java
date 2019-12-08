@@ -8,7 +8,6 @@ public class Ball implements BallAtCompletion {
     private final BatsmanInnings nonStriker;
     private final BowlingSpell bowlingSpell;
     private final int numberInOver;
-    private final BallAtCompletion previousBall;
     private final Score score;
     private final boolean playersCrossed;
     private final Optional<Dismissal> dismissal;
@@ -39,17 +38,13 @@ public class Ball implements BallAtCompletion {
         return numberInOver;
     }
 
-    public BallAtCompletion getPreviousBall() {
-        return previousBall;
-    }
-
     @Override
     public BallAtEngagement engage(Delivery delivery, Swing swing, Trajectory ballTrajectory) {
         Guard.notNull("delivery", delivery);
         Guard.notNull("swing", swing);
         Guard.notNull("ballTrajectory", ballTrajectory);
         return new Ball(
-                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getPreviousBall(), this.getBowlingSpell(),
+                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getBowlingSpell(),
                 delivery, swing, ballTrajectory, null, null, false, null, null);
     }
 
@@ -58,7 +53,7 @@ public class Ball implements BallAtCompletion {
     public BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Date dateCompleted) {
         Guard.notNull("dismissal", dismissal);
         return new Ball(
-                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getPreviousBall(), this.getBowlingSpell(),
+                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getBowlingSpell(),
                 this.getDelivery(), this.getSwing(), this.getTrajectoryAtImpact(),
                 score, dismissal, playersCrossed,
                 fielder, dateCompleted);
@@ -90,11 +85,11 @@ public class Ball implements BallAtCompletion {
         return getScore().wides == 0 && getScore().noBalls == 0;
     }
 
-    public Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BallAtCompletion previousBall, BowlingSpell bowlingSpell) {
-        this(id, striker, nonStriker, numberInOver, previousBall, bowlingSpell, null, null, null, null, null, false, null, null);
+    public Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell) {
+        this(id, striker, nonStriker, numberInOver, bowlingSpell, null, null, null, null, null, false, null, null);
     }
 
-    private Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BallAtCompletion previousBall, BowlingSpell bowlingSpell,
+    private Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell,
                  Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
                  Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Date dateCompleted) {
 	    Guard.notNull("bowlingSpell", bowlingSpell);
@@ -102,7 +97,6 @@ public class Ball implements BallAtCompletion {
 	    this.fielder = fielder;
 	    this.trajectoryAtImpact = trajectoryAtImpact;
 	    this.bowlingSpell = bowlingSpell;
-	    this.previousBall = previousBall;
 	    this.striker = striker;
 	    this.nonStriker = nonStriker;
 	    this.numberInOver = numberInOver;

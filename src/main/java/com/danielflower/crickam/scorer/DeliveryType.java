@@ -12,7 +12,6 @@ public enum DeliveryType {
     TOPSPINNER,
     CARROM_BALL,
     TEESRA,
-
     STRAIGHT,
     INSWINGER,
     REVERSE_SWING,

@@ -57,7 +57,7 @@ public class Over {
 		int alreadyBowled = balls.asList().size();
 		BallAtCompletion previousBall = alreadyBowled == 0 ? null : balls.asList().get(alreadyBowled - 1);
 		return new Ball(
-				id, striker, nonStriker, alreadyBowled + 1, previousBall, bowlingSpell
+				id, striker, nonStriker, alreadyBowled + 1, bowlingSpell
 		);
 	}
 

@@ -1,20 +1,12 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Date;
-
-import static com.danielflower.crickam.scorer.PlayerBuilder.aPlayer;
+import java.time.Instant;
 
 public class BatsmanInningsBuilder {
-	private Player player = aPlayer().build();
-	private Balls ballsSoFarInInnings = new Balls();
-	private int numberCameIn = 1;
-	private Date inningsStartTime = new Date();
-
-	private BatsmanInningsBuilder() {}
-
-	public static BatsmanInningsBuilder aBatsmanInnings() {
-		return new BatsmanInningsBuilder();
-	}
+	private Player player;
+	private Balls ballsSoFarInInnings;
+	private int numberCameIn;
+	private Instant inningsStartTime;
 
 	public BatsmanInningsBuilder setPlayer(PlayerBuilder player) {
 		this.player = player.build();
@@ -36,7 +28,7 @@ public class BatsmanInningsBuilder {
 		return this;
 	}
 
-	public BatsmanInningsBuilder setInningsStartTime(Date inningsStartTime) {
+	public BatsmanInningsBuilder setInningsStartTime(Instant inningsStartTime) {
 		this.inningsStartTime = inningsStartTime;
 		return this;
 	}

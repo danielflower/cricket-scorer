@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
@@ -8,7 +9,7 @@ public class BatsmanInnings {
 	public final Score teamScorecardAtStartOfInnings;
     private Balls balls = new Balls();
     private final int numberCameIn;
-	public final Date inningsStartTime;
+	public final Instant inningsStartTime;
 	public Date inningsEndTime;
 
 	public Player getPlayer() {
@@ -24,7 +25,7 @@ public class BatsmanInnings {
         return balls;
     }
 
-    public BatsmanInnings(Player player, Balls ballsSoFarInInnings, int numberCameIn, Date inningsStartTime) {
+    BatsmanInnings(Player player, Balls ballsSoFarInInnings, int numberCameIn, Instant inningsStartTime) {
         this.player = player;
 	    this.teamScorecardAtStartOfInnings = ballsSoFarInInnings.score();
         this.numberCameIn = numberCameIn;
@@ -53,6 +54,6 @@ public class BatsmanInnings {
 
 	@Override
 	public String toString() {
-		return player.familyName + " (" + balls.score().scored + " runs)";
+		return player.familyName() + " (" + balls.score().scored + " runs)";
 	}
 }

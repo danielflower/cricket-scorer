@@ -1,60 +1,38 @@
 package com.danielflower.crickam.scorer;
 
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
-
 public class Player {
-	public final Gender gender;
-	public final int id;
-	public final String givenName;
-	public final String familyName;
-	public final String fullName;
-	public final Handedness battingHandedness;
-	public final BowlingStyle bowlingStyle;
-	public final PlayingRole playingRole;
 
-	public Player() {
-		this(-1, Gender.OTHER, null, null, null, null, null, null);
-	}
+	private final Gender gender;
+	private final String id;
+	private final String familyName;
+    private final List<String> givenNames;
+    private final String fullName;
+	private final Handedness battingHandedness;
+	private final BowlingStyle bowlingStyle;
+	private final PlayingRole playingRole;
 
-	public Player(int id, Gender gender, String givenName, String familyName, String fullName, Handedness battingHandedness, BowlingStyle bowlingStyle, PlayingRole playingRole) {
+	Player(@NotNull String id, @NotNull Gender gender, @NotNull List<String> givenNames, @NotNull String familyName,
+                  @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull BowlingStyle bowlingStyle,
+                  @NotNull PlayingRole playingRole) {
 		this.id = id;
 		this.gender = gender;
-		this.fullName = fullName;
+        this.givenNames = Collections.unmodifiableList(givenNames);
+        this.fullName = fullName;
 		this.battingHandedness = battingHandedness;
-		this.givenName = givenName;
 		this.familyName = familyName;
 		this.bowlingStyle = bowlingStyle;
 		this.playingRole = playingRole;
 	}
 
-	public String getGivenName() {
-		return givenName;
-	}
-
-	public String getFamilyName() {
-		return familyName;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public Handedness getBattingHandedness() {
-		return battingHandedness;
-	}
-
-	public BowlingStyle getBowlingStyle() {
-		return bowlingStyle;
-	}
-
-	public PlayingRole getPlayingRole() {
-		return playingRole;
-	}
-
 	public String toString() {
-		return familyName;
+		return familyName();
 	}
 
 	@Override
@@ -62,14 +40,48 @@ public class Player {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Player player = (Player) o;
-		return id == player.id;
+		return id().equals(player.id());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(id());
 	}
 
+    public Gender gender() {
+        return gender;
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public String givenName() {
+        return givenNames.get(0);
+    }
+
+    public List<String> givenNames() {
+	    return givenNames;
+    }
+
+    public String familyName() {
+        return familyName;
+    }
+
+    public String fullName() {
+        return fullName;
+    }
+
+    public Handedness battingHandedness() {
+        return battingHandedness;
+    }
+
+    public BowlingStyle bowlingStyle() {
+        return bowlingStyle;
+    }
+
+    public PlayingRole playingRole() {
+        return playingRole;
+    }
+
 }
-
-

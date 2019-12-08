@@ -1,8 +1,10 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.List;
+
 public class PlayerBuilder {
-	private int id;
-	private String givenName;
+	private String id;
+	private List<String> givenNames;
 	private String familyName;
 	private String fullName;
 	private Handedness battingHandedness = Handedness.RightHanded;
@@ -10,8 +12,8 @@ public class PlayerBuilder {
 	private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
 	private Gender gender = Gender.OTHER;
 
-	public PlayerBuilder setGivenName(String givenName) {
-		this.givenName = givenName;
+	public PlayerBuilder setGivenNames(List<String> givenNames) {
+		this.givenNames = givenNames;
 		return this;
 	}
 
@@ -49,18 +51,15 @@ public class PlayerBuilder {
 		return setBowlingStyle(bowlingStyle.build());
 	}
 
-	public PlayerBuilder setId(int id) {
+	public PlayerBuilder setId(String id) {
 		this.id = id;
 		return this;
 	}
 
 	public Player build() {
-		fullName = (fullName == null) ? givenName + " " + familyName : fullName;
-		bowlingStyle = (bowlingStyle == null) ? bowlingStyle : BowlingStyleBuilder.medium().setHandedness(battingHandedness).build();
-		return new Player(id, gender, givenName, familyName, fullName, battingHandedness, bowlingStyle, playingRole);
+		fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
+		BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyleBuilder.medium().setHandedness(battingHandedness).build() : bowlingStyle;
+		return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingStyleToUse, playingRole);
 	}
 
-	public static PlayerBuilder aPlayer() {
-		return new PlayerBuilder();
-	}
 }

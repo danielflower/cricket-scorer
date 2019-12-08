@@ -11,8 +11,6 @@ public interface BallAtStart {
 
 	int id();
 
-	BallAtCompletion getPreviousBall();
-
     BallAtEngagement engage(Delivery delivery, Swing swing, Trajectory trajectory);
 }
 

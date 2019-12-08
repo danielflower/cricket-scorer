@@ -19,7 +19,7 @@ public class LineUp {
     }
 
     public static LineUp random(Team team) {
-        Map<PlayingRole, List<Player>> playersByRole = team.getPlayers().stream().collect(Collectors.groupingBy(Player::getPlayingRole));
+        Map<PlayingRole, List<Player>> playersByRole = team.getPlayers().stream().collect(Collectors.groupingBy(Player::playingRole));
         List<Player> battingOrder = new ArrayList<>();
         allocatePlayers(team, playersByRole, battingOrder, PlayingRole.BATSMAN, 4);
         allocatePlayers(team, playersByRole, battingOrder, PlayingRole.ALL_ROUNDER, 6);

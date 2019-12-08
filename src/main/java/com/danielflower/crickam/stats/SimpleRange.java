@@ -18,4 +18,11 @@ public class SimpleRange implements Range {
         return (rng.nextDouble() * (upper - lower)) + lower;
     }
 
+    public double lower() {
+        return lower;
+    }
+
+    public double upper() {
+        return upper;
+    }
 }
