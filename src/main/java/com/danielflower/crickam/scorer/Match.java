@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +9,7 @@ public class Match
 {
 	public final String matchID;
 	public final Series series;
-	private final Date startTime;
+	private final Instant startTime;
     private final List<LineUp> teams;
 	public final MatchType matchType;
 	public final int numberOfInningsPerTeam;
@@ -17,7 +18,7 @@ public class Match
 	public final int numberOfScheduledDays;
     private Balls balls = new Balls();
     private final List<Innings> inningsList = new ArrayList<>();
-    public Match(String matchID, Series series, Date startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue) {
+    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue) {
 	    this.matchID = matchID;
 	    this.series = series;
 	    this.startTime = startTime;
@@ -35,7 +36,7 @@ public class Match
         return innings;
     }
 
-    public Date getStartTime() {
+    public Instant getStartTime() {
         return startTime;
     }
 

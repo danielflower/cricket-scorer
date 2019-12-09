@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,7 +113,7 @@ public class Innings {
 		this.numberOfScheduledOvers = numberOfScheduledOvers;
 	}
 
-	public BatsmanInnings bringInNextBatsman(Date time) {
+	public BatsmanInnings bringInNextBatsman(Instant time) {
 		if (yetToBat.size() == 0) {
 			throw new IllegalStateException("Cannot bring in a new batsman when the team is all out");
 		}
@@ -120,7 +121,7 @@ public class Innings {
 		return bringInNextBatsman(player, time);
 	}
 
-	public BatsmanInnings bringInNextBatsman(Player player, Date time) {
+	public BatsmanInnings bringInNextBatsman(Player player, Instant time) {
 
 		BatsmanInnings batsmanInnings = null;
 		for (BatsmanInnings batter : batters) {

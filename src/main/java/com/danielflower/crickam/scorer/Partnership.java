@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.time.Instant;
 import java.util.Date;
 
 public class Partnership {
@@ -9,7 +10,7 @@ public class Partnership {
     private Balls balls;
 	public final Balls firstBatterContribution;
 	public final Balls secondBatterContribution;
-	public final Date startTime;
+	public final Instant startTime;
 	public Date endTime;
     public BatsmanInnings getFirstBatter() {
         return firstBatter;
@@ -23,7 +24,7 @@ public class Partnership {
         return balls;
     }
 
-    public Partnership(int wicketNumber, BatsmanInnings firstBatter, BatsmanInnings secondBatter, Date startTime) {
+    public Partnership(int wicketNumber, BatsmanInnings firstBatter, BatsmanInnings secondBatter, Instant startTime) {
 	    Guard.notNull("firstBatter", firstBatter);
 	    Guard.notNull("secondBatter", secondBatter);
 	    Guard.notNull("startTime", startTime);
