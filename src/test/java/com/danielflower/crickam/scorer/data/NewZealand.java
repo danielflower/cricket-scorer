@@ -4,8 +4,8 @@ import com.danielflower.crickam.scorer.LineUpBuilder;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.TeamBuilder;
 import com.danielflower.crickam.scorer.TeamLevel;
+import com.danielflower.crickam.utils.ImmutableList;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -70,7 +70,7 @@ public class NewZealand {
             .withWicketKeeper(TIM_SEIFERT)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(MARTIN_GUPTILL, COLIN_MUNRO, KANE_WILLIAMSON, ROSS_TAYLOR, TIM_SEIFERT,
+            .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, COLIN_MUNRO, KANE_WILLIAMSON, ROSS_TAYLOR, TIM_SEIFERT,
                 COLIN_DE_GRANDHOMME, JAMES_NEESHAM, MITCH_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON));
     }
 
@@ -80,7 +80,7 @@ public class NewZealand {
             .withWicketKeeper(TOM_LATHAM)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
+            .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
                 JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCH_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON));
     }
 
@@ -90,7 +90,7 @@ public class NewZealand {
             .withWicketKeeper(BJ_WATLING)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(JEET_RAVAL, TOM_LATHAM, KANE_WILLIAMSON, ROSS_TAYLOR, HENRY_NICHOLLS,
+            .withBattingOrder(ImmutableList.of(JEET_RAVAL, TOM_LATHAM, KANE_WILLIAMSON, ROSS_TAYLOR, HENRY_NICHOLLS,
                 BJ_WATLING, COLIN_DE_GRANDHOMME, MITCH_SANTNER, TIM_SOUTHEE, NEIL_WAGNER, LOCKIE_FERGUSON));
     }
 

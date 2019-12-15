@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 
 class MatchControlTest {
 
@@ -27,11 +28,13 @@ class MatchControlTest {
                 .build()
         );
 
-        control.onEvent(new InningsStartingEvent.Builder()
+        Match match = control.onEvent(new InningsStartingEvent.Builder()
             .withBattingTeam(nz)
             .withBowlingTeam(aus)
+            .withOpeners(nz.players.get(0), nz.players.get(1))
             .withStartTime(Instant.now()).build());
 
+        assertThat(control.current(), sameInstance(match));
         assertThat(control.current().oversPerInnings, is(50));
         assertThat(control.current().getCurrentInnings().isPresent(), is(true));
 

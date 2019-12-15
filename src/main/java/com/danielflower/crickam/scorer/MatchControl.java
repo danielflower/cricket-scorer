@@ -11,8 +11,10 @@ public class MatchControl {
         matches.add(match);
     }
 
-    public void onEvent(MatchEvent event) {
-        matches.add(current().onEvent(event));
+    public Match onEvent(MatchEvent event) {
+        Match match = current().onEvent(event);
+        matches.add(match);
+        return match;
     }
 
     public Match current() {

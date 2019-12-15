@@ -33,10 +33,6 @@ public class Team {
 		this.teamColour = teamColour;
     }
 
-    public LineUp odiSquad() {
-        return LineUp.random(this);
-    }
-
 	public String getId() {
 		return id;
 	}

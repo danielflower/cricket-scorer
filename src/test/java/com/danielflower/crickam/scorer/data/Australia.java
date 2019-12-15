@@ -4,8 +4,8 @@ import com.danielflower.crickam.scorer.LineUpBuilder;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.TeamBuilder;
 import com.danielflower.crickam.scorer.TeamLevel;
+import com.danielflower.crickam.utils.ImmutableList;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -69,7 +69,7 @@ public class Australia {
             .withWicketKeeper(ALEX_CAREY)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(
+            .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, BEN_MC_DERMOTT, ASHTON_TURNER, ALEX_CAREY, ASHTON_AGAR,
                 SEAN_ABBOT, MITCHELL_STARC, KANE_RICHARDSON, BILLY_STANLAKE
             ));
@@ -81,7 +81,7 @@ public class Australia {
             .withWicketKeeper(ALEX_CAREY)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(
+            .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, PETER_HANDSCOMB, ALEX_CAREY, MARCUS_STOINIS, GLENN_MAXWELL,
                 PAT_CUMMINS, MITCHELL_STARC, JASON_BEHRENDORFF, NATHON_LYON
             ));
@@ -93,7 +93,7 @@ public class Australia {
             .withWicketKeeper(TIM_PAINE)
             .withPlayingAtHome(true)
             .withTeam(team().build())
-            .withBattingOrder(List.of(
+            .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, JOE_BURNS, MARNUS_LABUSCHAGNE, STEVEN_SMITH, MATTHEW_WADE, TRAVIS_HEAD, TIM_PAINE,
                 PAT_CUMMINS, MITCHELL_STARC, NATHON_LYON, JOSH_HAZLEWOOD
             ));

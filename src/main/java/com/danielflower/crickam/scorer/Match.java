@@ -57,7 +57,7 @@ public class Match
         if (event instanceof InningsStartingEvent) {
             InningsStartingEvent ise = (InningsStartingEvent) event;
             newInningsList = inningsList.add(
-                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.battingTeam().players, inningsList.size() + 1, Instant.now(), oversPerInnings)
+                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), oversPerInnings)
             );
         } else {
             newInningsList = inningsList;

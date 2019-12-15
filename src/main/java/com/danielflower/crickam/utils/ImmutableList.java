@@ -2,10 +2,7 @@ package com.danielflower.crickam.utils;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -31,6 +28,15 @@ public class ImmutableList<T> implements Iterable<T> {
 
     public ImmutableList() {
         this(new ArrayList<>(), 0, -1);
+    }
+
+    public ImmutableList(Collection<T> values) {
+        this(new ArrayList<>(values), 0, values.size() - 1);
+    }
+
+    public static <V> ImmutableList<V> of(V... values) {
+        ArrayList<V> objects = new ArrayList<>(Arrays.asList(values));
+        return new ImmutableList<>(objects, 0, objects.size() - 1);
     }
 
     public int size() {
@@ -60,6 +66,19 @@ public class ImmutableList<T> implements Iterable<T> {
         return isEmpty() ? Optional.empty() : Optional.of(arrayList.get(last));
     }
 
+    public T get(int index) {
+        return arrayList.get(index);
+    }
+
+    public boolean contains(T item) {
+        for (T val : this) {
+            if (Objects.equals(val, item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private class ImmutableListIterator implements Iterator<T> {
         private int index = first;
 
@@ -72,5 +91,23 @@ public class ImmutableList<T> implements Iterable<T> {
         public T next() {
             return arrayList.get(index++);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImmutableList<?> that = (ImmutableList<?>) o;
+        return asList().equals(that.asList());
+    }
+
+    @NotNull
+    private List<T> asList() {
+        return Collections.unmodifiableList(this.arrayList.subList(first, last));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(asList());
     }
 }

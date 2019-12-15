@@ -1,15 +1,15 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.List;
+import com.danielflower.crickam.utils.ImmutableList;
 
 public class LineUpBuilder {
-    private List<Player> players;
+    private ImmutableList<Player> players;
     private Team team;
     private boolean isPlayingAtHome;
     private Player captain;
     private Player wicketKeeper;
 
-    public LineUpBuilder withBattingOrder(List<Player> players) {
+    public LineUpBuilder withBattingOrder(ImmutableList<Player> players) {
         this.players = players;
         return this;
     }

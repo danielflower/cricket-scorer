@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 class ImmutableListTest {
 
@@ -23,6 +23,28 @@ class ImmutableListTest {
         assertThat(two, contains("Hello"));
         assertThat(two.add("three").add("four").stream().collect(Collectors.toList()), contains("Hello", "three", "four"));
         assertThat(two, contains("Hello"));
+
+        assertThat(one.contains("Hello"), is(false));
+        assertThat(two.contains("Hello"), is(true));
+    }
+
+    @Test
+    public void ofCreatesAList() {
+        assertThat(ImmutableList.of("one"), contains("one"));
+        ImmutableList<String> three = ImmutableList.of("one", "two", "three");
+        assertThat(three, contains("one", "two", "three"));
+        assertThat(three.size(), is(3));
+
+        assertThat(three, equalTo(new ImmutableList<>(asList("one", "two", "three"))));
+    }
+
+    @Test
+    public void listsAreEqualIfViewOfCollectionHasEqualItems() {
+        ImmutableList<String> two = ImmutableList.of("one", "two");
+        ImmutableList<String> three = two.add("three");
+        assertThat(three, equalTo(three));
+        assertThat(three, equalTo(new ImmutableList<>(asList("one", "two", "three"))));
+        assertThat(three, not(equalTo(two)));
     }
 
     @Test

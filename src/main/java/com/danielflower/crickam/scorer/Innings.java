@@ -1,10 +1,14 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.utils.ImmutableList;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
 
 public class Innings {
 	public final Match match;
@@ -13,7 +17,7 @@ public class Innings {
 	public final int inningsNumber;
 	private final List<Partnership> partnerships = new ArrayList<>();
 	private final List<BatsmanInnings> batters = new ArrayList<>();
-	private final List<Player> yetToBat;
+	private final ImmutableList<Player> yetToBat;
 	private final List<Over> overs = new ArrayList<>();
 	public final Instant startTime;
 	public Date endTime;
@@ -67,7 +71,7 @@ public class Innings {
 		return batters;
 	}
 
-	public List<Player> getYetToBat() {
+	public ImmutableList<Player> getYetToBat() {
 		return yetToBat;
 	}
 
@@ -80,11 +84,7 @@ public class Innings {
 	}
 
 	public Player nextBatsman(boolean remove) {
-		Player player = yetToBat.get(0);
-		if (!yetToBat.remove(player)) {
-			throw new IllegalStateException("This shouldn't happen");
-		}
-		return player;
+        return yetToBat.get(0);
 	}
 
 	public List<Over> getOvers() {
@@ -103,12 +103,12 @@ public class Innings {
 		return yetToBat.size() + 1;
 	}
 
-	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, List<Player> battingOrder, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
+	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
 		this.match = match;
 		this.battingTeam = battingTeam;
 		this.bowlingTeam = bowlingTeam;
 		this.inningsNumber = inningsNumber;
-		yetToBat = new ArrayList<>(battingOrder);
+		yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
 		this.startTime = startTime;
 		this.numberOfScheduledOvers = numberOfScheduledOvers;
 	}
@@ -135,7 +135,7 @@ public class Innings {
 			batsmanInnings = new BatsmanInnings(player, balls, batters.size() + 1, time);
 			batters.add(batsmanInnings);
 		}
-		yetToBat.remove(player);
+//		yetToBat.remove(player);
 
 		if (currentStriker == null) {
 			currentStriker = batsmanInnings;
