@@ -9,8 +9,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 
 class MatchControlTest {
 
@@ -35,8 +34,12 @@ class MatchControlTest {
             .withStartTime(Instant.now()).build());
 
         assertThat(control.current(), sameInstance(match));
-        assertThat(control.current().oversPerInnings, is(50));
-        assertThat(control.current().getCurrentInnings().isPresent(), is(true));
+        assertThat(match.oversPerInnings, is(50));
+        assertThat(match.getCurrentInnings().isPresent(), is(true));
+
+        Innings innings = match.getCurrentInnings().get();
+        assertThat(innings.inningsNumber, is(1));
+        assertThat(innings.getYetToBat(), equalTo(nz.players.subList(2, 10)));
 
     }
 

@@ -52,6 +52,14 @@ public class ImmutableList<T> implements Iterable<T> {
         return first > last;
     }
 
+    public ImmutableList<T> subList(int firstInclusive, int lastExclusive) {
+        if (firstInclusive < 0) throw new IllegalArgumentException("firstInclusive must be non-negative but was " + firstInclusive);
+        int newFirst = this.first + firstInclusive;
+        int newLast = this.first + lastExclusive;
+        if (newLast > last) throw new IllegalArgumentException("The lastExclusive value " + lastExclusive + " is too large. Max value allowed is " + (size() - 1));
+        return new ImmutableList<>(arrayList, newFirst, newLast);
+    }
+
     @NotNull
     @Override
     public Iterator<T> iterator() {
@@ -103,11 +111,16 @@ public class ImmutableList<T> implements Iterable<T> {
 
     @NotNull
     private List<T> asList() {
-        return Collections.unmodifiableList(this.arrayList.subList(first, last));
+        return Collections.unmodifiableList(this.arrayList.subList(first, last + 1));
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(asList());
+    }
+
+    @Override
+    public String toString() {
+        return asList().toString();
     }
 }

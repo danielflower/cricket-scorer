@@ -1,5 +1,6 @@
 package com.danielflower.crickam.utils;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -52,6 +53,23 @@ class ImmutableListTest {
         ImmutableList<String> list = new ImmutableList<>();
         assertThat(list.last(), is(Optional.empty()));
         assertThat(list.add("one").last(), is(Optional.of("one")));
+    }
+
+    @Test
+    public void sublistsCanBeMade() {
+        ImmutableList<Integer> list = ImmutableList.of(0, 1, 2, 3, 4, 5, 6);
+        assertThat(list.subList(0, 6), contains(0, 1, 2, 3, 4, 5, 6));
+        assertThat(list.subList(1, 6), contains(1, 2, 3, 4, 5, 6));
+        assertThat(list.subList(0, 5), contains(0, 1, 2, 3, 4, 5));
+        assertThat(list.subList(2, 4), contains(2, 3, 4));
+        assertThat(list.subList(2, 3), contains(2, 3));
+        assertThat(list.subList(2, 2), contains(2));
+
+        ImmutableList<Integer> subList = list.subList(2, 4);
+        assertThat(subList.subList(1, 1), contains(3));
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(-1, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(1, 3));
     }
 
 }
