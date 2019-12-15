@@ -1,17 +1,13 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class Team
-{
+public class Team {
 	private final String id;
 	public final String shortName;
 	private final TeamLevel level;
 	private final List<Player> players;
 	private final String name;
-	private final Set<String> names = new HashSet<>();
 	public final String teamColour;
 
 	public TeamLevel getLevel() {
@@ -35,7 +31,6 @@ public class Team
         this.level = level;
 		this.players = players;
 		this.teamColour = teamColour;
-		names.add(name);
     }
 
     public LineUp odiSquad() {
