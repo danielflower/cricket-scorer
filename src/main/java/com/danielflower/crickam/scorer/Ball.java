@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 public class Ball implements BallAtCompletion {
@@ -16,7 +16,7 @@ public class Ball implements BallAtCompletion {
     private final Trajectory trajectoryAtImpact;
     private final int id;
     private final Optional<Player> fielder;
-	private final Date dateCompleted;
+	private final Instant dateCompleted;
 
 	public BatsmanInnings getStriker() {
         return striker;
@@ -50,7 +50,7 @@ public class Ball implements BallAtCompletion {
 
 
     @Override
-    public BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Date dateCompleted) {
+    public BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted) {
         Guard.notNull("dismissal", dismissal);
         return new Ball(
                 id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getBowlingSpell(),
@@ -91,7 +91,7 @@ public class Ball implements BallAtCompletion {
 
     private Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell,
                  Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
-                 Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Date dateCompleted) {
+                 Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted) {
 	    Guard.notNull("bowlingSpell", bowlingSpell);
 	    this.id = id;
 	    this.fielder = fielder;
@@ -118,7 +118,7 @@ public class Ball implements BallAtCompletion {
     }
 
 	@Override
-	public Date getDateCompleted() {
+	public Instant getDateCompleted() {
 		return dateCompleted;
 	}
 }

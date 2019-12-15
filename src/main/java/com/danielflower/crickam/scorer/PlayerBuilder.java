@@ -1,6 +1,8 @@
 package com.danielflower.crickam.scorer;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PlayerBuilder {
 	private String id;
@@ -56,10 +58,16 @@ public class PlayerBuilder {
 		return this;
 	}
 
+    public PlayerBuilder withName(String name) {
+        String[] bits = name.split(" ");
+        return setFullName(name)
+            .setFamilyName(bits[bits.length - 1])
+            .setGivenNames(Stream.of(bits).skip(1).collect(Collectors.toList()));
+    }
+
 	public Player build() {
 		fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
 		BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyleBuilder.medium().setHandedness(battingHandedness).build() : bowlingStyle;
 		return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingStyleToUse, playingRole);
 	}
-
 }

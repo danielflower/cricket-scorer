@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.utils.ImmutableList;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -60,6 +62,6 @@ public class MatchBuilder {
     }
 
     public Match build() {
-        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue);
+        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, new ImmutableList<>(), new ImmutableList<>());
     }
 }

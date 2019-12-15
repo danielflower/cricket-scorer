@@ -1,9 +1,9 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
-public interface BallAtCompletion extends BallAtEngagement {
+public interface BallAtCompletion extends BallAtEngagement, MatchEvent {
 	Score getScore();
 
 	boolean getPlayersCrossed();
@@ -14,7 +14,7 @@ public interface BallAtCompletion extends BallAtEngagement {
 
 	Optional<Player> getFielder();
 
-	Date getDateCompleted();
+	Instant getDateCompleted();
 }
 
 

@@ -2,14 +2,18 @@ package com.danielflower.crickam.scorer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 class TeamTest {
 
     @Test
     public void canBeMade() {
-
+        Team team = aTeam().withName("Blah").build();
+        assertThat(team.getName(), is("Blah"));
     }
 
     public static TeamBuilder aTeam() {
@@ -19,8 +23,8 @@ class TeamTest {
             .withName("New Zealand")
             .withShortName("NZL")
             .withTeamColour("#000000")
-            .withPlayers(List.of(
-                PlayerTest.aPlayer(),
+            .withSquad(Set.of(
+                PlayerTest.aPlayer().build()
             ));
     }
 

@@ -15,7 +15,7 @@ public class Innings {
 	private final List<BatsmanInnings> batters = new ArrayList<>();
 	private final List<Player> yetToBat;
 	private final List<Over> overs = new ArrayList<>();
-	public final Date startTime;
+	public final Instant startTime;
 	public Date endTime;
 	private Balls balls = new Balls();
 	private BatsmanInnings currentStriker;
@@ -103,7 +103,7 @@ public class Innings {
 		return yetToBat.size() + 1;
 	}
 
-	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, List<Player> battingOrder, int inningsNumber, Date startTime, int numberOfScheduledOvers) {
+	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, List<Player> battingOrder, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
 		this.match = match;
 		this.battingTeam = battingTeam;
 		this.bowlingTeam = bowlingTeam;
@@ -186,7 +186,7 @@ public class Innings {
 		if (currentBowlingSpellOfOtherBowler != null && bowler.equals(currentBowlingSpellOfOtherBowler.getBowlerInnings().getPlayer())) {
 			bowlingSpell = currentBowlingSpellOfOtherBowler;
 		} else {
-			bowlingSpell = new BowlingSpell(innings, innings.getSpells().size() + 1);
+			bowlingSpell = new BowlingSpellBuilder().withBowlerInnings(innings).withSpellNumber(innings.getSpells().size() + 1).build();
 			spells.add(bowlingSpell);
 			innings.addBowlingSpell(bowlingSpell);
 		}
@@ -205,7 +205,7 @@ public class Innings {
 		if (first.isPresent()) {
 			return first.get();
 		} else {
-			BowlerInnings bowlerInnings = new BowlerInnings(bowler);
+			BowlerInnings bowlerInnings = new BowlerInningsBuilder().withBowler(bowler).build();
 			bowlerInningses.add(bowlerInnings);
 			return bowlerInnings;
 		}

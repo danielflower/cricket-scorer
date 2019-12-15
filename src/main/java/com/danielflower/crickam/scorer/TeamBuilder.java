@@ -1,12 +1,12 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.List;
+import java.util.Set;
 
 public class TeamBuilder {
     private String id;
     private String name;
     private String shortName;
-    private List<Player> players;
+    private Set<Player> players;
     private TeamLevel level;
     private String teamColour;
 
@@ -25,7 +25,7 @@ public class TeamBuilder {
         return this;
     }
 
-    public TeamBuilder withPlayers(List<Player> players) {
+    public TeamBuilder withSquad(Set<Player> players) {
         this.players = players;
         return this;
     }
@@ -40,7 +40,7 @@ public class TeamBuilder {
         return this;
     }
 
-    public Team createTeam() {
+    public Team build() {
         return new Team(id, name, shortName, players, level, teamColour);
     }
 }

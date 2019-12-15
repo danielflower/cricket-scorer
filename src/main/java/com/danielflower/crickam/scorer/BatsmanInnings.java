@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Optional;
 
 public class BatsmanInnings {
@@ -10,7 +9,7 @@ public class BatsmanInnings {
     private Balls balls = new Balls();
     private final int numberCameIn;
 	public final Instant inningsStartTime;
-	public Date inningsEndTime;
+	public Instant inningsEndTime;
 
 	public Player getPlayer() {
         return player;
@@ -36,7 +35,7 @@ public class BatsmanInnings {
         balls = balls.add(ball);
     }
 
-    public void setDismissal(Dismissal dismissal, Date time) {
+    public void setDismissal(Dismissal dismissal, Instant time) {
     	this.inningsEndTime = time;
     	this.dismissal = Optional.ofNullable(dismissal);
     }

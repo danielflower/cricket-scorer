@@ -1,9 +1,11 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.InningsStartingEvent;
+import com.danielflower.crickam.utils.ImmutableList;
+
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class Match
 {
@@ -16,9 +18,12 @@ public class Match
 	public final int oversPerInnings;
     public final Venue venue;
 	public final int numberOfScheduledDays;
-    private Balls balls = new Balls();
-    private final List<Innings> inningsList = new ArrayList<>();
-    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue) {
+    private final ImmutableList<BallAtCompletion> balls;
+    private final ImmutableList<Innings> inningsList;
+    private final Score score = ScoreBuilder.Empty;
+
+
+    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, ImmutableList<BallAtCompletion> balls, ImmutableList<Innings> inningsList) {
 	    this.matchID = matchID;
 	    this.series = series;
 	    this.startTime = startTime;
@@ -28,35 +33,38 @@ public class Match
         this.oversPerInnings = oversPerInnings;
         this.numberOfScheduledDays = numberOfScheduledDays;
 	    this.venue = venue;
-    }
-
-    public Innings newInnings(LineUp battingTeam, LineUp bowlingTeam, List<Player> battingOrder, Date startTime) {
-        Innings innings = new Innings(this, battingTeam, bowlingTeam, battingOrder, inningsList.size(), startTime, oversPerInnings);
-        inningsList.add(innings);
-        return innings;
+        this.balls = balls;
+        this.inningsList = inningsList;
     }
 
     public Instant getStartTime() {
         return startTime;
     }
 
-    public List<Innings> getInningsList() {
-        return inningsList;
-    };
-
     public List<LineUp> getTeams() {
         return teams;
     }
 
-    public Innings getCurrentInnings() {
-        return inningsList.get(inningsList.size() - 1);
+    public Optional<Innings> getCurrentInnings() {
+        return inningsList.last();
     }
 
-    public void addBall(BallAtCompletion ball) {
-        balls = balls.add(ball);
-        getCurrentInnings().addBall(ball);
-    }
+    public Match onEvent(MatchEvent event) {
 
+        ImmutableList<BallAtCompletion> newBalls = event instanceof BallAtCompletion ? balls.add((BallAtCompletion) event) : balls;
+
+        ImmutableList<Innings> newInningsList;
+        if (event instanceof InningsStartingEvent) {
+            InningsStartingEvent ise = (InningsStartingEvent) event;
+            newInningsList = inningsList.add(
+                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.battingTeam().players, inningsList.size() + 1, Instant.now(), oversPerInnings)
+            );
+        } else {
+            newInningsList = inningsList;
+        }
+
+        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, newBalls, newInningsList);
+    }
 }
 
 

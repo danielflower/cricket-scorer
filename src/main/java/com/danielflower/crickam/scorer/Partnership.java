@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 import java.time.Instant;
-import java.util.Date;
 
 public class Partnership {
     private final BatsmanInnings firstBatter;
@@ -11,7 +10,7 @@ public class Partnership {
 	public final Balls firstBatterContribution;
 	public final Balls secondBatterContribution;
 	public final Instant startTime;
-	public Date endTime;
+	public Instant endTime;
     public BatsmanInnings getFirstBatter() {
         return firstBatter;
     }

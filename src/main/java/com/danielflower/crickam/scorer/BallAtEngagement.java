@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 public interface BallAtEngagement extends BallAtStart {
@@ -8,5 +8,5 @@ public interface BallAtEngagement extends BallAtStart {
     Swing getSwing();
     Trajectory getTrajectoryAtImpact();
 
-    BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Date dateCompleted);
+    BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted);
 }
