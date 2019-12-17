@@ -1,19 +1,18 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.danielflower.crickam.utils.ImmutableList;
 
 public class BowlingSpell {
 	private final BowlerInnings bowlerInnings;
-    private int spellNumber;
-    private final List<Over> overs = new ArrayList<>();
-	private Balls balls = new Balls();
+    private final int spellNumber;
+    private final ImmutableList<Over> overs;
+	private final Balls balls;
 
 	public BowlerInnings getBowlerInnings() {
 		return bowlerInnings;
 	}
 
-	public List<Over> getOvers() {
+	public ImmutableList<Over> getOvers() {
 		return overs;
 	}
 
@@ -25,18 +24,11 @@ public class BowlingSpell {
 		return spellNumber;
 	}
 
-	public BowlingSpell(BowlerInnings bowlerInnings, int spellNumber) {
+	public BowlingSpell(BowlerInnings bowlerInnings, int spellNumber, ImmutableList<Over> overs, Balls balls) {
 		this.bowlerInnings = bowlerInnings;
         this.spellNumber = spellNumber;
-    }
-
-	public void addBall(BallAtCompletion ball) {
-		balls = balls.add(ball);
-		bowlerInnings.addBall(ball);
-	}
-
-    public void addOver(Over over) {
-        this.overs.add(over);
+        this.overs = overs;
+        this.balls = balls;
     }
 
     @Override

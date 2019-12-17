@@ -4,11 +4,16 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static com.danielflower.crickam.scorer.data.NewZealand.JAMES_NEESHAM;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 class BatsmanInningsTest {
 
     @Test
     public void canCreate() {
-//        BatsmanInnings bi =
+        BatsmanInnings bi = aBatsmanInnings().setPlayer(JAMES_NEESHAM).build();
+        assertThat(bi.getPlayer(), is(JAMES_NEESHAM));
     }
 
 

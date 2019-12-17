@@ -62,6 +62,6 @@ public class MatchBuilder {
     }
 
     public Match build() {
-        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, new ImmutableList<>(), new ImmutableList<>());
+        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, new Balls(), new ImmutableList<>());
     }
 }

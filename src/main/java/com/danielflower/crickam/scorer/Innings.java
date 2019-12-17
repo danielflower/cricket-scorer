@@ -20,15 +20,15 @@ public class Innings {
 	private final ImmutableList<Player> yetToBat;
 	private final List<Over> overs = new ArrayList<>();
 	public final Instant startTime;
-	public Date endTime;
-	private Balls balls = new Balls();
-	private BatsmanInnings currentStriker;
-	private BatsmanInnings currentNonStriker;
-	private BowlingSpell currentBowlingSpell;
-	private BowlingSpell currentBowlingSpellOfOtherBowler;
-	private List<BowlerInnings> bowlerInningses = new ArrayList<>();
+	public final Date endTime;
+	private final Balls balls;
+	private final BatsmanInnings currentStriker;
+	private final BatsmanInnings currentNonStriker;
+	private final BowlingSpell currentBowlingSpell;
+	private final BowlingSpell currentBowlingSpellOfOtherBowler;
+	private final List<BowlerInnings> bowlerInningses = new ArrayList<>();
 	private final List<BowlingSpell> spells = new ArrayList<>();
-	private Score difference;
+	private final Score difference;
 	private final int numberOfScheduledOvers;
 
 	public Over getCurrentOver() {
@@ -36,11 +36,6 @@ public class Innings {
 			return null;
 		}
 		return overs.get(overs.size() - 1);
-	}
-
-	public boolean hasStarted() {
-		Over currentOver = getCurrentOver();
-		return currentOver != null && currentOver.getCurrentBall() != null;
 	}
 
 	public BatsmanInnings getCurrentStriker() {
@@ -103,12 +98,19 @@ public class Innings {
 		return yetToBat.size() + 1;
 	}
 
-	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
+	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Date endTime, Balls balls, BatsmanInnings currentStriker, BatsmanInnings currentNonStriker, BowlingSpell currentBowlingSpell, BowlingSpell currentBowlingSpellOfOtherBowler, Score difference, int numberOfScheduledOvers) {
 		this.match = match;
 		this.battingTeam = battingTeam;
 		this.bowlingTeam = bowlingTeam;
 		this.inningsNumber = inningsNumber;
-		yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
+        this.endTime = endTime;
+        this.balls = balls;
+        this.currentStriker = currentStriker;
+        this.currentNonStriker = currentNonStriker;
+        this.currentBowlingSpell = currentBowlingSpell;
+        this.currentBowlingSpellOfOtherBowler = currentBowlingSpellOfOtherBowler;
+        this.difference = difference;
+        yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
 		this.startTime = startTime;
 		this.numberOfScheduledOvers = numberOfScheduledOvers;
 	}
@@ -128,22 +130,21 @@ public class Innings {
 			if (batter.getPlayer().equals(player)) {
 				// retired player coming back
 				batsmanInnings = batter;
-				batsmanInnings.undoDismissal();
 			}
 		}
 		if (batsmanInnings == null) {
-			batsmanInnings = new BatsmanInnings(player, balls, batters.size() + 1, time);
+			batsmanInnings = new BatsmanInnings(player, balls, balls, batters.size() + 1, time, null, Optional.empty());
 			batters.add(batsmanInnings);
 		}
 //		yetToBat.remove(player);
 
 		if (currentStriker == null) {
-			currentStriker = batsmanInnings;
+//			currentStriker = batsmanInnings;
 		} else if (currentNonStriker == null) {
-			currentNonStriker = batsmanInnings;
+//			currentNonStriker = batsmanInnings;
 		}
 		if (batters.size() > 1) {
-			Partnership partnership = new Partnership(balls.score().wickets + 1, other(batsmanInnings), batsmanInnings, time);
+			Partnership partnership = new Partnership(balls.score().wickets + 1, other(batsmanInnings), batsmanInnings, balls, new Balls(), new Balls(), time, null);
 			partnerships.add(partnership);
 		}
 		return batsmanInnings;
@@ -155,13 +156,13 @@ public class Innings {
 	}
 
 	public void addBall(BallAtCompletion ball) {
-		balls = balls.add(ball);
+//		balls = balls.add(ball);
 		getCurrentPartnership().addBall(ball);
-		getCurrentStriker().addBall(ball);
-		currentBowlingSpell.addBall(ball);
+//		getCurrentStriker().addBall(ball);
+//		currentBowlingSpell.addBall(ball);
 
 		Over currentOver = getCurrentOver();
-		currentOver.addBall(ball);
+//		currentOver.addBall(ball);
 		if (ball.getPlayersCrossed()) {
 			switchPlayers();
 		}
@@ -169,15 +170,15 @@ public class Innings {
 		if (ball.getDismissal().isPresent()) {
 			Dismissal dismissal = ball.getDismissal().get();
 			if (dismissal.batter == currentNonStriker) {
-				currentNonStriker.setDismissal(dismissal, ball.getDateCompleted());
-				currentNonStriker = null;
+//				currentNonStriker.setDismissal(dismissal, ball.getDateCompleted());
+//				currentNonStriker = null;
 			} else {
-				currentStriker.setDismissal(dismissal, ball.getDateCompleted());
-				currentStriker = null;
+//				currentStriker.setDismissal(dismissal, ball.getDateCompleted());
+//				currentStriker = null;
 			}
 		}
 
-		difference = difference.subtract(ball.getScore());
+//		difference = difference.subtract(ball.getScore());
 	}
 
 	public Over newOver(Player bowler) {
@@ -188,15 +189,15 @@ public class Innings {
 		} else {
 			bowlingSpell = new BowlingSpellBuilder().withBowlerInnings(innings).withSpellNumber(innings.getSpells().size() + 1).build();
 			spells.add(bowlingSpell);
-			innings.addBowlingSpell(bowlingSpell);
+//			innings.addBowlingSpell(bowlingSpell);
 		}
 
-		Over over = new Over(overs.size() + 1, currentStriker, currentNonStriker, bowlingSpell);
+		Over over = new Over(overs.size() + 1, currentStriker, currentNonStriker, balls, bowlingSpell);
 		overs.add(over);
-		bowlingSpell.addOver(over);
+//		bowlingSpell.addOver(over);
 
-		currentBowlingSpellOfOtherBowler = currentBowlingSpell;
-		currentBowlingSpell = bowlingSpell;
+//		currentBowlingSpellOfOtherBowler = currentBowlingSpell;
+//		currentBowlingSpell = bowlingSpell;
 		return over;
 	}
 
@@ -213,8 +214,8 @@ public class Innings {
 
 	public void switchPlayers() {
 		BatsmanInnings previousStriker = currentStriker;
-		currentStriker = currentNonStriker;
-		currentNonStriker = previousStriker;
+//		currentStriker = currentNonStriker;
+//		currentNonStriker = previousStriker;
 	}
 
 	public List<BowlerInnings> getBowlerInningses() {

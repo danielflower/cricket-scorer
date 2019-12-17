@@ -6,15 +6,15 @@ import java.util.Optional;
 public class BatsmanInnings {
     private final Player player;
 	public final Score teamScorecardAtStartOfInnings;
-    private Balls balls = new Balls();
+    private final Balls balls;
     private final int numberCameIn;
 	public final Instant inningsStartTime;
-	public Instant inningsEndTime;
+	public final Instant inningsEndTime;
 
 	public Player getPlayer() {
         return player;
     }
-	private Optional<Dismissal> dismissal = Optional.empty();
+	private final Optional<Dismissal> dismissal;
 
     public int getNumberCameIn() {
         return numberCameIn;
@@ -24,24 +24,16 @@ public class BatsmanInnings {
         return balls;
     }
 
-    BatsmanInnings(Player player, Balls ballsSoFarInInnings, int numberCameIn, Instant inningsStartTime) {
+    BatsmanInnings(Player player, Balls ballsSoFarInInnings, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Optional<Dismissal> dismissal) {
         this.player = player;
 	    this.teamScorecardAtStartOfInnings = ballsSoFarInInnings.score();
+        this.balls = balls;
         this.numberCameIn = numberCameIn;
 	    this.inningsStartTime = inningsStartTime;
+        this.inningsEndTime = inningsEndTime;
+        this.dismissal = dismissal;
     }
 
-    public void addBall(BallAtCompletion ball) {
-        balls = balls.add(ball);
-    }
-
-    public void setDismissal(Dismissal dismissal, Instant time) {
-    	this.inningsEndTime = time;
-    	this.dismissal = Optional.ofNullable(dismissal);
-    }
-    public void undoDismissal() {
-    	setDismissal(null, null);
-    }
 
 	public int runs() {
         return balls.score().scored;

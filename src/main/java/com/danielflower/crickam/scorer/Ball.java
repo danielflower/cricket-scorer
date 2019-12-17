@@ -69,7 +69,8 @@ public class Ball implements BallAtCompletion {
         return swing;
     }
 
-    public Score getScore() {
+    @Override
+    public Score score() {
         return score;
     }
 
@@ -82,7 +83,7 @@ public class Ball implements BallAtCompletion {
     }
 
     public boolean isLegal() {
-        return getScore().wides == 0 && getScore().noBalls == 0;
+        return score().wides == 0 && score().noBalls == 0;
     }
 
     public Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell) {

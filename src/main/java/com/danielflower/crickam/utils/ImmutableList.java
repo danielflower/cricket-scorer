@@ -11,16 +11,16 @@ public class ImmutableList<T> implements Iterable<T> {
     private final List<T> arrayList;
 
     /**
-     * Index of the first element in this list, inclusive.
+     * Index of the first element in this list.
      */
     private final int first;
 
     /**
-     * Index of the last element in this list, exclusive.
+     * Index of the last element in this list, or a value less than first if its empty.
      */
     private final int last;
 
-    private ImmutableList(List<T> arrayList, int first, int last) {
+    protected ImmutableList(List<T> arrayList, int first, int last) {
         this.arrayList = arrayList;
         this.first = first;
         this.last = last;

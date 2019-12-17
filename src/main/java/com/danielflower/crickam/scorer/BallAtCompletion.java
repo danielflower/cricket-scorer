@@ -4,7 +4,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 public interface BallAtCompletion extends BallAtEngagement, MatchEvent {
-	Score getScore();
+
+    Score score();
 
 	boolean getPlayersCrossed();
 

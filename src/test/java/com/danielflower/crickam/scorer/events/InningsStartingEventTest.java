@@ -20,9 +20,11 @@ class InningsStartingEventTest {
     }
 
     public static InningsStartingEvent.Builder anInningsStartingEvent() {
+        LineUp aus = Australia.oneDayLineUp().build();
         return new InningsStartingEvent.Builder()
-            .withBattingTeam(Australia.oneDayLineUp().build())
+            .withBattingTeam(aus)
             .withBowlingTeam(NewZealand.oneDayLineUp().build())
+            .withOpeners(aus.getPlayers().get(0), aus.getPlayers().get(1))
             .withStartTime(Instant.now());
     }
 

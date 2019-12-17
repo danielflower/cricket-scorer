@@ -18,12 +18,12 @@ public class Match
 	public final int oversPerInnings;
     public final Venue venue;
 	public final int numberOfScheduledDays;
-    private final ImmutableList<BallAtCompletion> balls;
+    private final Balls balls;
     private final ImmutableList<Innings> inningsList;
     private final Score score = ScoreBuilder.Empty;
 
 
-    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, ImmutableList<BallAtCompletion> balls, ImmutableList<Innings> inningsList) {
+    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, Balls balls, ImmutableList<Innings> inningsList) {
 	    this.matchID = matchID;
 	    this.series = series;
 	    this.startTime = startTime;
@@ -51,13 +51,17 @@ public class Match
 
     public Match onEvent(MatchEvent event) {
 
-        ImmutableList<BallAtCompletion> newBalls = event instanceof BallAtCompletion ? balls.add((BallAtCompletion) event) : balls;
+        Balls newBalls = event instanceof BallAtCompletion ? balls.add((BallAtCompletion) event) : balls;
 
         ImmutableList<Innings> newInningsList;
         if (event instanceof InningsStartingEvent) {
             InningsStartingEvent ise = (InningsStartingEvent) event;
+            BatsmanInnings currentStriker = null;
+            BatsmanInnings currentNonStriker = null;
+            BowlingSpell currentBowlingSpell = null;
+            BowlingSpell currentBowlingSpellOfOtherBowler = null;
             newInningsList = inningsList.add(
-                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), oversPerInnings)
+                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), null, new Balls(), currentStriker, currentNonStriker, currentBowlingSpell, currentBowlingSpellOfOtherBowler, Score.Empty, oversPerInnings)
             );
         } else {
             newInningsList = inningsList;
