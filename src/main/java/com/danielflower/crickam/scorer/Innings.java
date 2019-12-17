@@ -3,9 +3,7 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
@@ -15,10 +13,10 @@ public class Innings {
 	private final LineUp battingTeam;
 	private final LineUp bowlingTeam;
 	public final int inningsNumber;
-	private final List<Partnership> partnerships = new ArrayList<>();
-	private final List<BatsmanInnings> batters = new ArrayList<>();
+	private final ImmutableList<Partnership> partnerships;
+	private final ImmutableList<BatsmanInnings> batters;
 	private final ImmutableList<Player> yetToBat;
-	private final List<Over> overs = new ArrayList<>();
+	private final ImmutableList<Over> overs;
 	public final Instant startTime;
 	public final Date endTime;
 	private final Balls balls;
@@ -26,8 +24,8 @@ public class Innings {
 	private final BatsmanInnings currentNonStriker;
 	private final BowlingSpell currentBowlingSpell;
 	private final BowlingSpell currentBowlingSpellOfOtherBowler;
-	private final List<BowlerInnings> bowlerInningses = new ArrayList<>();
-	private final List<BowlingSpell> spells = new ArrayList<>();
+	private final ImmutableList<BowlerInnings> bowlerInningses;
+	private final ImmutableList<BowlingSpell> spells;
 	private final Score difference;
 	private final int numberOfScheduledOvers;
 
@@ -58,11 +56,11 @@ public class Innings {
 		return bowlingTeam;
 	}
 
-	public List<Partnership> getPartnerships() {
+	public ImmutableList<Partnership> getPartnerships() {
 		return partnerships;
 	}
 
-	public List<BatsmanInnings> getBatters() {
+	public ImmutableList<BatsmanInnings> getBatters() {
 		return batters;
 	}
 
@@ -82,7 +80,7 @@ public class Innings {
         return yetToBat.get(0);
 	}
 
-	public List<Over> getOvers() {
+	public ImmutableList<Over> getOvers() {
 		return overs;
 	}
 
@@ -98,17 +96,22 @@ public class Innings {
 		return yetToBat.size() + 1;
 	}
 
-	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Date endTime, Balls balls, BatsmanInnings currentStriker, BatsmanInnings currentNonStriker, BowlingSpell currentBowlingSpell, BowlingSpell currentBowlingSpellOfOtherBowler, Score difference, int numberOfScheduledOvers) {
+	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Partnership> partnerships, ImmutableList<Player> openers, int inningsNumber, ImmutableList<BatsmanInnings> batters, ImmutableList<Over> overs, Instant startTime, Date endTime, Balls balls, BatsmanInnings currentStriker, BatsmanInnings currentNonStriker, BowlingSpell currentBowlingSpell, BowlingSpell currentBowlingSpellOfOtherBowler, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells, Score difference, int numberOfScheduledOvers) {
 		this.match = match;
 		this.battingTeam = battingTeam;
 		this.bowlingTeam = bowlingTeam;
-		this.inningsNumber = inningsNumber;
+        this.partnerships = partnerships;
+        this.inningsNumber = inningsNumber;
+        this.batters = batters;
+        this.overs = overs;
         this.endTime = endTime;
         this.balls = balls;
         this.currentStriker = currentStriker;
         this.currentNonStriker = currentNonStriker;
         this.currentBowlingSpell = currentBowlingSpell;
         this.currentBowlingSpellOfOtherBowler = currentBowlingSpellOfOtherBowler;
+        this.bowlerInningses = bowlerInningses;
+        this.spells = spells;
         this.difference = difference;
         yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
 		this.startTime = startTime;
@@ -218,7 +221,7 @@ public class Innings {
 //		currentNonStriker = previousStriker;
 	}
 
-	public List<BowlerInnings> getBowlerInningses() {
+	public ImmutableList<BowlerInnings> getBowlerInningses() {
 		return bowlerInningses;
 	}
 

@@ -1,8 +1,8 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,7 +13,7 @@ class PlayerTest {
     @Test
     public void canCreate() {
         Player player = aPlayer().setGender(Gender.MALE)
-            .setGivenNames(List.of("Kane", "Stuart"))
+            .setGivenNames(ImmutableList.of("Kane", "Stuart"))
             .setFamilyName("Williamson")
             .build();
         assertThat(player.gender(), is(Gender.MALE));
@@ -29,7 +29,7 @@ class PlayerTest {
             .setBattingHandedness(Handedness.RightHanded)
             .setBowlingStyle(BowlingStyleBuilder.medium().setHandedness(Handedness.RightHanded).build())
             .setFamilyName("Taylor")
-            .setGivenNames(List.of("Ross"))
+            .setGivenNames(ImmutableList.of("Ross"))
             .setPlayingRole(PlayingRole.BATSMAN);
     }
 

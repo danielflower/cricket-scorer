@@ -1,8 +1,8 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +23,7 @@ class TeamTest {
             .withName("New Zealand")
             .withShortName("NZL")
             .withTeamColour("#000000")
-            .withSquad(Set.of(
+            .withSquad(ImmutableList.of(
                 PlayerTest.aPlayer().build()
             ));
     }

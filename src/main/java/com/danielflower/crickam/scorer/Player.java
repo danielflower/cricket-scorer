@@ -1,10 +1,9 @@
 package com.danielflower.crickam.scorer;
 
 
+import com.danielflower.crickam.utils.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class Player {
@@ -12,18 +11,18 @@ public class Player {
 	private final Gender gender;
 	private final String id;
 	private final String familyName;
-    private final List<String> givenNames;
+    private final ImmutableList<String> givenNames;
     private final String fullName;
 	private final Handedness battingHandedness;
 	private final BowlingStyle bowlingStyle;
 	private final PlayingRole playingRole;
 
-	Player(@NotNull String id, @NotNull Gender gender, @NotNull List<String> givenNames, @NotNull String familyName,
+	Player(@NotNull String id, @NotNull Gender gender, @NotNull ImmutableList<String> givenNames, @NotNull String familyName,
                   @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull BowlingStyle bowlingStyle,
                   @NotNull PlayingRole playingRole) {
 		this.id = id;
 		this.gender = gender;
-        this.givenNames = Collections.unmodifiableList(givenNames);
+        this.givenNames = givenNames;
         this.fullName = fullName;
 		this.battingHandedness = battingHandedness;
 		this.familyName = familyName;
@@ -60,7 +59,7 @@ public class Player {
         return givenNames.get(0);
     }
 
-    public List<String> givenNames() {
+    public ImmutableList<String> givenNames() {
 	    return givenNames;
     }
 

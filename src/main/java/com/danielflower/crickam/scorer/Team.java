@@ -1,12 +1,12 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Set;
+import com.danielflower.crickam.utils.ImmutableList;
 
 public class Team {
 	private final String id;
 	public final String shortName;
 	private final TeamLevel level;
-	private final Set<Player> squad;
+	private final ImmutableList<Player> squad;
 	private final String name;
 	public final String teamColour;
 
@@ -14,7 +14,7 @@ public class Team {
         return level;
     }
 
-    public Set<Player> getSquad() {
+    public ImmutableList<Player> getSquad() {
         return squad;
     }
     public void addPlayer(Player player) {
@@ -24,7 +24,7 @@ public class Team {
         return name;
     }
 
-	public Team(String id, String name, String shortName, Set<Player> squad, TeamLevel level, String teamColour) {
+	public Team(String id, String name, String shortName, ImmutableList<Player> squad, TeamLevel level, String teamColour) {
 		this.id = id;
 		this.name = name;
         this.shortName = shortName;

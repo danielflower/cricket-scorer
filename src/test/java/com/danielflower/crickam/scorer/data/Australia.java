@@ -6,7 +6,6 @@ import com.danielflower.crickam.scorer.TeamBuilder;
 import com.danielflower.crickam.scorer.TeamLevel;
 import com.danielflower.crickam.utils.ImmutableList;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.BowlingStyleBuilder.*;
@@ -54,7 +53,7 @@ public class Australia {
             .withShortName("AUS")
             .withName("New Australia")
             .withLevel(TeamLevel.International)
-            .withSquad(Set.of(
+            .withSquad(ImmutableList.of(
                 SEAN_ABBOT, JASON_BEHRENDORFF, PAT_CUMMINS, MARCUS_HARRIS, USMAN_KHAWAJA, BEN_MC_DERMOTT, TIM_PAINE,
                 PETER_SIDDLE, MITCHELL_STARC, MATTHEW_WADE, ASHTON_AGAR, JOE_BURNS, AARON_FINCH, JOSH_HAZLEWOOD,
                 MARNUS_LABUSCHAGNE, MITCHELL_MARSH, JAMES_PATTINSON, STEVEN_SMITH, MARCUS_STOINIS, DAVID_WARNER,

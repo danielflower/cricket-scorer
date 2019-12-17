@@ -1,12 +1,13 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.utils.ImmutableListCollector;
+
 import java.util.stream.Stream;
 
 public class PlayerBuilder {
 	private String id;
-	private List<String> givenNames;
+	private ImmutableList<String> givenNames;
 	private String familyName;
 	private String fullName;
 	private Handedness battingHandedness = Handedness.RightHanded;
@@ -14,7 +15,7 @@ public class PlayerBuilder {
 	private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
 	private Gender gender = Gender.OTHER;
 
-	public PlayerBuilder setGivenNames(List<String> givenNames) {
+	public PlayerBuilder setGivenNames(ImmutableList<String> givenNames) {
 		this.givenNames = givenNames;
 		return this;
 	}
@@ -62,7 +63,7 @@ public class PlayerBuilder {
         String[] bits = name.split(" ");
         return setFullName(name)
             .setFamilyName(bits[bits.length - 1])
-            .setGivenNames(Stream.of(bits).skip(1).collect(Collectors.toList()));
+            .setGivenNames(Stream.of(bits).skip(1).collect(ImmutableListCollector.toImmutableList()));
     }
 
 	public Player build() {

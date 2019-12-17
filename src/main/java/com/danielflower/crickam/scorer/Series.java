@@ -1,21 +1,20 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.danielflower.crickam.utils.ImmutableList;
 
 public class Series {
 
 	public final String id;
-	public final Set<Team> teams = new HashSet<>();
+	public final ImmutableList<Team> teams;
 	public final String name;
-	public final List<Match> matches = new ArrayList<>();
+	public final ImmutableList<Match> matches;
 
-	public Series(String id, String name) {
+	public Series(String id, ImmutableList<Team> teams, String name, ImmutableList<Match> matches) {
 		this.id = id;
-		this.name = name;
-	}
+        this.teams = teams;
+        this.name = name;
+        this.matches = matches;
+    }
 
 	public int gameNumberInSeries(String matchId) {
 		int counter = 0;

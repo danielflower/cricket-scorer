@@ -6,7 +6,6 @@ import com.danielflower.crickam.scorer.TeamBuilder;
 import com.danielflower.crickam.scorer.TeamLevel;
 import com.danielflower.crickam.utils.ImmutableList;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.BowlingStyleBuilder.*;
@@ -55,7 +54,7 @@ public class NewZealand {
             .withShortName("NZL")
             .withName("New Zealand")
             .withLevel(TeamLevel.International)
-            .withSquad(Set.of(
+            .withSquad(ImmutableList.of(
                 TODD_ASTLE, TOM_BRUCE, LOCKIE_FERGUSON, SCOTT_KUGGELEIJN, COLIN_MUNRO, AJAZ_PATEL, HAMISH_RUTHERFORD,
                 ISH_SODHI, ROSS_TAYLOR, BJ_WATLING, TRENT_BOULT, MARK_CHAPMAN, MARTIN_GUPTILL, TOM_LATHAM,
                 JAMES_NEESHAM, SETH_RANCE, MITCH_SANTNER, WILLIAM_SOMERVILLE, BLAIR_TICKNER, KANE_WILLIAMSON,

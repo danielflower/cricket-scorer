@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.events.InningsStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 public class Match
@@ -12,7 +11,7 @@ public class Match
 	public final String matchID;
 	public final Series series;
 	private final Instant startTime;
-    private final List<LineUp> teams;
+    private final ImmutableList<LineUp> teams;
 	public final MatchType matchType;
 	public final int numberOfInningsPerTeam;
 	public final int oversPerInnings;
@@ -23,7 +22,7 @@ public class Match
     private final Score score = ScoreBuilder.Empty;
 
 
-    public Match(String matchID, Series series, Instant startTime, List<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, Balls balls, ImmutableList<Innings> inningsList) {
+    public Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, Balls balls, ImmutableList<Innings> inningsList) {
 	    this.matchID = matchID;
 	    this.series = series;
 	    this.startTime = startTime;
@@ -41,7 +40,7 @@ public class Match
         return startTime;
     }
 
-    public List<LineUp> getTeams() {
+    public ImmutableList<LineUp> getTeams() {
         return teams;
     }
 
@@ -61,7 +60,7 @@ public class Match
             BowlingSpell currentBowlingSpell = null;
             BowlingSpell currentBowlingSpellOfOtherBowler = null;
             newInningsList = inningsList.add(
-                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), null, new Balls(), currentStriker, currentNonStriker, currentBowlingSpell, currentBowlingSpellOfOtherBowler, Score.Empty, oversPerInnings)
+                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), new ImmutableList<>(), ise.openers(), inningsList.size() + 1, new ImmutableList<>(), new ImmutableList<>(), Instant.now(), null, new Balls(), currentStriker, currentNonStriker, currentBowlingSpell, currentBowlingSpellOfOtherBowler, new ImmutableList<>(), new ImmutableList<>(), Score.Empty, oversPerInnings)
             );
         } else {
             newInningsList = inningsList;

@@ -3,13 +3,12 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
-import java.util.List;
 
 public class MatchBuilder {
     private String matchID;
     private Series series;
     private Instant startTime;
-    private List<LineUp> teams;
+    private ImmutableList<LineUp> teams;
     private MatchType matchType;
     private int numberOfInningsPerTeam;
     private int oversPerInnings;
@@ -31,7 +30,7 @@ public class MatchBuilder {
         return this;
     }
 
-    public MatchBuilder withTeams(List<LineUp> teams) {
+    public MatchBuilder withTeams(ImmutableList<LineUp> teams) {
         this.teams = teams;
         return this;
     }

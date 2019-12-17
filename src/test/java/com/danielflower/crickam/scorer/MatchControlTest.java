@@ -3,10 +3,10 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import com.danielflower.crickam.scorer.events.InningsStartingEvent;
+import com.danielflower.crickam.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -23,7 +23,7 @@ class MatchControlTest {
             MatchTest.aMatch()
                 .withNumberOfInningsPerTeam(1)
                 .withOversPerInnings(50)
-                .withTeams(List.of(nz, aus))
+                .withTeams(ImmutableList.of(nz, aus))
                 .build()
         );
 
