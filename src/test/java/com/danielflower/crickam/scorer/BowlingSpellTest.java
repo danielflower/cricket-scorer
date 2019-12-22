@@ -9,7 +9,7 @@ class BowlingSpellTest {
 
     @Test
     public void canCreate() {
-        assertThat(aBowlingSpell().withSpellNumber(2).build().getSpellNumber(), is(2));
+        assertThat(aBowlingSpell().withSpellNumber(2).build().spellNumber(), is(2));
     }
 
     public static BowlingSpellBuilder aBowlingSpell() {

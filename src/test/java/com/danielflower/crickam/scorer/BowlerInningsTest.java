@@ -11,7 +11,7 @@ class BowlerInningsTest {
 
     @Test
     public void canCreate() {
-        assertThat(aBowlerInnings().withBowler(MITCH_SANTNER).build().getPlayer(), is(MITCH_SANTNER));
+        assertThat(aBowlerInnings().withBowler(MITCH_SANTNER).build().bowler(), is(MITCH_SANTNER));
     }
 
     public static BowlerInningsBuilder aBowlerInnings() {

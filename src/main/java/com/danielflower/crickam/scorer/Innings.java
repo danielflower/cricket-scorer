@@ -29,14 +29,11 @@ public class Innings {
 	private final Score difference;
 	private final int numberOfScheduledOvers;
 
-	public Over getCurrentOver() {
-		if (overs.size() == 0) {
-			return null;
-		}
-		return overs.get(overs.size() - 1);
+	public Optional<Over> currentOver() {
+	    return overs.last();
 	}
 
-	public BatsmanInnings getCurrentStriker() {
+	public BatsmanInnings currentStriker() {
 		return currentStriker;
 	}
 
@@ -89,7 +86,7 @@ public class Innings {
 	}
 
 	public boolean getAllOut() {
-		return yetToBat.size() == 0 && (getCurrentStriker() == null || getCurrentNonStriker() == null);
+		return yetToBat.size() == 0 && (currentStriker() == null || getCurrentNonStriker() == null);
 	}
 
 	public int wicketsRemaining() {
@@ -154,58 +151,57 @@ public class Innings {
 	}
 
 	private BatsmanInnings other(BatsmanInnings batsmanInnings) {
-		return getCurrentStriker() == batsmanInnings ?
-				getCurrentNonStriker() : getCurrentStriker();
+		return currentStriker() == batsmanInnings ?
+				getCurrentNonStriker() : currentStriker();
 	}
 
 	public void addBall(BallAtCompletion ball) {
 //		balls = balls.add(ball);
-		getCurrentPartnership().addBall(ball);
+//		getCurrentPartnership().addBall(ball);
 //		getCurrentStriker().addBall(ball);
 //		currentBowlingSpell.addBall(ball);
 
-		Over currentOver = getCurrentOver();
+//		Over currentOver = currentOver();
 //		currentOver.addBall(ball);
-		if (ball.getPlayersCrossed()) {
-			switchPlayers();
-		}
+//		if (ball.getPlayersCrossed()) {
+//			switchPlayers();
+//		}
 
-		if (ball.getDismissal().isPresent()) {
-			Dismissal dismissal = ball.getDismissal().get();
-			if (dismissal.batter == currentNonStriker) {
+//		if (ball.getDismissal().isPresent()) {
+//			Dismissal dismissal = ball.getDismissal().get();
+//			if (dismissal.batter == currentNonStriker) {
 //				currentNonStriker.setDismissal(dismissal, ball.getDateCompleted());
 //				currentNonStriker = null;
-			} else {
+//			} else {
 //				currentStriker.setDismissal(dismissal, ball.getDateCompleted());
 //				currentStriker = null;
-			}
-		}
-
+//			}
+//		}
 //		difference = difference.subtract(ball.getScore());
 	}
 
 	public Over newOver(Player bowler) {
 		BowlerInnings innings = getOrCreateBowlerInnings(bowler);
 		BowlingSpell bowlingSpell;
-		if (currentBowlingSpellOfOtherBowler != null && bowler.equals(currentBowlingSpellOfOtherBowler.getBowlerInnings().getPlayer())) {
+		if (currentBowlingSpellOfOtherBowler != null && bowler.equals(currentBowlingSpellOfOtherBowler.bowlerInnings().bowler())) {
 			bowlingSpell = currentBowlingSpellOfOtherBowler;
 		} else {
-			bowlingSpell = new BowlingSpellBuilder().withBowlerInnings(innings).withSpellNumber(innings.getSpells().size() + 1).build();
+			bowlingSpell = new BowlingSpellBuilder().withBowlerInnings(innings).withSpellNumber(innings.spells().size() + 1).build();
 			spells.add(bowlingSpell);
 //			innings.addBowlingSpell(bowlingSpell);
 		}
 
-		Over over = new Over(overs.size() + 1, currentStriker, currentNonStriker, balls, bowlingSpell);
-		overs.add(over);
+//		Over over = new Over(overs.size() + 1, currentStriker, currentNonStriker, balls, bowlingSpell, ballsInOver);
+//		overs.add(over);
 //		bowlingSpell.addOver(over);
 
 //		currentBowlingSpellOfOtherBowler = currentBowlingSpell;
 //		currentBowlingSpell = bowlingSpell;
-		return over;
+		return null;
 	}
 
 	private BowlerInnings getOrCreateBowlerInnings(Player bowler) {
-		Optional<BowlerInnings> first = bowlerInningses.stream().filter(s -> s.getPlayer().equals(bowler)).findFirst();
+		Optional<BowlerInnings> first = bowlerInningses.stream().filter(s -> s.bowler().equals(bowler)).findFirst();
 		if (first.isPresent()) {
 			return first.get();
 		} else {

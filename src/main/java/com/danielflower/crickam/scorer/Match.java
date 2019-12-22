@@ -1,6 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.InningsStartingEvent;
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
@@ -44,7 +45,7 @@ public class Match
         return teams;
     }
 
-    public Optional<Innings> getCurrentInnings() {
+    public Optional<Innings> currentInnings() {
         return inningsList.last();
     }
 
@@ -59,11 +60,24 @@ public class Match
             BatsmanInnings currentNonStriker = null;
             BowlingSpell currentBowlingSpell = null;
             BowlingSpell currentBowlingSpellOfOtherBowler = null;
+            ImmutableList<Over> overs = new ImmutableList<>();
             newInningsList = inningsList.add(
-                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), new ImmutableList<>(), ise.openers(), inningsList.size() + 1, new ImmutableList<>(), new ImmutableList<>(), Instant.now(), null, new Balls(), currentStriker, currentNonStriker, currentBowlingSpell, currentBowlingSpellOfOtherBowler, new ImmutableList<>(), new ImmutableList<>(), Score.Empty, oversPerInnings)
+                new Innings(this, ise.battingTeam(), ise.bowlingTeam(), new ImmutableList<>(), ise.openers(), inningsList.size() + 1, new ImmutableList<>(), overs, Instant.now(), null, new Balls(), currentStriker, currentNonStriker, currentBowlingSpell, currentBowlingSpellOfOtherBowler, new ImmutableList<>(), new ImmutableList<>(), Score.Empty, oversPerInnings)
             );
         } else {
             newInningsList = inningsList;
+        }
+
+
+
+        if (event instanceof OverStartingEvent) {
+            Innings innings = newInningsList.last().get();
+            ImmutableList<Over> overs = innings.getOvers();
+            OverStartingEvent ose = (OverStartingEvent) event;
+            BatsmanInnings striker = null;
+            BatsmanInnings nonStriker = null;
+            BowlingSpell spell = null;
+            Over over = new Over(innings.getOvers().size(), striker, nonStriker, new Balls(), spell, ose.ballsInOver());
         }
 
         return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, newBalls, newInningsList);

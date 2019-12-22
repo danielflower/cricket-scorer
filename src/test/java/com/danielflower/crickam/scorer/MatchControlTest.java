@@ -3,6 +3,7 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import com.danielflower.crickam.scorer.events.InningsStartingEvent;
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +36,33 @@ class MatchControlTest {
 
         assertThat(control.current(), sameInstance(match));
         assertThat(match.oversPerInnings, is(50));
-        assertThat(match.getCurrentInnings().isPresent(), is(true));
+        assertThat(match.currentInnings().isPresent(), is(true));
 
-        Innings innings = match.getCurrentInnings().get();
+        Innings innings = match.currentInnings().get();
         assertThat(innings.inningsNumber, is(1));
         assertThat(innings.getYetToBat(), equalTo(nz.players.subList(2, 10)));
+
+        match = match.onEvent(new OverStartingEvent.Builder()
+            .withBowler(aus.players.last().get())
+            .build());
+
+        Over over = match.currentInnings().get().currentOver().get();
+        assertThat(over.balls().size(), is(0));
+        assertThat(over.spell().spellNumber(), is(1));
+        assertThat(over.spell().balls().size(), is(0));
+        assertThat(over.spell().overs(), contains(over));
+        assertThat(over.spell().bowlerInnings().bowler(), sameInstance(aus.players.last().get()));
+        assertThat(over.spell().bowlerInnings().spells(), contains(sameInstance(over.spell())));
+        assertThat(over.numberInInnings(), is(1));
+        assertThat(over.legalBalls(), is(0));
+        assertThat(over.remainingBalls(), is(6));
+        assertThat(over.isComplete(), is(false));
+        assertThat(over.isMaiden(), is(true));
+        assertThat(over.striker(), is(sameInstance(nz.players.get(0))));
+        assertThat(over.nonStriker(), is(sameInstance(nz.players.get(1))));
+        assertThat(over.runs(), is(0));
+
+
 
     }
 

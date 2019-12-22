@@ -26,5 +26,7 @@ public class Balls {
         return new Balls(balls.add(ball), score.add(ball.score()));
     }
 
-
+    public int size() {
+        return balls.size();
+    }
 }

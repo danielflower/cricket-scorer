@@ -22,7 +22,7 @@ public class Dismissal
     }
 
     public Player getBowler() {
-        return bowler.getBowlerInnings().getPlayer();
+        return bowler.bowlerInnings().bowler();
     }
 
     public Player getExecutor() {

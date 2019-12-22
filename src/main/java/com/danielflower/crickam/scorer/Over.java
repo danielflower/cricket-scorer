@@ -1,56 +1,66 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.Objects;
+
 public class Over {
 	private final int numberInInnings;
 	private final BatsmanInnings striker;
 	private final BatsmanInnings nonStriker;
 	private final Balls balls;
 	private final BowlingSpell bowlingSpell;
+	private final int ballsInOver;
 
-	public BatsmanInnings getStriker() {
+	public BatsmanInnings striker() {
 		return striker;
 	}
 
-	public BatsmanInnings getNonStriker() {
+	public BatsmanInnings nonStriker() {
 		return nonStriker;
 	}
 
-	public BowlingSpell getBowlingSpell() {
+	public BowlingSpell spell() {
 		return bowlingSpell;
 	}
 
-	public int getNumberInInnings() {
+	public int numberInInnings() {
 		return numberInInnings;
 	}
 
-	public Balls getBalls() {
+	public Balls balls() {
 		return balls;
 	}
 
-	public Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell) {
+	public Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell, int ballsInOver) {
 		this.numberInInnings = numberInInnings;
-		this.striker = striker;
-		this.nonStriker = nonStriker;
-        this.balls = balls;
-        this.bowlingSpell = bowlingSpell;
-	}
+        this.striker = Objects.requireNonNull(striker);
+        this.nonStriker = Objects.requireNonNull(nonStriker);
+        this.balls = Objects.requireNonNull(balls);
+        this.bowlingSpell = Objects.requireNonNull(bowlingSpell);
+        this.ballsInOver = ballsInOver;
+    }
 
 	public int runs() {
 		return balls.score().totalRuns();
 	}
 
+    /**
+     * @return True if no runs have been scored in this over. If not {@link #isComplete()} then returns true if there
+     * are no runs so far.
+     */
 	public boolean isMaiden() {
 		return runs() == 0;
 	}
 
+	public int remainingBalls() {
+	    return ballsInOver - legalBalls();
+    }
 
-
-	public int getLegalBalls() {
+	public int legalBalls() {
 		return (int) balls.list().stream().filter(BallAtCompletion::isLegal).count();
 	}
 
     public boolean isComplete() {
-        return getLegalBalls() >= 6;
+        return legalBalls() >= 6;
     }
 
     @Override

@@ -7,7 +7,7 @@ public class BowlerInnings {
 	private final Balls balls;
 	private final ImmutableList<BowlingSpell> spells;
 
-	public Player getPlayer() {
+	public Player bowler() {
 		return player;
 	}
 
@@ -15,7 +15,7 @@ public class BowlerInnings {
 		return balls;
 	}
 
-	public ImmutableList<BowlingSpell> getSpells() {
+	public ImmutableList<BowlingSpell> spells() {
 		return spells;
 	}
 

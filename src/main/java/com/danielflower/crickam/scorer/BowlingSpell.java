@@ -8,19 +8,22 @@ public class BowlingSpell {
     private final ImmutableList<Over> overs;
 	private final Balls balls;
 
-	public BowlerInnings getBowlerInnings() {
+	public BowlerInnings bowlerInnings() {
 		return bowlerInnings;
 	}
 
-	public ImmutableList<Over> getOvers() {
+	public ImmutableList<Over> overs() {
 		return overs;
 	}
 
-	public Balls getBalls() {
+	public Balls balls() {
 		return balls;
 	}
 
-	public int getSpellNumber() {
+    /**
+     * @return The spell number that this spell is for this bowler. Their first bowling spell will return 1.
+     */
+	public int spellNumber() {
 		return spellNumber;
 	}
 
