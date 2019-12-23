@@ -9,7 +9,7 @@ public interface BallAtCompletion extends BallAtEngagement, MatchEvent {
 
 	boolean getPlayersCrossed();
 
-	Optional<Dismissal> getDismissal();
+	Optional<Dismissal> dismissal();
 
 	boolean isLegal();
 

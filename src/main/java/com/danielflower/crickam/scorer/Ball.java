@@ -1,6 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Ball implements BallAtCompletion {
@@ -10,12 +11,12 @@ public class Ball implements BallAtCompletion {
     private final int numberInOver;
     private final Score score;
     private final boolean playersCrossed;
-    private final Optional<Dismissal> dismissal;
+    private final Dismissal dismissal;
     private final Delivery delivery;
     private final Swing swing;
     private final Trajectory trajectoryAtImpact;
     private final int id;
-    private final Optional<Player> fielder;
+    private final Player fielder;
 	private final Instant dateCompleted;
 
 	public BatsmanInnings getStriker() {
@@ -40,9 +41,9 @@ public class Ball implements BallAtCompletion {
 
     @Override
     public BallAtEngagement engage(Delivery delivery, Swing swing, Trajectory ballTrajectory) {
-        Guard.notNull("delivery", delivery);
-        Guard.notNull("swing", swing);
-        Guard.notNull("ballTrajectory", ballTrajectory);
+        Objects.requireNonNull((Object) delivery, "delivery");
+        Objects.requireNonNull((Object) swing, "swing");
+        Objects.requireNonNull((Object) ballTrajectory, "ballTrajectory");
         return new Ball(
                 id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getBowlingSpell(),
                 delivery, swing, ballTrajectory, null, null, false, null, null);
@@ -51,12 +52,12 @@ public class Ball implements BallAtCompletion {
 
     @Override
     public BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted) {
-        Guard.notNull("dismissal", dismissal);
+        Objects.requireNonNull((Object) dismissal, "dismissal");
         return new Ball(
                 id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.getBowlingSpell(),
                 this.getDelivery(), this.getSwing(), this.getTrajectoryAtImpact(),
-                score, dismissal, playersCrossed,
-                fielder, dateCompleted);
+                score, dismissal.orElse(null), playersCrossed,
+                fielder.orElse(null), dateCompleted);
     }
 
     @Override
@@ -78,8 +79,8 @@ public class Ball implements BallAtCompletion {
         return playersCrossed;
     }
 
-    public Optional<Dismissal> getDismissal() {
-        return dismissal;
+    public Optional<Dismissal> dismissal() {
+        return Optional.ofNullable(dismissal);
     }
 
     public boolean isLegal() {
@@ -90,11 +91,11 @@ public class Ball implements BallAtCompletion {
         this(id, striker, nonStriker, numberInOver, bowlingSpell, null, null, null, null, null, false, null, null);
     }
 
-    private Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell,
+    Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell,
                  Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
-                 Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted) {
-	    Guard.notNull("bowlingSpell", bowlingSpell);
-	    this.id = id;
+                 Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
+        Objects.requireNonNull((Object) bowlingSpell, "bowlingSpell");
+        this.id = id;
 	    this.fielder = fielder;
 	    this.trajectoryAtImpact = trajectoryAtImpact;
 	    this.bowlingSpell = bowlingSpell;
@@ -115,7 +116,7 @@ public class Ball implements BallAtCompletion {
 
     @Override
     public Optional<Player> getFielder() {
-        return fielder;
+        return Optional.ofNullable(fielder);
     }
 
 	@Override

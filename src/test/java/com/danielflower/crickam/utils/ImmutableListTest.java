@@ -56,20 +56,40 @@ class ImmutableListTest {
     }
 
     @Test
-    public void sublistsCanBeMade() {
+    public void sublistsCanBeMadeButAreReadonly() {
         ImmutableList<Integer> list = ImmutableList.of(0, 1, 2, 3, 4, 5, 6);
-        assertThat(list.subList(0, 6), contains(0, 1, 2, 3, 4, 5, 6));
-        assertThat(list.subList(1, 6), contains(1, 2, 3, 4, 5, 6));
-        assertThat(list.subList(0, 5), contains(0, 1, 2, 3, 4, 5));
-        assertThat(list.subList(2, 4), contains(2, 3, 4));
-        assertThat(list.subList(2, 3), contains(2, 3));
-        assertThat(list.subList(2, 2), contains(2));
+        assertThat(list.view(0, 6), contains(0, 1, 2, 3, 4, 5, 6));
+        assertThat(list.view(1, 6), contains(1, 2, 3, 4, 5, 6));
+        assertThat(list.view(0, 5), contains(0, 1, 2, 3, 4, 5));
+        assertThat(list.view(2, 4), contains(2, 3, 4));
+        assertThat(list.view(2, 3), contains(2, 3));
+        assertThat(list.view(2, 2), contains(2));
 
-        ImmutableList<Integer> subList = list.subList(2, 4);
-        assertThat(subList.subList(1, 1), contains(3));
+        ImmutableList<Integer> subList = list.view(2, 4);
+        assertThat(subList.view(1, 1), contains(3));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(-1, 1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(1, 3));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.view(-1, 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.view(1, 3));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> list.view(1, 3).add(4));
+    }
+
+    @Test
+    public void viewsCanBeCopiedToBeWritable() {
+        ImmutableList<Integer> list = ImmutableList.of(0, 1, 2, 3, 4, 5, 6)
+            .view(2, 3).copy().add(42);
+        assertThat(list, contains(2, 3, 42));
+    }
+
+    @Test
+    public void removeLastReturnsView() {
+        ImmutableList<Integer> list = ImmutableList.of(1,2,3).removeLast();
+        assertThat(list, contains(1,2));
+        assertThat(list.copy().add(12), contains(1,2,12));
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> list.add(4));
+
+        assertThat(ImmutableList.of(1).removeLast().size(), is(0));
+        Assertions.assertThrows(IllegalStateException.class, () -> new ImmutableList<Integer>().removeLast());
+
     }
 
 }

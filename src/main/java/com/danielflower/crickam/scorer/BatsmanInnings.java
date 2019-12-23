@@ -5,7 +5,6 @@ import java.util.Optional;
 
 public class BatsmanInnings {
     private final Player player;
-	public final Score teamScorecardAtStartOfInnings;
     private final Balls balls;
     private final int numberCameIn;
 	public final Instant inningsStartTime;
@@ -24,9 +23,8 @@ public class BatsmanInnings {
         return balls;
     }
 
-    BatsmanInnings(Player player, Balls ballsSoFarInInnings, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Optional<Dismissal> dismissal) {
+    BatsmanInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Optional<Dismissal> dismissal) {
         this.player = player;
-	    this.teamScorecardAtStartOfInnings = ballsSoFarInInnings.score();
         this.balls = balls;
         this.numberCameIn = numberCameIn;
 	    this.inningsStartTime = inningsStartTime;
@@ -34,8 +32,21 @@ public class BatsmanInnings {
         this.dismissal = dismissal;
     }
 
+    static BatsmanInnings newInnings(Player player, int numberCameIn) {
+        return new BatsmanInnings(player, new Balls(), numberCameIn, Instant.now(), null, Optional.empty());
+    }
+    public boolean isSameInnings(BatsmanInnings other) {
+        return getPlayer().equals(other.getPlayer());
+    }
 
-	public int runs() {
+    /**
+     * @return The 1-based index of this batter (e.g. the first opener returns 1)
+     */
+    public int numberCameIn() {
+        return numberCameIn;
+    }
+
+    public int runs() {
         return balls.score().scored;
     }
 

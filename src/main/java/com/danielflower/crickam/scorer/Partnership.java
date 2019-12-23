@@ -2,56 +2,82 @@ package com.danielflower.crickam.scorer;
 
 import java.time.Instant;
 
+import static java.util.Objects.requireNonNull;
+
 public class Partnership {
-    private final BatsmanInnings firstBatter;
-    private final BatsmanInnings secondBatter;
-	public final int wicketNumber;
     private final Balls balls;
 	public final Balls firstBatterContribution;
 	public final Balls secondBatterContribution;
-	public final Instant startTime;
 	public final Instant endTime;
-    public final BatsmanInnings getFirstBatter() {
-        return firstBatter;
+	private final FixedData data;
+
+    public Instant endTime() {
+        return endTime;
     }
 
-    public final BatsmanInnings getSecondBatter() {
-        return secondBatter;
+    private static class FixedData {
+        private final BatsmanInnings firstBatter;
+        private final BatsmanInnings secondBatter;
+        private final int wicketNumber;
+        private final Instant startTime;
+        private FixedData(BatsmanInnings firstBatter, BatsmanInnings secondBatter, int wicketNumber, Instant startTime) {
+            this.firstBatter = requireNonNull(firstBatter);
+            this.secondBatter = requireNonNull(secondBatter);
+            this.wicketNumber = wicketNumber;
+            this.startTime = requireNonNull(startTime);
+        }
     }
 
-    public Balls getBalls() {
+    public static Partnership newPartnership(int numberInInnings, BatsmanInnings first, BatsmanInnings second) {
+        FixedData data = new FixedData(first, second, numberInInnings, Instant.now());
+        return new Partnership(data, new Balls(), new Balls(), new Balls(), null);
+    }
+
+    public final BatsmanInnings firstBatter() {
+        return data.firstBatter;
+    }
+
+    public final BatsmanInnings secondBatter() {
+        return data.secondBatter;
+    }
+
+    public Balls balls() {
         return balls;
     }
 
-    public Partnership(int wicketNumber, BatsmanInnings firstBatter, BatsmanInnings secondBatter, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant startTime, Instant endTime) {
-        this.balls = balls;
-        this.firstBatterContribution = firstBatterContribution;
-        this.secondBatterContribution = secondBatterContribution;
-        Guard.notNull("firstBatter", firstBatter);
-        Guard.notNull("secondBatter", secondBatter);
-        Guard.notNull("startTime", startTime);
-        this.endTime = endTime;
-        this.wicketNumber = wicketNumber;
-	    this.startTime = startTime;
-	    this.firstBatter = firstBatter;
-        this.secondBatter = secondBatter;
+    public int wicketNumber() {
+	    return data.wicketNumber;
+    }
+    public Instant startTime() {
+	    return data.startTime;
     }
 
-    public void addBall(BallAtCompletion ball) {
-//        balls = balls.add(ball);
-//        if (ball.getStriker() == firstBatter) {
-//        	firstBatterContribution.add(ball);
-//        } else if (ball.getStriker() == secondBatter) {
-//        	secondBatterContribution.add(ball);
-//        } else {
-//	        throw new RuntimeException("I thought " + firstBatter + " and " + secondBatter + " were batting but the ball is for " + ball.getStriker());
-//        }
-//	    endTime = ball.getDateCompleted();
+    Partnership(FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
+        this.data = requireNonNull(data);
+        this.balls = requireNonNull(balls);
+        this.firstBatterContribution = requireNonNull(firstBatterContribution);
+        this.secondBatterContribution = requireNonNull(secondBatterContribution);
+        this.endTime = endTime;
     }
 
 	public int totalRuns() {
-		return getBalls().score().totalRuns();
+		return balls().score().totalRuns();
 	}
+
+    public Balls firstBatterContribution() {
+        return firstBatterContribution;
+    }
+    public Balls secondBatterContribution() {
+        return secondBatterContribution;
+    }
+
+    public Partnership onBall(Ball ball) {
+        Balls balls = this.balls.add(ball);
+        Balls firstBatterContribution = ball.getStriker().isSameInnings(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
+        Balls secondBatterContribution = ball.getStriker().isSameInnings(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
+        Instant endTime = ball.dismissal().isPresent() ? ball.getDateCompleted() : null;
+        return new Partnership(data, balls, firstBatterContribution, secondBatterContribution, endTime);
+    }
 }
 
 

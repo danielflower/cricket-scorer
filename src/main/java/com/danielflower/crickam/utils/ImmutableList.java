@@ -52,13 +52,15 @@ public class ImmutableList<T> implements Iterable<T> {
         return first > last;
     }
 
-    public ImmutableList<T> subList(int firstInclusive, int lastExclusive) {
+    public ImmutableList<T> view(int firstInclusive, int lastExclusive) {
         if (firstInclusive < 0) throw new IllegalArgumentException("firstInclusive must be non-negative but was " + firstInclusive);
         int newFirst = this.first + firstInclusive;
         int newLast = this.first + lastExclusive;
         if (newLast > last) throw new IllegalArgumentException("The lastExclusive value " + lastExclusive + " is too large. Max value allowed is " + (size() - 1));
-        return new ImmutableList<>(arrayList, newFirst, newLast);
+        return new ImmutableList<>(Collections.unmodifiableList(arrayList), newFirst, newLast);
     }
+
+
 
     @NotNull
     @Override
@@ -85,6 +87,18 @@ public class ImmutableList<T> implements Iterable<T> {
             }
         }
         return false;
+    }
+
+    public ImmutableList<T> copy() {
+        List<T> view = arrayList.subList(first, last + 1);
+        return new ImmutableList<>(view);
+    }
+
+    public ImmutableList<T> removeLast() {
+        if (size() == 0) {
+            throw new IllegalStateException("The list was empty");
+        }
+        return view(0, last -1);
     }
 
     private class ImmutableListIterator implements Iterator<T> {

@@ -6,6 +6,8 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 @ApiStatus.AvailableSince("1.0.0")
 public class BowlingStyle {
 
@@ -15,8 +17,8 @@ public class BowlingStyle {
 
 	BowlingStyle(@NotNull Handedness bowlingHandedness, @Nullable Distribution<DeliveryType> deliveryTypes,
                         @Nullable SimpleRange bowlingSpeed) {
-	    Guard.notNull("bowlingHandedness", bowlingHandedness);
-		this.bowlingHandedness = bowlingHandedness;
+        Objects.requireNonNull((Object) bowlingHandedness, "bowlingHandedness");
+        this.bowlingHandedness = bowlingHandedness;
 		this.deliveryTypes = deliveryTypes;
 		this.bowlingSpeed = bowlingSpeed;
 	}

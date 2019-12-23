@@ -5,7 +5,6 @@ import java.util.Optional;
 
 public class BatsmanInningsBuilder {
 	private Player player;
-	private Balls ballsSoFarInInnings;
 	private int numberCameIn;
 	private Instant inningsStartTime;
     private Balls balls = new Balls();
@@ -19,11 +18,6 @@ public class BatsmanInningsBuilder {
 
 	public BatsmanInningsBuilder setPlayer(Player player) {
 		this.player = player;
-		return this;
-	}
-
-	public BatsmanInningsBuilder setBallsSoFarInInnings(Balls ballsSoFarInInnings) {
-		this.ballsSoFarInInnings = ballsSoFarInInnings;
 		return this;
 	}
 
@@ -53,6 +47,6 @@ public class BatsmanInningsBuilder {
     }
 
     public BatsmanInnings build() {
-		return new BatsmanInnings(player, ballsSoFarInInnings, balls, numberCameIn, inningsStartTime, inningsEndTime, Optional.ofNullable(dismissal));
+		return new BatsmanInnings(player, balls, numberCameIn, inningsStartTime, inningsEndTime, Optional.ofNullable(dismissal));
 	}
 }

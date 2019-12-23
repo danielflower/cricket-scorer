@@ -39,8 +39,8 @@ class MatchControlTest {
         assertThat(match.currentInnings().isPresent(), is(true));
 
         Innings innings = match.currentInnings().get();
-        assertThat(innings.inningsNumber, is(1));
-        assertThat(innings.getYetToBat(), equalTo(nz.players.subList(2, 10)));
+        assertThat(innings.inningsNumber(), is(1));
+        assertThat(innings.yetToBat(), equalTo(nz.players.view(2, 10)));
 
         match = match.onEvent(new OverStartingEvent.Builder()
             .withBowler(aus.players.last().get())

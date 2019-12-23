@@ -1,161 +1,165 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompleteEvent;
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
 
 public class Innings {
-	public final Match match;
-	private final LineUp battingTeam;
-	private final LineUp bowlingTeam;
-	public final int inningsNumber;
-	private final ImmutableList<Partnership> partnerships;
-	private final ImmutableList<BatsmanInnings> batters;
-	private final ImmutableList<Player> yetToBat;
-	private final ImmutableList<Over> overs;
-	public final Instant startTime;
-	public final Date endTime;
-	private final Balls balls;
-	private final BatsmanInnings currentStriker;
-	private final BatsmanInnings currentNonStriker;
-	private final BowlingSpell currentBowlingSpell;
-	private final BowlingSpell currentBowlingSpellOfOtherBowler;
-	private final ImmutableList<BowlerInnings> bowlerInningses;
-	private final ImmutableList<BowlingSpell> spells;
-	private final Score difference;
-	private final int numberOfScheduledOvers;
 
-	public Optional<Over> currentOver() {
-	    return overs.last();
-	}
+    private final ImmutableList<Partnership> partnerships;
+    private final ImmutableList<BatsmanInnings> batters;
+    private final ImmutableList<Player> yetToBat;
+    private final ImmutableList<Over> overs;
+    private final Date endTime;
+    private final Balls balls;
+    private final ImmutableList<BowlerInnings> bowlerInningses;
+    private final ImmutableList<BowlingSpell> spells;
+    private final FixedData data;
 
-	public BatsmanInnings currentStriker() {
-		return currentStriker;
-	}
+    Innings onEvent(MatchEvent event) {
+        ImmutableList<Partnership> partnerships = this.partnerships;
+        ImmutableList<BatsmanInnings> batters = this.batters;
+        ImmutableList<Player> yetToBat = this.yetToBat;
+        ImmutableList<Over> overs = this.overs;
+        Date endTime = this.endTime;
+        Balls balls = this.balls;
+        ImmutableList<BowlerInnings> bowlerInningses = this.bowlerInningses;
+        ImmutableList<BowlingSpell> spells = this.spells;
 
-	public BatsmanInnings getCurrentNonStriker() {
-		return currentNonStriker;
-	}
+        if (event instanceof OverStartingEvent) {
+            OverStartingEvent e = (OverStartingEvent) event;
+            BowlerInnings bi = new BowlerInnings(e.bowler(), new Balls(), new ImmutableList<>());
+            spells = spells.add(new BowlingSpell(bi, 1, new ImmutableList<>(), new Balls()));
+            overs = overs.add(Over.newOver(overs.size(), getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), spells.last().get(), e.ballsInOver()));
+        }
+        if (event instanceof BallCompleteEvent) {
+            BallCompleteEvent e = (BallCompleteEvent) event;
+            Ball ball = new Ball(balls.size() + 1, getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), overs.last().get().legalBalls() + 1, spells.last().get(),
+                e.delivery(), e.swing(), e.trajectoryAtImpact(), e.runsScored(), e.dismissal(), e.playersCrossed(), e.fielder(), e.dateCompleted());
+            balls = balls.add(ball);
 
-	public Partnership getCurrentPartnership() {
-		return partnerships.get(partnerships.size() - 1);
-	}
+            Over curOver = currentOver().get();
+            overs = overs.removeLast().copy().add(curOver.onBall(ball));
 
-	public LineUp getBattingTeam() {
-		return battingTeam;
-	}
+            Partnership currentPartnership = currentPartnership();
+            partnerships = partnerships.removeLast().copy().add(currentPartnership.onBall(ball));
+        }
 
-	public LineUp getBowlingTeam() {
-		return bowlingTeam;
-	}
+        return new Innings(data, partnerships, batters, yetToBat, overs, endTime, balls, bowlerInningses, spells);
+    }
 
-	public ImmutableList<Partnership> getPartnerships() {
-		return partnerships;
-	}
+    private static class FixedData {
+        private final Match match;
+        private final LineUp battingTeam;
+        private final LineUp bowlingTeam;
+        private final int inningsNumber;
+        private final Instant startTime;
+        private final int numberOfScheduledOvers;
 
-	public ImmutableList<BatsmanInnings> getBatters() {
-		return batters;
-	}
+        private FixedData(Match match, LineUp battingTeam, LineUp bowlingTeam, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
+            this.match = match;
+            this.battingTeam = battingTeam;
+            this.bowlingTeam = bowlingTeam;
+            this.inningsNumber = inningsNumber;
+            this.startTime = startTime;
+            this.numberOfScheduledOvers = numberOfScheduledOvers;
+        }
+    }
 
-	public ImmutableList<Player> getYetToBat() {
-		return yetToBat;
-	}
 
-	public BowlingSpell getCurrentBowlingSpell() {
-		return currentBowlingSpell;
-	}
+    public Optional<Over> currentOver() {
+        return overs.last();
+    }
 
-	public BowlingSpell getCurrentBowlingSpellOfOtherBowler() {
-		return currentBowlingSpellOfOtherBowler;
-	}
+    public BatsmanInnings currentStriker() {
+        if (currentOver().isPresent()) {
+            return currentOver().get().striker();
+        } else {
+            return batters.get(0);
+        }
+    }
 
-	public Player nextBatsman(boolean remove) {
-        return yetToBat.get(0);
-	}
+    public BatsmanInnings currentNonStriker() {
+        if (currentOver().isPresent()) {
+            return currentOver().get().nonStriker();
+        } else {
+            return batters.get(1);
+        }
+    }
 
-	public ImmutableList<Over> getOvers() {
-		return overs;
-	}
+    public Partnership currentPartnership() {
+        return partnerships.last().get();
+    }
 
-	public Balls getBalls() {
-		return balls;
-	}
 
-	public boolean getAllOut() {
-		return yetToBat.size() == 0 && (currentStriker() == null || getCurrentNonStriker() == null);
-	}
+    public ImmutableList<Partnership> partnerships() {
+        return partnerships;
+    }
 
-	public int wicketsRemaining() {
-		return yetToBat.size() + 1;
-	}
+    public ImmutableList<BatsmanInnings> batterInningsList() {
+        return batters;
+    }
 
-	public Innings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Partnership> partnerships, ImmutableList<Player> openers, int inningsNumber, ImmutableList<BatsmanInnings> batters, ImmutableList<Over> overs, Instant startTime, Date endTime, Balls balls, BatsmanInnings currentStriker, BatsmanInnings currentNonStriker, BowlingSpell currentBowlingSpell, BowlingSpell currentBowlingSpellOfOtherBowler, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells, Score difference, int numberOfScheduledOvers) {
-		this.match = match;
-		this.battingTeam = battingTeam;
-		this.bowlingTeam = bowlingTeam;
+    public ImmutableList<Player> yetToBat() {
+        return yetToBat;
+    }
+
+    public ImmutableList<Over> overs() {
+        return overs;
+    }
+
+    public Balls balls() {
+        return balls;
+    }
+
+    public boolean allOut() {
+        return yetToBat.size() == 0 && (currentStriker() == null || currentNonStriker() == null);
+    }
+
+    public int wicketsRemaining() {
+        return yetToBat.size() + 1;
+    }
+
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Date endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells) {
+        this.data = fixedData;
         this.partnerships = partnerships;
-        this.inningsNumber = inningsNumber;
         this.batters = batters;
         this.overs = overs;
         this.endTime = endTime;
         this.balls = balls;
-        this.currentStriker = currentStriker;
-        this.currentNonStriker = currentNonStriker;
-        this.currentBowlingSpell = currentBowlingSpell;
-        this.currentBowlingSpellOfOtherBowler = currentBowlingSpellOfOtherBowler;
         this.bowlerInningses = bowlerInningses;
         this.spells = spells;
-        this.difference = difference;
-        yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-		this.startTime = startTime;
-		this.numberOfScheduledOvers = numberOfScheduledOvers;
-	}
+        this.yetToBat = yetToBat;
+    }
 
-	public BatsmanInnings bringInNextBatsman(Instant time) {
-		if (yetToBat.size() == 0) {
-			throw new IllegalStateException("Cannot bring in a new batsman when the team is all out");
-		}
-		Player player = nextBatsman(true);
-		return bringInNextBatsman(player, time);
-	}
+    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
+        FixedData fixedData = new FixedData(match, battingTeam, bowlingTeam, inningsNumber, startTime, numberOfScheduledOvers);
 
-	public BatsmanInnings bringInNextBatsman(Player player, Instant time) {
+        BatsmanInnings currentStriker = BatsmanInnings.newInnings(openers.get(0), 1);
+        BatsmanInnings currentNonStriker = BatsmanInnings.newInnings(openers.get(1), 2);
 
-		BatsmanInnings batsmanInnings = null;
-		for (BatsmanInnings batter : batters) {
-			if (batter.getPlayer().equals(player)) {
-				// retired player coming back
-				batsmanInnings = batter;
-			}
-		}
-		if (batsmanInnings == null) {
-			batsmanInnings = new BatsmanInnings(player, balls, balls, batters.size() + 1, time, null, Optional.empty());
-			batters.add(batsmanInnings);
-		}
-//		yetToBat.remove(player);
+        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker, currentNonStriker));
+        ImmutableList<BatsmanInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
-		if (currentStriker == null) {
-//			currentStriker = batsmanInnings;
-		} else if (currentNonStriker == null) {
-//			currentNonStriker = batsmanInnings;
-		}
-		if (batters.size() > 1) {
-			Partnership partnership = new Partnership(balls.score().wickets + 1, other(batsmanInnings), batsmanInnings, balls, new Balls(), new Balls(), time, null);
-			partnerships.add(partnership);
-		}
-		return batsmanInnings;
-	}
+        ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
+        return new Innings(fixedData, partnerships, batters, yetToBat, new ImmutableList<Over>(), null, new Balls(), new ImmutableList<>(), new ImmutableList<>());
+    }
 
-	private BatsmanInnings other(BatsmanInnings batsmanInnings) {
-		return currentStriker() == batsmanInnings ?
-				getCurrentNonStriker() : currentStriker();
-	}
 
-	public void addBall(BallAtCompletion ball) {
+
+    private BatsmanInnings other(BatsmanInnings batsmanInnings) {
+        return currentStriker() == batsmanInnings ?
+            currentNonStriker() : currentStriker();
+    }
+
+    public void addBall(BallAtCompletion ball) {
 //		balls = balls.add(ball);
 //		getCurrentPartnership().addBall(ball);
 //		getCurrentStriker().addBall(ball);
@@ -178,80 +182,73 @@ public class Innings {
 //			}
 //		}
 //		difference = difference.subtract(ball.getScore());
-	}
-
-	public Over newOver(Player bowler) {
-		BowlerInnings innings = getOrCreateBowlerInnings(bowler);
-		BowlingSpell bowlingSpell;
-		if (currentBowlingSpellOfOtherBowler != null && bowler.equals(currentBowlingSpellOfOtherBowler.bowlerInnings().bowler())) {
-			bowlingSpell = currentBowlingSpellOfOtherBowler;
-		} else {
-			bowlingSpell = new BowlingSpellBuilder().withBowlerInnings(innings).withSpellNumber(innings.spells().size() + 1).build();
-			spells.add(bowlingSpell);
-//			innings.addBowlingSpell(bowlingSpell);
-		}
-
-//		Over over = new Over(overs.size() + 1, currentStriker, currentNonStriker, balls, bowlingSpell, ballsInOver);
-//		overs.add(over);
-//		bowlingSpell.addOver(over);
-
-//		currentBowlingSpellOfOtherBowler = currentBowlingSpell;
-//		currentBowlingSpell = bowlingSpell;
-		return null;
-	}
-
-	private BowlerInnings getOrCreateBowlerInnings(Player bowler) {
-		Optional<BowlerInnings> first = bowlerInningses.stream().filter(s -> s.bowler().equals(bowler)).findFirst();
-		if (first.isPresent()) {
-			return first.get();
-		} else {
-			BowlerInnings bowlerInnings = new BowlerInningsBuilder().withBowler(bowler).build();
-			bowlerInningses.add(bowlerInnings);
-			return bowlerInnings;
-		}
-	}
-
-	public void switchPlayers() {
-		BatsmanInnings previousStriker = currentStriker;
-//		currentStriker = currentNonStriker;
-//		currentNonStriker = previousStriker;
-	}
-
-	public ImmutableList<BowlerInnings> getBowlerInningses() {
-		return bowlerInningses;
-	}
+    }
 
 
-	public int getNumberOfBallsRemaining() {
-		int totalBalls = numberOfScheduledOvers * 6;
-		return totalBalls - getBalls().score().balls;
-	}
-
-	public boolean isFinished() {
-		return getAllOut() || getNumberOfBallsRemaining() == 0;
-	}
-
-	public int getNumberOfScheduledBalls() {
-		return numberOfScheduledOvers * 6;
-	}
+    private BowlerInnings getOrCreateBowlerInnings(Player bowler) {
+        Optional<BowlerInnings> first = bowlerInningses.stream().filter(s -> s.bowler().equals(bowler)).findFirst();
+        if (first.isPresent()) {
+            return first.get();
+        } else {
+            BowlerInnings bowlerInnings = new BowlerInningsBuilder().withBowler(bowler).build();
+            bowlerInningses.add(bowlerInnings);
+            return bowlerInnings;
+        }
+    }
 
 
+    public ImmutableList<BowlerInnings> bowlerInningsList() {
+        return bowlerInningses;
+    }
 
-	public BatsmanInnings getBatsmanInnings(Player target) {
-		Guard.notNull("target", target);
-		if (target.equals(currentStriker.getPlayer())) {
-			return currentStriker;
-		} else if (target.equals(currentNonStriker.getPlayer())) {
-			return currentNonStriker;
-		}
-		for (BatsmanInnings batter : batters) {
-			if (target.equals(batter.getPlayer())) {
-				return batter;
-			}
-		}
-		throw new RuntimeException("Could not find innings for " + target);
-	}
 
+    public int numberOfBallsRemaining() {
+        int totalBalls = numberOfScheduledOvers() * 6;
+        return totalBalls - balls().score().balls;
+    }
+
+    public boolean isFinished() {
+        return allOut() || numberOfBallsRemaining() == 0;
+    }
+
+    public int getNumberOfScheduledBalls() {
+        return numberOfScheduledOvers() * 6;
+    }
+
+
+    public BatsmanInnings getBatsmanInnings(Player target) {
+        Objects.requireNonNull((Object) target, "target");
+        for (BatsmanInnings batter : batters) {
+            if (target.equals(batter.getPlayer())) {
+                return batter;
+            }
+        }
+        throw new IllegalStateException("Could not find innings for " + target);
+    }
+
+    public Match match() {
+        return data.match;
+    }
+
+    public LineUp battingTeam() {
+        return data.battingTeam;
+    }
+
+    public LineUp bowlingTeam() {
+        return data.bowlingTeam;
+    }
+
+    public int inningsNumber() {
+        return data.inningsNumber;
+    }
+
+    public Instant startTime() {
+        return data.startTime;
+    }
+
+    public int numberOfScheduledOvers() {
+        return data.numberOfScheduledOvers;
+    }
 }
 
 

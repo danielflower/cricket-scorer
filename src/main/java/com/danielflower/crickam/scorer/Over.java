@@ -10,7 +10,17 @@ public class Over {
 	private final BowlingSpell bowlingSpell;
 	private final int ballsInOver;
 
-	public BatsmanInnings striker() {
+    static Over newOver(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, BowlingSpell spell, int ballsInOver) {
+        return new Over(numberInInnings, striker, nonStriker, new Balls(), spell, ballsInOver);
+    }
+
+    public Over onBall(Ball ball) {
+        BatsmanInnings striker = ball.getPlayersCrossed() ? this.nonStriker : this.striker;
+        BatsmanInnings nonStriker = ball.getPlayersCrossed() ? this.striker : this.nonStriker;
+        return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowlingSpell, ballsInOver);
+    }
+
+    public BatsmanInnings striker() {
 		return striker;
 	}
 
@@ -22,6 +32,9 @@ public class Over {
 		return bowlingSpell;
 	}
 
+    /**
+     * @return The zero-indexed number of this over (e.g. the first over in an innings returns 0)
+     */
 	public int numberInInnings() {
 		return numberInInnings;
 	}
@@ -30,7 +43,7 @@ public class Over {
 		return balls;
 	}
 
-	public Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell, int ballsInOver) {
+	private Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell, int ballsInOver) {
 		this.numberInInnings = numberInInnings;
         this.striker = Objects.requireNonNull(striker);
         this.nonStriker = Objects.requireNonNull(nonStriker);

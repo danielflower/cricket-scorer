@@ -20,7 +20,6 @@ class BatsmanInningsTest {
     public static BatsmanInningsBuilder aBatsmanInnings() {
         return new BatsmanInningsBuilder()
             .setPlayer(PlayerTest.aPlayer())
-            .setBallsSoFarInInnings(new Balls())
             .setInningsStartTime(Instant.now())
             .setNumberCameIn(1)
             ;
