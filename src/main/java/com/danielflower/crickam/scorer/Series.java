@@ -20,7 +20,7 @@ public class Series {
 		int counter = 0;
 		for (Match match : matches) {
 			counter++;
-			if (match.matchID.equals(matchId)) {
+			if (match.matchID().equals(matchId)) {
 				return counter;
 			}
 		}

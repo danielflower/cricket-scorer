@@ -35,7 +35,7 @@ class MatchControlTest {
             .withStartTime(Instant.now()).build());
 
         assertThat(control.current(), sameInstance(match));
-        assertThat(match.oversPerInnings, is(50));
+        assertThat(match.oversPerInnings(), is(50));
         assertThat(match.currentInnings().isPresent(), is(true));
 
         Innings innings = match.currentInnings().get();
