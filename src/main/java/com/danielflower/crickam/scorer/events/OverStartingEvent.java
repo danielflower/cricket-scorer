@@ -35,7 +35,11 @@ public class OverStartingEvent implements MatchEvent {
         return ballsInOver;
     }
 
-    public static class Builder {
+    public static Builder overStarting() {
+        return new Builder();
+    }
+
+    public static class Builder implements MatchEventBuilder<OverStartingEvent> {
 
         private Player bowler;
         private Player striker;

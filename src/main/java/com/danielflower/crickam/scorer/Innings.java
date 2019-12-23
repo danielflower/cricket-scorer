@@ -1,6 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompleteEvent;
+import com.danielflower.crickam.scorer.events.OverCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
@@ -17,6 +18,7 @@ public class Innings {
     private final ImmutableList<BatsmanInnings> batters;
     private final ImmutableList<Player> yetToBat;
     private final ImmutableList<Over> overs;
+    private final Over currentOver;
     private final Date endTime;
     private final Balls balls;
     private final ImmutableList<BowlerInnings> bowlerInningses;
@@ -33,11 +35,13 @@ public class Innings {
         ImmutableList<BowlerInnings> bowlerInningses = this.bowlerInningses;
         ImmutableList<BowlingSpell> spells = this.spells;
 
+        Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
             OverStartingEvent e = (OverStartingEvent) event;
             BowlerInnings bi = new BowlerInnings(e.bowler(), new Balls(), new ImmutableList<>());
             spells = spells.add(new BowlingSpell(bi, 1, new ImmutableList<>(), new Balls()));
-            overs = overs.add(Over.newOver(overs.size(), getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), spells.last().get(), e.ballsInOver()));
+            currentOver = Over.newOver(overs.size(), getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), spells.last().get(), e.ballsInOver());
+            overs = overs.add(currentOver);
         }
         if (event instanceof BallCompleteEvent) {
             BallCompleteEvent e = (BallCompleteEvent) event;
@@ -49,14 +53,17 @@ public class Innings {
                 e.delivery(), e.swing(), e.trajectoryAtImpact(), e.runsScored(), dismissal, e.playersCrossed(), e.fielder(), e.dateCompleted());
             balls = balls.add(ball);
 
-            Over curOver = currentOver().get();
-            overs = overs.removeLast().copy().add(curOver.onBall(ball));
+            currentOver = currentOver().get().onBall(ball);
+            overs = overs.removeLast().copy().add(currentOver);
 
             Partnership currentPartnership = currentPartnership();
             partnerships = partnerships.removeLast().copy().add(currentPartnership.onBall(ball));
         }
+        if (event instanceof OverCompletedEvent) {
+            currentOver = null;
+        }
 
-        return new Innings(data, partnerships, batters, yetToBat, overs, endTime, balls, bowlerInningses, spells);
+        return new Innings(data, partnerships, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, spells);
     }
 
     private static class FixedData {
@@ -79,7 +86,7 @@ public class Innings {
 
 
     public Optional<Over> currentOver() {
-        return overs.last();
+        return Optional.ofNullable(currentOver);
     }
 
     public BatsmanInnings currentStriker() {
@@ -131,11 +138,12 @@ public class Innings {
         return yetToBat.size() + 1;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Date endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells) {
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Date endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells) {
         this.data = fixedData;
         this.partnerships = partnerships;
         this.batters = batters;
         this.overs = overs;
+        this.currentOver = currentOver;
         this.endTime = endTime;
         this.balls = balls;
         this.bowlerInningses = bowlerInningses;
@@ -153,7 +161,7 @@ public class Innings {
         ImmutableList<BatsmanInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
         ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-        return new Innings(fixedData, partnerships, batters, yetToBat, new ImmutableList<Over>(), null, new Balls(), new ImmutableList<>(), new ImmutableList<>());
+        return new Innings(fixedData, partnerships, batters, yetToBat, new ImmutableList<Over>(), null, null, new Balls(), new ImmutableList<>(), new ImmutableList<>());
     }
 
 
@@ -161,43 +169,6 @@ public class Innings {
     private BatsmanInnings other(BatsmanInnings batsmanInnings) {
         return currentStriker() == batsmanInnings ?
             currentNonStriker() : currentStriker();
-    }
-
-    public void addBall(BallAtCompletion ball) {
-//		balls = balls.add(ball);
-//		getCurrentPartnership().addBall(ball);
-//		getCurrentStriker().addBall(ball);
-//		currentBowlingSpell.addBall(ball);
-
-//		Over currentOver = currentOver();
-//		currentOver.addBall(ball);
-//		if (ball.getPlayersCrossed()) {
-//			switchPlayers();
-//		}
-
-//		if (ball.getDismissal().isPresent()) {
-//			Dismissal dismissal = ball.getDismissal().get();
-//			if (dismissal.batter == currentNonStriker) {
-//				currentNonStriker.setDismissal(dismissal, ball.getDateCompleted());
-//				currentNonStriker = null;
-//			} else {
-//				currentStriker.setDismissal(dismissal, ball.getDateCompleted());
-//				currentStriker = null;
-//			}
-//		}
-//		difference = difference.subtract(ball.getScore());
-    }
-
-
-    private BowlerInnings getOrCreateBowlerInnings(Player bowler) {
-        Optional<BowlerInnings> first = bowlerInningses.stream().filter(s -> s.bowler().equals(bowler)).findFirst();
-        if (first.isPresent()) {
-            return first.get();
-        } else {
-            BowlerInnings bowlerInnings = new BowlerInningsBuilder().withBowler(bowler).build();
-            bowlerInningses.add(bowlerInnings);
-            return bowlerInnings;
-        }
     }
 
 

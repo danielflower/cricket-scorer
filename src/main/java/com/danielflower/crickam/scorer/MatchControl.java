@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.MatchEventBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,10 @@ public class MatchControl {
 
     public MatchControl(Match match) {
         matches.add(match);
+    }
+
+    public Match onEvent(MatchEventBuilder<?> eventBuilder) {
+        return onEvent(eventBuilder.build());
     }
 
     public Match onEvent(MatchEvent event) {

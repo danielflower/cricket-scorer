@@ -40,7 +40,11 @@ public class InningsStartingEvent implements MatchEvent {
         return openers;
     }
 
-    public static class Builder {
+    public static Builder inningsStarting() {
+        return new Builder();
+    }
+
+    public static class Builder implements MatchEventBuilder<InningsStartingEvent> {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;

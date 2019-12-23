@@ -83,7 +83,7 @@ public class BallCompleteEvent implements MatchEvent {
         return dateCompleted;
     }
 
-    public static class Builder {
+    public static class Builder implements MatchEventBuilder<BallCompleteEvent> {
 
         private Player bowler;
         private Player striker;
@@ -138,6 +138,7 @@ public class BallCompleteEvent implements MatchEvent {
          * Indicates that this delivery got the batsman out. If the score has not been set, then a wicket score with
          * no runs is used. If runs are scored then create a {@link Score} using {@link ScoreBuilder}'s {@link ScoreBuilder#setWickets(int)}
          * method and the number of runs set.
+         *
          * @param type The type of dismissal
          * @return This builder
          */
@@ -180,7 +181,7 @@ public class BallCompleteEvent implements MatchEvent {
         }
     }
 
-    public static Builder newBuilder() {
+    public static Builder ballCompleted() {
         return new Builder();
     }
 }
