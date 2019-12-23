@@ -84,7 +84,7 @@ public class Ball implements BallAtCompletion {
     }
 
     public boolean isLegal() {
-        return score().wides == 0 && score().noBalls == 0;
+        return score().wides() == 0 && score().noBalls() == 0;
     }
 
     public Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, BowlingSpell bowlingSpell) {

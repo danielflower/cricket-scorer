@@ -4,20 +4,20 @@ package com.danielflower.crickam.scorer;
 import static com.danielflower.crickam.scorer.ScoreBuilder.score;
 
 public class Score {
-	public final int scored;
-	public final int wides;
-	public final int noBalls;
-	public final int legByes;
-	public final int byes;
-	public final int penaltyRuns;
-	public final int wickets;
-	public final int dots;
-	public final int singles;
-	public final int twos;
-	public final int threes;
-	public final int fours;
-	public final int sixes;
-	public final int balls;
+	private final int scored;
+	private final int wides;
+	private final int noBalls;
+	private final int legByes;
+	private final int byes;
+	private final int penaltyRuns;
+	private final int wickets;
+	private final int dots;
+	private final int singles;
+	private final int twos;
+	private final int threes;
+	private final int fours;
+	private final int sixes;
+	private final int balls;
 
 	Score(int scored, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int balls) {
 		this.scored = scored;
@@ -164,6 +164,61 @@ public class Score {
 
 	public static Score Empty = ScoreBuilder.EMPTY;
 
+    public int scoredFromBat() {
+        return scored;
+    }
+
+    public int wides() {
+        return wides;
+    }
+
+    public int noBalls() {
+        return noBalls;
+    }
+
+    public int legByes() {
+        return legByes;
+    }
+
+    public int byes() {
+        return byes;
+    }
+
+    public int penaltyRuns() {
+        return penaltyRuns;
+    }
+
+    public int wickets() {
+        return wickets;
+    }
+
+    public int dots() {
+        return dots;
+    }
+
+    public int singles() {
+        return singles;
+    }
+
+    public int twos() {
+        return twos;
+    }
+
+    public int threes() {
+        return threes;
+    }
+
+    public int fours() {
+        return fours;
+    }
+
+    public int sixes() {
+        return sixes;
+    }
+
+    public int balls() {
+        return balls;
+    }
 }
 
 

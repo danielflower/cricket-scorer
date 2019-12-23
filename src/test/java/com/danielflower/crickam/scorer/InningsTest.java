@@ -160,14 +160,14 @@ class InningsTest {
         assertThat(over.isComplete(), is(true));
         assertThat(over.remainingBalls(), is(0));
         assertThat(over.balls().score().totalRuns(), is(7));
-        assertThat(over.balls().score().wickets, is(1));
+        assertThat(over.balls().score().wickets(), is(1));
 
         assertThat(innings.currentPartnership().totalRuns(), is(7));
         assertThat(innings.currentPartnership().endTime(), is(not(nullValue())));
         assertThat(innings.currentPartnership().firstBatterContribution().size(), is(5));
-        assertThat(innings.currentPartnership().firstBatterContribution().score().balls, is(4));
+        assertThat(innings.currentPartnership().firstBatterContribution().score().balls(), is(4));
         assertThat(innings.currentPartnership().firstBatterContribution().score().totalRuns(), is(2));
-        assertThat(innings.currentPartnership().firstBatterContribution().score().scored, is(1));
+        assertThat(innings.currentPartnership().firstBatterContribution().score().scoredFromBat(), is(1));
         assertThat(innings.currentPartnership().secondBatterContribution().size(), is(2));
         assertThat(innings.currentPartnership().secondBatterContribution().score().totalRuns(), is(5));
 

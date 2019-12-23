@@ -106,20 +106,20 @@ public class ScoreBuilder {
 
     public static ScoreBuilder from(Score score) {
         return new ScoreBuilder()
-            .setThrees(score.threes)
-            .setTwos(score.twos)
-            .setSingles(score.singles)
-            .setScored(score.scored)
-            .setBalls(score.balls)
-            .setDots(score.dots)
-            .setByes(score.byes)
-            .setFours(score.fours)
-            .setLegByes(score.legByes)
-            .setNoBalls(score.noBalls)
-            .setPenaltyRuns(score.penaltyRuns)
-            .setSixes(score.sixes)
-            .setWickets(score.wickets)
-            .setWides(score.wides);
+            .setThrees(score.threes())
+            .setTwos(score.twos())
+            .setSingles(score.singles())
+            .setScored(score.scoredFromBat())
+            .setBalls(score.balls())
+            .setDots(score.dots())
+            .setByes(score.byes())
+            .setFours(score.fours())
+            .setLegByes(score.legByes())
+            .setNoBalls(score.noBalls())
+            .setPenaltyRuns(score.penaltyRuns())
+            .setSixes(score.sixes())
+            .setWickets(score.wickets())
+            .setWides(score.wides());
     }
 
     public ScoreBuilder withNoExtras() {

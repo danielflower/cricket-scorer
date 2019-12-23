@@ -179,7 +179,7 @@ public class Innings {
 
     public int numberOfBallsRemaining() {
         int totalBalls = numberOfScheduledOvers() * 6;
-        return totalBalls - balls().score().balls;
+        return totalBalls - balls().score().balls();
     }
 
     public boolean isFinished() {
