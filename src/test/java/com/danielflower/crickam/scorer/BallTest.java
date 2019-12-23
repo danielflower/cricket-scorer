@@ -34,7 +34,7 @@ class BallTest {
             .withNumberInOver(1)
             .withSwing(SwingTest.aSwing().build())
             .withTrajectoryAtImpact(TrajectoryTest.aTrajectory().build())
-            .withScore(ScoreBuilder.Empty)
+            .withScore(ScoreBuilder.EMPTY)
             .withPlayersCrossed(false)
             ;
     }

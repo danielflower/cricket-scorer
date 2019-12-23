@@ -41,8 +41,12 @@ public class Innings {
         }
         if (event instanceof BallCompleteEvent) {
             BallCompleteEvent e = (BallCompleteEvent) event;
-            Ball ball = new Ball(balls.size() + 1, getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), overs.last().get().legalBalls() + 1, spells.last().get(),
-                e.delivery(), e.swing(), e.trajectoryAtImpact(), e.runsScored(), e.dismissal(), e.playersCrossed(), e.fielder(), e.dateCompleted());
+            BatsmanInnings striker = e.striker() == null ? currentStriker() : getBatsmanInnings(e.striker());
+            BatsmanInnings nonStriker = e.nonStriker() == null ? currentNonStriker() : getBatsmanInnings(e.nonStriker());
+            BowlingSpell bowlingSpell = spells.last().get();
+            Dismissal dismissal = e.dismissal() == null ? null : new Dismissal(e.dismissal(), striker, bowlingSpell, e.fielder());
+            Ball ball = new Ball(balls.size() + 1, striker, nonStriker, overs.last().get().legalBalls() + 1, bowlingSpell,
+                e.delivery(), e.swing(), e.trajectoryAtImpact(), e.runsScored(), dismissal, e.playersCrossed(), e.fielder(), e.dateCompleted());
             balls = balls.add(ball);
 
             Over curOver = currentOver().get();

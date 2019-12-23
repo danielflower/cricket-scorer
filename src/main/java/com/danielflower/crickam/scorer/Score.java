@@ -144,7 +144,7 @@ public class Score {
 
 	@Override
 	public String toString() {
-		return "RunsScored{" +
+		return "Score{" +
 				"scored=" + scored +
 				", wides=" + wides +
 				", noBalls=" + noBalls +
@@ -162,7 +162,7 @@ public class Score {
 				'}';
 	}
 
-	public static Score Empty = ScoreBuilder.Empty;
+	public static Score Empty = ScoreBuilder.EMPTY;
 
 }
 

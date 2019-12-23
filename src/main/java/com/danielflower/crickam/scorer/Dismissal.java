@@ -6,7 +6,8 @@ public class Dismissal
     public final BatsmanInnings batter;
     private final BowlingSpell bowler;
     private final Player executor;
-    public Dismissal(DismissalType type, BatsmanInnings batter, BowlingSpell bowler, Player executor) {
+
+    Dismissal(DismissalType type, BatsmanInnings batter, BowlingSpell bowler, Player executor) {
         this.type = type;
         this.batter = batter;
         this.bowler = bowler;
