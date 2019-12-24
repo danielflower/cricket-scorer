@@ -76,7 +76,7 @@ public class Over {
 	}
 
     public boolean isComplete() {
-        return legalBalls() >= 6;
+        return legalBalls() >= ballsInOver;
     }
 
     @Override

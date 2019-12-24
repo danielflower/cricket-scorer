@@ -37,12 +37,6 @@ public class RPO {
 
 	@Override
 	public String toString() {
-		if (firstDecimalPlace == 0) {
-			return String.valueOf(intValue);
-		}
-		if (firstDecimalPlace == 5) {
-			return intValue + " and a half";
-		}
-		return intValue + " point " + firstDecimalPlace;
+		return intValue + "." + firstDecimalPlace;
 	}
 }

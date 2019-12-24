@@ -49,11 +49,8 @@ public class BowlerInnings {
 
     @Override
     public String toString() {
-        return "BowlerInnings{" +
-                "player=" + player +
-                ", spells=" + spells +
-                ", balls=" + balls +
-                '}';
+        Score s = balls.score();
+        return player + "    " + overs.size() + " Overs; " + s.totalRuns() + " Runs; " + s.wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
     }
 
     @Override
@@ -76,6 +73,10 @@ public class BowlerInnings {
         result = 31 * result + balls.hashCode();
         result = 31 * result + spells.hashCode();
         return result;
+    }
+
+    public int maidens() {
+        return (int) overs.stream().filter(Over::isMaiden).count();
     }
 }
 

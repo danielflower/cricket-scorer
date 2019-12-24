@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Optional;
 
+import static com.danielflower.crickam.scorer.ScoreBuilder.FOUR;
 import static com.danielflower.crickam.scorer.ScoreBuilder.SINGLE;
 import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
 import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
@@ -278,6 +279,45 @@ class InningsTest {
         assertThat(innings.bowlerInningsList().get(2).spells().size(), is(1));
         assertThat(innings.bowlerInningsList().get(2).spells().get(0).spellNumber(), is(1));
 
+        assertThat(innings.maidens(), is(1));
+    }
+
+    @Test
+    public void oneBowlerCanTakeOverAnotherDuringAnOver() {
+        Player bowler1 = aus.players.get(10);
+        Player bowler2 = aus.players.get(9);
+
+        Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(3).build())
+            .onEvent(single())
+            .onEvent(dotBall())
+            .onEvent(ballCompleted().withRunsScored(FOUR).withBowler(bowler2).build());
+        assertThat(innings.bowlerInningsList().size(), is(2));
+        BowlerInnings bowler1Innings = innings.bowlerInningsList().get(0);
+        BowlerInnings bowler2Innings = innings.bowlerInningsList().get(1);
+        assertThat(bowler1Innings.balls().size(), is(2));
+        assertThat(bowler2Innings.balls().size(), is(1));
+        assertThat(bowler1Innings.spells().get(0).overs().get(0).numberInInnings(), is(bowler2Innings.spells().get(0).overs().get(0).numberInInnings()));
+        assertThat(innings.overs(), contains(bowler2Innings.spells().get(0).overs().get(0)));
+
+        assertThat(bowler1Innings.balls().score().runsPerOver().toString(), is("3.0"));
+        assertThat(bowler2Innings.balls().score().runsPerOver().toString(), is("24.0"));
+    }
+
+    @Test
+    public void aSharedOverWithNoRunsHasTheMaidenAscribedToTheLatterPlayer() {
+        Player bowler1 = aus.players.get(10);
+        Player bowler2 = aus.players.get(9);
+
+        Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(3).build())
+            .onEvent(dotBall())
+            .onEvent(dotBall())
+            .onEvent(ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).withBowler(bowler2).build())
+            .onEvent(overCompleted().build());
+        assertThat(innings.maidens(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(0).spells().get(0).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(1).maidens(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).spells().get(0).maidens(), is(1));
     }
 
     private BallCompletedEvent single() {

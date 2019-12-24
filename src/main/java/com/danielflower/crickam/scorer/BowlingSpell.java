@@ -68,6 +68,10 @@ public class BowlingSpell {
     public BowlingSpell onBall(Over over, Ball ball) {
         return new BowlingSpell(bowler, spellNumber, overs.add(over), balls.add(ball));
     }
+
+    public int maidens() {
+        return (int) overs.stream().filter(Over::isMaiden).count();
+    }
 }
 
 

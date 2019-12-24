@@ -14,11 +14,13 @@ import static java.util.Objects.requireNonNull;
 
 public class Innings {
 
-    public enum State {
-        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
-    }
 
+
+    public enum State {
+        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
+    }
     private final ImmutableList<Partnership> partnerships;
+
     private final ImmutableList<BatsmanInnings> batters;
     private final ImmutableList<Player> yetToBat;
     private final ImmutableList<Over> overs;
@@ -293,6 +295,11 @@ public class Innings {
     public int numberOfScheduledOvers() {
         return data.numberOfScheduledOvers;
     }
+
+    public int maidens() {
+        return (int) overs.stream().filter(Over::isMaiden).count();
+    }
+
 }
 
 
