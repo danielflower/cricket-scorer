@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +68,7 @@ class InningsTest {
         Over over = innings.overs().get(0);
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.runs(), is(0));
-        assertThat(over.isMaiden(), is(true));
+        assertThat(over.isMaiden(), is(false));
         assertThat(over.isComplete(), is(false));
         assertThat(over.legalBalls(), is(0));
         assertThat(over.numberInInnings(), is(0));
@@ -75,10 +76,7 @@ class InningsTest {
         assertThat(over.nonStriker().getPlayer(), is(opener2));
         assertThat(over.balls().size(), is(0));
         assertThat(over.remainingBalls(), is(6));
-        assertThat(over.spell().spellNumber(), is(1));
-        assertThat(over.spell().balls().size(), is(0));
-        assertThat(over.spell().bowlerInnings().balls().size(), is(0));
-        assertThat(over.spell().bowlerInnings().bowler(), is(aus.players.get(10)));
+        assertThat(over.bowler(), is(aus.players.get(10)));
 
         assertThat(innings.currentOver(), is(Optional.of(over)));
         assertThat(innings.allOut(), is(false));
@@ -93,7 +91,7 @@ class InningsTest {
         assertThat(innings.currentPartnership().secondBatter(), sameInstance(firstInnings.currentNonStriker()));
         assertThat(innings.partnerships(), contains(firstInnings.currentPartnership()));
         assertThat(innings.wicketsRemaining(), is(10));
-        assertThat(innings.bowlerInningsList().isEmpty(), is(true));
+        assertThat(innings.bowlerInningsList().isEmpty(), is(false));
     }
 
     @Test
@@ -144,12 +142,8 @@ class InningsTest {
         assertThat(innings.currentPartnership().totalRuns(), is(6));
 
         innings = innings
-            .onEvent(ballCompleted()
-                .withRunsScored(ScoreBuilder.DOT_BALL)
-                .build())
-            .onEvent(ballCompleted()
-                .withRunsScored(ScoreBuilder.DOT_BALL)
-                .build())
+            .onEvent(dotBall())
+            .onEvent(dotBall())
             .onEvent(ballCompleted()
                 .withRunsScored(ScoreBuilder.WIDE)
                 .build());
@@ -193,24 +187,109 @@ class InningsTest {
 
     @Test
     public void ifBattersNotSpecifiedOnOverStartingThenItIsAssumed() {
-        Innings innings = firstInnings.onEvent(overStarting().withBowler(aus.players.get(10)).withBallsInOver(1).build());
+        Innings innings = firstInnings.onEvent(oneBallOverStarting(aus.players.get(10)));
         assertThat(innings.currentStriker().getPlayer(), is(opener1));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
-        innings = innings.onEvent(ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).build());
+        innings = innings.onEvent(dotBall());
         assertThat(innings.currentStriker().getPlayer(), is(opener1));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
         innings = innings.onEvent(overCompleted().build());
         assertThat(innings.currentStriker().getPlayer(), is(opener1));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
-        innings = innings.onEvent(overStarting().withBowler(aus.players.get(9)).withBallsInOver(1).build());
+        innings = innings.onEvent(oneBallOverStarting(aus.players.get(9)));
         assertThat(innings.currentStriker().getPlayer(), is(opener2));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
-        innings = innings.onEvent(ballCompleted().withRunsScored(SINGLE).withPlayersCrossed(true).build());
+        innings = innings.onEvent(single());
         assertThat(innings.currentStriker().getPlayer(), is(opener1));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
-        innings = innings.onEvent(overCompleted().build()).onEvent(overStarting().withBowler(aus.players.get(10)).withBallsInOver(1).build());
+        innings = innings.onEvent(overCompleted().build()).onEvent(oneBallOverStarting(aus.players.get(10)));
         assertThat(innings.currentStriker().getPlayer(), is(opener2));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
+    }
+
+    @Test
+    public void oversBowledOneOverApartByTheSameBowlerAreConsideredInTheSameSpell() {
+        Player bowler1 = aus.players.get(10);
+        Player bowler2 = aus.players.get(9);
+        Player bowler3 = aus.players.get(8);
+
+        Innings innings = firstInnings.onEvent(oneBallOverStarting(bowler1));
+        assertThat(innings.bowlerInningsList().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(0));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+
+        innings = innings.onEvent(dotBall());
+        assertThat(innings.bowlerInningsList().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+
+        innings = innings.onEvent(overCompleted().build());
+        assertThat(innings.bowlerInningsList().size(), is(1));
+
+        innings = innings.onEvent(oneBallOverStarting(bowler2));
+        assertThat(innings.bowlerInningsList().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+        assertThat(innings.bowlerInningsList().get(1).balls().size(), is(0));
+        assertThat(innings.bowlerInningsList().get(1).bowler(), is(bowler2));
+
+        innings = innings.onEvent(single());
+        assertThat(innings.bowlerInningsList().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+        assertThat(innings.bowlerInningsList().get(1).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).bowler(), is(bowler2));
+
+        innings = innings.onEvent(overCompleted().build())
+            .onEvent(oneBallOverStarting(bowler1))
+            .onEvent(single());
+        assertThat(innings.bowlerInningsList().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+        assertThat(innings.bowlerInningsList().get(0).spells().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).spells().get(0).spellNumber(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).bowler(), is(bowler2));
+        assertThat(innings.bowlerInningsList().get(1).spells().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).spells().get(0).spellNumber(), is(1));
+
+        innings = innings.onEvent(overCompleted().build())
+            .onEvent(oneBallOverStarting(bowler3))
+            .onEvent(single())
+            .onEvent(overCompleted().build())
+            .onEvent(oneBallOverStarting(bowler1))
+            .onEvent(single())
+            .onEvent(overCompleted().build())
+            .onEvent(oneBallOverStarting(bowler2))
+            .onEvent(single())
+            .onEvent(overCompleted().build());
+
+        assertThat(innings.bowlerInningsList().size(), is(3));
+        assertThat(innings.bowlerInningsList().get(0).balls().size(), is(3));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
+        assertThat(innings.bowlerInningsList().get(0).spells().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).balls().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(1).bowler(), is(bowler2));
+        assertThat(innings.bowlerInningsList().get(1).spells().size(), is(2));
+        assertThat(innings.bowlerInningsList().get(1).spells().get(0).spellNumber(), is(1));
+        assertThat(innings.bowlerInningsList().get(1).spells().get(1).spellNumber(), is(2));
+        assertThat(innings.bowlerInningsList().get(2).balls().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(2).bowler(), is(bowler3));
+        assertThat(innings.bowlerInningsList().get(2).spells().size(), is(1));
+        assertThat(innings.bowlerInningsList().get(2).spells().get(0).spellNumber(), is(1));
+
+    }
+
+    private BallCompletedEvent single() {
+        return ballCompleted().withRunsScored(SINGLE).withPlayersCrossed(true).build();
+    }
+
+    private BallCompletedEvent dotBall() {
+        return ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).build();
+    }
+
+    private OverStartingEvent oneBallOverStarting(Player bowler1) {
+        return overStarting().withBowler(bowler1).withBallsInOver(1).build();
     }
 
 }

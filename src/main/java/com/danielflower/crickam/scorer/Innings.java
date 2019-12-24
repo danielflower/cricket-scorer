@@ -7,10 +7,10 @@ import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
+import static java.util.Objects.requireNonNull;
 
 public class Innings {
 
@@ -26,7 +26,6 @@ public class Innings {
     private final Instant endTime;
     private final Balls balls;
     private final ImmutableList<BowlerInnings> bowlerInningses;
-    private final ImmutableList<BowlingSpell> spells;
     private final FixedData data;
     private final State state;
 
@@ -38,14 +37,16 @@ public class Innings {
         Instant endTime = this.endTime;
         Balls balls = this.balls;
         ImmutableList<BowlerInnings> bowlerInningses = this.bowlerInningses;
-        ImmutableList<BowlingSpell> spells = this.spells;
         State newState = this.state;
 
         Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
             OverStartingEvent e = (OverStartingEvent) event;
-            BowlerInnings bi = new BowlerInnings(e.bowler(), new Balls(), new ImmutableList<>());
-            spells = spells.add(new BowlingSpell(bi, 1, new ImmutableList<>(), new Balls()));
+            BowlerInnings bi = getBowlerInnings(e.bowler());
+            if (bi == null) {
+                bi = BowlerInnings.newInnings(e.bowler());
+                bowlerInningses = bowlerInningses.add(bi);
+            }
 
             BatsmanInnings striker = null, nonStriker = null;
             if (e.striker() == null || e.nonStriker() == null) {
@@ -66,7 +67,7 @@ public class Innings {
             }
 
 
-            currentOver = Over.newOver(overs.size(), striker, nonStriker, spells.last().get(), e.ballsInOver(), e.startTime());
+            currentOver = Over.newOver(overs.size(), striker, nonStriker, e.bowler(), e.ballsInOver(), e.startTime());
             overs = overs.add(currentOver);
             newState = State.IN_PROGRESS;
         }
@@ -75,9 +76,10 @@ public class Innings {
             BallCompletedEvent e = (BallCompletedEvent) event;
             BatsmanInnings striker = e.striker() == null ? currentStriker() : getBatsmanInnings(e.striker());
             BatsmanInnings nonStriker = e.nonStriker() == null ? currentNonStriker() : getBatsmanInnings(e.nonStriker());
-            BowlingSpell bowlingSpell = spells.last().get();
-            Dismissal dismissal = e.dismissal() == null ? null : new Dismissal(e.dismissal(), striker, bowlingSpell, e.fielder());
-            Ball ball = new Ball(balls.size() + 1, striker, nonStriker, overs.last().get().legalBalls() + 1, bowlingSpell,
+
+            Player bowler = e.bowler() == null ? currentOver().get().bowler() : e.bowler();
+            Dismissal dismissal = e.dismissal() == null ? null : new Dismissal(e.dismissal(), striker, bowler, e.fielder());
+            Ball ball = new Ball(balls.size() + 1, striker, nonStriker, overs.last().get().legalBalls() + 1, bowler,
                 e.delivery(), e.swing(), e.trajectoryAtImpact(), e.runsScored(), dismissal, e.playersCrossed(), e.fielder(), e.dateCompleted());
             balls = balls.add(ball);
 
@@ -86,6 +88,23 @@ public class Innings {
 
             Partnership currentPartnership = currentPartnership();
             partnerships = partnerships.removeLast().copy().add(currentPartnership.onBall(ball));
+
+            BowlerInnings bi = getBowlerInnings(bowler);
+            if (bi == null) {
+                bi = BowlerInnings.newInnings(bowler).onBall(currentOver, ball);
+                bowlerInningses = bowlerInningses.add(bi);
+            } else {
+                bi = bi.onBall(currentOver, ball);
+                bowlerInningses = new ImmutableList<>();
+                for (BowlerInnings existing : this.bowlerInningses) {
+                    if (existing.bowler().equals(bowler)) {
+                        bowlerInningses = bowlerInningses.add(bi);
+                    } else {
+                        bowlerInningses = bowlerInningses.add(existing);
+                    }
+                }
+            }
+
         }
         if (event instanceof OverCompletedEvent) {
             newState = State.BETWEEN_OVERS;
@@ -97,7 +116,7 @@ public class Innings {
             endTime = ((InningsCompletedEvent) event).time();
         }
 
-        return new Innings(data, partnerships, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, spells, newState);
+        return new Innings(data, partnerships, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState);
     }
 
     private static class FixedData {
@@ -176,7 +195,7 @@ public class Innings {
         return state;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, ImmutableList<BowlingSpell> spells, State state) {
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state) {
         this.data = fixedData;
         this.partnerships = partnerships;
         this.batters = batters;
@@ -185,7 +204,6 @@ public class Innings {
         this.endTime = endTime;
         this.balls = balls;
         this.bowlerInningses = bowlerInningses;
-        this.spells = spells;
         this.yetToBat = yetToBat;
         this.state = state;
     }
@@ -200,7 +218,7 @@ public class Innings {
         ImmutableList<BatsmanInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
         ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-        return new Innings(fixedData, partnerships, batters, yetToBat, new ImmutableList<Over>(), null, null, new Balls(), new ImmutableList<>(), new ImmutableList<>(), State.NOT_STARTED);
+        return new Innings(fixedData, partnerships, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED);
     }
 
 
@@ -230,14 +248,23 @@ public class Innings {
     }
 
 
-    public BatsmanInnings getBatsmanInnings(Player target) {
-        Objects.requireNonNull((Object) target, "target");
+    private BatsmanInnings getBatsmanInnings(Player target) {
+        requireNonNull(target, "target");
         for (BatsmanInnings batter : batters) {
             if (target.equals(batter.getPlayer())) {
                 return batter;
             }
         }
-        throw new IllegalStateException("Could not find innings for " + target);
+        return null;
+    }
+    private BowlerInnings getBowlerInnings(Player target) {
+        requireNonNull(target, "target");
+        for (BowlerInnings bowlerInnings : bowlerInningses) {
+            if (bowlerInnings.bowler().equals(target)) {
+                return bowlerInnings;
+            }
+        }
+        return null;
     }
 
     public Match match() {

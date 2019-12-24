@@ -47,16 +47,12 @@ class MatchControlTest {
 
         Over over = match.currentInnings().get().currentOver().get();
         assertThat(over.balls().size(), is(0));
-        assertThat(over.spell().spellNumber(), is(1));
-        assertThat(over.spell().balls().size(), is(0));
-//        assertThat(over.spell().overs(), contains(over));
-        assertThat(over.spell().bowlerInnings().bowler(), sameInstance(aus.players.last().get()));
-//        assertThat(over.spell().bowlerInnings().spells(), contains(sameInstance(over.spell())));
+        assertThat(over.bowler(), sameInstance(aus.players.last().get()));
         assertThat(over.numberInInnings(), is(0));
         assertThat(over.legalBalls(), is(0));
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.isComplete(), is(false));
-        assertThat(over.isMaiden(), is(true));
+        assertThat(over.isMaiden(), is(false));
         assertThat(over.striker().getPlayer(), is(sameInstance(nz.players.get(0))));
         assertThat(over.nonStriker().getPlayer(), is(sameInstance(nz.players.get(1))));
         assertThat(over.runs(), is(0));

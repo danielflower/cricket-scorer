@@ -5,7 +5,7 @@ public interface BallAtStart {
 
 	BatsmanInnings getNonStriker();
 
-	BowlingSpell getBowlingSpell();
+	Player bowler();
 
 	int getNumberInOver();
 

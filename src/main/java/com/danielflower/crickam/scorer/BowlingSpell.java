@@ -3,13 +3,13 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.utils.ImmutableList;
 
 public class BowlingSpell {
-	private final BowlerInnings bowlerInnings;
+	private final Player bowler;
     private final int spellNumber;
     private final ImmutableList<Over> overs;
 	private final Balls balls;
 
-	public BowlerInnings bowlerInnings() {
-		return bowlerInnings;
+	public Player bowler() {
+		return bowler;
 	}
 
 	public ImmutableList<Over> overs() {
@@ -27,8 +27,8 @@ public class BowlingSpell {
 		return spellNumber;
 	}
 
-	public BowlingSpell(BowlerInnings bowlerInnings, int spellNumber, ImmutableList<Over> overs, Balls balls) {
-		this.bowlerInnings = bowlerInnings;
+	BowlingSpell(Player bowler, int spellNumber, ImmutableList<Over> overs, Balls balls) {
+		this.bowler = bowler;
         this.spellNumber = spellNumber;
         this.overs = overs;
         this.balls = balls;
@@ -63,6 +63,10 @@ public class BowlingSpell {
                 ", overs=" + overs +
                 ", balls=" + balls +
                 '}';
+    }
+
+    public BowlingSpell onBall(Over over, Ball ball) {
+        return new BowlingSpell(bowler, spellNumber, overs.add(over), balls.add(ball));
     }
 }
 

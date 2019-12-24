@@ -1,43 +1,46 @@
 package com.danielflower.crickam.scorer;
 
-public class Dismissal
-{
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
+
+public class Dismissal {
     private final DismissalType type;
     public final BatsmanInnings batter;
-    private final BowlingSpell bowler;
+    private final Player bowler;
     private final Player executor;
 
-    Dismissal(DismissalType type, BatsmanInnings batter, BowlingSpell bowler, Player executor) {
-        this.type = type;
-        this.batter = batter;
-        this.bowler = bowler;
+    Dismissal(DismissalType type, BatsmanInnings batter, Player bowler, Player executor) {
+        this.type = requireNonNull(type);
+        this.batter = requireNonNull(batter);
+        this.bowler = requireNonNull(bowler);
         this.executor = executor;
     }
 
-    public DismissalType getType() {
+    public DismissalType type() {
         return type;
     }
 
-    public BowlingSpell bowlingSpell() {
+    public Player bowler() {
         return bowler;
     }
 
-    public Player getBowler() {
-        return bowler.bowlerInnings().bowler();
-    }
-
-    public Player getExecutor() {
-        return executor;
+    /**
+     * @return The player that caught the ball if the {@link #type()} is {@link DismissalType#Caught}, or the fielder
+     * the enacted the runout or stumping. It will be an empty value for dismissal types such as {@link DismissalType#Bowled} etc
+     */
+    public Optional<Player> executor() {
+        return Optional.ofNullable(executor);
     }
 
     public String toScorecardString() {
-        String bowler = this.bowler == null ? null : this.getBowler().familyName();
+        String bowler = this.bowler == null ? null : this.bowler().familyName();
         String fielder = this.executor == null ? null : this.executor.familyName();
         switch (type) {
             case Bowled:
                 return "b " + bowler;
             case Caught:
-                String catcher = (this.executor == this.getBowler()) ? "&" : fielder;
+                String catcher = (this.executor == this.bowler()) ? "&" : fielder;
                 return "c " + catcher + " b " + bowler;
             case HitWicket:
                 return "hw " + bowler;
