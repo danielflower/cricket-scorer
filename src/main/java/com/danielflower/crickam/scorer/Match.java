@@ -66,8 +66,8 @@ public class Match {
         } else {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {
-                Innings i = lastInnings.get();
-                i.onEvent(event);
+                Innings i = lastInnings.get().onEvent(event);
+                newInningsList = newInningsList.removeLast().copy().add(i);
             }
         }
 

@@ -61,7 +61,7 @@ public class BowlingSpell {
         return "BowlingSpell{" +
                 "spellNumber=" + spellNumber +
                 ", overs=" + overs +
-                ", scorecard=" + balls +
+                ", balls=" + balls +
                 '}';
     }
 }

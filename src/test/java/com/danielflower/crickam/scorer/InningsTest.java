@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Optional;
 
+import static com.danielflower.crickam.scorer.ScoreBuilder.SINGLE;
 import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
+import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
 import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,6 +26,7 @@ class InningsTest {
 
     @Test
     void beforeAnyEventsThingsAreEmpty() {
+        assertThat(firstInnings.state(), is(Innings.State.NOT_STARTED));
         assertThat(firstInnings.currentStriker().getPlayer(), sameInstance(nz.getPlayers().get(0)));
         assertThat(firstInnings.currentNonStriker().getPlayer(), sameInstance(nz.getPlayers().get(1)));
         assertThat(firstInnings.yetToBat(), contains(nz.getPlayers().get(2), nz.getPlayers().get(3), nz.getPlayers().get(4), nz.getPlayers().get(5), nz.getPlayers().get(6), nz.getPlayers().get(7), nz.getPlayers().get(8), nz.getPlayers().get(9), nz.getPlayers().get(10)));
@@ -53,6 +56,8 @@ class InningsTest {
             .withNonStriker(opener2)
             .withBallsInOver(6)
             .build());
+
+        assertThat(innings.state(), is(Innings.State.IN_PROGRESS));
 
         assertThat(innings.currentStriker().getPlayer(), sameInstance(nz.getPlayers().get(0)));
         assertThat(innings.currentNonStriker().getPlayer(), sameInstance(nz.getPlayers().get(1)));
@@ -105,12 +110,12 @@ class InningsTest {
         assertThat(innings.currentOver().get().numberInInnings(), is(0));
 
         innings = innings.onEvent(ballCompleted()
-                .withBowler(aus.players.get(10))
-                .withStriker(opener1)
-                .withNonStriker(opener2)
-                .withRunsScored(ScoreBuilder.SINGLE)
-                .withPlayersCrossed(true)
-                .build());
+            .withBowler(aus.players.get(10))
+            .withStriker(opener1)
+            .withNonStriker(opener2)
+            .withRunsScored(SINGLE)
+            .withPlayersCrossed(true)
+            .build());
 
         assertThat(innings.balls().size(), is(1));
         assertThat(innings.balls().score().totalRuns(), is(1));
@@ -161,6 +166,7 @@ class InningsTest {
         assertThat(over.remainingBalls(), is(0));
         assertThat(over.balls().score().totalRuns(), is(7));
         assertThat(over.balls().score().wickets(), is(1));
+        assertThat(innings.state(), is(Innings.State.IN_PROGRESS));
 
         assertThat(innings.currentPartnership().totalRuns(), is(7));
         assertThat(innings.currentPartnership().endTime(), is(not(nullValue())));
@@ -173,9 +179,38 @@ class InningsTest {
 
 
         innings = innings.onEvent(overCompleted().build());
+        assertThat(innings.state(), is(Innings.State.BETWEEN_OVERS));
         assertThat(innings.currentOver(), is(Optional.empty()));
 
+        innings = innings
+            .onEvent(overStarting().withStriker(opener1).withNonStriker(opener2).withBowler(aus.players.get(9)).build())
+            .onEvent(ballCompleted().withRunsScored(SINGLE).build())
+            .onEvent(inningsCompleted().build());
 
+        assertThat(innings.currentOver(), is(Optional.empty()));
+        assertThat(innings.state(), is(Innings.State.COMPLETED));
+    }
+
+    @Test
+    public void ifBattersNotSpecifiedOnOverStartingThenItIsAssumed() {
+        Innings innings = firstInnings.onEvent(overStarting().withBowler(aus.players.get(10)).withBallsInOver(1).build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener1));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
+        innings = innings.onEvent(ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener1));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
+        innings = innings.onEvent(overCompleted().build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener1));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
+        innings = innings.onEvent(overStarting().withBowler(aus.players.get(9)).withBallsInOver(1).build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener2));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
+        innings = innings.onEvent(ballCompleted().withRunsScored(SINGLE).withPlayersCrossed(true).build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener1));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener2));
+        innings = innings.onEvent(overCompleted().build()).onEvent(overStarting().withBowler(aus.players.get(10)).withBallsInOver(1).build());
+        assertThat(innings.currentStriker().getPlayer(), is(opener2));
+        assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
     }
 
 }

@@ -29,4 +29,11 @@ public class Balls {
     public int size() {
         return balls.size();
     }
+
+    @Override
+    public String toString() {
+        return balls.size() + " (" + score.totalRuns() + " runs)";
+    }
+
+
 }
