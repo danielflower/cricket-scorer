@@ -2,13 +2,13 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
-import com.danielflower.crickam.scorer.events.InningsStartingEvent;
-import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
+import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -28,11 +28,12 @@ class MatchControlTest {
                 .build()
         );
 
-        Match match = control.onEvent(new InningsStartingEvent.Builder()
+        Match match = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
             .withBowlingTeam(aus)
             .withOpeners(nz.players.get(0), nz.players.get(1))
-            .withStartTime(Instant.now()).build());
+            .withStartTime(Instant.now())
+        );
 
         assertThat(control.current(), sameInstance(match));
         assertThat(match.oversPerInnings(), is(50));
@@ -42,9 +43,7 @@ class MatchControlTest {
         assertThat(innings.inningsNumber(), is(1));
         assertThat(innings.yetToBat(), equalTo(nz.players.view(2, 10)));
 
-        match = match.onEvent(new OverStartingEvent.Builder()
-            .withBowler(aus.players.last().get())
-            .build());
+        match = control.onEvent(overStarting().withBowler(aus.players.last().get()));
 
         Over over = match.currentInnings().get().currentOver().get();
         assertThat(over.balls().size(), is(0));
@@ -61,9 +60,6 @@ class MatchControlTest {
         assertThat(over.striker(), is(sameInstance(nz.players.get(0))));
         assertThat(over.nonStriker(), is(sameInstance(nz.players.get(1))));
         assertThat(over.runs(), is(0));
-
-
-
     }
 
 }

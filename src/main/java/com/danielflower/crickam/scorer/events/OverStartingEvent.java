@@ -3,19 +3,23 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.MatchEvent;
 import com.danielflower.crickam.scorer.Player;
 
-import java.util.Objects;
+import java.time.Instant;
+
+import static java.util.Objects.requireNonNull;
 
 public class OverStartingEvent implements MatchEvent {
 
     private final Player bowler;
     private final Player striker;
     private final Player nonStriker;
+    private final Instant startTime;
     private final int ballsInOver;
 
-    private OverStartingEvent(Player bowler, Player striker, Player nonStriker, int ballsInOver) {
-        this.bowler = Objects.requireNonNull(bowler);
+    private OverStartingEvent(Player bowler, Player striker, Player nonStriker, Instant startTime, int ballsInOver) {
+        this.bowler = requireNonNull(bowler);
         this.striker = striker;
         this.nonStriker = nonStriker;
+        this.startTime = requireNonNull(startTime);
         this.ballsInOver = ballsInOver;
     }
 
@@ -39,11 +43,16 @@ public class OverStartingEvent implements MatchEvent {
         return new Builder();
     }
 
+    public Instant startTime() {
+        return startTime;
+    }
+
     public static class Builder implements MatchEventBuilder<OverStartingEvent> {
 
         private Player bowler;
         private Player striker;
         private Player nonStriker;
+        private Instant startTime = Instant.now();
         private int ballsInOver = 6;
 
         public Builder withBowler(Player bowler) {
@@ -67,7 +76,7 @@ public class OverStartingEvent implements MatchEvent {
         }
 
         public OverStartingEvent build() {
-            return new OverStartingEvent(bowler, striker, nonStriker, ballsInOver);
+            return new OverStartingEvent(bowler, striker, nonStriker, startTime, ballsInOver);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.events.BallCompleteEvent;
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
@@ -40,11 +40,11 @@ public class Innings {
             OverStartingEvent e = (OverStartingEvent) event;
             BowlerInnings bi = new BowlerInnings(e.bowler(), new Balls(), new ImmutableList<>());
             spells = spells.add(new BowlingSpell(bi, 1, new ImmutableList<>(), new Balls()));
-            currentOver = Over.newOver(overs.size(), getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), spells.last().get(), e.ballsInOver());
+            currentOver = Over.newOver(overs.size(), getBatsmanInnings(e.striker()), getBatsmanInnings(e.nonStriker()), spells.last().get(), e.ballsInOver(), e.startTime());
             overs = overs.add(currentOver);
         }
-        if (event instanceof BallCompleteEvent) {
-            BallCompleteEvent e = (BallCompleteEvent) event;
+        if (event instanceof BallCompletedEvent) {
+            BallCompletedEvent e = (BallCompletedEvent) event;
             BatsmanInnings striker = e.striker() == null ? currentStriker() : getBatsmanInnings(e.striker());
             BatsmanInnings nonStriker = e.nonStriker() == null ? currentNonStriker() : getBatsmanInnings(e.nonStriker());
             BowlingSpell bowlingSpell = spells.last().get();

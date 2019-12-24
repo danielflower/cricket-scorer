@@ -48,7 +48,7 @@ public class InningsStartingEvent implements MatchEvent {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;
-        private Instant startTime;
+        private Instant startTime = Instant.now();
         private ImmutableList<Player> openers;
 
         public Builder withBattingTeam(LineUp battingTeam) {

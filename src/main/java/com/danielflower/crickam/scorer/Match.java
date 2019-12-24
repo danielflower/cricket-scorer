@@ -55,7 +55,7 @@ public class Match {
     }
 
 
-    public Match onEvent(MatchEvent event) {
+    Match onEvent(MatchEvent event) {
 
         Balls newBalls = event instanceof BallAtCompletion ? balls.add((BallAtCompletion) event) : balls;
 

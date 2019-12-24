@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.time.Instant;
 import java.util.Objects;
 
 public class Over {
@@ -9,15 +10,16 @@ public class Over {
 	private final Balls balls;
 	private final BowlingSpell bowlingSpell;
 	private final int ballsInOver;
+	private final Instant startTime;
 
-    static Over newOver(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, BowlingSpell spell, int ballsInOver) {
-        return new Over(numberInInnings, striker, nonStriker, new Balls(), spell, ballsInOver);
+    static Over newOver(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, BowlingSpell spell, int ballsInOver, Instant startTime) {
+        return new Over(numberInInnings, striker, nonStriker, new Balls(), spell, ballsInOver, startTime);
     }
 
     public Over onBall(Ball ball) {
         BatsmanInnings striker = ball.getPlayersCrossed() ? this.nonStriker : this.striker;
         BatsmanInnings nonStriker = ball.getPlayersCrossed() ? this.striker : this.nonStriker;
-        return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowlingSpell, ballsInOver);
+        return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowlingSpell, ballsInOver, startTime);
     }
 
     public BatsmanInnings striker() {
@@ -43,13 +45,14 @@ public class Over {
 		return balls;
 	}
 
-	private Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell, int ballsInOver) {
+	private Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, BowlingSpell bowlingSpell, int ballsInOver, Instant startTime) {
 		this.numberInInnings = numberInInnings;
         this.striker = Objects.requireNonNull(striker);
         this.nonStriker = Objects.requireNonNull(nonStriker);
         this.balls = Objects.requireNonNull(balls);
         this.bowlingSpell = Objects.requireNonNull(bowlingSpell);
         this.ballsInOver = ballsInOver;
+        this.startTime = startTime;
     }
 
 	public int runs() {

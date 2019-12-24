@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Optional;
 
-import static com.danielflower.crickam.scorer.events.BallCompleteEvent.ballCompleted;
+import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
 import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
 import static org.hamcrest.MatcherAssert.assertThat;

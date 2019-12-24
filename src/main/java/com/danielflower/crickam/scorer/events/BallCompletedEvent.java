@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class BallCompleteEvent implements MatchEvent {
+public class BallCompletedEvent implements MatchEvent {
 
     private final Player bowler;
     private final Player striker;
@@ -22,7 +22,7 @@ public class BallCompleteEvent implements MatchEvent {
     private final Player fielder;
     private final Instant dateCompleted;
 
-    private BallCompleteEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant dateCompleted) {
+    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant dateCompleted) {
         if (striker != null && striker.equals(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
@@ -83,7 +83,7 @@ public class BallCompleteEvent implements MatchEvent {
         return dateCompleted;
     }
 
-    public static class Builder implements MatchEventBuilder<BallCompleteEvent> {
+    public static class Builder implements MatchEventBuilder<BallCompletedEvent> {
 
         private Player bowler;
         private Player striker;
@@ -94,7 +94,7 @@ public class BallCompleteEvent implements MatchEvent {
         private Swing swing;
         private Trajectory trajectoryAtImpact;
         private Player fielder;
-        private Instant dateCompleted;
+        private Instant dateCompleted = Instant.now();
         private DismissalType dismissalType;
 
         /**
@@ -175,9 +175,9 @@ public class BallCompleteEvent implements MatchEvent {
             return this;
         }
 
-        public BallCompleteEvent build() {
+        public BallCompletedEvent build() {
             Instant dc = Objects.requireNonNullElse(this.dateCompleted, Instant.now());
-            return new BallCompleteEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, delivery, swing, trajectoryAtImpact, fielder, dc);
+            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, delivery, swing, trajectoryAtImpact, fielder, dc);
         }
     }
 
