@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.Optional;
 
-import static com.danielflower.crickam.scorer.ScoreBuilder.FOUR;
-import static com.danielflower.crickam.scorer.ScoreBuilder.SINGLE;
+import static com.danielflower.crickam.scorer.Score.FOUR;
+import static com.danielflower.crickam.scorer.Score.SINGLE;
 import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
 import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
@@ -117,25 +117,25 @@ class InningsTest {
             .build());
 
         assertThat(innings.balls().size(), is(1));
-        assertThat(innings.balls().score().totalRuns(), is(1));
+        assertThat(innings.balls().score().teamRuns(), is(1));
         assertThat(innings.currentStriker().getPlayer(), is(opener2));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
         assertThat(innings.currentPartnership().totalRuns(), is(1));
         assertThat(innings.currentPartnership().endTime(), is(nullValue()));
         assertThat(innings.currentPartnership().firstBatterContribution().size(), is(1));
-        assertThat(innings.currentPartnership().firstBatterContribution().score().totalRuns(), is(1));
+        assertThat(innings.currentPartnership().firstBatterContribution().score().teamRuns(), is(1));
         assertThat(innings.currentPartnership().secondBatterContribution().size(), is(0));
-        assertThat(innings.currentPartnership().secondBatterContribution().score().totalRuns(), is(0));
+        assertThat(innings.currentPartnership().secondBatterContribution().score().teamRuns(), is(0));
 
         innings = innings.onEvent(ballCompleted()
-            .withRunsScored(ScoreBuilder.TWO)
+            .withRunsScored(Score.TWO)
             .build());
         assertThat(innings.currentStriker().getPlayer(), is(opener2));
         assertThat(innings.currentNonStriker().getPlayer(), is(opener1));
         assertThat(innings.currentPartnership().totalRuns(), is(3));
 
         innings = innings.onEvent(ballCompleted()
-            .withRunsScored(ScoreBuilder.THREE)
+            .withRunsScored(Score.THREE)
             .withPlayersCrossed(true)
             .build());
         assertThat(innings.currentStriker().getPlayer(), is(opener1));
@@ -146,7 +146,7 @@ class InningsTest {
             .onEvent(dotBall())
             .onEvent(dotBall())
             .onEvent(ballCompleted()
-                .withRunsScored(ScoreBuilder.WIDE)
+                .withRunsScored(Score.WIDE)
                 .build());
 
         assertThat(innings.currentOver().get().isComplete(), is(false));
@@ -159,7 +159,7 @@ class InningsTest {
         Over over = innings.currentOver().get();
         assertThat(over.isComplete(), is(true));
         assertThat(over.remainingBalls(), is(0));
-        assertThat(over.balls().score().totalRuns(), is(7));
+        assertThat(over.balls().score().teamRuns(), is(7));
         assertThat(over.balls().score().wickets(), is(1));
         assertThat(innings.state(), is(Innings.State.IN_PROGRESS));
 
@@ -167,10 +167,10 @@ class InningsTest {
         assertThat(innings.currentPartnership().endTime(), is(not(nullValue())));
         assertThat(innings.currentPartnership().firstBatterContribution().size(), is(5));
         assertThat(innings.currentPartnership().firstBatterContribution().score().balls(), is(4));
-        assertThat(innings.currentPartnership().firstBatterContribution().score().totalRuns(), is(2));
-        assertThat(innings.currentPartnership().firstBatterContribution().score().scoredFromBat(), is(1));
+        assertThat(innings.currentPartnership().firstBatterContribution().score().teamRuns(), is(2));
+        assertThat(innings.currentPartnership().firstBatterContribution().score().batterRuns(), is(1));
         assertThat(innings.currentPartnership().secondBatterContribution().size(), is(2));
-        assertThat(innings.currentPartnership().secondBatterContribution().score().totalRuns(), is(5));
+        assertThat(innings.currentPartnership().secondBatterContribution().score().teamRuns(), is(5));
 
 
         innings = innings.onEvent(overCompleted().build());
@@ -311,7 +311,7 @@ class InningsTest {
         Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(3).build())
             .onEvent(dotBall())
             .onEvent(dotBall())
-            .onEvent(ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).withBowler(bowler2).build())
+            .onEvent(ballCompleted().withRunsScored(Score.DOT_BALL).withBowler(bowler2).build())
             .onEvent(overCompleted().build());
         assertThat(innings.maidens(), is(1));
         assertThat(innings.bowlerInningsList().get(0).maidens(), is(0));
@@ -325,7 +325,7 @@ class InningsTest {
     }
 
     private BallCompletedEvent dotBall() {
-        return ballCompleted().withRunsScored(ScoreBuilder.DOT_BALL).build();
+        return ballCompleted().withRunsScored(Score.DOT_BALL).build();
     }
 
     private OverStartingEvent oneBallOverStarting(Player bowler1) {

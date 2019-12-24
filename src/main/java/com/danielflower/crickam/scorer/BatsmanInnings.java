@@ -47,7 +47,7 @@ public class BatsmanInnings {
     }
 
     public int runs() {
-        return balls.score().scoredFromBat();
+        return balls.score().batterRuns();
     }
 
 	public Optional<Dismissal> getDismissal() {
@@ -56,6 +56,6 @@ public class BatsmanInnings {
 
 	@Override
 	public String toString() {
-		return player.familyName() + " (" + balls.score().scoredFromBat() + " runs)";
+		return player.familyName() + " (" + balls.score().batterRuns() + " runs)";
 	}
 }

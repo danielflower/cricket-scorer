@@ -4,7 +4,16 @@ package com.danielflower.crickam.scorer;
 import static com.danielflower.crickam.scorer.ScoreBuilder.score;
 
 public class Score {
-	private final int scored;
+    public static final Score DOT_BALL = score().withValidBalls(1).withDots(1).build();
+    public static final Score SIX = score().withValidBalls(1).withRunsFromBat(6).withSixes(1).build();
+    public static final Score FOUR = score().withValidBalls(1).withRunsFromBat(4).withFours(1).build();
+    public static final Score THREE = score().withValidBalls(1).withThrees(1).withRunsFromBat(3).build();
+    public static final Score TWO = score().withValidBalls(1).withTwos(1).withRunsFromBat(2).build();
+    public static final Score SINGLE = score().withValidBalls(1).withSingles(1).withRunsFromBat(1).build();
+    public static final Score WIDE = score().withWides(1).build();
+    public static final Score NO_BALL = score().withNoBalls(1).build();
+    public static final Score WICKET = score().withValidBalls(1).withDots(1).withWickets(1).build();
+    private final int runsFromBat;
 	private final int wides;
 	private final int noBalls;
 	private final int legByes;
@@ -19,8 +28,8 @@ public class Score {
 	private final int sixes;
 	private final int balls;
 
-	Score(int scored, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int balls) {
-		this.scored = scored;
+	Score(int runsFromBat, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int balls) {
+		this.runsFromBat = runsFromBat;
 		this.wides = wides;
 		this.noBalls = noBalls;
 		this.legByes = legByes;
@@ -36,62 +45,77 @@ public class Score {
 		this.balls = balls;
 	}
 
-	public int totalRuns() {
-		return scored + wides + noBalls + legByes + byes + penaltyRuns;
+    /**
+     * @return The total runs scored for the team (which is runs off the bat plus extras)
+     */
+	public int teamRuns() {
+		return bowlerRuns() + legByes + byes;
 	}
+
+    /**
+     * @return The number of runs ascribed to the bowler, which is total runs less byes and leg byes
+     */
+    public int bowlerRuns() {
+        return batterRuns() + wides + noBalls + penaltyRuns;
+    }
+
+    /**
+     * @return The number of extras, i.e. runs not scored from the bat
+     */
+    public int extras() {
+        return wides + noBalls + legByes + byes + penaltyRuns;
+    }
 
 	public Score add(Score other) {
 		return score()
-				.setScored(scored + other.scored)
-				.setWides(wides + other.wides)
-				.setNoBalls(noBalls + other.noBalls)
-				.setLegByes(legByes + other.legByes)
-				.setByes(byes + other.byes)
-				.setPenaltyRuns(penaltyRuns + other.penaltyRuns)
-				.setWickets(wickets + other.wickets)
-				.setDots(dots + other.dots)
-				.setSingles(singles + other.singles)
-				.setTwos(twos + other.twos)
-				.setThrees(threes + other.threes)
-				.setFours(fours + other.fours)
-				.setSixes(sixes + other.sixes)
-				.setBalls(balls + other.balls)
+				.withRunsFromBat(runsFromBat + other.runsFromBat)
+				.withWides(wides + other.wides)
+				.withNoBalls(noBalls + other.noBalls)
+				.withLegByes(legByes + other.legByes)
+				.withByes(byes + other.byes)
+				.withPenaltyRuns(penaltyRuns + other.penaltyRuns)
+				.withWickets(wickets + other.wickets)
+				.withDots(dots + other.dots)
+				.withSingles(singles + other.singles)
+				.withTwos(twos + other.twos)
+				.withThrees(threes + other.threes)
+				.withFours(fours + other.fours)
+				.withSixes(sixes + other.sixes)
+				.withValidBalls(balls + other.balls)
 				.build();
 	}
 
 	public Score subtract(Score other) {
 		return score()
-				.setScored(scored - other.scored)
-				.setWides(wides - other.wides)
-				.setNoBalls(noBalls - other.noBalls)
-				.setLegByes(legByes - other.legByes)
-				.setByes(byes - other.byes)
-				.setPenaltyRuns(penaltyRuns - other.penaltyRuns)
-				.setWickets(wickets - other.wickets)
-				.setDots(dots - other.dots)
-				.setSingles(singles - other.singles)
-				.setTwos(twos - other.twos)
-				.setThrees(threes - other.threes)
-				.setFours(fours - other.fours)
-				.setSixes(sixes - other.sixes)
-				.setBalls(balls - other.balls)
+				.withRunsFromBat(runsFromBat - other.runsFromBat)
+				.withWides(wides - other.wides)
+				.withNoBalls(noBalls - other.noBalls)
+				.withLegByes(legByes - other.legByes)
+				.withByes(byes - other.byes)
+				.withPenaltyRuns(penaltyRuns - other.penaltyRuns)
+				.withWickets(wickets - other.wickets)
+				.withDots(dots - other.dots)
+				.withSingles(singles - other.singles)
+				.withTwos(twos - other.twos)
+				.withThrees(threes - other.threes)
+				.withFours(fours - other.fours)
+				.withSixes(sixes - other.sixes)
+				.withValidBalls(balls - other.balls)
 				.build();
 	}
 
-    public int extras() {
-        return wides + noBalls + legByes + byes + penaltyRuns;
-    }
+
 
 	public int strikeRate() {
-		return balls == 0 ? 0 : (int) Math.round((scored * 100.0) / balls);
+		return balls == 0 ? 0 : (int) Math.round((runsFromBat * 100.0) / balls);
 	}
 
 	public Double averageRunsPerWicket() {
-		return wickets == 0 ? null : totalRuns() / (double)wickets;
+		return wickets == 0 ? null : teamRuns() / (double)wickets;
 	}
 
 	public RPO runsPerOver() {
-		return RPO.fromDouble(balls == 0 ? 0.0 : 6.0 * (totalRuns() / (double) balls));
+		return RPO.fromDouble(balls == 0 ? 0.0 : 6.0 * (teamRuns() / (double) balls));
 	}
 
 	public int wicketStrikeRate() {
@@ -111,7 +135,7 @@ public class Score {
 		if (legByes != that.legByes) return false;
 		if (noBalls != that.noBalls) return false;
 		if (penaltyRuns != that.penaltyRuns) return false;
-		if (scored != that.scored) return false;
+		if (runsFromBat != that.runsFromBat) return false;
 		if (dots != that.dots) return false;
 		if (singles != that.singles) return false;
 		if (sixes != that.sixes) return false;
@@ -125,7 +149,7 @@ public class Score {
 
 	@Override
 	public int hashCode() {
-		int result = scored;
+		int result = runsFromBat;
 		result = 31 * result + wides;
 		result = 31 * result + noBalls;
 		result = 31 * result + legByes;
@@ -145,7 +169,7 @@ public class Score {
 	@Override
 	public String toString() {
 		return "Score{" +
-				"scored=" + scored +
+				"scored=" + runsFromBat +
 				", wides=" + wides +
 				", noBalls=" + noBalls +
 				", legByes=" + legByes +
@@ -164,8 +188,11 @@ public class Score {
 
 	public static Score Empty = ScoreBuilder.EMPTY;
 
-    public int scoredFromBat() {
-        return scored;
+    /**
+     * @return The number of runs ascribed by the batter, which is the total runs less extras.
+     */
+    public int batterRuns() {
+        return runsFromBat;
     }
 
     public int wides() {
@@ -219,6 +246,7 @@ public class Score {
     public int balls() {
         return balls;
     }
+
 }
 
 

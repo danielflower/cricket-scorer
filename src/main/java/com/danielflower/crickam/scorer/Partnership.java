@@ -61,7 +61,7 @@ public class Partnership {
     }
 
 	public int totalRuns() {
-		return balls().score().totalRuns();
+		return balls().score().teamRuns();
 	}
 
     public Balls firstBatterContribution() {

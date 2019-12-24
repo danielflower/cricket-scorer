@@ -56,7 +56,7 @@ public class Over {
     }
 
 	public int runs() {
-		return balls.score().totalRuns();
+		return balls.score().teamRuns();
 	}
 
     /**

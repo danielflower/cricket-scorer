@@ -50,7 +50,7 @@ public class BowlerInnings {
     @Override
     public String toString() {
         Score s = balls.score();
-        return player + "    " + overs.size() + " Overs; " + s.totalRuns() + " Runs; " + s.wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
+        return player + "    " + overs.size() + " Overs; " + s.teamRuns() + " Runs; " + s.wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
     }
 
     @Override

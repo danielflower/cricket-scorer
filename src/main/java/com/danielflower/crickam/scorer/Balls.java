@@ -32,7 +32,7 @@ public class Balls {
 
     @Override
     public String toString() {
-        return balls.size() + " (" + score.totalRuns() + " runs)";
+        return balls.size() + " (" + score.teamRuns() + " runs)";
     }
 
 
