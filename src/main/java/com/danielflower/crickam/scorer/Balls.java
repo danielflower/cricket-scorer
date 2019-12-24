@@ -2,27 +2,29 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.utils.ImmutableList;
 
+import java.util.Objects;
+
 public class Balls {
-    private final ImmutableList<BallAtCompletion> balls;
+    private final ImmutableList<Ball> balls;
     private final Score score;
 
     public Balls() {
-        this(new ImmutableList<>(), Score.Empty);
+        this(new ImmutableList<>(), Score.EMPTY);
     }
-    private Balls(ImmutableList<BallAtCompletion> balls, Score score) {
-        this.balls = balls;
-        this.score = score;
+    private Balls(ImmutableList<Ball> balls, Score score) {
+        this.balls = Objects.requireNonNull(balls);
+        this.score = Objects.requireNonNull(score);
     }
 
     public Score score() {
 		return score;
 	}
 
-    public ImmutableList<BallAtCompletion> list() {
+    public ImmutableList<Ball> list() {
         return balls;
     }
 
-    public Balls add(BallAtCompletion ball) {
+    public Balls add(Ball ball) {
         return new Balls(balls.add(ball), score.add(ball.score()));
     }
 

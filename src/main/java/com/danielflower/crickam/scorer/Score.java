@@ -4,15 +4,18 @@ package com.danielflower.crickam.scorer;
 import static com.danielflower.crickam.scorer.ScoreBuilder.score;
 
 public class Score {
-    public static final Score DOT_BALL = score().withValidBalls(1).withDots(1).build();
-    public static final Score SIX = score().withValidBalls(1).withRunsFromBat(6).withSixes(1).build();
-    public static final Score FOUR = score().withValidBalls(1).withRunsFromBat(4).withFours(1).build();
-    public static final Score THREE = score().withValidBalls(1).withThrees(1).withRunsFromBat(3).build();
-    public static final Score TWO = score().withValidBalls(1).withTwos(1).withRunsFromBat(2).build();
-    public static final Score SINGLE = score().withValidBalls(1).withSingles(1).withRunsFromBat(1).build();
-    public static final Score WIDE = score().withWides(1).build();
-    public static final Score NO_BALL = score().withNoBalls(1).build();
-    public static final Score WICKET = score().withValidBalls(1).withDots(1).withWickets(1).build();
+    public static Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static final Score DOT_BALL = new Score(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
+    public static final Score SINGLE = new Score(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    public static final Score TWO = new Score(2, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1);
+    public static final Score THREE = new Score(3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
+    public static final Score FOUR = new Score(4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1);
+    public static final Score SIX = new Score(6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
+    public static final Score WIDE = new Score(0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static final Score NO_BALL = new Score(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static final Score BYE = new Score(0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score LEG_BYE = new Score(0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score WICKET = new Score(0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1);
     private final int runsFromBat;
 	private final int wides;
 	private final int noBalls;
@@ -26,9 +29,9 @@ public class Score {
 	private final int threes;
 	private final int fours;
 	private final int sixes;
-	private final int balls;
+	private final int validBalls;
 
-	Score(int runsFromBat, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int balls) {
+	Score(int runsFromBat, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int validBalls) {
 		this.runsFromBat = runsFromBat;
 		this.wides = wides;
 		this.noBalls = noBalls;
@@ -42,7 +45,7 @@ public class Score {
 		this.threes = threes;
 		this.fours = fours;
 		this.sixes = sixes;
-		this.balls = balls;
+		this.validBalls = validBalls;
 	}
 
     /**
@@ -81,7 +84,7 @@ public class Score {
 				.withThrees(threes + other.threes)
 				.withFours(fours + other.fours)
 				.withSixes(sixes + other.sixes)
-				.withValidBalls(balls + other.balls)
+				.withValidBalls(validBalls + other.validBalls)
 				.build();
 	}
 
@@ -100,14 +103,14 @@ public class Score {
 				.withThrees(threes - other.threes)
 				.withFours(fours - other.fours)
 				.withSixes(sixes - other.sixes)
-				.withValidBalls(balls - other.balls)
+				.withValidBalls(validBalls - other.validBalls)
 				.build();
 	}
 
 
 
 	public int strikeRate() {
-		return balls == 0 ? 0 : (int) Math.round((runsFromBat * 100.0) / balls);
+		return validBalls == 0 ? 0 : (int) Math.round((runsFromBat * 100.0) / validBalls);
 	}
 
 	public Double averageRunsPerWicket() {
@@ -115,11 +118,11 @@ public class Score {
 	}
 
 	public RPO runsPerOver() {
-		return RPO.fromDouble(balls == 0 ? 0.0 : 6.0 * (teamRuns() / (double) balls));
+		return RPO.fromDouble(validBalls == 0 ? 0.0 : 6.0 * (teamRuns() / (double) validBalls));
 	}
 
 	public int wicketStrikeRate() {
-		return wickets == 0 ? 0 : balls / wickets;
+		return wickets == 0 ? 0 : validBalls / wickets;
 	}
 
 	@Override
@@ -129,7 +132,7 @@ public class Score {
 
 		Score that = (Score) o;
 
-		if (balls != that.balls) return false;
+		if (validBalls != that.validBalls) return false;
 		if (byes != that.byes) return false;
 		if (fours != that.fours) return false;
 		if (legByes != that.legByes) return false;
@@ -162,7 +165,7 @@ public class Score {
 		result = 31 * result + threes;
 		result = 31 * result + fours;
 		result = 31 * result + sixes;
-		result = 31 * result + balls;
+		result = 31 * result + validBalls;
 		return result;
 	}
 
@@ -182,11 +185,10 @@ public class Score {
 				", threes=" + threes +
 				", fours=" + fours +
 				", sixes=" + sixes +
-				", balls=" + balls +
+				", balls=" + validBalls +
 				'}';
 	}
 
-	public static Score Empty = ScoreBuilder.EMPTY;
 
     /**
      * @return The number of runs ascribed by the batter, which is the total runs less extras.
@@ -244,7 +246,7 @@ public class Score {
     }
 
     public int balls() {
-        return balls;
+        return validBalls;
     }
 
 }

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class Ball implements BallAtCompletion {
+public class Ball {
     private final BatsmanInnings striker;
     private final BatsmanInnings nonStriker;
     private final Player bowler;
@@ -40,38 +40,15 @@ public class Ball implements BallAtCompletion {
         return numberInOver;
     }
 
-    @Override
-    public BallAtEngagement engage(Delivery delivery, Swing swing, Trajectory ballTrajectory) {
-        requireNonNull((Object) delivery, "delivery");
-        requireNonNull((Object) swing, "swing");
-        requireNonNull((Object) ballTrajectory, "ballTrajectory");
-        return new Ball(
-                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.bowler(),
-                delivery, swing, ballTrajectory, null, null, false, null, null);
-    }
 
-
-    @Override
-    public BallAtCompletion complete(Score score, Optional<Dismissal> dismissal, boolean playersCrossed, Optional<Player> fielder, Instant dateCompleted) {
-        requireNonNull((Object) dismissal, "dismissal");
-        return new Ball(
-                id, this.getStriker(), this.getNonStriker(), this.getNumberInOver(), this.bowler(),
-                this.getDelivery(), this.getSwing(), this.getTrajectoryAtImpact(),
-                score, dismissal.orElse(null), playersCrossed,
-                fielder.orElse(null), dateCompleted);
-    }
-
-    @Override
     public Delivery getDelivery() {
         return delivery;
     }
 
-    @Override
     public Swing getSwing() {
         return swing;
     }
 
-    @Override
     public Score score() {
         return score;
     }
@@ -110,12 +87,10 @@ public class Ball implements BallAtCompletion {
         return trajectoryAtImpact;
     }
 
-    @Override
     public Optional<Player> getFielder() {
         return Optional.ofNullable(fielder);
     }
 
-	@Override
 	public Instant getDateCompleted() {
 		return dateCompleted;
 	}

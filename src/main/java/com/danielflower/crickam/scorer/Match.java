@@ -36,17 +36,15 @@ public class Match {
     }
 
     private final FixedData data;
-    private final Balls balls;
     private final ImmutableList<Innings> inningsList;
 
-    private Match(FixedData data, Balls balls, ImmutableList<Innings> inningsList) {
+    private Match(FixedData data, ImmutableList<Innings> inningsList) {
         this.data = data;
-        this.balls = balls;
         this.inningsList = inningsList;
     }
 
-    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, Balls balls, ImmutableList<Innings> inningsList) {
-        this(new FixedData(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays), balls, inningsList);
+    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, ImmutableList<Innings> inningsList) {
+        this(new FixedData(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays), inningsList);
     }
 
 
@@ -56,8 +54,6 @@ public class Match {
 
 
     Match onEvent(MatchEvent event) {
-
-        Balls newBalls = event instanceof BallAtCompletion ? balls.add((BallAtCompletion) event) : balls;
 
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
@@ -71,7 +67,7 @@ public class Match {
             }
         }
 
-        return new Match(data, newBalls, newInningsList);
+        return new Match(data,  newInningsList);
     }
 
     public String matchID() {

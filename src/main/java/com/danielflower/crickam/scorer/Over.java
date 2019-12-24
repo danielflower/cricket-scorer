@@ -72,7 +72,7 @@ public class Over {
     }
 
 	public int legalBalls() {
-		return (int) balls.list().stream().filter(BallAtCompletion::isLegal).count();
+		return (int) balls.list().stream().filter(Ball::isLegal).count();
 	}
 
     public boolean isComplete() {

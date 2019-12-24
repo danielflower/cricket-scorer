@@ -21,8 +21,8 @@ public class ScoreBuilder {
 
     /**
      * @param runsFromBat The number of runs scored off the bat. You should also call one of {@link #withSingles(int)},
-     *               {@link #withTwos(int)}, {@link #withThrees(int)}, {@link #withFours(int)}, {@link #withSixes(int)}
-     *               if it is one of those amounts.
+     *                    {@link #withTwos(int)}, {@link #withThrees(int)}, {@link #withFours(int)}, {@link #withSixes(int)}
+     *                    if it is one of those amounts.
      * @return This builder
      */
     public ScoreBuilder withRunsFromBat(int runsFromBat) {
@@ -139,22 +139,19 @@ public class ScoreBuilder {
     }
 
 
-    private static final Score[] COMMON = new Score[] {Score.DOT_BALL, Score.SIX, Score.FOUR, Score.THREE, Score.TWO, Score.SINGLE, Score.WIDE, Score.NO_BALL, Score.WICKET};
-
-    public static final Score EMPTY = score().build();
+    private static final Score[] COMMON = new Score[]{Score.DOT_BALL, Score.SIX, Score.FOUR, Score.THREE, Score.TWO, Score.SINGLE, Score.WIDE, Score.NO_BALL, Score.WICKET, Score.BYE, Score.LEG_BYE};
 
 
     public Score build() {
         Score score = new Score(runsFromBat, wides, noBalls, legByes, byes, penaltyRuns, wickets, dots, singles, twos, threes, fours, sixes, balls);
-        if (COMMON != null) {
-            for (Score cached : COMMON) {
-                if (score.equals(cached)) {
-                    return cached;
-                }
+        for (Score cached : COMMON) {
+            if (score.equals(cached)) {
+                return cached;
             }
         }
         return score;
     }
+
     public static ScoreBuilder score() {
         return new ScoreBuilder();
     }
