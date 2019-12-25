@@ -11,13 +11,13 @@ class SwingTest {
 
     @Test
     public void canCreate() {
-        Swing swing = aSwing().setFootDirection(Optional.of(12.0)).setImpact(Optional.of(Impact.EDGED)).build();
-        assertThat(swing.getFootDirection(), is(Optional.of(12.0)));
-        assertThat(swing.getImpact(), is(Optional.of(Impact.EDGED)));
+        Swing swing = aSwing().withFootDirection(12.0).withImpact(ImpactOnBat.EDGED).build();
+        assertThat(swing.footDirection(), is(Optional.of(12.0)));
+        assertThat(swing.impactOnBat(), is(Optional.of(ImpactOnBat.EDGED)));
     }
 
-    public static SwingBuilder aSwing() {
-        return new SwingBuilder();
+    public static Swing.Builder aSwing() {
+        return new Swing.Builder();
     }
 
 }

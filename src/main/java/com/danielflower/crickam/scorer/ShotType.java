@@ -1,6 +1,8 @@
 package com.danielflower.crickam.scorer;
 
-
+/**
+ * The type of shot performed by a batter, such as a {@link #COVER_DRIVE}, or a leave.
+ */
 public enum ShotType {
     BLOCK(Category.VERTICAL_BAT, "block"),
     COVER_DRIVE(Category.VERTICAL_BAT, "cover drive"),
