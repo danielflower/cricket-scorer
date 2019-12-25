@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer;
 
 import static com.danielflower.crickam.scorer.ScoreBuilder.score;
 
-public class Score {
+public final class Score {
     public static Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     public static final Score DOT_BALL = new Score(0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
     public static final Score SINGLE = new Score(1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);

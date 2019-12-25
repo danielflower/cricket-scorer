@@ -4,7 +4,7 @@ import com.danielflower.crickam.scorer.MatchEvent;
 
 import java.time.Instant;
 
-public class InningsCompletedEvent implements MatchEvent {
+public final class InningsCompletedEvent implements MatchEvent {
 
     private final Instant time;
 
@@ -16,7 +16,7 @@ public class InningsCompletedEvent implements MatchEvent {
         return time;
     }
 
-    public static class Builder {
+    public final static class Builder {
         private Instant time = Instant.now();
 
         public InningsCompletedEvent build() {

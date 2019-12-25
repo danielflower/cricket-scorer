@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import java.util.Optional;
 
-public class Swing {
+public final class Swing {
 
     private final Optional<ShotType> shotType;
     private final Optional<Impact> impact;

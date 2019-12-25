@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class ImmutableListCollector<T> implements Collector<T, List<T>, ImmutableList<T>> {
+public final class ImmutableListCollector<T> implements Collector<T, List<T>, ImmutableList<T>> {
 
     public static <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
         return new ImmutableListCollector<T>();

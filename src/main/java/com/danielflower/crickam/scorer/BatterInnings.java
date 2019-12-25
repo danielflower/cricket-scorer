@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class BatterInnings {
+public final class BatterInnings {
     private final Player player;
     private final Balls balls;
     private final int numberCameIn;

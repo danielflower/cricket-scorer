@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class ImmutableList<T> implements Iterable<T> {
+public final class ImmutableList<T> implements Iterable<T> {
 
     private final List<T> arrayList;
 

@@ -5,7 +5,7 @@ import com.danielflower.crickam.scorer.events.MatchEventBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchControl {
+public final class MatchControl {
 
     private final List<Match> matches = new ArrayList<>();
 

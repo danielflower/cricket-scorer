@@ -9,7 +9,7 @@ import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
-public class InningsStartingEvent implements MatchEvent {
+public final class InningsStartingEvent implements MatchEvent {
 
     private final LineUp battingTeam;
     private final LineUp bowlingTeam;
@@ -44,7 +44,7 @@ public class InningsStartingEvent implements MatchEvent {
         return new Builder();
     }
 
-    public static class Builder implements MatchEventBuilder<InningsStartingEvent> {
+    public static final class Builder implements MatchEventBuilder<InningsStartingEvent> {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;

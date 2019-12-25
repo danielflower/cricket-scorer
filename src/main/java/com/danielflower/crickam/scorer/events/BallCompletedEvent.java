@@ -10,7 +10,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class BallCompletedEvent implements MatchEvent {
+public final class BallCompletedEvent implements MatchEvent {
 
     private final Player bowler;
     private final Player striker;
@@ -91,7 +91,7 @@ public class BallCompletedEvent implements MatchEvent {
         return dateCompleted;
     }
 
-    public static class Builder implements MatchEventBuilder<BallCompletedEvent> {
+    public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
 
         private Player bowler;
         private Player striker;

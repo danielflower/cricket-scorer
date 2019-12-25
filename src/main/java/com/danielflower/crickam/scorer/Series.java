@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.utils.ImmutableList;
 
-public class Series {
+public final class Series {
 
 	public final String id;
 	public final ImmutableList<Team> teams;

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class Dismissal {
+public final class Dismissal {
     private final DismissalType type;
     private final Player batter;
     private final Player bowler;

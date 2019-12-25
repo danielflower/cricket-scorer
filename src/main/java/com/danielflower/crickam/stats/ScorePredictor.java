@@ -5,7 +5,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class ScorePredictor {
+public final class ScorePredictor {
 
 	private final HashMap<String, Double> memory = new HashMap<>();
 

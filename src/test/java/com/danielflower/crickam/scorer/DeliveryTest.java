@@ -11,14 +11,12 @@ class DeliveryTest {
 
     @Test
     public void canBuildThem() {
-        Delivery delivery = aDelivery().setDeliveryType(Optional.of(DeliveryType.ARM_BALL)).build();
-        assertThat(delivery.getDeliveryType(), is(Optional.of(DeliveryType.ARM_BALL)));
+        Delivery delivery = aDelivery().setDeliveryType(DeliveryType.ARM_BALL).build();
+        assertThat(delivery.deliveryType(), is(Optional.of(DeliveryType.ARM_BALL)));
     }
 
-    public static DeliveryBuilder aDelivery() {
-        return new DeliveryBuilder()
-            .setBowledFrom(Optional.empty())
-            .setDeliveryType(Optional.empty());
+    public static Delivery.Builder aDelivery() {
+        return Delivery.delivery();
     }
 
 }

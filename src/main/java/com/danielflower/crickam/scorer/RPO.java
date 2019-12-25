@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-public class RPO {
+public final class RPO {
 
 	public final int intValue;
 	public final int nearestIntValue;

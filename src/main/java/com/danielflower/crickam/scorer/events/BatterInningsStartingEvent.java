@@ -6,7 +6,7 @@ import com.danielflower.crickam.scorer.Player;
 import java.time.Instant;
 import java.util.Objects;
 
-public class BatterInningsStartingEvent implements MatchEvent {
+public final class BatterInningsStartingEvent implements MatchEvent {
 
     private final Instant startTime;
     private final Player batter;
@@ -28,7 +28,7 @@ public class BatterInningsStartingEvent implements MatchEvent {
         return new Builder();
     }
 
-    public static class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
+    public static final class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
         private Instant startTime = Instant.now();
         private Player batter;
 

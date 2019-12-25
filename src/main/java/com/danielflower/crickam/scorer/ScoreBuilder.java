@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer;
 /**
  * A score for a number of balls
  */
-public class ScoreBuilder {
+public final class ScoreBuilder {
     private int runsFromBat = 0;
     private int wides = 0;
     private int noBalls = 0;

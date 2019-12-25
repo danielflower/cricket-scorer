@@ -7,7 +7,7 @@ import com.danielflower.crickam.stats.SimpleRange;
 
 import static java.util.Arrays.asList;
 
-public class BowlingStyleBuilder {
+public final class BowlingStyleBuilder {
     private Handedness bowlingHandedness = Handedness.RightHanded;
     private Distribution<DeliveryType> deliveryTypes;
     private SimpleRange bowlingSpeed;

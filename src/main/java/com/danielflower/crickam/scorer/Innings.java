@@ -9,7 +9,7 @@ import java.util.Optional;
 import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
 import static java.util.Objects.requireNonNull;
 
-public class Innings {
+public final class Innings {
 
 
     public enum State {

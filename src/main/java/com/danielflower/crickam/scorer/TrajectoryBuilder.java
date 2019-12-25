@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-public class TrajectoryBuilder {
+public final class TrajectoryBuilder {
 	private Integer speedInKms;
 	private Double directionInDegreesRelativeToBatter;
 	private Double elevationInDegrees;

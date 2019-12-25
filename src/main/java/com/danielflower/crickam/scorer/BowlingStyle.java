@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 @ApiStatus.AvailableSince("1.0.0")
-public class BowlingStyle {
+public final class BowlingStyle {
 
 	private final Handedness bowlingHandedness;
 	private final Distribution<DeliveryType> deliveryTypes;

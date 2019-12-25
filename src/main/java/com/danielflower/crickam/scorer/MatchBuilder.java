@@ -4,7 +4,7 @@ import com.danielflower.crickam.utils.ImmutableList;
 
 import java.time.Instant;
 
-public class MatchBuilder {
+public final class MatchBuilder {
     private String matchID;
     private Series series;
     private Instant startTime;

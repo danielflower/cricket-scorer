@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class Ball {
+public final class Ball {
     private final Player striker;
     private final Player nonStriker;
     private final Player bowler;
@@ -24,7 +24,7 @@ public class Ball {
         return striker;
     }
 
-    public Player getNonStriker() {
+    public Player nonStriker() {
         return nonStriker;
     }
 
@@ -36,12 +36,11 @@ public class Ball {
         return id;
     }
 
-    public int getNumberInOver() {
+    public int numberInOver() {
         return numberInOver;
     }
 
-
-    public Delivery getDelivery() {
+    public Delivery delivery() {
         return delivery;
     }
 

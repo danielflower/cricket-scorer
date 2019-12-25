@@ -7,7 +7,7 @@ import com.danielflower.crickam.utils.ImmutableList;
 import java.time.Instant;
 import java.util.Optional;
 
-public class Match {
+public final class Match {
 
     /**
      * Data in a match that never changes throughout the match. This exists due to the fact that because matches are immutable,

@@ -2,7 +2,7 @@ package com.danielflower.crickam.stats;
 
 import java.util.Random;
 
-public class SimpleRange implements Range {
+public final class SimpleRange implements Range {
 
     private final transient Random rng = new Random();
     private final double lower;

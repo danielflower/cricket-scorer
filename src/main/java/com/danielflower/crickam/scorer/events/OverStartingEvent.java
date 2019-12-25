@@ -7,7 +7,7 @@ import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
-public class OverStartingEvent implements MatchEvent {
+public final class OverStartingEvent implements MatchEvent {
 
     private final Player bowler;
     private final Player striker;
@@ -47,7 +47,7 @@ public class OverStartingEvent implements MatchEvent {
         return startTime;
     }
 
-    public static class Builder implements MatchEventBuilder<OverStartingEvent> {
+    public static final class Builder implements MatchEventBuilder<OverStartingEvent> {
 
         private Player bowler;
         private Player striker;

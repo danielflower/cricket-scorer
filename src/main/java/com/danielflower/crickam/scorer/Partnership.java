@@ -4,7 +4,7 @@ import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
-public class Partnership {
+public final class Partnership {
     private final Balls balls;
 	public final Balls firstBatterContribution;
 	public final Balls secondBatterContribution;

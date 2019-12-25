@@ -1,6 +1,6 @@
 package com.danielflower.crickam.stats;
 
-public class Chance {
+public final class Chance {
 
 	public static boolean oneIn(int n) {
 		return Math.random() < (1.0 / (double)n);

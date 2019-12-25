@@ -4,7 +4,7 @@ import com.danielflower.crickam.utils.ImmutableList;
 
 import java.util.Optional;
 
-public class BowlerInnings {
+public final class BowlerInnings {
 	private final Player player;
 	private final Balls balls;
 	private final ImmutableList<BowlingSpell> spells;

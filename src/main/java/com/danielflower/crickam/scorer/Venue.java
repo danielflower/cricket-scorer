@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-public class Venue {
+public final class Venue {
 
 	private final String name;
 	private final String location;

@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.utils.ImmutableList;
 
-public class BowlingSpell {
+public final class BowlingSpell {
 	private final Player bowler;
     private final int spellNumber;
     private final ImmutableList<Over> overs;

@@ -4,7 +4,7 @@ import com.danielflower.crickam.utils.ImmutableList;
 
 import java.util.Objects;
 
-public class Balls {
+public final class Balls {
     private final ImmutableList<Ball> balls;
     private final Score score;
 

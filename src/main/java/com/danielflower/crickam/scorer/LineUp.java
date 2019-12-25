@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.utils.ImmutableList;
 
-public class LineUp {
+public final class LineUp {
 	public final ImmutableList<Player> players;
 	public final Team team;
 	public final boolean isPlayingAtHome;

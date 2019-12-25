@@ -5,7 +5,7 @@ import com.danielflower.crickam.utils.ImmutableListCollector;
 
 import java.util.stream.Stream;
 
-public class PlayerBuilder {
+public final class PlayerBuilder {
 	private String id;
 	private ImmutableList<String> givenNames;
 	private String familyName;

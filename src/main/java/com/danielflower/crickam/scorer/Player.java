@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class Player {
+public final class Player {
 
 	private final Gender gender;
 	private final String id;

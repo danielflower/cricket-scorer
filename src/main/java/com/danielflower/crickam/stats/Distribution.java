@@ -11,7 +11,7 @@ import static java.util.Arrays.asList;
  * Represents a set of objects with weightings.
  * @param <T> The type of object that has a weighting.
  */
-public class Distribution<T> {
+public final class Distribution<T> {
 	private int total = 0;
 	private final List<Pair<T>> values = new ArrayList<>();
 	private final transient Random rng;
