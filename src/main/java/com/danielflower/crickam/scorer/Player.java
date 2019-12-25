@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

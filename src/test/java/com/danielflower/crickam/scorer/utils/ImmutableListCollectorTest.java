@@ -1,4 +1,4 @@
-package com.danielflower.crickam.utils;
+package com.danielflower.crickam.scorer.utils;
 
 import org.junit.jupiter.api.Test;
 

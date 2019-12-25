@@ -4,7 +4,7 @@ import com.danielflower.crickam.scorer.LineUpBuilder;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.TeamBuilder;
 import com.danielflower.crickam.scorer.TeamLevel;
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.UUID;
 

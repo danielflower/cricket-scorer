@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;

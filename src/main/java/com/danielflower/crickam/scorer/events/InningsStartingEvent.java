@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.MatchEvent;
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.time.Instant;
 

@@ -1,9 +1,9 @@
 package com.danielflower.crickam.scorer;
 
 
-import com.danielflower.crickam.stats.Distribution;
-import com.danielflower.crickam.stats.Range;
-import com.danielflower.crickam.stats.SimpleRange;
+import com.danielflower.crickam.scorer.stats.Distribution;
+import com.danielflower.crickam.scorer.stats.Range;
+import com.danielflower.crickam.scorer.stats.SimpleRange;
 
 import static java.util.Arrays.asList;
 

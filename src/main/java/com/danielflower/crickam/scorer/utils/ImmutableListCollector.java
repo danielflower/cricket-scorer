@@ -1,4 +1,4 @@
-package com.danielflower.crickam.utils;
+package com.danielflower.crickam.scorer.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;

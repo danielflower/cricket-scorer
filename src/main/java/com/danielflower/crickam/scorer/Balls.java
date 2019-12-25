@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.Objects;
 

@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;

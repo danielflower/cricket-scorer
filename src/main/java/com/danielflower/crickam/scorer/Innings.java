@@ -1,12 +1,12 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.time.Instant;
 import java.util.Optional;
 
-import static com.danielflower.crickam.utils.ImmutableListCollector.toImmutableList;
+import static com.danielflower.crickam.scorer.utils.ImmutableListCollector.toImmutableList;
 import static java.util.Objects.requireNonNull;
 
 public final class Innings {

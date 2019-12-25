@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer.data;
 import com.danielflower.crickam.scorer.Gender;
 import com.danielflower.crickam.scorer.Handedness;
 import com.danielflower.crickam.scorer.PlayerBuilder;
-import com.danielflower.crickam.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.UUID;
 

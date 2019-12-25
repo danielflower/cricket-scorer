@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.stats.Distribution;
-import com.danielflower.crickam.stats.SimpleRange;
+import com.danielflower.crickam.scorer.stats.Distribution;
+import com.danielflower.crickam.scorer.stats.SimpleRange;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

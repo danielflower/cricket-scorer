@@ -1,4 +1,4 @@
-package com.danielflower.crickam.stats;
+package com.danielflower.crickam.scorer.stats;
 
 public final class Chance {
 
