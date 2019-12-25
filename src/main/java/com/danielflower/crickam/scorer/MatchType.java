@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 
 public enum MatchType {
-	LimitedOvers,
-	LimitedTime
+	TEST, FIRST_CLASS, ONE_DAY, ODI, T20, T20I, OTHER
 }
 

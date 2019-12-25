@@ -1,9 +1,13 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A dismissal of a batter
+ */
 public final class Dismissal {
     private final DismissalType type;
     private final Player batter;
@@ -17,14 +21,23 @@ public final class Dismissal {
         this.executor = executor;
     }
 
+    /**
+     * @return The batter who was dismissed
+     */
     public Player batter() {
         return batter;
     }
 
+    /**
+     * @return The mode of dismissal
+     */
     public DismissalType type() {
         return type;
     }
 
+    /**
+     * @return The bowler
+     */
     public Player bowler() {
         return bowler;
     }
@@ -37,6 +50,9 @@ public final class Dismissal {
         return Optional.ofNullable(executor);
     }
 
+    /**
+     * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
+     */
     public String toScorecardString() {
         String bowler = this.bowler == null ? null : this.bowler().familyName();
         String fielder = this.executor == null ? null : this.executor.familyName();
@@ -63,6 +79,22 @@ public final class Dismissal {
     @Override
     public String toString() {
         return toScorecardString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dismissal dismissal = (Dismissal) o;
+        return type == dismissal.type &&
+            batter.equals(dismissal.batter) &&
+            bowler.equals(dismissal.bowler) &&
+            Objects.equals(executor, dismissal.executor);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, batter, bowler, executor);
     }
 }
 

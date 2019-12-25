@@ -20,6 +20,28 @@ public final class Ball {
     private final Player fielder;
 	private final Instant dateCompleted;
 
+    Ball(int id, Player striker, Player nonStriker, int numberInOver, Player bowler,
+         Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
+         Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
+        this.id = id;
+        this.fielder = fielder;
+        this.trajectoryAtImpact = trajectoryAtImpact;
+        this.bowler = requireNonNull(bowler, "bowler");
+        this.striker = requireNonNull(striker);
+        this.nonStriker = requireNonNull(nonStriker);
+        this.numberInOver = numberInOver;
+        this.delivery = delivery;
+        this.swing = swing;
+        this.score = requireNonNull(score);
+        this.dismissal = dismissal;
+        this.playersCrossed = playersCrossed;
+        this.dateCompleted = requireNonNull(dateCompleted);
+    }
+
+    public int id() {
+        return id;
+    }
+
 	public Player striker() {
         return striker;
     }
@@ -32,27 +54,23 @@ public final class Ball {
         return bowler;
     }
 
-    public int id() {
-        return id;
-    }
-
     public int numberInOver() {
         return numberInOver;
     }
 
-    public Delivery delivery() {
-        return delivery;
+    public Optional<Delivery> delivery() {
+        return Optional.ofNullable(delivery);
     }
 
-    public Swing getSwing() {
-        return swing;
+    public Optional<Swing> batterSwing() {
+        return Optional.ofNullable(swing);
     }
 
     public Score score() {
         return score;
     }
 
-    public boolean getPlayersCrossed() {
+    public boolean playersCrossed() {
         return playersCrossed;
     }
 
@@ -60,37 +78,22 @@ public final class Ball {
         return Optional.ofNullable(dismissal);
     }
 
-    public boolean isLegal() {
-        return score().wides() == 0 && score().noBalls() == 0;
+    /**
+     * @return True if this is a valid, or legal ball (i.e. a ball that was not a wide or no-ball)
+     */
+    public boolean isValid() {
+        return score().validBalls() > 0;
     }
 
-    Ball(int id, Player striker, Player nonStriker, int numberInOver, Player bowler,
-         Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
-         Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
-        this.id = id;
-	    this.fielder = fielder;
-	    this.trajectoryAtImpact = trajectoryAtImpact;
-	    this.bowler = requireNonNull(bowler, "bowler");
-        this.striker = requireNonNull(striker);
-        this.nonStriker = requireNonNull(nonStriker);
-	    this.numberInOver = numberInOver;
-	    this.delivery = delivery;
-	    this.swing = swing;
-        this.score = requireNonNull(score);
-	    this.dismissal = dismissal;
-	    this.playersCrossed = playersCrossed;
-        this.dateCompleted = requireNonNull(dateCompleted);
+    public Optional<Trajectory> trajectoryAtImpact() {
+        return Optional.ofNullable(trajectoryAtImpact);
     }
 
-    public Trajectory getTrajectoryAtImpact() {
-        return trajectoryAtImpact;
-    }
-
-    public Optional<Player> getFielder() {
+    public Optional<Player> fielder() {
         return Optional.ofNullable(fielder);
     }
 
-	public Instant getDateCompleted() {
+	public Instant dateCompleted() {
 		return dateCompleted;
 	}
 }

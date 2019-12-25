@@ -14,39 +14,41 @@ public final class Match {
      * many match objects will be created during a match which can use a lot of memory. This allows less duplication of fields.
      */
     private static class FixedData {
+
         private final String matchID;
         private final Series series;
         private final Instant startTime;
         private final ImmutableList<LineUp> teams;
         private final MatchType matchType;
-        private final int numberOfInningsPerTeam;
+        private final int inningsPerTeam;
         private final int oversPerInnings;
         private final Venue venue;
         private final int numberOfScheduledDays;
-
-        private FixedData(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, Venue venue, int numberOfScheduledDays) {
+        private final int ballsPerInnings;
+        private FixedData(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, int oversPerInnings, Venue venue, int numberOfScheduledDays, int ballsPerInnings) {
             this.matchID = matchID;
             this.series = series;
             this.startTime = startTime;
             this.teams = teams;
             this.matchType = matchType;
-            this.numberOfInningsPerTeam = numberOfInningsPerTeam;
+            this.inningsPerTeam = inningsPerTeam;
             this.oversPerInnings = oversPerInnings;
             this.venue = venue;
             this.numberOfScheduledDays = numberOfScheduledDays;
+            this.ballsPerInnings = ballsPerInnings;
         }
+
     }
-
     private final FixedData data;
-    private final ImmutableList<Innings> inningsList;
 
+    private final ImmutableList<Innings> inningsList;
     private Match(FixedData data, ImmutableList<Innings> inningsList) {
         this.data = data;
         this.inningsList = inningsList;
     }
 
-    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, Venue venue, ImmutableList<Innings> inningsList) {
-        this(new FixedData(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays), inningsList);
+    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, int ballsPerInnings, Venue venue, ImmutableList<Innings> inningsList) {
+        this(new FixedData(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, ballsPerInnings), inningsList);
     }
 
 
@@ -64,7 +66,7 @@ public final class Match {
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
             InningsStartingEvent ise = (InningsStartingEvent) event;
-            newInningsList = inningsList.add(Innings.newInnings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), oversPerInnings()));
+            newInningsList = inningsList.add(Innings.newInnings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), this.ballsPerInnings()));
         } else {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {
@@ -75,6 +77,7 @@ public final class Match {
 
         return new Match(data, newInningsList);
     }
+
 
     public String matchID() {
         return data.matchID;
@@ -92,25 +95,39 @@ public final class Match {
         return data.teams;
     }
 
+    /**
+     * @return The number of scheduled balls per innings, or -1 if there is no limit.
+     */
+    public int ballsPerInnings() {
+        return data.ballsPerInnings;
+    }
+
+    /**
+     * @return The number of scheduled balls per innings, or -1 if there is no limit.
+     */
+    public int oversPerInnings() {
+        return data.oversPerInnings;
+    }
+
     public MatchType matchType() {
         return data.matchType;
     }
 
+    /**
+     * @return The number of innings per team. Generally 1 for limited overs matches and 2 for first class / test matches.
+     */
     public int numberOfInningsPerTeam() {
-        return data.numberOfInningsPerTeam;
-    }
-
-    public int oversPerInnings() {
-        return data.oversPerInnings;
+        return data.inningsPerTeam;
     }
 
     public Venue venue() {
         return data.venue;
     }
 
+    /**
+     * @return The number of days this match goes for. Generally 1 for limited overs matches, and 5 for test matches.
+     */
     public int numberOfScheduledDays() {
         return data.numberOfScheduledDays;
     }
 }
-
-

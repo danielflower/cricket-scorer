@@ -122,7 +122,7 @@ public final class ScoreBuilder {
             .withTwos(score.twos())
             .withSingles(score.singles())
             .withRunsFromBat(score.batterRuns())
-            .withValidBalls(score.balls())
+            .withValidBalls(score.validBalls())
             .withDots(score.dots())
             .withByes(score.byes())
             .withFours(score.fours())

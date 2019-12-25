@@ -104,6 +104,10 @@ public final class Delivery {
         return Objects.hash(deliveryType, speedInKilometers, positionOfBounce, horizontalPitchInMeters, changeInLineAfterBounceInDegrees, bowledFrom);
     }
 
+    /**
+     *
+     * @return A new builder
+     */
     public static Builder delivery() {
         return new Builder();
     }
@@ -116,32 +120,32 @@ public final class Delivery {
         private Double changeInLineAfterBounceInDegrees;
         private WicketSide bowledFrom;
 
-        public Builder setDeliveryType(DeliveryType deliveryType) {
+        public Builder withDeliveryType(DeliveryType deliveryType) {
             this.deliveryType = deliveryType;
             return this;
         }
 
-        public Builder setSpeedInKilometers(Integer speedInKilometers) {
+        public Builder withSpeedInKilometers(Integer speedInKilometers) {
             this.speedInKilometers = speedInKilometers;
             return this;
         }
 
-        public Builder setPositionOfBounce(Double positionOfBounce) {
+        public Builder withPositionOfBounce(Double positionOfBounce) {
             this.positionOfBounce = positionOfBounce;
             return this;
         }
 
-        public Builder setHorizontalPitchInMeters(Double horizontalPitchInMeters) {
+        public Builder withHorizontalPitchInMeters(Double horizontalPitchInMeters) {
             this.horizontalPitchInMeters = horizontalPitchInMeters;
             return this;
         }
 
-        public Builder setChangeInLineAfterBounceInDegrees(Double changeInLineAfterBounceInDegrees) {
+        public Builder withChangeInLineAfterBounceInDegrees(Double changeInLineAfterBounceInDegrees) {
             this.changeInLineAfterBounceInDegrees = changeInLineAfterBounceInDegrees;
             return this;
         }
 
-        public Builder setBowledFrom(WicketSide bowledFrom) {
+        public Builder withBowledFrom(WicketSide bowledFrom) {
             this.bowledFrom = bowledFrom;
             return this;
         }

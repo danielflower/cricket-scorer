@@ -2,23 +2,44 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.utils.ImmutableList;
 
+/**
+ * A bowling spell for a single bowler.
+ * <p>Any overs bowled consecutively by a bowler (i.e. where there is a gap of just one over between two overs)
+ * are considered part of a single spell.</p>
+ */
 public final class BowlingSpell {
 	private final Player bowler;
     private final int spellNumber;
     private final ImmutableList<Over> overs;
 	private final Balls balls;
 
+    /**
+     * @return The bowler
+     */
 	public Player bowler() {
 		return bowler;
 	}
 
+    /**
+     * @return The overs in this spell
+     */
 	public ImmutableList<Over> overs() {
 		return overs;
 	}
 
+    /**
+     * @return All the balls in this spell
+     */
 	public Balls balls() {
 		return balls;
 	}
+
+    /**
+     * @return The total score in this spell.
+     */
+	public Score score() {
+	    return balls.score();
+    }
 
     /**
      * @return The spell number that this spell is for this bowler. Their first bowling spell will return 1.
@@ -26,6 +47,13 @@ public final class BowlingSpell {
 	public int spellNumber() {
 		return spellNumber;
 	}
+
+    /**
+     * @return The number of maidens bowled in this spell
+     */
+    public int maidens() {
+        return (int) overs.stream().filter(Over::isMaiden).count();
+    }
 
 	BowlingSpell(Player bowler, int spellNumber, ImmutableList<Over> overs, Balls balls) {
 		this.bowler = bowler;
@@ -65,12 +93,8 @@ public final class BowlingSpell {
                 '}';
     }
 
-    public BowlingSpell onBall(Over over, Ball ball) {
+    BowlingSpell onBall(Over over, Ball ball) {
         return new BowlingSpell(bowler, spellNumber, overs.add(over), balls.add(ball));
-    }
-
-    public int maidens() {
-        return (int) overs.stream().filter(Over::isMaiden).count();
     }
 }
 

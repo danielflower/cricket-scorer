@@ -17,8 +17,8 @@ public final class Over {
     }
 
     public Over onBall(Ball ball) {
-        BatterInnings striker = ball.getPlayersCrossed() ? this.nonStriker : this.striker;
-        BatterInnings nonStriker = ball.getPlayersCrossed() ? this.striker : this.nonStriker;
+        BatterInnings striker = ball.playersCrossed() ? this.nonStriker : this.striker;
+        BatterInnings nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
         return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
     }
 
@@ -72,7 +72,7 @@ public final class Over {
     }
 
 	public int legalBalls() {
-		return (int) balls.list().stream().filter(Ball::isLegal).count();
+		return (int) balls.list().stream().filter(Ball::isValid).count();
 	}
 
     public boolean isComplete() {

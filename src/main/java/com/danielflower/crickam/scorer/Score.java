@@ -245,7 +245,7 @@ public final class Score {
         return sixes;
     }
 
-    public int balls() {
+    public int validBalls() {
         return validBalls;
     }
 

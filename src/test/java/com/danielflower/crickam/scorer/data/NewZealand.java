@@ -8,7 +8,7 @@ import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.UUID;
 
-import static com.danielflower.crickam.scorer.BowlingStyleBuilder.*;
+import static com.danielflower.crickam.scorer.BowlingStyle.Builder.*;
 import static com.danielflower.crickam.scorer.Handedness.LeftHanded;
 import static com.danielflower.crickam.scorer.PlayingRole.*;
 import static com.danielflower.crickam.scorer.data.DataUtil.player;
@@ -34,7 +34,7 @@ public class NewZealand {
     public static final Player TOM_LATHAM = player("Tom Latham").setPlayingRole(WICKET_KEEPER).setBattingHandedness(LeftHanded).setBowlingStyle(medium()).build();
     public static final Player MARTIN_GUPTILL = player("Martin Guptill").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
     public static final Player MARK_CHAPMAN = player("Mark Chapman").setPlayingRole(ALL_ROUNDER).setBattingHandedness(LeftHanded).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player TRENT_BOULT = player("Trent Boult").setPlayingRole(BOWLER).setBowlingStyle(fastMedium().setHandedness(LeftHanded)).build();
+    public static final Player TRENT_BOULT = player("Trent Boult").setPlayingRole(BOWLER).setBowlingStyle(fastMedium().withHandedness(LeftHanded)).build();
     public static final Player BJ_WATLING = player("BJ Watling").setPlayingRole(WICKET_KEEPER).setBowlingStyle(medium()).build();
     public static final Player ROSS_TAYLOR = player("Ross Taylor").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
     public static final Player ISH_SODHI = player("Ish Sodhi").setPlayingRole(BOWLER).setBowlingStyle(legSpinner()).build();

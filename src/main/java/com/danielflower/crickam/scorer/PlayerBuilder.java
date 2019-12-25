@@ -50,7 +50,7 @@ public final class PlayerBuilder {
 		return this;
 	}
 
-	public PlayerBuilder setBowlingStyle(BowlingStyleBuilder bowlingStyle) {
+	public PlayerBuilder setBowlingStyle(BowlingStyle.Builder bowlingStyle) {
 		return setBowlingStyle(bowlingStyle.build());
 	}
 
@@ -68,7 +68,7 @@ public final class PlayerBuilder {
 
 	public Player build() {
 		fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
-		BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyleBuilder.medium().setHandedness(battingHandedness).build() : bowlingStyle;
+		BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyle.Builder.medium().withHandedness(battingHandedness).build() : bowlingStyle;
 		return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingStyleToUse, playingRole);
 	}
 }

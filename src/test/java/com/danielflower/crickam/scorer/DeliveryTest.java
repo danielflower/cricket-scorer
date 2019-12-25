@@ -11,7 +11,7 @@ class DeliveryTest {
 
     @Test
     public void canBuildThem() {
-        Delivery delivery = aDelivery().setDeliveryType(DeliveryType.ARM_BALL).build();
+        Delivery delivery = aDelivery().withDeliveryType(DeliveryType.ARM_BALL).build();
         assertThat(delivery.deliveryType(), is(Optional.of(DeliveryType.ARM_BALL)));
     }
 

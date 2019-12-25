@@ -4,26 +4,61 @@ import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.Optional;
 
+/**
+ * A record of the overs bowled by a bowler in a single innings.
+ */
 public final class BowlerInnings {
-	private final Player player;
-	private final Balls balls;
-	private final ImmutableList<BowlingSpell> spells;
-	private final ImmutableList<Over> overs;
+    private final Player player;
+    private final Balls balls;
+    private final ImmutableList<BowlingSpell> spells;
+    private final ImmutableList<Over> overs;
 
-	public Player bowler() {
-		return player;
-	}
+    /**
+     * @return The bowler
+     */
+    public Player bowler() {
+        return player;
+    }
 
-	public Balls balls() {
-		return balls;
-	}
+    /**
+     * @return All the balls in this innings
+     */
+    public Balls balls() {
+        return balls;
+    }
 
-	public ImmutableList<BowlingSpell> spells() {
-		return spells;
-	}
+    /**
+     * @return All the overs in this innings
+     */
+    public ImmutableList<Over> overs() {
+        return overs;
+    }
 
-	private BowlerInnings(Player player, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs) {
-		this.player = player;
+    /**
+     * @return The spells this bowler has bowled. Any overs bowled consecutively by a bowler (i.e. where there is a
+     * gap of just one over between two overs) are considered part of a single spell.
+     */
+    public ImmutableList<BowlingSpell> spells() {
+        return spells;
+    }
+
+    /**
+     * @return The total score in this bowler's innings.
+     */
+    public Score score() {
+        return balls.score();
+    }
+
+
+    /**
+     * @return The number of maidens bowled in this innings.
+     */
+    public int maidens() {
+        return (int) overs.stream().filter(Over::isMaiden).count();
+    }
+
+    private BowlerInnings(Player player, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs) {
+        this.player = player;
         this.balls = balls;
         this.spells = spells;
         this.overs = overs;
@@ -35,7 +70,7 @@ public final class BowlerInnings {
         return new BowlerInnings(player, new Balls(), spells.add(spell), new ImmutableList<>());
     }
 
-    public BowlerInnings onBall(Over over, Ball ball) {
+    BowlerInnings onBall(Over over, Ball ball) {
         BowlingSpell bowlingSpell = this.spells.last().get();
         Optional<Over> previousOver = bowlingSpell.overs().last();
         ImmutableList<BowlingSpell> spells;
@@ -73,10 +108,6 @@ public final class BowlerInnings {
         result = 31 * result + balls.hashCode();
         result = 31 * result + spells.hashCode();
         return result;
-    }
-
-    public int maidens() {
-        return (int) overs.stream().filter(Over::isMaiden).count();
     }
 }
 

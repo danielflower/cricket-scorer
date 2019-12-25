@@ -1,33 +1,47 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.utils.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Iterator;
 import java.util.Objects;
 
-public final class Balls {
+/**
+ * An immutable list of {@link Ball} objects and their total score.
+ */
+public final class Balls implements Iterable<Ball> {
     private final ImmutableList<Ball> balls;
     private final Score score;
 
-    public Balls() {
+    Balls() {
         this(new ImmutableList<>(), Score.EMPTY);
     }
-    private Balls(ImmutableList<Ball> balls, Score score) {
+    private Balls(@NotNull ImmutableList<Ball> balls, @NotNull Score score) {
         this.balls = Objects.requireNonNull(balls);
         this.score = Objects.requireNonNull(score);
     }
 
+    /**
+     * @return The total score of all the balls in this list
+     */
     public Score score() {
 		return score;
 	}
 
+    /**
+     * @return The balls as an immutable list
+     */
     public ImmutableList<Ball> list() {
         return balls;
     }
 
-    public Balls add(Ball ball) {
+    Balls add(Ball ball) {
         return new Balls(balls.add(ball), score.add(ball.score()));
     }
 
+    /**
+     * @return The number of balls bowled (including invalid balls such as wides)
+     */
     public int size() {
         return balls.size();
     }
@@ -37,5 +51,22 @@ public final class Balls {
         return balls.size() + " (" + score.teamRuns() + " runs)";
     }
 
+    @NotNull
+    @Override
+    public Iterator<Ball> iterator() {
+        return balls.iterator();
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Balls balls1 = (Balls) o;
+        return balls.equals(balls1.balls);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(balls);
+    }
 }

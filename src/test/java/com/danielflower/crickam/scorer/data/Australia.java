@@ -8,7 +8,7 @@ import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.UUID;
 
-import static com.danielflower.crickam.scorer.BowlingStyleBuilder.*;
+import static com.danielflower.crickam.scorer.BowlingStyle.Builder.*;
 import static com.danielflower.crickam.scorer.Handedness.LeftHanded;
 import static com.danielflower.crickam.scorer.PlayingRole.*;
 import static com.danielflower.crickam.scorer.data.DataUtil.player;
@@ -16,9 +16,9 @@ import static com.danielflower.crickam.scorer.data.DataUtil.player;
 public class Australia {
 
     public static final Player SEAN_ABBOT = player("Sean Abbot").setPlayingRole(BOWLER).setBowlingStyle(fastMedium()).build();
-    public static final Player JASON_BEHRENDORFF = player("Jason Behrendorff").setPlayingRole(BOWLER).setBowlingStyle(fastMedium().setHandedness(LeftHanded)).build();
+    public static final Player JASON_BEHRENDORFF = player("Jason Behrendorff").setPlayingRole(BOWLER).setBowlingStyle(fastMedium().withHandedness(LeftHanded)).build();
     public static final Player PAT_CUMMINS = player("Pat Cummins").setPlayingRole(BOWLER).setBowlingStyle(fast()).build();
-    public static final Player MARCUS_HARRIS = player("Marcus Harris").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(medium().setHandedness(LeftHanded)).build();
+    public static final Player MARCUS_HARRIS = player("Marcus Harris").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(medium().withHandedness(LeftHanded)).build();
     public static final Player USMAN_KHAWAJA = player("Usman Khawaja").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(medium()).build();
     public static final Player BEN_MC_DERMOTT = player("Ben McDermott").setPlayingRole(WICKET_KEEPER).setBowlingStyle(medium()).build();
     public static final Player TIM_PAINE = player("Tim Paine").setPlayingRole(WICKET_KEEPER).setBowlingStyle(medium()).build();

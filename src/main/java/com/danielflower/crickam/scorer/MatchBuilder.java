@@ -11,9 +11,10 @@ public final class MatchBuilder {
     private ImmutableList<LineUp> teams;
     private MatchType matchType;
     private int numberOfInningsPerTeam;
-    private int oversPerInnings;
+    private int oversPerInnings = -1;
     private int numberOfScheduledDays;
     private Venue venue;
+    private int ballsPerInnings = -1;
 
     public MatchBuilder withMatchID(String matchID) {
         this.matchID = matchID;
@@ -50,6 +51,11 @@ public final class MatchBuilder {
         return this;
     }
 
+    public MatchBuilder withBallsPerInnings(int ballsPerInnings) {
+        this.ballsPerInnings = ballsPerInnings;
+        return this;
+    }
+
     public MatchBuilder withNumberOfScheduledDays(int numberOfScheduledDays) {
         this.numberOfScheduledDays = numberOfScheduledDays;
         return this;
@@ -61,6 +67,6 @@ public final class MatchBuilder {
     }
 
     public Match build() {
-        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, new ImmutableList<>());
+        return new Match(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, venue, new ImmutableList<>());
     }
 }
