@@ -38,11 +38,11 @@ class InningsTest {
         assertThat(firstInnings.currentStriker().get().player(), is(opener1));
         assertThat(firstInnings.currentNonStriker().get().player(), is(opener2));
         assertThat(firstInnings.yetToBat(), contains(nz.getPlayers().get(2), nz.getPlayers().get(3), nz.getPlayers().get(4), nz.getPlayers().get(5), nz.getPlayers().get(6), nz.getPlayers().get(7), nz.getPlayers().get(8), nz.getPlayers().get(9), nz.getPlayers().get(10)));
-        assertThat(firstInnings.originalNumberOfScheduledOvers(), is(50));
+        assertThat(firstInnings.originalNumberOfScheduledOvers(), is(Optional.of(50)));
         assertThat(firstInnings.overs().isEmpty(), is(true));
         assertThat(firstInnings.currentOver(), is(Optional.empty()));
         assertThat(firstInnings.allOut(), is(false));
-        assertThat(firstInnings.numberOfBallsRemaining(), is(300));
+        assertThat(firstInnings.numberOfBallsRemaining(), is(Optional.of(300)));
         assertThat(firstInnings.balls().size(), is(0));
         assertThat(firstInnings.inningsNumber(), is(1));
         assertThat(firstInnings.batterInningsList().size(), is(2));
@@ -68,7 +68,7 @@ class InningsTest {
         assertThat(innings.currentStriker().get().player(), sameInstance(nz.getPlayers().get(0)));
         assertThat(innings.currentNonStriker().get().player(), sameInstance(nz.getPlayers().get(1)));
         assertThat(innings.yetToBat(), contains(nz.getPlayers().get(2), nz.getPlayers().get(3), nz.getPlayers().get(4), nz.getPlayers().get(5), nz.getPlayers().get(6), nz.getPlayers().get(7), nz.getPlayers().get(8), nz.getPlayers().get(9), nz.getPlayers().get(10)));
-        assertThat(innings.originalNumberOfScheduledOvers(), is(50));
+        assertThat(innings.originalNumberOfScheduledOvers(), is(Optional.of(50)));
         assertThat(innings.overs().size(), is(1));
         Over over = innings.overs().get(0);
         assertThat(over.remainingBalls(), is(6));
@@ -85,7 +85,7 @@ class InningsTest {
 
         assertThat(innings.currentOver(), is(Optional.of(over)));
         assertThat(innings.allOut(), is(false));
-        assertThat(innings.numberOfBallsRemaining(), is(300));
+        assertThat(innings.numberOfBallsRemaining(), is(Optional.of(300)));
         assertThat(innings.balls().size(), is(0));
         assertThat(innings.inningsNumber(), is(1));
         assertThat(innings.batterInningsList(), contains(innings.currentStriker().get(), innings.currentNonStriker().get()));

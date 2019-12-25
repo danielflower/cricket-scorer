@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
 import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
@@ -36,7 +37,8 @@ class MatchControlTest {
         );
 
         assertThat(control.current(), sameInstance(match));
-        assertThat(match.oversPerInnings(), is(50));
+        assertThat(match.oversPerInnings(), is(Optional.of(50)));
+        assertThat(match.ballsPerInnings(), is(Optional.of(300)));
         assertThat(match.currentInnings().isPresent(), is(true));
 
         Innings innings = match.currentInnings().get();

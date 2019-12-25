@@ -21,11 +21,11 @@ public final class Match {
         private final ImmutableList<LineUp> teams;
         private final MatchType matchType;
         private final int inningsPerTeam;
-        private final int oversPerInnings;
+        private final Integer oversPerInnings;
         private final Venue venue;
         private final int numberOfScheduledDays;
-        private final int ballsPerInnings;
-        private FixedData(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, int oversPerInnings, Venue venue, int numberOfScheduledDays, int ballsPerInnings) {
+        private final Integer ballsPerInnings;
+        private FixedData(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings) {
             this.matchID = matchID;
             this.series = series;
             this.startTime = startTime;
@@ -47,7 +47,7 @@ public final class Match {
         this.inningsList = inningsList;
     }
 
-    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, int numberOfScheduledDays, int ballsPerInnings, Venue venue, ImmutableList<Innings> inningsList) {
+    Match(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, Integer oversPerInnings, int numberOfScheduledDays, Integer ballsPerInnings, Venue venue, ImmutableList<Innings> inningsList) {
         this(new FixedData(matchID, series, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, ballsPerInnings), inningsList);
     }
 
@@ -66,7 +66,7 @@ public final class Match {
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
             InningsStartingEvent ise = (InningsStartingEvent) event;
-            newInningsList = inningsList.add(Innings.newInnings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), this.ballsPerInnings()));
+            newInningsList = inningsList.add(Innings.newInnings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), data.ballsPerInnings));
         } else {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {
@@ -98,15 +98,15 @@ public final class Match {
     /**
      * @return The number of scheduled balls per innings, or -1 if there is no limit.
      */
-    public int ballsPerInnings() {
-        return data.ballsPerInnings;
+    public Optional<Integer> ballsPerInnings() {
+        return Optional.ofNullable(data.ballsPerInnings);
     }
 
     /**
      * @return The number of scheduled balls per innings, or -1 if there is no limit.
      */
-    public int oversPerInnings() {
-        return data.oversPerInnings;
+    public Optional<Integer> oversPerInnings() {
+        return Optional.ofNullable(data.oversPerInnings);
     }
 
     public MatchType matchType() {

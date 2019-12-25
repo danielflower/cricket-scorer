@@ -30,7 +30,7 @@ public final class Innings {
     private final ImmutableList<BowlerInnings> bowlerInningses;
     private final FixedData data;
     private final State state;
-    private final int maxBalls;
+    private final Integer maxBalls;
 
     Innings onEvent(MatchEvent event) {
         if (state == State.COMPLETED) {
@@ -288,7 +288,7 @@ public final class Innings {
         return state;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, int maxBalls) {
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxBalls) {
         this.maxBalls = maxBalls;
         if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
             throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
@@ -307,7 +307,7 @@ public final class Innings {
         this.state = requireNonNull(state);
     }
 
-    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, int scheduledNumberOfBalls) {
+    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Integer scheduledNumberOfBalls) {
         FixedData fixedData = new FixedData(match, battingTeam, bowlingTeam, inningsNumber, startTime);
 
         BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
@@ -321,18 +321,21 @@ public final class Innings {
     }
 
     /**
-     * @return The number of scheduled balls remaining in the innings, or -1 if this innings does not have a limit.
+     * @return The number of scheduled balls remaining in the innings, or empty if this innings does not have a limit.
      */
-    public int numberOfBallsRemaining() {
-        int limit = numberOfScheduledBalls();
-        return limit == -1 ? -1 : limit - balls().score().validDeliveries();
+    public Optional<Integer> numberOfBallsRemaining() {
+        Optional<Integer> scheduled = numberOfScheduledBalls();
+        if (scheduled.isEmpty()) {
+            return scheduled;
+        }
+        return Optional.of(scheduled.get() - balls().score().validDeliveries());
     }
 
     /**
      * @return Returns true if the batting team is {@link #allOut()} or if this is a limited overs match and {@link #numberOfBallsRemaining()} is 0
      */
     public boolean isFinished() {
-        return allOut() || numberOfBallsRemaining() == 0;
+        return allOut() || numberOfBallsRemaining().orElse(-1) == 0;
     }
 
     private BatterInnings findBatterInnings(Player target) {
@@ -392,25 +395,25 @@ public final class Innings {
 
     /**
      * @return The current total number of scheduled balls in the innings, after adjustments such as reductions due
-     * to bad weather. (Returns -1 if there is no limit)
+     * to bad weather. (Returns empty if there is no limit)
      * @see #originalNumberOfScheduledBalls()
      */
-    public int numberOfScheduledBalls() {
-        return maxBalls;
+    public Optional<Integer> numberOfScheduledBalls() {
+        return Optional.of(maxBalls);
     }
 
     /**
-     * @return The number of scheduled balls at the beginning of the innings, or -1 if there is no limit.
+     * @return The number of scheduled balls at the beginning of the innings, or empty if there is no limit.
      * @see #numberOfScheduledBalls()
      */
-    public int originalNumberOfScheduledBalls() {
+    public Optional<Integer> originalNumberOfScheduledBalls() {
         return data.matchAtStart.ballsPerInnings();
     }
 
     /**
-     * @return The number of scheduled overs in this match, or -1 if there is no limit
+     * @return The number of scheduled overs in this match, or empty if there is no limit
      */
-    public int originalNumberOfScheduledOvers() {
+    public Optional<Integer> originalNumberOfScheduledOvers() {
         return data.matchAtStart.oversPerInnings();
     }
 
