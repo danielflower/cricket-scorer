@@ -92,8 +92,8 @@ class InningsTest {
         assertThat(innings.battingTeam(), sameInstance(nz));
         assertThat(innings.bowlingTeam(), sameInstance(aus));
         assertThat(innings.currentPartnership().get().balls().size(), is(0));
-        assertThat(innings.currentPartnership().get().firstBatter(), sameInstance(innings.currentStriker().get()));
-        assertThat(innings.currentPartnership().get().secondBatter(), sameInstance(innings.currentNonStriker().get()));
+        assertThat(innings.currentPartnership().get().firstBatter(), sameInstance(innings.currentStriker().get().player()));
+        assertThat(innings.currentPartnership().get().secondBatter(), sameInstance(innings.currentNonStriker().get().player()));
         assertThat(innings.partnerships(), contains(innings.currentPartnership().get()));
         assertThat(innings.wicketsRemaining(), is(10));
         assertThat(innings.bowlerInningsList().isEmpty(), is(false));
@@ -124,8 +124,8 @@ class InningsTest {
         assertThat(innings.balls().score().teamRuns(), is(1));
         assertThat(innings.currentStriker().get().player(), is(opener2));
         assertThat(innings.currentNonStriker().get().player(), is(opener1));
-        assertThat(innings.currentPartnership().get().totalRuns(), is(1));
-        assertThat(innings.currentPartnership().get().endTime(), is(nullValue()));
+        assertThat(innings.currentPartnership().get().score().teamRuns(), is(1));
+        assertThat(innings.currentPartnership().get().endTime(), is(Optional.empty()));
         assertThat(innings.currentPartnership().get().firstBatterContribution().size(), is(1));
         assertThat(innings.currentPartnership().get().firstBatterContribution().score().teamRuns(), is(1));
         assertThat(innings.currentPartnership().get().secondBatterContribution().size(), is(0));
@@ -136,7 +136,7 @@ class InningsTest {
             .build());
         assertThat(innings.currentStriker().get().player(), is(opener2));
         assertThat(innings.currentNonStriker().get().player(), is(opener1));
-        assertThat(innings.currentPartnership().get().totalRuns(), is(3));
+        assertThat(innings.currentPartnership().get().score().teamRuns(), is(3));
 
         innings = innings.onEvent(ballCompleted()
             .withRunsScored(Score.THREE)
@@ -144,7 +144,7 @@ class InningsTest {
             .build());
         assertThat(innings.currentStriker().get().player(), is(opener1));
         assertThat(innings.currentNonStriker().get().player(), is(opener2));
-        assertThat(innings.currentPartnership().get().totalRuns(), is(6));
+        assertThat(innings.currentPartnership().get().score().teamRuns(), is(6));
 
         innings = innings
             .onEvent(dotBall())
@@ -168,8 +168,8 @@ class InningsTest {
         assertThat(innings.state(), is(Innings.State.IN_PROGRESS));
 
         assertThat(innings.currentPartnership(), is(Optional.empty()));
-        assertThat(innings.partnerships().last().get().totalRuns(), is(7));
-        assertThat(innings.partnerships().last().get().endTime(), is(not(nullValue())));
+        assertThat(innings.partnerships().last().get().score().teamRuns(), is(7));
+        assertThat(innings.partnerships().last().get().endTime().isPresent(), is(true));
         assertThat(innings.partnerships().last().get().firstBatterContribution().size(), is(5));
         assertThat(innings.partnerships().last().get().firstBatterContribution().score().validDeliveries(), is(4));
         assertThat(innings.partnerships().last().get().firstBatterContribution().score().teamRuns(), is(2));
@@ -367,6 +367,7 @@ class InningsTest {
     @Test
     void exceptionThrownIfBallIsBowledWithoutBatterComingIn() {
         assertThat(firstInnings.partnerships().size(), is(1));
+        assertThat(firstInnings.partnerships().get(0).brokenByWicket(), is(false));
         assertThat(firstInnings.partnerships().get(0).wicketNumber(), is(1));
         Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(6).build())
             .onEvent(single())
@@ -382,6 +383,7 @@ class InningsTest {
 
         assertThat(firstInnings.partnerships().size(), is(1));
         assertThat(firstInnings.partnerships().get(0).wicketNumber(), is(1));
+        assertThat(firstInnings.partnerships().get(0).startTime(), is(not(nullValue())));
         Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(6).build())
             .onEvent(single())
             .onEvent(single())
@@ -398,6 +400,8 @@ class InningsTest {
         assertThat(batters.get(2).player(), is(sameInstance(number3)));
         assertThat(innings.yetToBat(), equalTo(nz.getPlayers().view(3, 10)));
         assertThat(innings.partnerships().size(), is(2));
+        assertThat(innings.partnerships().get(0).brokenByWicket(), is(true));
+        assertThat(innings.partnerships().get(1).brokenByWicket(), is(false));
     }
 
     private BallCompletedEvent wicket() {

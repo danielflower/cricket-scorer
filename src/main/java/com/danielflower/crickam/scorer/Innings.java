@@ -161,7 +161,7 @@ public final class Innings {
             yetToBat = yetToBat.stream().filter(p -> !p.equals(batter)).collect(toImmutableList());
             BatterInnings newBatterInnings = BatterInnings.newInnings(batter, batters.size());
             batters = batters.add(newBatterInnings);
-            Partnership newPartnership = Partnership.newPartnership(partnerships.size(), striker == null ? nonStriker : striker, newBatterInnings);
+            Partnership newPartnership = Partnership.newPartnership(partnerships.size(), striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player());
             partnerships = partnerships.add(newPartnership);
             if (striker == null) {
                 striker = newBatterInnings;
@@ -313,7 +313,7 @@ public final class Innings {
         BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
         BatterInnings currentNonStriker = BatterInnings.newInnings(openers.get(1), 2);
 
-        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker, currentNonStriker));
+        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker.player(), currentNonStriker.player()));
         ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
         ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
