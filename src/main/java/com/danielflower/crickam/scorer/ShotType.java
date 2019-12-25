@@ -31,11 +31,17 @@ public enum ShotType {
         this.name = name;
     }
 
-    public String getName() {
+    /**
+     * @return The name of the shot in english, for example &quot;cover driver&quot;
+     */
+    public String displayName() {
         return name;
     }
 
-    public Category getCategory() {
+    /**
+     * @return The category of shot, for example if it was hit with a vertical bat, or is a leave, etc
+     */
+    public Category category() {
         return category;
     }
 
