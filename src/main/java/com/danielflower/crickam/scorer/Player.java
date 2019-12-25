@@ -2,10 +2,18 @@ package com.danielflower.crickam.scorer;
 
 
 import com.danielflower.crickam.scorer.utils.ImmutableList;
+import com.danielflower.crickam.scorer.utils.ImmutableListCollector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A cricket player
+ * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
+ */
 public final class Player {
 
 	private final Gender gender;
@@ -20,14 +28,14 @@ public final class Player {
 	Player(@NotNull String id, @NotNull Gender gender, @NotNull ImmutableList<String> givenNames, @NotNull String familyName,
                   @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull BowlingStyle bowlingStyle,
                   @NotNull PlayingRole playingRole) {
-		this.id = id;
-		this.gender = gender;
-        this.givenNames = givenNames;
-        this.fullName = fullName;
-		this.battingHandedness = battingHandedness;
-		this.familyName = familyName;
-		this.bowlingStyle = bowlingStyle;
-		this.playingRole = playingRole;
+        this.id = requireNonNull(id);
+        this.gender = requireNonNull(gender);
+        this.givenNames = requireNonNull(givenNames);
+        this.fullName = requireNonNull(fullName);
+        this.battingHandedness = requireNonNull(battingHandedness);
+        this.familyName = requireNonNull(familyName);
+        this.bowlingStyle = requireNonNull(bowlingStyle);
+        this.playingRole = requireNonNull(playingRole);
 	}
 
 	public String toString() {
@@ -83,4 +91,83 @@ public final class Player {
         return playingRole;
     }
 
+    public static Builder player() {
+	    return new Builder();
+    }
+
+    /**
+     * A builder of {@link Player} objects.
+     */
+    public static final class Builder {
+        private String id;
+        private ImmutableList<String> givenNames;
+        private String familyName;
+        private String fullName;
+        private Handedness battingHandedness = Handedness.RightHanded;
+        private BowlingStyle bowlingStyle;
+        private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
+        private Gender gender;
+
+        public Builder withGivenNames(ImmutableList<String> givenNames) {
+            this.givenNames = givenNames;
+            return this;
+        }
+
+        public Builder withGender(Gender gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Builder withFamilyName(String familyName) {
+            this.familyName = familyName;
+            return this;
+        }
+
+        public Builder withFullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
+
+        public Builder withBattingHandedness(Handedness battingHandedness) {
+            this.battingHandedness = battingHandedness;
+            return this;
+        }
+
+        public Builder withPlayingRole(PlayingRole playingRole) {
+            this.playingRole = playingRole;
+            return this;
+        }
+
+        public Builder withBowlingStyle(BowlingStyle bowlingStyle) {
+            this.bowlingStyle = bowlingStyle;
+            return this;
+        }
+
+        public Builder withBowlingStyle(BowlingStyle.Builder bowlingStyle) {
+            return withBowlingStyle(bowlingStyle.build());
+        }
+
+        /**
+         * Associates a unique ID for this player
+         * @param id A unique ID
+         * @return This builder
+         */
+        public Builder withId(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withName(String name) {
+            String[] bits = name.split(" ");
+            return withFullName(name)
+                .withFamilyName(bits[bits.length - 1])
+                .withGivenNames(Stream.of(bits).skip(1).collect(ImmutableListCollector.toImmutableList()));
+        }
+
+        public Player build() {
+            fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
+            BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyle.Builder.medium().withHandedness(battingHandedness).build() : bowlingStyle;
+            return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingStyleToUse, playingRole);
+        }
+    }
 }

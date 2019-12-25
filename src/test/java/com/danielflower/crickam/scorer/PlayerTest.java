@@ -12,9 +12,9 @@ class PlayerTest {
 
     @Test
     public void canCreate() {
-        Player player = aPlayer().setGender(Gender.MALE)
-            .setGivenNames(ImmutableList.of("Kane", "Stuart"))
-            .setFamilyName("Williamson")
+        Player player = aPlayer().withGender(Gender.MALE)
+            .withGivenNames(ImmutableList.of("Kane", "Stuart"))
+            .withFamilyName("Williamson")
             .build();
         assertThat(player.gender(), is(Gender.MALE));
         assertThat(player.familyName(), is("Williamson"));
@@ -23,14 +23,15 @@ class PlayerTest {
     }
 
 
-    public static PlayerBuilder aPlayer() {
-        return new PlayerBuilder()
-            .setId(UUID.randomUUID().toString())
-            .setBattingHandedness(Handedness.RightHanded)
-            .setBowlingStyle(BowlingStyle.Builder.medium().withHandedness(Handedness.RightHanded).build())
-            .setFamilyName("Taylor")
-            .setGivenNames(ImmutableList.of("Ross"))
-            .setPlayingRole(PlayingRole.BATTER);
+    public static Player.Builder aPlayer() {
+        return new Player.Builder()
+            .withId(UUID.randomUUID().toString())
+            .withBattingHandedness(Handedness.RightHanded)
+            .withBowlingStyle(BowlingStyle.Builder.medium().withHandedness(Handedness.RightHanded).build())
+            .withFamilyName("Taylor")
+            .withGivenNames(ImmutableList.of("Ross"))
+            .withGender(Gender.MALE)
+            .withPlayingRole(PlayingRole.BATTER);
     }
 
 

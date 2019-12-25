@@ -15,36 +15,36 @@ import static com.danielflower.crickam.scorer.data.DataUtil.player;
 
 public class NewZealand {
 
-    public static final Player GEORGE_WORKER = player("George Worker").setPlayingRole(ALL_ROUNDER).setBattingHandedness(LeftHanded).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player NEIL_WAGNER = player("Neil Wagner").setPlayingRole(BOWLER).setBattingHandedness(LeftHanded).setBowlingStyle(mediumFast()).build();
-    public static final Player TIM_SOUTHEE = player("Tim Southee").setPlayingRole(BOWLER).setBowlingStyle(mediumFast()).build();
-    public static final Player TIM_SEIFERT = player("Tim Seifert").setPlayingRole(WICKET_KEEPER).setBowlingStyle(medium()).build();
-    public static final Player JEET_RAVAL = player("Jeet Raval").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(legSpinner()).build();
-    public static final Player HENRY_NICHOLLS = player("Henry Nicholls").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(offSpinner()).build();
-    public static final Player DARYL_MITCHELL = player("Daryl Mitchell").setPlayingRole(ALL_ROUNDER).setBowlingStyle(medium()).build();
-    public static final Player MATT_HENRY = player("Matt Henry").setPlayingRole(BOWLER).setBowlingStyle(fastMedium()).build();
-    public static final Player COLIN_DE_GRANDHOMME = player("Colin de Grandhomme").setFamilyName("de Grandhomme").setPlayingRole(ALL_ROUNDER).setBowlingStyle(mediumFast()).build();
-    public static final Player DOUG_BRACEWELL = player("Doug Bracewell").setPlayingRole(BOWLER).setBowlingStyle(fastMedium()).build();
-    public static final Player KANE_WILLIAMSON = player("Kane Williamson").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
-    public static final Player BLAIR_TICKNER = player("Blair Tickner").setPlayingRole(BOWLER).setBowlingStyle(mediumFast()).build();
-    public static final Player WILLIAM_SOMERVILLE = player("William Somerville").setPlayingRole(BOWLER).setBowlingStyle(offSpinner()).build();
-    public static final Player MITCH_SANTNER = player("Mitch Santner").setPlayingRole(ALL_ROUNDER).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player SETH_RANCE = player("Seth Rance").setPlayingRole(BOWLER).setBowlingStyle(medium()).build();
-    public static final Player JAMES_NEESHAM = player("James Neesham").setPlayingRole(ALL_ROUNDER).setBattingHandedness(LeftHanded).setBowlingStyle(mediumFast()).build();
-    public static final Player TOM_LATHAM = player("Tom Latham").setPlayingRole(WICKET_KEEPER).setBattingHandedness(LeftHanded).setBowlingStyle(medium()).build();
-    public static final Player MARTIN_GUPTILL = player("Martin Guptill").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
-    public static final Player MARK_CHAPMAN = player("Mark Chapman").setPlayingRole(ALL_ROUNDER).setBattingHandedness(LeftHanded).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player TRENT_BOULT = player("Trent Boult").setPlayingRole(BOWLER).setBowlingStyle(fastMedium().withHandedness(LeftHanded)).build();
-    public static final Player BJ_WATLING = player("BJ Watling").setPlayingRole(WICKET_KEEPER).setBowlingStyle(medium()).build();
-    public static final Player ROSS_TAYLOR = player("Ross Taylor").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
-    public static final Player ISH_SODHI = player("Ish Sodhi").setPlayingRole(BOWLER).setBowlingStyle(legSpinner()).build();
-    public static final Player HAMISH_RUTHERFORD = player("Hamish Rutherford").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player AJAZ_PATEL = player("Ajaz Patel").setPlayingRole(BOWLER).setBattingHandedness(LeftHanded).setBowlingStyle(leftArmOrthodox()).build();
-    public static final Player COLIN_MUNRO = player("Colin Munro").setPlayingRole(BATTER).setBattingHandedness(LeftHanded).setBowlingStyle(mediumFast()).build();
-    public static final Player SCOTT_KUGGELEIJN = player("Scott Kuggeleijn").setPlayingRole(ALL_ROUNDER).setBowlingStyle(fastMedium()).build();
-    public static final Player LOCKIE_FERGUSON = player("Lockie Ferguson").setPlayingRole(BOWLER).setBowlingStyle(fast()).build();
-    public static final Player TOM_BRUCE = player("Tom Bruce").setPlayingRole(BATTER).setBowlingStyle(offSpinner()).build();
-    public static final Player TODD_ASTLE = player("Todd Astle").setPlayingRole(BOWLER).setBowlingStyle(legSpinner()).build();
+    public static final Player GEORGE_WORKER = player("George Worker").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LeftHanded).withBowlingStyle(leftArmOrthodox()).build();
+    public static final Player NEIL_WAGNER = player("Neil Wagner").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).withBowlingStyle(mediumFast()).build();
+    public static final Player TIM_SOUTHEE = player("Tim Southee").withPlayingRole(BOWLER).withBowlingStyle(mediumFast()).build();
+    public static final Player TIM_SEIFERT = player("Tim Seifert").withPlayingRole(WICKET_KEEPER).withBowlingStyle(medium()).build();
+    public static final Player JEET_RAVAL = player("Jeet Raval").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).withBowlingStyle(legSpinner()).build();
+    public static final Player HENRY_NICHOLLS = player("Henry Nicholls").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).withBowlingStyle(offSpinner()).build();
+    public static final Player DARYL_MITCHELL = player("Daryl Mitchell").withPlayingRole(ALL_ROUNDER).withBowlingStyle(medium()).build();
+    public static final Player MATT_HENRY = player("Matt Henry").withPlayingRole(BOWLER).withBowlingStyle(fastMedium()).build();
+    public static final Player COLIN_DE_GRANDHOMME = player("Colin de Grandhomme").withFamilyName("de Grandhomme").withPlayingRole(ALL_ROUNDER).withBowlingStyle(mediumFast()).build();
+    public static final Player DOUG_BRACEWELL = player("Doug Bracewell").withPlayingRole(BOWLER).withBowlingStyle(fastMedium()).build();
+    public static final Player KANE_WILLIAMSON = player("Kane Williamson").withPlayingRole(BATTER).withBowlingStyle(offSpinner()).build();
+    public static final Player BLAIR_TICKNER = player("Blair Tickner").withPlayingRole(BOWLER).withBowlingStyle(mediumFast()).build();
+    public static final Player WILLIAM_SOMERVILLE = player("William Somerville").withPlayingRole(BOWLER).withBowlingStyle(offSpinner()).build();
+    public static final Player MITCH_SANTNER = player("Mitch Santner").withPlayingRole(ALL_ROUNDER).withBowlingStyle(leftArmOrthodox()).build();
+    public static final Player SETH_RANCE = player("Seth Rance").withPlayingRole(BOWLER).withBowlingStyle(medium()).build();
+    public static final Player JAMES_NEESHAM = player("James Neesham").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LeftHanded).withBowlingStyle(mediumFast()).build();
+    public static final Player TOM_LATHAM = player("Tom Latham").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LeftHanded).withBowlingStyle(medium()).build();
+    public static final Player MARTIN_GUPTILL = player("Martin Guptill").withPlayingRole(BATTER).withBowlingStyle(offSpinner()).build();
+    public static final Player MARK_CHAPMAN = player("Mark Chapman").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LeftHanded).withBowlingStyle(leftArmOrthodox()).build();
+    public static final Player TRENT_BOULT = player("Trent Boult").withPlayingRole(BOWLER).withBowlingStyle(fastMedium().withHandedness(LeftHanded)).build();
+    public static final Player BJ_WATLING = player("BJ Watling").withPlayingRole(WICKET_KEEPER).withBowlingStyle(medium()).build();
+    public static final Player ROSS_TAYLOR = player("Ross Taylor").withPlayingRole(BATTER).withBowlingStyle(offSpinner()).build();
+    public static final Player ISH_SODHI = player("Ish Sodhi").withPlayingRole(BOWLER).withBowlingStyle(legSpinner()).build();
+    public static final Player HAMISH_RUTHERFORD = player("Hamish Rutherford").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).withBowlingStyle(leftArmOrthodox()).build();
+    public static final Player AJAZ_PATEL = player("Ajaz Patel").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).withBowlingStyle(leftArmOrthodox()).build();
+    public static final Player COLIN_MUNRO = player("Colin Munro").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).withBowlingStyle(mediumFast()).build();
+    public static final Player SCOTT_KUGGELEIJN = player("Scott Kuggeleijn").withPlayingRole(ALL_ROUNDER).withBowlingStyle(fastMedium()).build();
+    public static final Player LOCKIE_FERGUSON = player("Lockie Ferguson").withPlayingRole(BOWLER).withBowlingStyle(fast()).build();
+    public static final Player TOM_BRUCE = player("Tom Bruce").withPlayingRole(BATTER).withBowlingStyle(offSpinner()).build();
+    public static final Player TODD_ASTLE = player("Todd Astle").withPlayingRole(BOWLER).withBowlingStyle(legSpinner()).build();
 
 
     public static TeamBuilder team() {

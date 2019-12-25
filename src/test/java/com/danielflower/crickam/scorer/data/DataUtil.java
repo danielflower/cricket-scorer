@@ -2,21 +2,21 @@ package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.Gender;
 import com.danielflower.crickam.scorer.Handedness;
-import com.danielflower.crickam.scorer.PlayerBuilder;
+import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.util.UUID;
 
 class DataUtil {
-    static PlayerBuilder player(String name) {
+    static Player.Builder player(String name) {
         String[] names = name.split(" ");
-        return new PlayerBuilder()
-            .setGivenNames(ImmutableList.of(names[0]))
-            .setFamilyName(names[names.length - 1])
-            .setFullName(name)
-            .setBattingHandedness(Handedness.RightHanded)
-            .setGender(Gender.MALE)
-            .setId(UUID.randomUUID().toString());
+        return new Player.Builder()
+            .withGivenNames(ImmutableList.of(names[0]))
+            .withFamilyName(names[names.length - 1])
+            .withFullName(name)
+            .withBattingHandedness(Handedness.RightHanded)
+            .withGender(Gender.MALE)
+            .withId(UUID.randomUUID().toString());
 
     }
 }
