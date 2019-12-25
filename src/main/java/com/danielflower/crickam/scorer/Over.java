@@ -4,7 +4,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- *
+ * A set of (normally) 6 balls bowled in an innings.
+ * <p>Note that this class is immutable, so rather than having a single over instance that gets balls added to it,
+ * there will be multiple over objects generated for a single over in a match- one for each ball in the over plus
+ * one before the over starts and one after it finishes.</p>
  */
 public final class Over {
 	private final int numberInInnings;
@@ -19,20 +22,29 @@ public final class Over {
         return new Over(numberInInnings, striker, nonStriker, new Balls(), bowler, ballsInOver, startTime);
     }
 
-    public Over onBall(Ball ball) {
+    Over onBall(Ball ball) {
         BatterInnings striker = ball.playersCrossed() ? this.nonStriker : this.striker;
         BatterInnings nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
         return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
     }
 
+    /**
+     * @return The current batter that is going to face the next ball
+     */
     public BatterInnings striker() {
 		return striker;
 	}
 
+    /**
+     * @return The batter that is currently at the non-facing end
+     */
 	public BatterInnings nonStriker() {
 		return nonStriker;
 	}
 
+    /**
+     * @return The current bowler of this over.
+     */
 	public Player bowler() {
 		return bowler;
 	}
@@ -44,9 +56,19 @@ public final class Over {
 		return numberInInnings;
 	}
 
+    /**
+     * @return The balls bowled in this over
+     */
 	public Balls balls() {
 		return balls;
 	}
+
+    /**
+     * @return The runs scored in this over
+     */
+	public Score score() {
+	    return balls.score();
+    }
 
 	private Over(int numberInInnings, BatterInnings striker, BatterInnings nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
 		this.numberInInnings = numberInInnings;
@@ -58,6 +80,9 @@ public final class Over {
         this.startTime = startTime;
     }
 
+    /**
+     * @return The number of runs gained by the team in this over (including extras).
+     */
 	public int runs() {
 		return balls.score().teamRuns();
 	}
@@ -70,16 +95,26 @@ public final class Over {
 		return isComplete() && runs() == 0;
 	}
 
+    /**
+     * @return The number of valid balls remaining to be bowled in this over.
+     */
 	public int remainingBalls() {
-	    return ballsInOver - legalBalls();
+	    return ballsInOver - validDeliveries();
     }
 
-	public int legalBalls() {
+    /**
+     * @return The number of valid (or legal) balls bowled so far in this over.
+     */
+	public int validDeliveries() {
 		return (int) balls.list().stream().filter(Ball::isValid).count();
 	}
 
+    /**
+     * @return True if there shouldn't be any more balls bowled in this over. Note that it is still possible to have
+     * more balls in this over even if it is complete if there is an umpiring error.
+     */
     public boolean isComplete() {
-        return legalBalls() >= ballsInOver;
+        return validDeliveries() >= ballsInOver;
     }
 
     @Override

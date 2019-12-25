@@ -75,7 +75,7 @@ class InningsTest {
         assertThat(over.runs(), is(0));
         assertThat(over.isMaiden(), is(false));
         assertThat(over.isComplete(), is(false));
-        assertThat(over.legalBalls(), is(0));
+        assertThat(over.validDeliveries(), is(0));
         assertThat(over.numberInInnings(), is(0));
         assertThat(over.striker().player(), is(opener1));
         assertThat(over.nonStriker().player(), is(opener2));
@@ -171,7 +171,7 @@ class InningsTest {
         assertThat(innings.partnerships().last().get().totalRuns(), is(7));
         assertThat(innings.partnerships().last().get().endTime(), is(not(nullValue())));
         assertThat(innings.partnerships().last().get().firstBatterContribution().size(), is(5));
-        assertThat(innings.partnerships().last().get().firstBatterContribution().score().validBalls(), is(4));
+        assertThat(innings.partnerships().last().get().firstBatterContribution().score().validDeliveries(), is(4));
         assertThat(innings.partnerships().last().get().firstBatterContribution().score().teamRuns(), is(2));
         assertThat(innings.partnerships().last().get().firstBatterContribution().score().batterRuns(), is(1));
         assertThat(innings.partnerships().last().get().secondBatterContribution().size(), is(2));

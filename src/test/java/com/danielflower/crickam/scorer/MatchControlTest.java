@@ -49,7 +49,7 @@ class MatchControlTest {
         assertThat(over.balls().size(), is(0));
         assertThat(over.bowler(), sameInstance(aus.players.last().get()));
         assertThat(over.numberInInnings(), is(0));
-        assertThat(over.legalBalls(), is(0));
+        assertThat(over.validDeliveries(), is(0));
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.isComplete(), is(false));
         assertThat(over.isMaiden(), is(false));

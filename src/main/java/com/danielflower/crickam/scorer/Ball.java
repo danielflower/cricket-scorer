@@ -79,10 +79,10 @@ public final class Ball {
     }
 
     /**
-     * @return True if this is a valid, or legal ball (i.e. a ball that was not a wide or no-ball)
+     * @return True if this is a valid, or legal delivery (i.e. a ball that was not a wide or no-ball)
      */
     public boolean isValid() {
-        return score().validBalls() > 0;
+        return score().validDeliveries() > 0;
     }
 
     public Optional<Trajectory> trajectoryAtImpact() {
