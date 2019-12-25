@@ -307,7 +307,7 @@ class InningsTest {
     }
 
     @Test
-    void aSharedOverWithNoRunsHasTheMaidenAscribedToTheLatterPlayer() {
+    void aSharedOverWithNoRunsHasTheMaidenAscribedToTheTeamButNotTheBowlers() {
         Innings innings = firstInnings.onEvent(overStarting().withBowler(bowler1).withBallsInOver(3).build())
             .onEvent(dotBall())
             .onEvent(dotBall())
@@ -316,8 +316,24 @@ class InningsTest {
         assertThat(innings.maidens(), is(1));
         assertThat(innings.bowlerInningsList().get(0).maidens(), is(0));
         assertThat(innings.bowlerInningsList().get(0).spells().get(0).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(1).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(1).spells().get(0).maidens(), is(0));
+
+        innings = innings.onEvent(overStarting().withBowler(bowler3).withBallsInOver(2).build())
+            .onEvent(dotBall())
+            .onEvent(dotBall())
+            .onEvent(overCompleted().build())
+            .onEvent(overStarting().withBowler(bowler2).withBallsInOver(2).build())
+            .onEvent(dotBall())
+            .onEvent(dotBall())
+            .onEvent(overCompleted().build());
+        assertThat(innings.maidens(), is(3));
+        assertThat(innings.bowlerInningsList().get(0).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(0).spells().get(0).maidens(), is(0));
         assertThat(innings.bowlerInningsList().get(1).maidens(), is(1));
         assertThat(innings.bowlerInningsList().get(1).spells().get(0).maidens(), is(1));
+        assertThat(innings.bowlerInningsList().get(2).maidens(), is(1));
+        assertThat(innings.bowlerInningsList().get(2).spells().get(0).maidens(), is(1));
     }
 
     @Test

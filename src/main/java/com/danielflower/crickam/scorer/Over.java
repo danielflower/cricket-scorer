@@ -3,6 +3,9 @@ package com.danielflower.crickam.scorer;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ *
+ */
 public final class Over {
 	private final int numberInInnings;
 	private final BatterInnings striker;

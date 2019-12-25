@@ -52,7 +52,7 @@ public final class BowlingSpell {
      * @return The number of maidens bowled in this spell
      */
     public int maidens() {
-        return (int) overs.stream().filter(Over::isMaiden).count();
+        return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().equals(bowler)).count();
     }
 
 	BowlingSpell(Player bowler, int spellNumber, ImmutableList<Over> overs, Balls balls) {
