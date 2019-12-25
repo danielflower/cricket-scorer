@@ -6,15 +6,19 @@ import static java.util.Objects.requireNonNull;
 
 public class Dismissal {
     private final DismissalType type;
-    public final BatsmanInnings batter;
+    private final Player batter;
     private final Player bowler;
     private final Player executor;
 
-    Dismissal(DismissalType type, BatsmanInnings batter, Player bowler, Player executor) {
+    Dismissal(DismissalType type, Player batter, Player bowler, Player executor) {
         this.type = requireNonNull(type);
         this.batter = requireNonNull(batter);
         this.bowler = requireNonNull(bowler);
         this.executor = executor;
+    }
+
+    public Player batter() {
+        return batter;
     }
 
     public DismissalType type() {

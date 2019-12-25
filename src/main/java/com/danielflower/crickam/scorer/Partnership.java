@@ -73,8 +73,8 @@ public class Partnership {
 
     public Partnership onBall(Ball ball) {
         Balls balls = this.balls.add(ball);
-        Balls firstBatterContribution = ball.getStriker().isSameInnings(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
-        Balls secondBatterContribution = ball.getStriker().isSameInnings(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
+        Balls firstBatterContribution = ball.striker().equals(firstBatter().player()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
+        Balls secondBatterContribution = ball.striker().equals(secondBatter().player()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
         Instant endTime = ball.dismissal().isPresent() ? ball.getDateCompleted() : null;
         return new Partnership(data, balls, firstBatterContribution, secondBatterContribution, endTime);
     }

@@ -1,10 +1,12 @@
 package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,8 +23,9 @@ public class BallCompletedEvent implements MatchEvent {
     private final Trajectory trajectoryAtImpact;
     private final Player fielder;
     private final Instant dateCompleted;
+    private final Player dismissedBatter;
 
-    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant dateCompleted) {
+    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Player dismissedBatter, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant dateCompleted) {
         if (striker != null && striker.equals(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
@@ -32,6 +35,7 @@ public class BallCompletedEvent implements MatchEvent {
         this.runsScored = requireNonNull(runsScored);
         this.playersCrossed = playersCrossed;
         this.dismissal = dismissal;
+        this.dismissedBatter = dismissedBatter;
         this.delivery = delivery;
         this.swing = swing;
         this.trajectoryAtImpact = trajectoryAtImpact;
@@ -39,16 +43,16 @@ public class BallCompletedEvent implements MatchEvent {
         this.dateCompleted = requireNonNull(dateCompleted);
     }
 
-    public Player bowler() {
-        return bowler;
+    public Optional<Player> bowler() {
+        return Optional.ofNullable(bowler);
     }
 
-    public Player striker() {
-        return striker;
+    public Optional<Player> striker() {
+        return Optional.ofNullable(striker);
     }
 
-    public Player nonStriker() {
-        return nonStriker;
+    public Optional<Player> nonStriker() {
+        return Optional.ofNullable(nonStriker);
     }
 
     public Score runsScored() {
@@ -59,24 +63,28 @@ public class BallCompletedEvent implements MatchEvent {
         return playersCrossed;
     }
 
-    public DismissalType dismissal() {
-        return dismissal;
+    public Optional<DismissalType> dismissal() {
+        return Optional.ofNullable(dismissal);
     }
 
-    public Delivery delivery() {
-        return delivery;
+    public Optional<Player> dismissedBatter() {
+        return Optional.ofNullable(dismissedBatter);
     }
 
-    public Swing swing() {
-        return swing;
+    public Optional<Delivery> delivery() {
+        return Optional.ofNullable(delivery);
     }
 
-    public Trajectory trajectoryAtImpact() {
-        return trajectoryAtImpact;
+    public Optional<Swing> swing() {
+        return Optional.ofNullable(swing);
     }
 
-    public Player fielder() {
-        return fielder;
+    public Optional<Trajectory> trajectoryAtImpact() {
+        return Optional.ofNullable(trajectoryAtImpact);
+    }
+
+    public Optional<Player> fielder() {
+        return Optional.ofNullable(fielder);
     }
 
     public Instant dateCompleted() {
@@ -94,8 +102,9 @@ public class BallCompletedEvent implements MatchEvent {
         private Swing swing;
         private Trajectory trajectoryAtImpact;
         private Player fielder;
-        private Instant dateCompleted = Instant.now();
+        private Instant dateCompleted;
         private DismissalType dismissalType;
+        private Player dismissedBatter;
 
         /**
          * @param bowler The bowler bowling the ball. If null, then the bowler will be the bowler of the over.
@@ -140,10 +149,12 @@ public class BallCompletedEvent implements MatchEvent {
          * method and the number of runs set.
          *
          * @param type The type of dismissal
+         * @param dismissedBatter The batter who was dismissed (or null to indicate the current striker)
          * @return This builder
          */
-        public Builder withDismissal(DismissalType type) {
-            this.dismissalType = type;
+        public Builder withDismissal(@NotNull DismissalType type, @Nullable Player dismissedBatter) {
+            this.dismissalType = requireNonNull(type);
+            this.dismissedBatter = dismissedBatter;
             if (runsScored == null) {
                 runsScored = Score.WICKET;
             }
@@ -165,6 +176,11 @@ public class BallCompletedEvent implements MatchEvent {
             return this;
         }
 
+        /**
+         * Specifies the fielder
+         * @param fielder The main fielder who picked up the ball, or the fielder who effected a run out, or who caught the ball
+         * @return This builder
+         */
         public Builder withFielder(Player fielder) {
             this.fielder = fielder;
             return this;
@@ -177,7 +193,7 @@ public class BallCompletedEvent implements MatchEvent {
 
         public BallCompletedEvent build() {
             Instant dc = Objects.requireNonNullElse(this.dateCompleted, Instant.now());
-            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, delivery, swing, trajectoryAtImpact, fielder, dc);
+            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, dismissedBatter, delivery, swing, trajectoryAtImpact, fielder, dc);
         }
     }
 

@@ -52,11 +52,11 @@ public class ImmutableList<T> implements Iterable<T> {
         return first > last;
     }
 
-    public ImmutableList<T> view(int firstInclusive, int lastExclusive) {
-        if (firstInclusive < 0) throw new IllegalArgumentException("firstInclusive must be non-negative but was " + firstInclusive);
-        int newFirst = this.first + firstInclusive;
-        int newLast = this.first + lastExclusive;
-        if (newLast > last) throw new IllegalArgumentException("The lastExclusive value " + lastExclusive + " is too large. Max value allowed is " + (size() - 1));
+    public ImmutableList<T> view(int firstIndex, int lastIndex) {
+        if (firstIndex < 0) throw new IllegalArgumentException("firstIndex must be non-negative but was " + firstIndex);
+        int newFirst = this.first + firstIndex;
+        int newLast = this.first + lastIndex;
+        if (newLast > last) throw new IllegalArgumentException("The lastIndex value " + lastIndex + " is too large. Max value allowed is " + (size() - 1));
         return new ImmutableList<>(Collections.unmodifiableList(arrayList), newFirst, newLast);
     }
 

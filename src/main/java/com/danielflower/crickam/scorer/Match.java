@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsStartingEvent;
 import com.danielflower.crickam.utils.ImmutableList;
 
@@ -22,6 +23,7 @@ public class Match {
         private final int oversPerInnings;
         private final Venue venue;
         private final int numberOfScheduledDays;
+
         private FixedData(String matchID, Series series, Instant startTime, ImmutableList<LineUp> teams, MatchType matchType, int numberOfInningsPerTeam, int oversPerInnings, Venue venue, int numberOfScheduledDays) {
             this.matchID = matchID;
             this.series = series;
@@ -55,6 +57,10 @@ public class Match {
 
     Match onEvent(MatchEvent event) {
 
+        if (event instanceof BallCompletedEvent && currentInnings().isEmpty()) {
+            throw new IllegalStateException("Cannot process a ball when there is no active innings");
+        }
+
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
             InningsStartingEvent ise = (InningsStartingEvent) event;
@@ -67,7 +73,7 @@ public class Match {
             }
         }
 
-        return new Match(data,  newInningsList);
+        return new Match(data, newInningsList);
     }
 
     public String matchID() {

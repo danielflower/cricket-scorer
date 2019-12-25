@@ -6,8 +6,8 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 public class Ball {
-    private final BatsmanInnings striker;
-    private final BatsmanInnings nonStriker;
+    private final Player striker;
+    private final Player nonStriker;
     private final Player bowler;
     private final int numberInOver;
     private final Score score;
@@ -20,11 +20,11 @@ public class Ball {
     private final Player fielder;
 	private final Instant dateCompleted;
 
-	public BatsmanInnings getStriker() {
+	public Player striker() {
         return striker;
     }
 
-    public BatsmanInnings getNonStriker() {
+    public Player getNonStriker() {
         return nonStriker;
     }
 
@@ -65,7 +65,7 @@ public class Ball {
         return score().wides() == 0 && score().noBalls() == 0;
     }
 
-    Ball(int id, BatsmanInnings striker, BatsmanInnings nonStriker, int numberInOver, Player bowler,
+    Ball(int id, Player striker, Player nonStriker, int numberInOver, Player bowler,
          Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
          Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
         this.id = id;

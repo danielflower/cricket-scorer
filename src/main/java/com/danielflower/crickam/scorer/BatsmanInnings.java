@@ -3,40 +3,32 @@ package com.danielflower.crickam.scorer;
 import java.time.Instant;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 public class BatsmanInnings {
     private final Player player;
     private final Balls balls;
     private final int numberCameIn;
-	public final Instant inningsStartTime;
-	public final Instant inningsEndTime;
+	private final Instant inningsStartTime;
+	private final Instant inningsEndTime;
 
-	public Player getPlayer() {
-        return player;
-    }
-	private final Optional<Dismissal> dismissal;
+	private final Dismissal dismissal;
 
-    public int getNumberCameIn() {
-        return numberCameIn;
-    }
-
-    public Balls getBalls() {
-        return balls;
-    }
-
-    BatsmanInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Optional<Dismissal> dismissal) {
-        this.player = player;
-        this.balls = balls;
+    BatsmanInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
+        this.player = requireNonNull(player);
+        this.balls = requireNonNull(balls);
         this.numberCameIn = numberCameIn;
-	    this.inningsStartTime = inningsStartTime;
+        this.inningsStartTime = requireNonNull(inningsStartTime);
         this.inningsEndTime = inningsEndTime;
         this.dismissal = dismissal;
     }
 
     static BatsmanInnings newInnings(Player player, int numberCameIn) {
-        return new BatsmanInnings(player, new Balls(), numberCameIn, Instant.now(), null, Optional.empty());
+        return new BatsmanInnings(player, new Balls(), numberCameIn, Instant.now(), null, null);
     }
-    public boolean isSameInnings(BatsmanInnings other) {
-        return getPlayer().equals(other.getPlayer());
+
+    boolean isSameInnings(BatsmanInnings other) {
+        return player().equals(other.player());
     }
 
     /**
@@ -50,12 +42,52 @@ public class BatsmanInnings {
         return balls.score().batterRuns();
     }
 
-	public Optional<Dismissal> getDismissal() {
-		return dismissal;
+	public Optional<Dismissal> dismissal() {
+		return Optional.ofNullable(dismissal);
 	}
 
-	@Override
+    public Balls balls() {
+        return balls;
+    }
+
+    public Player player() {
+        return player;
+    }
+
+    public Instant inningsStartTime() {
+        return inningsStartTime;
+    }
+
+    public Optional<Instant> inningsEndTime() {
+        return Optional.ofNullable(inningsEndTime);
+    }
+
+    public boolean isOut() {
+        return dismissal != null;
+    }
+    public boolean isNotOut() {
+        return dismissal == null;
+    }
+
+    @Override
 	public String toString() {
 		return player.familyName() + " (" + balls.score().batterRuns() + " runs)";
 	}
+
+    BatsmanInnings onBall(Ball ball) {
+        Instant endTime = this.inningsEndTime;
+        Dismissal dismissal = null;
+        boolean somethingChanged = false;
+        if (ball.dismissal().isPresent() && ball.dismissal().get().batter().equals(this.player)) {
+            endTime = ball.getDateCompleted();
+            dismissal = ball.dismissal().get();
+            somethingChanged = true;
+        }
+        Balls newBalls = this.balls;
+        if (ball.striker().equals(this.player)) {
+            newBalls = newBalls.add(ball);
+            somethingChanged = true;
+        }
+        return somethingChanged ? new BatsmanInnings(player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;
+    }
 }
