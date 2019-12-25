@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-public class BatsmanInnings {
+public class BatterInnings {
     private final Player player;
     private final Balls balls;
     private final int numberCameIn;
@@ -14,7 +14,7 @@ public class BatsmanInnings {
 
 	private final Dismissal dismissal;
 
-    BatsmanInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
+    BatterInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
         this.player = requireNonNull(player);
         this.balls = requireNonNull(balls);
         this.numberCameIn = numberCameIn;
@@ -23,11 +23,11 @@ public class BatsmanInnings {
         this.dismissal = dismissal;
     }
 
-    static BatsmanInnings newInnings(Player player, int numberCameIn) {
-        return new BatsmanInnings(player, new Balls(), numberCameIn, Instant.now(), null, null);
+    static BatterInnings newInnings(Player player, int numberCameIn) {
+        return new BatterInnings(player, new Balls(), numberCameIn, Instant.now(), null, null);
     }
 
-    boolean isSameInnings(BatsmanInnings other) {
+    boolean isSameInnings(BatterInnings other) {
         return player().equals(other.player());
     }
 
@@ -74,7 +74,7 @@ public class BatsmanInnings {
 		return player.familyName() + " (" + balls.score().batterRuns() + " runs)";
 	}
 
-    BatsmanInnings onBall(Ball ball) {
+    BatterInnings onBall(Ball ball) {
         Instant endTime = this.inningsEndTime;
         Dismissal dismissal = null;
         boolean somethingChanged = false;
@@ -88,6 +88,6 @@ public class BatsmanInnings {
             newBalls = newBalls.add(ball);
             somethingChanged = true;
         }
-        return somethingChanged ? new BatsmanInnings(player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;
+        return somethingChanged ? new BatterInnings(player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;
     }
 }

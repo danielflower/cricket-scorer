@@ -30,7 +30,7 @@ class PlayerTest {
             .setBowlingStyle(BowlingStyleBuilder.medium().setHandedness(Handedness.RightHanded).build())
             .setFamilyName("Taylor")
             .setGivenNames(ImmutableList.of("Ross"))
-            .setPlayingRole(PlayingRole.BATSMAN);
+            .setPlayingRole(PlayingRole.BATTER);
     }
 
 

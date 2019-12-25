@@ -144,7 +144,7 @@ public class BallCompletedEvent implements MatchEvent {
         }
 
         /**
-         * Indicates that this delivery got the batsman out. If the score has not been set, then a wicket score with
+         * Indicates that this delivery got the batter out. If the score has not been set, then a wicket score with
          * no runs is used. If runs are scored then create a {@link Score} using {@link ScoreBuilder}'s {@link ScoreBuilder#withWickets(int)}
          * method and the number of runs set.
          *

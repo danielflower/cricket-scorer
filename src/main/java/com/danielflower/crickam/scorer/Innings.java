@@ -19,9 +19,9 @@ public class Innings {
     }
 
     private final ImmutableList<Partnership> partnerships;
-    private final BatsmanInnings currentStriker;
-    private final BatsmanInnings currentNonStriker;
-    private final ImmutableList<BatsmanInnings> batters;
+    private final BatterInnings currentStriker;
+    private final BatterInnings currentNonStriker;
+    private final ImmutableList<BatterInnings> batters;
     private final ImmutableList<Player> yetToBat;
     private final ImmutableList<Over> overs;
     private final Over currentOver;
@@ -39,7 +39,7 @@ public class Innings {
             throw new IllegalStateException("Cannot process a ball when the innings state is " + state);
         }
 
-        ImmutableList<BatsmanInnings> batters = this.batters;
+        ImmutableList<BatterInnings> batters = this.batters;
         ImmutableList<Partnership> partnerships = this.partnerships;
         ImmutableList<Player> yetToBat = this.yetToBat;
         ImmutableList<Over> overs = this.overs;
@@ -47,8 +47,8 @@ public class Innings {
         Balls balls = this.balls;
         ImmutableList<BowlerInnings> bowlerInningses = this.bowlerInningses;
         State newState = this.state;
-        BatsmanInnings striker = this.currentStriker;
-        BatsmanInnings nonStriker = this.currentNonStriker;
+        BatterInnings striker = this.currentStriker;
+        BatterInnings nonStriker = this.currentNonStriker;
 
         Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
@@ -70,10 +70,10 @@ public class Innings {
                 }
             }
             if (e.striker() != null) {
-                striker = getBatsmanInnings(e.striker());
+                striker = findBatterInnings(e.striker());
             }
             if (e.nonStriker() != null) {
-                nonStriker = getBatsmanInnings(e.nonStriker());
+                nonStriker = findBatterInnings(e.nonStriker());
             }
 
 
@@ -87,8 +87,8 @@ public class Innings {
                     + OverStartingEvent.class.getSimpleName() + " has been raised at the beginning of the over and that a "
                     + BatterInningsStartingEvent.class.getSimpleName() + " is called after a wicket");
             BallCompletedEvent e = (BallCompletedEvent) event;
-            striker = e.striker().isEmpty() ? currentStriker().get() : getBatsmanInnings(e.striker().get());
-            nonStriker = e.nonStriker().isEmpty() ? currentNonStriker().get() : getBatsmanInnings(e.nonStriker().get());
+            striker = e.striker().isEmpty() ? currentStriker().get() : findBatterInnings(e.striker().get());
+            nonStriker = e.nonStriker().isEmpty() ? currentNonStriker().get() : findBatterInnings(e.nonStriker().get());
 
             Player bowler = e.bowler().isEmpty() ? currentOver().get().bowler() : e.bowler().get();
             Player fielder = e.fielder().orElse(null);
@@ -122,7 +122,7 @@ public class Innings {
             striker = striker.onBall(ball);
             nonStriker = nonStriker.onBall(ball);
             batters = new ImmutableList<>();
-            for (BatsmanInnings existing : this.batterInningsList()) {
+            for (BatterInnings existing : this.batterInningsList()) {
                 if (existing.isSameInnings(striker)) {
                     batters = batters.add(striker);
                 } else if (existing.isSameInnings(nonStriker)) {
@@ -141,7 +141,7 @@ public class Innings {
             }
 
             if (e.playersCrossed()) {
-                BatsmanInnings temp = striker;
+                BatterInnings temp = striker;
                 striker = nonStriker;
                 nonStriker = temp;
             }
@@ -158,7 +158,7 @@ public class Innings {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
             Player batter = e.batter() != null ? e.batter() : yetToBat.get(0);
             yetToBat = yetToBat.stream().filter(p -> !p.equals(batter)).collect(toImmutableList());
-            BatsmanInnings newBatterInnings = BatsmanInnings.newInnings(batter, batters.size());
+            BatterInnings newBatterInnings = BatterInnings.newInnings(batter, batters.size());
             batters = batters.add(newBatterInnings);
             Partnership newPartnership = Partnership.newPartnership(partnerships.size(), striker == null ? nonStriker : striker, newBatterInnings);
             partnerships = partnerships.add(newPartnership);
@@ -195,11 +195,11 @@ public class Innings {
         return Optional.ofNullable(currentOver);
     }
 
-    public Optional<BatsmanInnings> currentStriker() {
+    public Optional<BatterInnings> currentStriker() {
         return Optional.ofNullable(currentStriker);
     }
 
-    public Optional<BatsmanInnings> currentNonStriker() {
+    public Optional<BatterInnings> currentNonStriker() {
         return Optional.ofNullable(currentNonStriker);
     }
 
@@ -212,7 +212,7 @@ public class Innings {
         return partnerships;
     }
 
-    public ImmutableList<BatsmanInnings> batterInningsList() {
+    public ImmutableList<BatterInnings> batterInningsList() {
         return batters;
     }
 
@@ -240,7 +240,7 @@ public class Innings {
         return state;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatsmanInnings currentStriker, BatsmanInnings currentNonStriker, ImmutableList<BatsmanInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state) {
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state) {
         if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
             throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
         }
@@ -261,11 +261,11 @@ public class Innings {
     static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, int numberOfScheduledOvers) {
         FixedData fixedData = new FixedData(match, battingTeam, bowlingTeam, inningsNumber, startTime, numberOfScheduledOvers);
 
-        BatsmanInnings currentStriker = BatsmanInnings.newInnings(openers.get(0), 1);
-        BatsmanInnings currentNonStriker = BatsmanInnings.newInnings(openers.get(1), 2);
+        BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
+        BatterInnings currentNonStriker = BatterInnings.newInnings(openers.get(1), 2);
 
         ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker, currentNonStriker));
-        ImmutableList<BatsmanInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
+        ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
         ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
         return new Innings(fixedData, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED);
@@ -290,9 +290,9 @@ public class Innings {
     }
 
 
-    private BatsmanInnings getBatsmanInnings(Player target) {
+    private BatterInnings findBatterInnings(Player target) {
         requireNonNull(target, "target");
-        for (BatsmanInnings batter : batters) {
+        for (BatterInnings batter : batters) {
             if (target.equals(batter.player())) {
                 return batter;
             }

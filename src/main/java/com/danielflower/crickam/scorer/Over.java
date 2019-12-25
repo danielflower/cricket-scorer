@@ -5,28 +5,28 @@ import java.util.Objects;
 
 public class Over {
 	private final int numberInInnings;
-	private final BatsmanInnings striker;
-	private final BatsmanInnings nonStriker;
+	private final BatterInnings striker;
+	private final BatterInnings nonStriker;
 	private final Balls balls;
 	private final Player bowler;
 	private final int ballsInOver;
 	private final Instant startTime;
 
-    static Over newOver(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Player bowler, int ballsInOver, Instant startTime) {
+    static Over newOver(int numberInInnings, BatterInnings striker, BatterInnings nonStriker, Player bowler, int ballsInOver, Instant startTime) {
         return new Over(numberInInnings, striker, nonStriker, new Balls(), bowler, ballsInOver, startTime);
     }
 
     public Over onBall(Ball ball) {
-        BatsmanInnings striker = ball.getPlayersCrossed() ? this.nonStriker : this.striker;
-        BatsmanInnings nonStriker = ball.getPlayersCrossed() ? this.striker : this.nonStriker;
+        BatterInnings striker = ball.getPlayersCrossed() ? this.nonStriker : this.striker;
+        BatterInnings nonStriker = ball.getPlayersCrossed() ? this.striker : this.nonStriker;
         return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
     }
 
-    public BatsmanInnings striker() {
+    public BatterInnings striker() {
 		return striker;
 	}
 
-	public BatsmanInnings nonStriker() {
+	public BatterInnings nonStriker() {
 		return nonStriker;
 	}
 
@@ -45,7 +45,7 @@ public class Over {
 		return balls;
 	}
 
-	private Over(int numberInInnings, BatsmanInnings striker, BatsmanInnings nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
+	private Over(int numberInInnings, BatterInnings striker, BatterInnings nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
 		this.numberInInnings = numberInInnings;
         this.striker = Objects.requireNonNull(striker);
         this.nonStriker = Objects.requireNonNull(nonStriker);

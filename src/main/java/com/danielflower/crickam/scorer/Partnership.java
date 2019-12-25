@@ -16,11 +16,11 @@ public class Partnership {
     }
 
     private static class FixedData {
-        private final BatsmanInnings firstBatter;
-        private final BatsmanInnings secondBatter;
+        private final BatterInnings firstBatter;
+        private final BatterInnings secondBatter;
         private final int wicketNumber;
         private final Instant startTime;
-        private FixedData(BatsmanInnings firstBatter, BatsmanInnings secondBatter, int wicketNumber, Instant startTime) {
+        private FixedData(BatterInnings firstBatter, BatterInnings secondBatter, int wicketNumber, Instant startTime) {
             this.firstBatter = requireNonNull(firstBatter);
             this.secondBatter = requireNonNull(secondBatter);
             this.wicketNumber = wicketNumber;
@@ -28,16 +28,16 @@ public class Partnership {
         }
     }
 
-    public static Partnership newPartnership(int numberInInnings, BatsmanInnings first, BatsmanInnings second) {
+    public static Partnership newPartnership(int numberInInnings, BatterInnings first, BatterInnings second) {
         FixedData data = new FixedData(first, second, numberInInnings, Instant.now());
         return new Partnership(data, new Balls(), new Balls(), new Balls(), null);
     }
 
-    public final BatsmanInnings firstBatter() {
+    public final BatterInnings firstBatter() {
         return data.firstBatter;
     }
 
-    public final BatsmanInnings secondBatter() {
+    public final BatterInnings secondBatter() {
         return data.secondBatter;
     }
 

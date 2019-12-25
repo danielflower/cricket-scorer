@@ -327,7 +327,7 @@ class InningsTest {
         assertThat(innings.currentStriker().get().player(), is(opener2));
         assertThat(innings.currentNonStriker().get().player(), is(opener1));
 
-        BatsmanInnings o1i = innings.batterInningsList().get(0);
+        BatterInnings o1i = innings.batterInningsList().get(0);
         assertThat(o1i.player(), is(sameInstance(opener1)));
         assertThat(o1i.isNotOut(), is(true));
         assertThat(o1i.isOut(), is(false));
@@ -335,7 +335,7 @@ class InningsTest {
         assertThat(o1i.balls().size(), is(2));
         assertThat(o1i.balls().score().batterRuns(), is(2));
 
-        BatsmanInnings o2i = innings.batterInningsList().get(1);
+        BatterInnings o2i = innings.batterInningsList().get(1);
         assertThat(o2i.player(), is(sameInstance(opener2)));
         assertThat(o2i.isNotOut(), is(true));
         assertThat(o2i.isOut(), is(false));
@@ -371,7 +371,7 @@ class InningsTest {
             .onEvent(four())
             .onEvent(dotBall())
             .onEvent(overCompleted().build());
-        ImmutableList<BatsmanInnings> batters = innings.batterInningsList();
+        ImmutableList<BatterInnings> batters = innings.batterInningsList();
         assertThat(batters.size(), is(3));
         assertThat(batters.get(0).player(), is(sameInstance(opener1)));
         assertThat(batters.get(1).player(), is(sameInstance(opener2)));
