@@ -169,4 +169,23 @@ class ScoreTest {
         assertThat(Builder.from(score).build(), equalTo(score));
     }
 
+    @Test
+    public void scorecardBallsCanBeParsed() {
+        assertThat(Score.parse(".").get(), is(sameInstance(DOT_BALL)));
+        assertThat(Score.parse("0").get(), is(sameInstance(DOT_BALL)));
+        assertThat(Score.parse("1").get(), is(sameInstance(SINGLE)));
+        assertThat(Score.parse("2").get(), is(sameInstance(TWO)));
+        assertThat(Score.parse("3").get(), is(sameInstance(THREE)));
+        assertThat(Score.parse("4").get(), is(sameInstance(FOUR)));
+        assertThat(Score.parse("6").get(), is(sameInstance(SIX)));
+        assertThat(Score.parse("1b").get(), is(sameInstance(BYE)));
+        assertThat(Score.parse("1lb").get(), is(sameInstance(LEG_BYE)));
+        assertThat(Score.parse("1nb").get(), is(sameInstance(NO_BALL)));
+        assertThat(Score.parse("1w").get(), is(sameInstance(WIDE)));
+        assertThat(Score.parse("W").get(), is(sameInstance(WICKET)));
+        assertThat(Score.parse("5w").get(), is(score().withInvalidDeliveries(1).withWides(5).build()));
+        assertThat(Score.parse("5nb").get(), is(score().withInvalidDeliveries(1).withNoBalls(1).withBatterRuns(4).build()));
+
+    }
+
 }

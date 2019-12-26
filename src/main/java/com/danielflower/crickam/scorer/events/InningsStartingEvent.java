@@ -20,7 +20,7 @@ public final class InningsStartingEvent implements MatchEvent {
     private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls) {
         this.battingTeam = requireNonNull(battingTeam);
         this.bowlingTeam = requireNonNull(bowlingTeam);
-        this.time = requireNonNull(time);
+        this.time = time;
         this.openers = requireNonNull(openers);
         this.numberOfBalls = numberOfBalls;
         if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
@@ -35,8 +35,8 @@ public final class InningsStartingEvent implements MatchEvent {
     }
 
     @Override
-    public Instant time() {
-        return time;
+    public Optional<Instant> time() {
+        return Optional.ofNullable(time);
     }
 
     public ImmutableList<Player> openers() {
@@ -58,7 +58,7 @@ public final class InningsStartingEvent implements MatchEvent {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;
-        private Instant time = Instant.now();
+        private Instant time;
         private ImmutableList<Player> openers;
         private Integer numberOfBalls;
 
@@ -98,6 +98,9 @@ public final class InningsStartingEvent implements MatchEvent {
         }
 
         public InningsStartingEvent build() {
+            requireNonNull(battingTeam, "battingTeam");
+            requireNonNull(bowlingTeam, "bowlingTeam");
+            ImmutableList<Player> openers = this.openers == null ? battingTeam.battingOrder().view(0, 1) : this.openers;
             return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls);
         }
     }

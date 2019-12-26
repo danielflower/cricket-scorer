@@ -18,6 +18,5 @@ class DataUtil {
             .withBowlingHandedness(Handedness.RightHanded)
             .withGender(Gender.MALE)
             .withId(UUID.randomUUID().toString());
-
     }
 }

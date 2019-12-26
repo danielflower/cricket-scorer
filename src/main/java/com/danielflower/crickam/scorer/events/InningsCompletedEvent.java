@@ -1,23 +1,23 @@
 package com.danielflower.crickam.scorer.events;
 
 import java.time.Instant;
-import java.util.Objects;
+import java.util.Optional;
 
 public final class InningsCompletedEvent implements MatchEvent {
 
     private final Instant time;
 
     private InningsCompletedEvent(Instant time) {
-        this.time = Objects.requireNonNull(time);
+        this.time = time;
     }
 
     @Override
-    public Instant time() {
-        return time;
+    public Optional<Instant> time() {
+        return Optional.ofNullable(time);
     }
 
-    public final static class Builder {
-        private Instant time = Instant.now();
+    public final static class Builder implements MatchEventBuilder<InningsCompletedEvent> {
+        private Instant time;
 
         public InningsCompletedEvent build() {
             return new InningsCompletedEvent(time);

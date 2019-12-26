@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
-import java.util.Objects;
+import java.util.Optional;
 
 public final class BatterInningsStartingEvent implements MatchEvent {
 
@@ -11,13 +11,13 @@ public final class BatterInningsStartingEvent implements MatchEvent {
     private final Player batter;
 
     private BatterInningsStartingEvent(Instant time, Player batter) {
-        this.time = Objects.requireNonNull(time, "startTime");
+        this.time = time;
         this.batter = batter;
     }
 
     @Override
-    public Instant time() {
-        return time;
+    public Optional<Instant> time() {
+        return Optional.ofNullable(time);
     }
 
     public Player batter() {
@@ -29,7 +29,7 @@ public final class BatterInningsStartingEvent implements MatchEvent {
     }
 
     public static final class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
-        private Instant time = Instant.now();
+        private Instant time;
         private Player batter;
 
         public Builder withTime(Instant startTime) {

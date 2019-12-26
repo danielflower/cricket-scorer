@@ -8,6 +8,9 @@ import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * A lovely game of cricket between two teams
+ */
 public final class Match {
 
     private final MatchStartingEvent data;
@@ -19,11 +22,16 @@ public final class Match {
         this.inningsList = inningsList;
     }
 
+    /**
+     * @return The current innings in the match, if an innings is in progress
+     */
     public Optional<Innings> currentInnings() {
         return inningsList.last();
     }
 
-
+    /**
+     * @return A unique ID for this match
+     */
     public String matchID() {
         return data.matchID();
     }
@@ -32,13 +40,23 @@ public final class Match {
         return data.series();
     }
 
-    public Instant time() {
+    /**
+     * @return The time when the match event was created
+     */
+    public Optional<Instant> time() {
         return data.time();
     }
 
+    /**
+     * @return The scheduled start time of the match, if known.
+     */
     public Optional<Instant> scheduledStartTime() {
         return data.scheduledStartTime();
     }
+
+    /**
+     * @return The teams playing in this match, in no particular order.
+     */
     public ImmutableList<LineUp> teams() {
         return data.teams();
     }

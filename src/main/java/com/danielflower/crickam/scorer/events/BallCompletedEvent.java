@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -40,7 +39,7 @@ public final class BallCompletedEvent implements MatchEvent {
         this.swing = swing;
         this.trajectoryAtImpact = trajectoryAtImpact;
         this.fielder = fielder;
-        this.time = requireNonNull(time);
+        this.time = time;
     }
 
     public Optional<Player> bowler() {
@@ -88,8 +87,8 @@ public final class BallCompletedEvent implements MatchEvent {
     }
 
     @Override
-    public Instant time() {
-        return time;
+    public Optional<Instant> time() {
+        return Optional.ofNullable(time);
     }
 
     public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
@@ -98,7 +97,7 @@ public final class BallCompletedEvent implements MatchEvent {
         private Player striker;
         private Player nonStriker;
         private Score runsScored;
-        private boolean playersCrossed;
+        private Boolean playersCrossed;
         private Delivery delivery;
         private Swing swing;
         private Trajectory trajectoryAtImpact;
@@ -139,7 +138,13 @@ public final class BallCompletedEvent implements MatchEvent {
             return this;
         }
 
-        public Builder withPlayersCrossed(boolean playersCrossed) {
+        /**
+         * Specifies whether or not the players crossed. If not set, then it is inferred from the
+         * score (which is sometimes not possible to know, so may be a guess).
+         * @param playersCrossed true if they crossed; false if not; or null infer from the score
+         * @return This builder
+         */
+        public Builder withPlayersCrossed(Boolean playersCrossed) {
             this.playersCrossed = playersCrossed;
             return this;
         }
@@ -193,8 +198,13 @@ public final class BallCompletedEvent implements MatchEvent {
         }
 
         public BallCompletedEvent build() {
-            Instant dc = Objects.requireNonNullElse(this.dateCompleted, Instant.now());
-            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, dismissedBatter, delivery, swing, trajectoryAtImpact, fielder, dc);
+            requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
+            boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed.booleanValue();
+            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, dismissedBatter, delivery, swing, trajectoryAtImpact, fielder, dateCompleted);
+        }
+
+        private boolean guessIfCrossed(Score score) {
+            return (score.batterRuns() + score.legByes() + score.byes()) % 2 == 1;
         }
     }
 

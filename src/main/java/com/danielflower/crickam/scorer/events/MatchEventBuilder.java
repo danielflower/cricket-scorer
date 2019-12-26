@@ -7,8 +7,10 @@ package com.danielflower.crickam.scorer.events;
 public interface MatchEventBuilder<T extends MatchEvent> {
 
     /**
-     * Creates a new event
+     * Builds the event
      * @return A newly constructed T
+     * @throws NullPointerException thrown when a required field is not set
+     * @throws IllegalArgumentException thrown when a specified value is invalid
      */
     T build();
 

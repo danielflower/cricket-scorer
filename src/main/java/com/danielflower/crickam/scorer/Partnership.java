@@ -116,7 +116,7 @@ public final class Partnership {
         Balls balls = this.balls.add(ball);
         Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
         Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
-        Instant endTime = ball.dismissal().isPresent() ? ball.dateCompleted() : null;
+        Instant endTime = ball.dismissal().isPresent() ? ball.dateCompleted().orElse(null) : null;
         return new Partnership(data, balls, firstBatterContribution, secondBatterContribution, endTime);
     }
 }

@@ -132,7 +132,7 @@ public final class BatterInnings {
         Dismissal dismissal = null;
         boolean somethingChanged = false;
         if (ball.dismissal().isPresent() && ball.dismissal().get().batter().equals(this.player)) {
-            endTime = ball.dateCompleted();
+            endTime = ball.dateCompleted().orElse(null);
             dismissal = ball.dismissal().get();
             somethingChanged = true;
         }

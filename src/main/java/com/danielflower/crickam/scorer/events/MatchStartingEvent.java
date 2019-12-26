@@ -24,7 +24,7 @@ public final class MatchStartingEvent implements MatchEvent {
     private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings) {
         this.matchID = requireNonNull(matchID);
         this.series = series;
-        this.time = requireNonNull(time);
+        this.time = time;
         this.scheduledStartTime = scheduledStartTime;
         this.teams = requireNonNull(teams);
         this.matchType = requireNonNull(matchType);
@@ -39,8 +39,8 @@ public final class MatchStartingEvent implements MatchEvent {
      * @return The time this event was announced. Note this is separate from {@link #scheduledStartTime}
      */
     @Override
-    public Instant time() {
-        return time;
+    public Optional<Instant> time() {
+        return Optional.ofNullable(time);
     }
 
     public String matchID() {
@@ -83,10 +83,14 @@ public final class MatchStartingEvent implements MatchEvent {
         return Optional.ofNullable(ballsPerInnings);
     }
 
+    public static Builder matchStarting() {
+        return new Builder();
+    }
+
     public static final class Builder implements MatchEventBuilder<MatchStartingEvent> {
         private String matchID;
         private Series series;
-        private Instant time = Instant.now();
+        private Instant time;
         private Instant startTime;
         private ImmutableList<LineUp> teams;
         private MatchType matchType;

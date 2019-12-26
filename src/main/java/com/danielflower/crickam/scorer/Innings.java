@@ -77,7 +77,7 @@ public final class Innings {
             }
 
 
-            currentOver = Over.newOver(overs.size(), striker, nonStriker, e.bowler(), e.ballsInOver(), e.time());
+            currentOver = Over.newOver(overs.size(), striker, nonStriker, e.bowler(), e.ballsInOver(), e.time().orElse(null));
             overs = overs.add(currentOver);
             newState = State.IN_PROGRESS;
         } else if (event instanceof BallCompletedEvent) {
@@ -94,7 +94,7 @@ public final class Innings {
             Player fielder = e.fielder().orElse(null);
             Dismissal dismissal = e.dismissal().isEmpty() ? null : new Dismissal(e.dismissal().get(), e.dismissedBatter().orElse(striker.player()), bowler, fielder);
             Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), overs.last().get().validDeliveries() + 1, bowler,
-                e.delivery().orElse(null), e.swing().orElse(null), e.trajectoryAtImpact().orElse(null), e.runsScored(), dismissal, e.playersCrossed(), fielder, e.time());
+                e.delivery().orElse(null), e.swing().orElse(null), e.trajectoryAtImpact().orElse(null), e.runsScored(), dismissal, e.playersCrossed(), fielder, e.time().orElse(null));
             balls = balls.add(ball);
 
             currentOver = currentOver().get().onBall(ball);
@@ -151,7 +151,7 @@ public final class Innings {
         } else if (event instanceof InningsCompletedEvent) {
             newState = State.COMPLETED;
             currentOver = null;
-            endTime = ((InningsCompletedEvent) event).time();
+            endTime = event.time().orElse(null);
             striker = null;
             nonStriker = null;
         } else if (event instanceof BatterInningsStartingEvent) {

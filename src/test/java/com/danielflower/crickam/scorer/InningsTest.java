@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.Score.*;
@@ -161,6 +162,7 @@ class InningsTest {
         innings = innings
             .onEvent(ballCompleted()
                 .withDismissal(DismissalType.Bowled, null)
+                .withDateCompleted(Instant.now())
                 .build());
         Over over = innings.currentOver().get();
         assertThat(over.isComplete(), is(true));

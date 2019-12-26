@@ -2,6 +2,8 @@ package com.danielflower.crickam.scorer;
 
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Runs scored, deliveries bowled, and wickets taken either from a single ball, or 0 or multiple balls.
@@ -418,6 +420,71 @@ public final class Score {
             ", validDeliveries=" + validDeliveries +
             ", invalidDeliveries=" + invalidDeliveries +
             '}';
+    }
+
+    /**
+     * Parses a scorecard value for a score.
+     * <p>Examples of scores:</p>
+     * <ul>
+     *     <li><strong>0</strong> or <strong>.</strong> which returns {@link #DOT_BALL}</li>
+     *     <li><strong>1</strong> which returns {@link #SINGLE}</li>
+     *     <li><strong>2</strong> which returns {@link #TWO}</li>
+     *     <li><strong>3</strong> which returns {@link #THREE}</li>
+     *     <li><strong>4</strong> which returns {@link #FOUR}</li>
+     *     <li><strong>5</strong> which returns a score of 5 runs</li>
+     *     <li><strong>6</strong> which returns {@link #SIX}</li>
+     *     <li><strong>1lb</strong> which returns {@link #LEG_BYE}</li>
+     *     <li><strong>2lb</strong> which returns 2 leg byes</li>
+     *     <li><strong>W</strong> which returns a wicket without a run</li>
+     *     <li><strong>1w</strong> which returns {@link #WIDE}</li>
+     *     <li><strong>1nb</strong> which returns {@link #NO_BALL}</li>
+     *     <li><strong>5nb</strong> which a no-ball with 4 runs off the bat</li>
+     *     <li>etc</li>
+     * </ul>
+     * @param text A score, such as &quot;1&quot;, &quot;1lb&quot; &quot;W&quot; etc
+     * @return A built score, or empty if unknown
+     */
+    public static Optional<Score> parse(String text) {
+        if (".".equals(text)) return Optional.of(DOT_BALL);
+        if ("W".equals(text)) return Optional.of(WICKET);
+        Pattern pattern = Pattern.compile("^(?<num>[0-9]+)(?<modifier>[A-Za-z]+)?$");
+        Matcher matcher = pattern.matcher(text);
+        if (!matcher.matches()) {
+            return Optional.empty();
+        }
+        int runs = Integer.parseInt(matcher.group("num"));
+        String modifier = matcher.group("modifier");
+        Builder score = Score.score();
+        if (modifier == null) {
+            score.withValidDeliveries(1)
+                .withBatterRuns(runs)
+                .withDots(runs == 0 ? 1 : 0)
+                .withSingles(runs == 1 ? 1 : 0)
+                .withTwos(runs == 2 ? 1 : 0)
+                .withThrees(runs == 3 ? 1 : 0)
+                .withFours(runs == 4 ? 1 : 0)
+                .withSixes(runs == 6 ? 1 : 0)
+                ;
+        } else {
+            switch (modifier) {
+                case "W":
+                    score.withWickets(1).withValidDeliveries(1).withBatterRuns(runs);
+                    break;
+                case "w":
+                    score.withWides(runs).withInvalidDeliveries(1);
+                    break;
+                case "nb":
+                    score.withNoBalls(1).withInvalidDeliveries(1).withBatterRuns(runs - 1);
+                    break;
+                case "b":
+                    score.withByes(1).withValidDeliveries(1);
+                    break;
+                case "lb":
+                    score.withLegByes(1).withValidDeliveries(1);
+                    break;
+            }
+        }
+        return Optional.of(score.build());
     }
 
     /**

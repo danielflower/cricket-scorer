@@ -35,7 +35,7 @@ public final class Ball {
         this.score = requireNonNull(score);
         this.dismissal = dismissal;
         this.playersCrossed = playersCrossed;
-        this.dateCompleted = requireNonNull(dateCompleted);
+        this.dateCompleted = dateCompleted;
     }
 
     public int id() {
@@ -93,7 +93,7 @@ public final class Ball {
         return Optional.ofNullable(fielder);
     }
 
-	public Instant dateCompleted() {
-		return dateCompleted;
+	public Optional<Instant> dateCompleted() {
+		return Optional.ofNullable(dateCompleted);
 	}
 }
