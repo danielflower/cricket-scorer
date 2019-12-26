@@ -1,12 +1,11 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.time.Instant;
 import java.util.Optional;
 
-import static com.danielflower.crickam.scorer.utils.ImmutableListCollector.toImmutableList;
+import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -316,7 +315,7 @@ public final class Innings {
         ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker.player(), currentNonStriker.player()));
         ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
-        ImmutableList<Player> yetToBat = battingTeam.getPlayers().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
+        ImmutableList<Player> yetToBat = battingTeam.battingOrder().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
         return new Innings(fixedData, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED, scheduledNumberOfBalls);
     }
 

@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -16,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 class MatchControlTest {
 
     private final LineUp nz = NewZealand.oneDayLineUp().build();
-    private final LineUp aus = Australia.oneDayLineUp().withPlayingAtHome(false).build();
+    private final LineUp aus = Australia.oneDayLineUp().build();
 
     @Test
     public void eventsAreAdded() {
@@ -32,7 +31,7 @@ class MatchControlTest {
         Match match = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
             .withBowlingTeam(aus)
-            .withOpeners(nz.players.get(0), nz.players.get(1))
+            .withOpeners(nz.battingOrder().get(0), nz.battingOrder().get(1))
             .withStartTime(Instant.now())
         );
 
@@ -43,20 +42,20 @@ class MatchControlTest {
 
         Innings innings = match.currentInnings().get();
         assertThat(innings.inningsNumber(), is(1));
-        assertThat(innings.yetToBat(), equalTo(nz.players.view(2, 10)));
+        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().view(2, 10)));
 
-        match = control.onEvent(overStarting().withBowler(aus.players.last().get()));
+        match = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()));
 
         Over over = match.currentInnings().get().currentOver().get();
         assertThat(over.balls().size(), is(0));
-        assertThat(over.bowler(), sameInstance(aus.players.last().get()));
+        assertThat(over.bowler(), sameInstance(aus.battingOrder().last().get()));
         assertThat(over.numberInInnings(), is(0));
         assertThat(over.validDeliveries(), is(0));
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.isComplete(), is(false));
         assertThat(over.isMaiden(), is(false));
-        assertThat(over.striker().player(), is(sameInstance(nz.players.get(0))));
-        assertThat(over.nonStriker().player(), is(sameInstance(nz.players.get(1))));
+        assertThat(over.striker().player(), is(sameInstance(nz.battingOrder().get(0))));
+        assertThat(over.nonStriker().player(), is(sameInstance(nz.battingOrder().get(1))));
         assertThat(over.runs(), is(0));
     }
 

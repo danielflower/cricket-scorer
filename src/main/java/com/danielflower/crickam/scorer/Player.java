@@ -1,8 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 
-import com.danielflower.crickam.scorer.utils.ImmutableList;
-import com.danielflower.crickam.scorer.utils.ImmutableListCollector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -158,7 +156,7 @@ public final class Player {
             String[] bits = name.split(" ");
             return withFullName(name)
                 .withFamilyName(bits[bits.length - 1])
-                .withGivenNames(Stream.of(bits).skip(1).collect(ImmutableListCollector.toImmutableList()));
+                .withGivenNames(Stream.of(bits).skip(1).collect(ImmutableList.toImmutableList()));
         }
 
         public Player build() {

@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsStartingEvent;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
 
 import java.time.Instant;
 import java.util.Optional;

@@ -1,8 +1,13 @@
-package com.danielflower.crickam.scorer.utils;
+package com.danielflower.crickam.scorer;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -38,6 +43,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         ArrayList<V> objects = new ArrayList<>(Arrays.asList(values));
         return new ImmutableList<>(objects, 0, objects.size() - 1);
     }
+
 
     public int size() {
         return last - first + 1;
@@ -136,5 +142,46 @@ public final class ImmutableList<T> implements Iterable<T> {
     @Override
     public String toString() {
         return asList().toString();
+    }
+
+    /**
+     * Returns a {@code Collector} that accumulates the input elements into a new {@link ImmutableList}.
+     * @param <T> the type of the input elements
+     * @return a {@code Collector} which collects all the input elements into an {@link ImmutableList}, in encounter order
+     */
+    public static <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
+        return new ImmutableListCollector<T>();
+    }
+
+
+    private static final class ImmutableListCollector<T> implements Collector<T, List<T>, ImmutableList<T>> {
+
+        @Override
+        public Supplier<List<T>> supplier() {
+            return ArrayList::new;
+        }
+
+        @Override
+        public BiConsumer<List<T>, T> accumulator() {
+            return List::add;
+        }
+
+        @Override
+        public BinaryOperator<List<T>> combiner() {
+            return (players, players2) -> {
+                players.addAll(players2);
+                return players;
+            };
+        }
+
+        @Override
+        public Function<List<T>, ImmutableList<T>> finisher() {
+            return ImmutableList::new;
+        }
+
+        @Override
+        public Set<Characteristics> characteristics() {
+            return Collections.emptySet();
+        }
     }
 }

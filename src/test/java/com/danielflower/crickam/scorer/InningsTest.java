@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -24,20 +23,20 @@ class InningsTest {
 
     private final LineUp aus = Australia.oneDayLineUp().build();
     private final LineUp nz = NewZealand.oneDayLineUp().build();
-    private final Player opener1 = nz.players.get(0);
-    private final Player opener2 = nz.players.get(1);
-    private final Player number3 = nz.players.get(2);
-    private final Innings firstInnings = Innings.newInnings(MatchTest.aMatch().build(), nz, aus, nz.getPlayers().view(0, 1), 1, Instant.now(), 300);
-    private final Player bowler1 = aus.players.get(10);
-    private final Player bowler2 = aus.players.get(9);
-    private final Player bowler3 = aus.players.get(8);
+    private final Player opener1 = nz.battingOrder().get(0);
+    private final Player opener2 = nz.battingOrder().get(1);
+    private final Player number3 = nz.battingOrder().get(2);
+    private final Innings firstInnings = Innings.newInnings(MatchTest.aMatch().build(), nz, aus, nz.battingOrder().view(0, 1), 1, Instant.now(), 300);
+    private final Player bowler1 = aus.battingOrder().get(10);
+    private final Player bowler2 = aus.battingOrder().get(9);
+    private final Player bowler3 = aus.battingOrder().get(8);
 
     @Test
     void beforeAnyEventsThingsAreEmpty() {
         assertThat(firstInnings.state(), is(Innings.State.NOT_STARTED));
         assertThat(firstInnings.currentStriker().get().player(), is(opener1));
         assertThat(firstInnings.currentNonStriker().get().player(), is(opener2));
-        assertThat(firstInnings.yetToBat(), contains(nz.getPlayers().get(2), nz.getPlayers().get(3), nz.getPlayers().get(4), nz.getPlayers().get(5), nz.getPlayers().get(6), nz.getPlayers().get(7), nz.getPlayers().get(8), nz.getPlayers().get(9), nz.getPlayers().get(10)));
+        assertThat(firstInnings.yetToBat(), contains(nz.battingOrder().get(2), nz.battingOrder().get(3), nz.battingOrder().get(4), nz.battingOrder().get(5), nz.battingOrder().get(6), nz.battingOrder().get(7), nz.battingOrder().get(8), nz.battingOrder().get(9), nz.battingOrder().get(10)));
         assertThat(firstInnings.originalNumberOfScheduledOvers(), is(Optional.of(50)));
         assertThat(firstInnings.overs().isEmpty(), is(true));
         assertThat(firstInnings.currentOver(), is(Optional.empty()));
@@ -65,9 +64,9 @@ class InningsTest {
 
         assertThat(innings.state(), is(Innings.State.IN_PROGRESS));
 
-        assertThat(innings.currentStriker().get().player(), sameInstance(nz.getPlayers().get(0)));
-        assertThat(innings.currentNonStriker().get().player(), sameInstance(nz.getPlayers().get(1)));
-        assertThat(innings.yetToBat(), contains(nz.getPlayers().get(2), nz.getPlayers().get(3), nz.getPlayers().get(4), nz.getPlayers().get(5), nz.getPlayers().get(6), nz.getPlayers().get(7), nz.getPlayers().get(8), nz.getPlayers().get(9), nz.getPlayers().get(10)));
+        assertThat(innings.currentStriker().get().player(), sameInstance(nz.battingOrder().get(0)));
+        assertThat(innings.currentNonStriker().get().player(), sameInstance(nz.battingOrder().get(1)));
+        assertThat(innings.yetToBat(), contains(nz.battingOrder().get(2), nz.battingOrder().get(3), nz.battingOrder().get(4), nz.battingOrder().get(5), nz.battingOrder().get(6), nz.battingOrder().get(7), nz.battingOrder().get(8), nz.battingOrder().get(9), nz.battingOrder().get(10)));
         assertThat(innings.originalNumberOfScheduledOvers(), is(Optional.of(50)));
         assertThat(innings.overs().size(), is(1));
         Over over = innings.overs().get(0);
@@ -398,7 +397,7 @@ class InningsTest {
         assertThat(batters.get(0).player(), is(sameInstance(opener1)));
         assertThat(batters.get(1).player(), is(sameInstance(opener2)));
         assertThat(batters.get(2).player(), is(sameInstance(number3)));
-        assertThat(innings.yetToBat(), equalTo(nz.getPlayers().view(3, 10)));
+        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().view(3, 10)));
         assertThat(innings.partnerships().size(), is(2));
         assertThat(innings.partnerships().get(0).brokenByWicket(), is(true));
         assertThat(innings.partnerships().get(1).brokenByWicket(), is(false));

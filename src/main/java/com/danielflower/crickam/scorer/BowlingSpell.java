@@ -1,7 +1,5 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.utils.ImmutableList;
-
 /**
  * A bowling spell for a single bowler.
  * <p>Any overs bowled consecutively by a bowler (i.e. where there is a gap of just one over between two overs)

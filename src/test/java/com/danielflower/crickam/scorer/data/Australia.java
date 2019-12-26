@@ -1,10 +1,6 @@
 package com.danielflower.crickam.scorer.data;
 
-import com.danielflower.crickam.scorer.LineUpBuilder;
-import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.Team;
-import com.danielflower.crickam.scorer.TeamLevel;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
+import com.danielflower.crickam.scorer.*;
 
 import java.util.UUID;
 
@@ -46,7 +42,7 @@ public class Australia {
     public static final Player ADAM_ZAMPA = player("Adam Zampa").withPlayingRole(BOWLER).build();
 
     public static Team.Builder team() {
-        return new Team.Builder()
+        return Team.team()
             .withId(UUID.randomUUID().toString())
             .withTeamColour("#FF0000")
             .withShortName("AUS")
@@ -61,11 +57,10 @@ public class Australia {
             ));
     }
 
-    public static LineUpBuilder t20LineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder t20LineUp() {
+        return LineUp.lineUp()
             .withCaptain(AARON_FINCH)
             .withWicketKeeper(ALEX_CAREY)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, BEN_MC_DERMOTT, ASHTON_TURNER, ALEX_CAREY, ASHTON_AGAR,
@@ -73,11 +68,10 @@ public class Australia {
             ));
     }
 
-    public static LineUpBuilder oneDayLineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder oneDayLineUp() {
+        return LineUp.lineUp()
             .withCaptain(AARON_FINCH)
             .withWicketKeeper(ALEX_CAREY)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, PETER_HANDSCOMB, ALEX_CAREY, MARCUS_STOINIS, GLENN_MAXWELL,
@@ -85,11 +79,10 @@ public class Australia {
             ));
     }
 
-    public static LineUpBuilder testLineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder testLineUp() {
+        return LineUp.lineUp()
             .withCaptain(TIM_PAINE)
             .withWicketKeeper(TIM_PAINE)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, JOE_BURNS, MARNUS_LABUSCHAGNE, STEVEN_SMITH, MATTHEW_WADE, TRAVIS_HEAD, TIM_PAINE,

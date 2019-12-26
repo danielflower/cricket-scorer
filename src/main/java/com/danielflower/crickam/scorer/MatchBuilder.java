@@ -1,7 +1,5 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.utils.ImmutableList;
-
 import java.time.Instant;
 
 public final class MatchBuilder {

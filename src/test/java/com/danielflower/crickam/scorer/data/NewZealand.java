@@ -1,10 +1,6 @@
 package com.danielflower.crickam.scorer.data;
 
-import com.danielflower.crickam.scorer.LineUpBuilder;
-import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.Team;
-import com.danielflower.crickam.scorer.TeamLevel;
-import com.danielflower.crickam.scorer.utils.ImmutableList;
+import com.danielflower.crickam.scorer.*;
 
 import java.util.UUID;
 
@@ -47,7 +43,7 @@ public class NewZealand {
 
 
     public static Team.Builder team() {
-        return new Team.Builder()
+        return Team.team()
             .withId(UUID.randomUUID().toString())
             .withTeamColour("#000000")
             .withShortName("NZL")
@@ -62,31 +58,28 @@ public class NewZealand {
             ));
     }
 
-    public static LineUpBuilder t20LineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder t20LineUp() {
+        return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TIM_SEIFERT)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, COLIN_MUNRO, KANE_WILLIAMSON, ROSS_TAYLOR, TIM_SEIFERT,
                 COLIN_DE_GRANDHOMME, JAMES_NEESHAM, MITCH_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON));
     }
 
-    public static LineUpBuilder oneDayLineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder oneDayLineUp() {
+        return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TOM_LATHAM)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
                 JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCH_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON));
     }
 
-    public static LineUpBuilder testLineUp() {
-        return new LineUpBuilder()
+    public static LineUp.Builder testLineUp() {
+        return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(BJ_WATLING)
-            .withPlayingAtHome(true)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(JEET_RAVAL, TOM_LATHAM, KANE_WILLIAMSON, ROSS_TAYLOR, HENRY_NICHOLLS,
                 BJ_WATLING, COLIN_DE_GRANDHOMME, MITCH_SANTNER, TIM_SOUTHEE, NEIL_WAGNER, LOCKIE_FERGUSON));

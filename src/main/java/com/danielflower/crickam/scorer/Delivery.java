@@ -16,7 +16,7 @@ public final class Delivery {
     private final Double changeInLineAfterBounceInDegrees;
     private final WicketSide bowledFrom;
 
-    Delivery(DeliveryType deliveryType, Integer speedInKilometers, Double positionOfBounce, Double horizontalPitchInMeters, Double changeInLineAfterBounceInDegrees, WicketSide bowledFrom) {
+    private Delivery(DeliveryType deliveryType, Integer speedInKilometers, Double positionOfBounce, Double horizontalPitchInMeters, Double changeInLineAfterBounceInDegrees, WicketSide bowledFrom) {
         this.deliveryType = deliveryType;
         this.speedInKilometers = speedInKilometers;
         this.positionOfBounce = positionOfBounce;
@@ -105,7 +105,6 @@ public final class Delivery {
     }
 
     /**
-     *
      * @return A new builder
      */
     public static Builder delivery() {
