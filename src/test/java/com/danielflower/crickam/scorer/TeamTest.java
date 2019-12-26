@@ -13,11 +13,11 @@ class TeamTest {
     @Test
     public void canBeMade() {
         Team team = aTeam().withName("Blah").build();
-        assertThat(team.getName(), is("Blah"));
+        assertThat(team.name(), is("Blah"));
     }
 
-    public static TeamBuilder aTeam() {
-        return new TeamBuilder()
+    public static Team.Builder aTeam() {
+        return new Team.Builder()
             .withId(UUID.randomUUID().toString())
             .withLevel(TeamLevel.International)
             .withName("New Zealand")

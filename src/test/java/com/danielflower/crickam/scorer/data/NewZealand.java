@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.LineUpBuilder;
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.TeamBuilder;
+import com.danielflower.crickam.scorer.Team;
 import com.danielflower.crickam.scorer.TeamLevel;
 import com.danielflower.crickam.scorer.utils.ImmutableList;
 
@@ -47,8 +47,8 @@ public class NewZealand {
     public static final Player TODD_ASTLE = player("Todd Astle").withPlayingRole(BOWLER).withBowlingStyle(legSpinner()).build();
 
 
-    public static TeamBuilder team() {
-        return new TeamBuilder()
+    public static Team.Builder team() {
+        return new Team.Builder()
             .withId(UUID.randomUUID().toString())
             .withTeamColour("#000000")
             .withShortName("NZL")

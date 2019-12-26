@@ -23,7 +23,7 @@ public final class LineUp {
 
     @Override
     public String toString() {
-        return team.getName();
+        return team.name();
     }
 
 }

@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.LineUpBuilder;
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.TeamBuilder;
+import com.danielflower.crickam.scorer.Team;
 import com.danielflower.crickam.scorer.TeamLevel;
 import com.danielflower.crickam.scorer.utils.ImmutableList;
 
@@ -46,8 +46,8 @@ public class Australia {
     public static final Player ASHTON_TURNER = player("Ashton Turner").withPlayingRole(BATTER).withBowlingStyle(offSpinner()).build();
     public static final Player ADAM_ZAMPA = player("Adam Zampa").withPlayingRole(BOWLER).withBowlingStyle(legSpinner()).build();
 
-    public static TeamBuilder team() {
-        return new TeamBuilder()
+    public static Team.Builder team() {
+        return new Team.Builder()
             .withId(UUID.randomUUID().toString())
             .withTeamColour("#FF0000")
             .withShortName("AUS")
