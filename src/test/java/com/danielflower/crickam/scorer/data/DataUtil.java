@@ -15,6 +15,7 @@ class DataUtil {
             .withFamilyName(names[names.length - 1])
             .withFullName(name)
             .withBattingHandedness(Handedness.RightHanded)
+            .withBowlingHandedness(Handedness.RightHanded)
             .withGender(Gender.MALE)
             .withId(UUID.randomUUID().toString());
 

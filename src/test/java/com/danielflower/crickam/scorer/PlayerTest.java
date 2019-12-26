@@ -27,7 +27,7 @@ class PlayerTest {
         return new Player.Builder()
             .withId(UUID.randomUUID().toString())
             .withBattingHandedness(Handedness.RightHanded)
-            .withBowlingStyle(BowlingStyle.Builder.medium().withHandedness(Handedness.RightHanded).build())
+            .withBowlingHandedness(Handedness.RightHanded)
             .withFamilyName("Taylor")
             .withGivenNames(ImmutableList.of("Ross"))
             .withGender(Gender.MALE)

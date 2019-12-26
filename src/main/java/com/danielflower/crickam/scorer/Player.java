@@ -22,11 +22,11 @@ public final class Player {
     private final ImmutableList<String> givenNames;
     private final String fullName;
 	private final Handedness battingHandedness;
-	private final BowlingStyle bowlingStyle;
+    private final Handedness bowlingHandedness;
 	private final PlayingRole playingRole;
 
 	Player(@NotNull String id, @NotNull Gender gender, @NotNull ImmutableList<String> givenNames, @NotNull String familyName,
-                  @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull BowlingStyle bowlingStyle,
+                  @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull Handedness bowlingHandedness,
                   @NotNull PlayingRole playingRole) {
         this.id = requireNonNull(id);
         this.gender = requireNonNull(gender);
@@ -34,7 +34,7 @@ public final class Player {
         this.fullName = requireNonNull(fullName);
         this.battingHandedness = requireNonNull(battingHandedness);
         this.familyName = requireNonNull(familyName);
-        this.bowlingStyle = requireNonNull(bowlingStyle);
+        this.bowlingHandedness = requireNonNull(bowlingHandedness);
         this.playingRole = requireNonNull(playingRole);
 	}
 
@@ -83,8 +83,8 @@ public final class Player {
         return battingHandedness;
     }
 
-    public BowlingStyle bowlingStyle() {
-        return bowlingStyle;
+    public Handedness bowlingHandedness() {
+        return bowlingHandedness;
     }
 
     public PlayingRole playingRole() {
@@ -104,7 +104,7 @@ public final class Player {
         private String familyName;
         private String fullName;
         private Handedness battingHandedness = Handedness.RightHanded;
-        private BowlingStyle bowlingStyle;
+        private Handedness bowlingHandedness;
         private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
         private Gender gender;
 
@@ -138,14 +138,11 @@ public final class Player {
             return this;
         }
 
-        public Builder withBowlingStyle(BowlingStyle bowlingStyle) {
-            this.bowlingStyle = bowlingStyle;
+        public Builder withBowlingHandedness(Handedness bowlingHandedness) {
+            this.bowlingHandedness = bowlingHandedness;
             return this;
         }
 
-        public Builder withBowlingStyle(BowlingStyle.Builder bowlingStyle) {
-            return withBowlingStyle(bowlingStyle.build());
-        }
 
         /**
          * Associates a unique ID for this player
@@ -166,8 +163,7 @@ public final class Player {
 
         public Player build() {
             fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
-            BowlingStyle bowlingStyleToUse = (bowlingStyle == null) ? BowlingStyle.Builder.medium().withHandedness(battingHandedness).build() : bowlingStyle;
-            return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingStyleToUse, playingRole);
+            return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingHandedness, playingRole);
         }
     }
 }
