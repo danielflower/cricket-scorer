@@ -2,10 +2,10 @@ package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.ImmutableList;
 import com.danielflower.crickam.scorer.LineUp;
-import com.danielflower.crickam.scorer.MatchEvent;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -13,14 +13,16 @@ public final class InningsStartingEvent implements MatchEvent {
 
     private final LineUp battingTeam;
     private final LineUp bowlingTeam;
-    private final Instant startTime;
+    private final Instant time;
     private final ImmutableList<Player> openers;
+    private final Integer numberOfBalls;
 
-    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant startTime, ImmutableList<Player> openers) {
+    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls) {
         this.battingTeam = requireNonNull(battingTeam);
         this.bowlingTeam = requireNonNull(bowlingTeam);
-        this.startTime = requireNonNull(startTime);
+        this.time = requireNonNull(time);
         this.openers = requireNonNull(openers);
+        this.numberOfBalls = numberOfBalls;
         if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
     }
 
@@ -32,12 +34,20 @@ public final class InningsStartingEvent implements MatchEvent {
         return bowlingTeam;
     }
 
-    public Instant startTime() {
-        return startTime;
+    @Override
+    public Instant time() {
+        return time;
     }
 
     public ImmutableList<Player> openers() {
         return openers;
+    }
+
+    /**
+     * @return The max number of balls allowed in this innings, or empty to get it from the match object
+     */
+    public Optional<Integer> numberOfBalls() {
+        return Optional.ofNullable(numberOfBalls);
     }
 
     public static Builder inningsStarting() {
@@ -48,8 +58,9 @@ public final class InningsStartingEvent implements MatchEvent {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;
-        private Instant startTime = Instant.now();
+        private Instant time = Instant.now();
         private ImmutableList<Player> openers;
+        private Integer numberOfBalls;
 
         public Builder withBattingTeam(LineUp battingTeam) {
             this.battingTeam = battingTeam;
@@ -61,8 +72,8 @@ public final class InningsStartingEvent implements MatchEvent {
             return this;
         }
 
-        public Builder withStartTime(Instant startTime) {
-            this.startTime = startTime;
+        public Builder withTime(Instant startTime) {
+            this.time = startTime;
             return this;
         }
 
@@ -72,12 +83,22 @@ public final class InningsStartingEvent implements MatchEvent {
         }
 
         public Builder withOpeners(Player first, Player second) {
-            this.openers = ImmutableList.of(first, second);
+            return withOpeners(ImmutableList.of(first, second));
+        }
+
+        /**
+         * Sets the limit of the number of balls. This can be left unset to use the match default, so should generally
+         * be used in rain-affected matches where the innings will have a reduced number of balls from the outset.
+         * @param numberOfBalls The maximum number of deliveries allowed in this innings
+         * @return This builder
+         */
+        public Builder withNumberOfBalls(Integer numberOfBalls) {
+            this.numberOfBalls = numberOfBalls;
             return this;
         }
 
         public InningsStartingEvent build() {
-            return new InningsStartingEvent(battingTeam, bowlingTeam, startTime, openers);
+            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls);
         }
     }
 }

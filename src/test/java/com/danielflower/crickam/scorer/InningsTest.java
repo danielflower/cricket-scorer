@@ -6,13 +6,13 @@ import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.Score.*;
 import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
 import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
 import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
+import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
 import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +26,10 @@ class InningsTest {
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player opener2 = nz.battingOrder().get(1);
     private final Player number3 = nz.battingOrder().get(2);
-    private final Innings firstInnings = Innings.newInnings(MatchTest.aMatch().build(), nz, aus, nz.battingOrder().view(0, 1), 1, Instant.now(), 300);
+    private final Innings firstInnings =
+        MatchControl.newMatch(MatchTest.aMatch().withOversPerInnings(50).build())
+            .onEvent(inningsStarting().withBattingTeam(nz).withBowlingTeam(aus).withOpeners(nz.battingOrder().view(0, 1)))
+            .currentInnings().get();
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);
     private final Player bowler3 = aus.battingOrder().get(8);

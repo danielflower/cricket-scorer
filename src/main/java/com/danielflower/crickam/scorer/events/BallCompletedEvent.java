@@ -22,10 +22,10 @@ public final class BallCompletedEvent implements MatchEvent {
     private final Swing swing;
     private final Trajectory trajectoryAtImpact;
     private final Player fielder;
-    private final Instant dateCompleted;
+    private final Instant time;
     private final Player dismissedBatter;
 
-    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Player dismissedBatter, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant dateCompleted) {
+    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Player dismissedBatter, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant time) {
         if (striker != null && striker.equals(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
@@ -40,7 +40,7 @@ public final class BallCompletedEvent implements MatchEvent {
         this.swing = swing;
         this.trajectoryAtImpact = trajectoryAtImpact;
         this.fielder = fielder;
-        this.dateCompleted = requireNonNull(dateCompleted);
+        this.time = requireNonNull(time);
     }
 
     public Optional<Player> bowler() {
@@ -87,8 +87,9 @@ public final class BallCompletedEvent implements MatchEvent {
         return Optional.ofNullable(fielder);
     }
 
-    public Instant dateCompleted() {
-        return dateCompleted;
+    @Override
+    public Instant time() {
+        return time;
     }
 
     public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {

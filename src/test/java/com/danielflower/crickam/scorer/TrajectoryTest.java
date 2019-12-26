@@ -18,7 +18,7 @@ class TrajectoryTest {
     public static Trajectory.Builder aTrajectory() {
         return new Trajectory.Builder()
             .withDistanceInMeters(10.0)
-            .withElevationInDegrees(12.0)
+            .withLaunchAngle(12.0)
             .withSpeedInKms(123)
             .withDirectionInDegreesRelativeToBatter(90.0);
     }

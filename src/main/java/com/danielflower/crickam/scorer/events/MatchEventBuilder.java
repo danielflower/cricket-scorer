@@ -1,7 +1,5 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.MatchEvent;
-
 /**
  * A builder for a match event
  * @param <T> The type of event

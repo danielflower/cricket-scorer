@@ -20,7 +20,7 @@ class MatchControlTest {
     @Test
     public void eventsAreAdded() {
 
-        MatchControl control = new MatchControl(
+        MatchControl control = MatchControl.newMatch(
             MatchTest.aMatch()
                 .withNumberOfInningsPerTeam(1)
                 .withOversPerInnings(50)
@@ -32,7 +32,7 @@ class MatchControlTest {
             .withBattingTeam(nz)
             .withBowlingTeam(aus)
             .withOpeners(nz.battingOrder().get(0), nz.battingOrder().get(1))
-            .withStartTime(Instant.now())
+            .withTime(Instant.now())
         );
 
         assertThat(control.current(), sameInstance(match));

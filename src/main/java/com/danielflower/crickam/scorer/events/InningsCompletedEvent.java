@@ -1,17 +1,17 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.MatchEvent;
-
 import java.time.Instant;
+import java.util.Objects;
 
 public final class InningsCompletedEvent implements MatchEvent {
 
     private final Instant time;
 
     private InningsCompletedEvent(Instant time) {
-        this.time = time;
+        this.time = Objects.requireNonNull(time);
     }
 
+    @Override
     public Instant time() {
         return time;
     }

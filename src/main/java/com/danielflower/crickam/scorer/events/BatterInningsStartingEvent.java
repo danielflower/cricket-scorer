@@ -1,6 +1,5 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.MatchEvent;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
@@ -8,16 +7,17 @@ import java.util.Objects;
 
 public final class BatterInningsStartingEvent implements MatchEvent {
 
-    private final Instant startTime;
+    private final Instant time;
     private final Player batter;
 
-    private BatterInningsStartingEvent(Instant startTime, Player batter) {
-        this.startTime = Objects.requireNonNull(startTime, "startTime");
+    private BatterInningsStartingEvent(Instant time, Player batter) {
+        this.time = Objects.requireNonNull(time, "startTime");
         this.batter = batter;
     }
 
-    public Instant startTime() {
-        return startTime;
+    @Override
+    public Instant time() {
+        return time;
     }
 
     public Player batter() {
@@ -29,11 +29,11 @@ public final class BatterInningsStartingEvent implements MatchEvent {
     }
 
     public static final class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
-        private Instant startTime = Instant.now();
+        private Instant time = Instant.now();
         private Player batter;
 
-        public Builder withStartTime(Instant startTime) {
-            this.startTime = startTime;
+        public Builder withTime(Instant startTime) {
+            this.time = startTime;
             return this;
         }
 
@@ -48,7 +48,7 @@ public final class BatterInningsStartingEvent implements MatchEvent {
         }
 
         public BatterInningsStartingEvent build() {
-            return new BatterInningsStartingEvent(startTime, batter);
+            return new BatterInningsStartingEvent(time, batter);
         }
     }
 }

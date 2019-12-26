@@ -1,50 +1,55 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * The trajectory of the ball coming off the bat
  */
 public final class Trajectory {
-	private final Integer speedInKms;
-	private final Double directionInDegreesRelativeToBatter;
-	private final Double elevationInDegrees;
-	private final Double distanceInMeters;
+    private final Integer speedInKms;
+    private final Double directionInDegreesRelativeToBatter;
+    private final Double launchAngle;
+    private final Double distanceInMeters;
 
-	private Trajectory(Integer speedInKms, Double directionInDegreesRelativeToBatter, Double elevationInDegrees, Double distanceInMeters) {
-		this.speedInKms = speedInKms;
-		this.directionInDegreesRelativeToBatter = directionInDegreesRelativeToBatter;
-		this.elevationInDegrees = elevationInDegrees;
-		this.distanceInMeters = distanceInMeters;
-	}
+    private Trajectory(Integer speedInKms, Double directionInDegreesRelativeToBatter, Double launchAngle, Double distanceInMeters) {
+        this.speedInKms = speedInKms;
+        this.directionInDegreesRelativeToBatter = directionInDegreesRelativeToBatter;
+        this.launchAngle = launchAngle;
+        this.distanceInMeters = distanceInMeters;
+    }
 
-	/**
+    /**
      * The direction that the ball was hit in.
-	 * <ul>
-	 * <li>
-	 * 0 == 360 == straight behind to the wicket keeper;
-	 * </li>
-	 * <li>
-	 * 90 = square leg (for right hander);
-	 * </li>
-	 * <li>
-	 * 180 = straight back to bowler;
-	 * </li>
-	 * <li>
-	 * 270 = point (for right hander)
-	 * </li>
-	 * <li>
-	 * empty = unknown
-	 * </li>
-	 * </ul>
-	 */
-	public Optional<Double> directionInDegreesRelativeToBatter() {
-		return Optional.ofNullable(directionInDegreesRelativeToBatter);
-	}
+     * <ul>
+     * <li>
+     * 0 == 360 == straight behind to the wicket keeper;
+     * </li>
+     * <li>
+     * 90 = square leg (for right hander);
+     * </li>
+     * <li>
+     * 180 = straight back to bowler;
+     * </li>
+     * <li>
+     * 270 = point (for right hander)
+     * </li>
+     * <li>
+     * empty = unknown
+     * </li>
+     * </ul>
+     */
+    public Optional<Double> directionInDegreesRelativeToBatter() {
+        return Optional.ofNullable(directionInDegreesRelativeToBatter);
+    }
 
-	public Optional<Double> elevationInDegrees() {
-		return Optional.ofNullable(elevationInDegrees);
-	}
+    /**
+     * @return The angle the ball came off the bat. A negative number is hitting into the ground (with -90.0 being
+     * directly downward); positive is in the air (with 90.0 being straight up).
+     */
+    public Optional<Double> launchAngle() {
+        return Optional.ofNullable(launchAngle);
+    }
 
     public Optional<Integer> speedInKms() {
         return Optional.ofNullable(speedInKms);
@@ -55,23 +60,39 @@ public final class Trajectory {
     }
 
     @Override
-	public String toString() {
-		return "Trajectory{" +
-				"speedInKms=" + speedInKms +
-				", directionInDegreesRelativeToBatter=" + directionInDegreesRelativeToBatter +
-				", elevationInDegrees=" + elevationInDegrees +
-				", distance=" + distanceInMeters +
-				'}';
-	}
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Trajectory that = (Trajectory) o;
+        return Objects.equals(speedInKms, that.speedInKms) &&
+            Objects.equals(directionInDegreesRelativeToBatter, that.directionInDegreesRelativeToBatter) &&
+            Objects.equals(launchAngle, that.launchAngle) &&
+            Objects.equals(distanceInMeters, that.distanceInMeters);
+    }
 
-	public static Builder trajectory() {
-	    return new Builder();
+    @Override
+    public int hashCode() {
+        return Objects.hash(speedInKms, directionInDegreesRelativeToBatter, launchAngle, distanceInMeters);
+    }
+
+    @Override
+    public String toString() {
+        return "Trajectory{" +
+            "speedInKms=" + speedInKms +
+            ", directionInDegreesRelativeToBatter=" + directionInDegreesRelativeToBatter +
+            ", launchAngle=" + launchAngle +
+            ", distance=" + distanceInMeters +
+            '}';
+    }
+
+    public static Builder trajectory() {
+        return new Builder();
     }
 
     public static final class Builder {
         private Integer speedInKms;
         private Double directionInDegreesRelativeToBatter;
-        private Double elevationInDegrees;
+        private Double launchAngle;
         private Double distanceInMeters;
 
         public Builder withSpeedInKms(Integer speedInKms) {
@@ -104,8 +125,13 @@ public final class Trajectory {
             return this;
         }
 
-        public Builder withElevationInDegrees(Double elevationInDegrees) {
-            this.elevationInDegrees = elevationInDegrees;
+        /**
+         * @param launchAngle The angle the ball came off the bat. A negative number is hitting into the ground
+         *                    (with -90.0 being directly downward); positive is in the air (with 90.0 being straight up).
+         * @return This ball
+         */
+        public Builder withLaunchAngle(Double launchAngle) {
+            this.launchAngle = launchAngle;
             return this;
         }
 
@@ -115,7 +141,7 @@ public final class Trajectory {
         }
 
         public Trajectory build() {
-            return new Trajectory(speedInKms, directionInDegreesRelativeToBatter, elevationInDegrees, distanceInMeters);
+            return new Trajectory(speedInKms, directionInDegreesRelativeToBatter, launchAngle, distanceInMeters);
         }
 
     }
