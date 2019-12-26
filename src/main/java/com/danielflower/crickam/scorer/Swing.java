@@ -13,7 +13,7 @@ public final class Swing {
     private final Double footDirection;
     private final Double power;
 
-    public Swing(ShotType shotType, ImpactOnBat impactOnBat, Double timing, Double footDirection, Double power) {
+    private Swing(ShotType shotType, ImpactOnBat impactOnBat, Double timing, Double footDirection, Double power) {
         this.shotType = shotType;
         this.impactOnBat = impactOnBat;
         this.timing = timing;

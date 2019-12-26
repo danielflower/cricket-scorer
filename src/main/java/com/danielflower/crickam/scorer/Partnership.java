@@ -10,9 +10,9 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Partnership {
     private final Balls balls;
-	public final Balls firstBatterContribution;
-	public final Balls secondBatterContribution;
-	public final Instant endTime;
+	private final Balls firstBatterContribution;
+	private final Balls secondBatterContribution;
+	private final Instant endTime;
 	private final FixedData data;
 
     private static class FixedData {

@@ -17,7 +17,7 @@ class SwingTest {
     }
 
     public static Swing.Builder aSwing() {
-        return new Swing.Builder();
+        return Swing.swing();
     }
 
 }

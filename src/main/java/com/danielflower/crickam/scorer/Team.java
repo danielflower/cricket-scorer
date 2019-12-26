@@ -4,13 +4,18 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A team with a squad of players.
+ * <p>Note that when a team plays in a match, the actual batting order is specified with the {@link LineUp} class.</p>
+ * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
+ */
 public final class Team {
 	private final String id;
-	public final String shortName;
+	private final String shortName;
 	private final TeamLevel level;
 	private final ImmutableList<Player> squad;
 	private final String name;
-	public final String teamColour;
+	private final String teamColour;
 
 	public TeamLevel level() {
         return level;
@@ -40,6 +45,9 @@ public final class Team {
 		return name;
     }
 
+    /**
+     * @return An abbreviation of the team, such as &quot;NZL&quot;
+     */
     public String shortName() {
         return shortName;
     }
@@ -83,6 +91,10 @@ public final class Team {
             return this;
         }
 
+        /**
+         * @param shortName An abbreviation of the team, such as &quot;NZL&quot;
+         * @return This builder
+         */
         public Builder withShortName(String shortName) {
             this.shortName = shortName;
             return this;

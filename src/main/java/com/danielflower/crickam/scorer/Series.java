@@ -7,9 +7,9 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Series {
 
-	public final String id;
-	public final ImmutableList<Team> teams;
-	public final String name;
+	private final String id;
+	private final ImmutableList<Team> teams;
+	private final String name;
 
 	private Series(String id, ImmutableList<Team> teams, String name) {
         this.id = requireNonNull(id);
@@ -17,11 +17,23 @@ public final class Series {
         this.name = requireNonNull(name);
     }
 
-	public static Builder series() {
-	    return new Builder();
+    public String id() {
+        return id;
     }
 
-	public static class Builder {
+    public ImmutableList<Team> teams() {
+        return teams;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public static Builder series() {
+        return new Builder();
+    }
+
+    public static class Builder {
         public String id;
         public ImmutableList<Team> teams;
         public String name;
