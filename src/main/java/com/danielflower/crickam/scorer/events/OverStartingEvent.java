@@ -16,7 +16,7 @@ public final class OverStartingEvent implements MatchEvent {
     private final int ballsInOver;
 
     private OverStartingEvent(Player bowler, Player striker, Player nonStriker, Instant time, int ballsInOver) {
-        this.bowler = requireNonNull(bowler);
+        this.bowler = requireNonNull(bowler, "The bowler of an over must be set");
         this.striker = striker;
         this.nonStriker = nonStriker;
         this.time = time;

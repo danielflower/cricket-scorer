@@ -35,6 +35,7 @@ public final class Innings {
     private final FixedData data;
     private final State state;
     private final Integer maxBalls;
+    private final Integer target;
 
     Innings onEvent(MatchEvent event) {
         if (state == State.COMPLETED) {
@@ -165,7 +166,7 @@ public final class Innings {
             }
         }
 
-        return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxBalls);
+        return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxBalls, target);
     }
 
     @Nullable
@@ -288,8 +289,9 @@ public final class Innings {
         return state;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxBalls) {
+    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxBalls, Integer target) {
         this.maxBalls = maxBalls;
+        this.target = target;
         if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
             throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
         }
@@ -307,7 +309,7 @@ public final class Innings {
         this.state = requireNonNull(state);
     }
 
-    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Integer scheduledNumberOfBalls) {
+    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Integer scheduledNumberOfBalls, Integer target) {
         FixedData fixedData = new FixedData(match, battingTeam, bowlingTeam, inningsNumber, startTime);
 
         BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
@@ -317,7 +319,7 @@ public final class Innings {
         ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
 
         ImmutableList<Player> yetToBat = battingTeam.battingOrder().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-        return new Innings(fixedData, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED, scheduledNumberOfBalls);
+        return new Innings(fixedData, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED, scheduledNumberOfBalls, target);
     }
 
     /**
@@ -362,6 +364,7 @@ public final class Innings {
      * Gets the number of the last ball as a string in the format <em>over.ball</em>, for example &quot;0.1&quot;
      * <p>After 6 balls but before an {@link OverCompletedEvent} it will return a value such as &quot;0.6&quot;
      * while after the over is completed it will be &quot;1.0&quot;</p>
+     *
      * @return The number of the last ball
      */
     public String ballNumber() {
@@ -380,6 +383,13 @@ public final class Innings {
         }
     }
 
+    /**
+     * @return The target the batting team is aiming for in order to win, or empty if this is not the last innings
+     * in the match
+     */
+    public OptionalInt target() {
+        return toOptional(target);
+    }
 
     /**
      * @return The team that is currently batting
@@ -445,6 +455,11 @@ public final class Innings {
      */
     public int maidens() {
         return (int) overs.stream().filter(Over::isMaiden).count();
+    }
+
+    @Override
+    public String toString() {
+        return data.battingTeam.team().name() + " innings " + inningsNumber();
     }
 
 }

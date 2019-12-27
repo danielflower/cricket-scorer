@@ -46,7 +46,7 @@ public class Australia {
             .withId(UUID.randomUUID().toString())
             .withTeamColour("#FF0000")
             .withShortName("AUS")
-            .withName("New Australia")
+            .withName("Australia")
             .withLevel(TeamLevel.International)
             .withSquad(ImmutableList.of(
                 SEAN_ABBOT, JASON_BEHRENDORFF, PAT_CUMMINS, MARCUS_HARRIS, USMAN_KHAWAJA, BEN_MC_DERMOTT, TIM_PAINE,

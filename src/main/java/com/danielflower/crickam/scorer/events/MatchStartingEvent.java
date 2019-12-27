@@ -23,12 +23,12 @@ public final class MatchStartingEvent implements MatchEvent {
     private final Integer ballsPerInnings;
 
     private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings) {
-        this.matchID = requireNonNull(matchID);
+        this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
         this.time = time;
         this.scheduledStartTime = scheduledStartTime;
-        this.teams = requireNonNull(teams);
-        this.matchType = requireNonNull(matchType);
+        this.teams = requireNonNull(teams, "teams");
+        this.matchType = requireNonNull(matchType, "matchType");
         this.inningsPerTeam = inningsPerTeam;
         this.oversPerInnings = oversPerInnings;
         this.venue = venue;

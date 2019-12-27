@@ -18,13 +18,15 @@ public final class InningsStartingEvent implements MatchEvent {
     private final Instant time;
     private final ImmutableList<Player> openers;
     private final Integer numberOfBalls;
+    private final Integer target;
 
-    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls) {
+    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls, Integer target) {
         this.battingTeam = requireNonNull(battingTeam);
-        this.bowlingTeam = requireNonNull(bowlingTeam);
+        this.bowlingTeam = bowlingTeam;
         this.time = time;
         this.openers = requireNonNull(openers);
         this.numberOfBalls = numberOfBalls;
+        this.target = target;
         if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
     }
 
@@ -32,8 +34,8 @@ public final class InningsStartingEvent implements MatchEvent {
         return battingTeam;
     }
 
-    public LineUp bowlingTeam() {
-        return bowlingTeam;
+    public Optional<LineUp> bowlingTeam() {
+        return Optional.ofNullable(bowlingTeam);
     }
 
     @Override
@@ -52,6 +54,14 @@ public final class InningsStartingEvent implements MatchEvent {
         return toOptional(numberOfBalls);
     }
 
+    /**
+     * @return The target runs for the batting team to reach in order to win the match. Only applies to the final
+     * innings in a match, and can be unset to have a calculated value based on the match state.
+     */
+    public OptionalInt target() {
+        return toOptional(target);
+    }
+
     public static Builder inningsStarting() {
         return new Builder();
     }
@@ -63,27 +73,49 @@ public final class InningsStartingEvent implements MatchEvent {
         private Instant time;
         private ImmutableList<Player> openers;
         private Integer numberOfBalls;
+        private Integer target;
 
+        /**
+         * @param battingTeam The batting team. This must be set.
+         * @return This builder
+         */
         public Builder withBattingTeam(LineUp battingTeam) {
             this.battingTeam = battingTeam;
             return this;
         }
 
+        /**
+         * @param bowlingTeam The bowling team. This can be left unset.
+         * @return This builder
+         */
         public Builder withBowlingTeam(LineUp bowlingTeam) {
             this.bowlingTeam = bowlingTeam;
             return this;
         }
 
+        /**
+         * @param startTime The time the innings is deemed to have started
+         * @return This builder
+         */
         public Builder withTime(Instant startTime) {
             this.time = startTime;
             return this;
         }
 
+        /**
+         * @param openers The two openers for the batting team
+         * @return This builder
+         */
         public Builder withOpeners(ImmutableList<Player> openers) {
             this.openers = openers;
             return this;
         }
 
+        /**
+         * @param first  The opener who will face the first ball
+         * @param second The opener who will be at the non-striker's end
+         * @return This builder
+         */
         public Builder withOpeners(Player first, Player second) {
             return withOpeners(ImmutableList.of(first, second));
         }
@@ -91,6 +123,7 @@ public final class InningsStartingEvent implements MatchEvent {
         /**
          * Sets the limit of the number of balls. This can be left unset to use the match default, so should generally
          * be used in rain-affected matches where the innings will have a reduced number of balls from the outset.
+         *
          * @param numberOfBalls The maximum number of deliveries allowed in this innings
          * @return This builder
          */
@@ -99,11 +132,22 @@ public final class InningsStartingEvent implements MatchEvent {
             return this;
         }
 
+        /**
+         * Sets the target score for this innings. Only applicable to the final innings in match. Leave unset in order
+         * to have a calculated value.
+         *
+         * @param target The target runs for the batting team to reach in order to win the match
+         * @return This builder
+         */
+        public Builder withTarget(Integer target) {
+            this.target = target;
+            return this;
+        }
+
         public InningsStartingEvent build() {
             requireNonNull(battingTeam, "battingTeam");
-            requireNonNull(bowlingTeam, "bowlingTeam");
             ImmutableList<Player> openers = this.openers == null ? battingTeam.battingOrder().view(0, 1) : this.openers;
-            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls);
+            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls, target);
         }
     }
 }
