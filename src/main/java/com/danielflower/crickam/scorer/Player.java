@@ -89,6 +89,10 @@ public final class Player {
         return playingRole;
     }
 
+    public String firstInitialWithSurname() {
+	    return givenName().charAt(0) + " " + familyName;
+    }
+
     public static Builder player() {
 	    return new Builder();
     }

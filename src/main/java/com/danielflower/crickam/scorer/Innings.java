@@ -1,8 +1,10 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
@@ -59,18 +61,9 @@ public final class Innings {
                 bowlerInningses = bowlerInningses.add(bi);
             }
 
-            Player strikerPlayer = e.striker();
-            Player nonStrikerPlayer = e.nonStriker();
-            if (strikerPlayer == null || nonStrikerPlayer == null) {
-                Optional<Over> previousOver = overs.last();
-                if (previousOver.isPresent()) {
-                    if (strikerPlayer == null) strikerPlayer = previousOver.get().nonStriker();
-                    if (nonStrikerPlayer == null) nonStrikerPlayer = previousOver.get().striker();
-                } else {
-                    if (strikerPlayer == null) strikerPlayer = this.batters.get(0).player();
-                    if (nonStrikerPlayer == null) nonStrikerPlayer = this.batters.get(1).player();
-                }
-            }
+            boolean isFirst = overs.last().isEmpty();
+            Player strikerPlayer = Objects.requireNonNullElse(e.striker(), playerOrNull(isFirst ? currentStriker() : currentNonStriker()));
+            Player nonStrikerPlayer = Objects.requireNonNullElse(e.nonStriker(), playerOrNull(isFirst ? currentNonStriker() : currentStriker()));
             striker = findBatterInnings(strikerPlayer);
             nonStriker = findBatterInnings(nonStrikerPlayer);
 
@@ -167,6 +160,11 @@ public final class Innings {
         }
 
         return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxBalls);
+    }
+
+    @Nullable
+    private Player playerOrNull(Optional<BatterInnings> batterInnings) {
+        return batterInnings.isPresent() ? batterInnings.get().player() : null;
     }
 
     private static class FixedData {

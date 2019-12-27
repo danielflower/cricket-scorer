@@ -106,7 +106,8 @@ public final class BatterInnings {
 
     @Override
 	public String toString() {
-		return player.familyName() + " - " + score().batterRuns() + " (" + score().validDeliveries() + "b)";
+        String notout = isNotOut() ? "*" : "";
+		return player.familyName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
 	}
 
     @Override

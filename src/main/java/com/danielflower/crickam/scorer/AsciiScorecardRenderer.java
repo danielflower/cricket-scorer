@@ -56,7 +56,7 @@ public class AsciiScorecardRenderer {
                     Score s = bi.score();
                     String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
                     String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString() : "not out";
-                    renderLine(writer, cols, bi.player().fullName(), dismissal, s.batterRuns(), "", s.validDeliveries(), s.fours(), s.sixes(), sr);
+                    renderLine(writer, cols, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.validDeliveries(), s.fours(), s.sixes(), sr);
                 }
             }
             writer.append(NEWLINE).append(NEWLINE);
