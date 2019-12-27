@@ -25,6 +25,7 @@ public class MatchResult {
     enum Measure {
         Wickets(false, "wicket", "wickets"),
         Runs(false, "run", "runs"),
+        InningsAndRuns(false, "run", "runs"),
         WicketCount(true, "in wicket count (tie breaker)", null),
         BoundaryCount(true, "boundaries in boundary count (tie breaker)", null),
         WicketsInBowlOut(true, "wickets in bowl out (tie breaker)", null);
@@ -40,7 +41,8 @@ public class MatchResult {
         }
 
         public String toString(int count) {
-            return count + " " + ((count == 1) ? singular : requireNonNull(plural, singular));
+            String prefix = (this == InningsAndRuns) ? "an innings and " : "";
+            return prefix + count + " " + ((count == 1) ? singular : requireNonNull(plural, singular));
         }
     }
 
@@ -199,7 +201,24 @@ public class MatchResult {
     public static MatchResult fromMatch(Match match) {
         if (match.inningsList().last().isPresent()) {
             Innings innings = match.inningsList().last().get();
-            if (innings.target().isPresent()) {
+            boolean isLastInnings = innings.target().isPresent();
+            if (!isLastInnings) {
+                if (match.inningsList().stream().filter(i -> i.battingTeam().equals(innings.battingTeam()) && i.state() == Innings.State.COMPLETED).count() >= match.numberOfInningsPerTeam()) {
+                    // the team that just completed their innings will bat no more. But have they exceeded the other team's score?
+                    int justFinishedBattingTotalScore = match.scoredByTeam(innings.battingTeam()).teamRuns();
+                    int otherTeamScore = match.scoredByTeam(innings.bowlingTeam()).teamRuns();
+                    int difference = otherTeamScore - justFinishedBattingTotalScore;
+                    if (difference > 0) {
+                        return MatchResult.matchResult()
+                            .withResultType(ResultType.Won)
+                            .withWinningTeam(innings.bowlingTeam())
+                            .withWonBy(Measure.InningsAndRuns)
+                            .withWonByAmount(difference)
+                            .build();
+                    }
+                }
+            }
+            if (isLastInnings) {
                 int remaining = innings.target().getAsInt() - innings.score().teamRuns();
                 if (remaining <= 0) {
                     return matchResult()

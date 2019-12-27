@@ -177,6 +177,49 @@ class MatchResultTest {
             is("New Zealand won by 9 wickets"));
     }
 
+    @Test
+    void knowsAboutBeingBeatenByAnInnings() {
+        Match match = MatchControl.newMatch(MatchStartingEvent.matchStarting()
+            .withMatchID("1")
+            .withTeams(ImmutableList.of(aus, nz))
+            .withMatchType(MatchType.TEST)
+            .withNumberOfInningsPerTeam(2)
+            .build()).current()
+            .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler))
+            .onEvent(ballCompleted("0"))
+            .onEvent(inningsCompleted().withDeclared(true))
+            .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(overStarting().withBowler(ausBowler))
+            .onEvent(ballCompleted("6"))
+            .onEvent(inningsCompleted().withDeclared(true))
+            .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler).withBallsInOver(20))
+            .onEvent(ballCompleted("2"))
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(batterInningsStarting())
+            .onEvent(wicket())
+            .onEvent(inningsCompleted());
+
+        assertThat(MatchResult.fromMatch(match).toString(), is("New Zealand won by an innings and 4 runs"));
+    }
+
     private static BallCompletedEvent.Builder wicket() {
         return ballCompleted("W").withDismissal(DismissalType.Bowled);
     }

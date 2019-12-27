@@ -216,7 +216,12 @@ public final class Match {
         return new Match(data, newState, newResult, newInningsList);
     }
 
-    private Score scoredByTeam(LineUp team) {
+    /**
+     * Gets the score for the given team line-up for the entire match
+     * @param team The team to find the score for
+     * @return The score for all innings the team has played in this match
+     */
+    public Score scoredByTeam(LineUp team) {
         Score total = Score.EMPTY;
         for (Innings innings : inningsList) {
             if (innings.battingTeam().equals(team)) {

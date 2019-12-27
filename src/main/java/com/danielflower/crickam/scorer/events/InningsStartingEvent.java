@@ -19,14 +19,16 @@ public final class InningsStartingEvent implements MatchEvent {
     private final ImmutableList<Player> openers;
     private final Integer numberOfBalls;
     private final Integer target;
+    private final boolean isFollowingOn;
 
-    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls, Integer target) {
+    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer numberOfBalls, Integer target, boolean isFollowingOn) {
         this.battingTeam = requireNonNull(battingTeam);
         this.bowlingTeam = bowlingTeam;
         this.time = time;
         this.openers = requireNonNull(openers);
         this.numberOfBalls = numberOfBalls;
         this.target = target;
+        this.isFollowingOn = isFollowingOn;
         if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
     }
 
@@ -66,6 +68,13 @@ public final class InningsStartingEvent implements MatchEvent {
         return new Builder();
     }
 
+    /**
+     * @return Returns true if this innings was started after the opposition enforced the follow-on
+     */
+    public boolean followingOn() {
+        return isFollowingOn;
+    }
+
     public static final class Builder implements MatchEventBuilder<InningsStartingEvent> {
 
         private LineUp battingTeam;
@@ -74,6 +83,7 @@ public final class InningsStartingEvent implements MatchEvent {
         private ImmutableList<Player> openers;
         private Integer numberOfBalls;
         private Integer target;
+        private boolean isFollowingOn;
 
         /**
          * @param battingTeam The batting team. This must be set.
@@ -144,10 +154,19 @@ public final class InningsStartingEvent implements MatchEvent {
             return this;
         }
 
+        /**
+         * @param followingOn true if the batting team is following on from their previous innings
+         * @return This builder
+         */
+        public Builder withFollowingOn(boolean followingOn) {
+            isFollowingOn = followingOn;
+            return this;
+        }
+
         public InningsStartingEvent build() {
             requireNonNull(battingTeam, "battingTeam");
             ImmutableList<Player> openers = this.openers == null ? battingTeam.battingOrder().view(0, 1) : this.openers;
-            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls, target);
+            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls, target, isFollowingOn);
         }
     }
 }
