@@ -69,7 +69,7 @@ public final class Dismissal {
             case Retired:
                 return "retired hurt";
             case RunOut:
-                return "run out (" + fielder + ")";
+                return fielder == null ? "run out" : "run out (" + fielder + ")";
             case Stumped:
                 return "st " + fielder + " b " + bowler;
         }

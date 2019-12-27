@@ -65,8 +65,8 @@ class MatchControlTest {
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.isComplete(), is(false));
         assertThat(over.isMaiden(), is(false));
-        assertThat(over.striker().player(), is(sameInstance(nz.battingOrder().get(0))));
-        assertThat(over.nonStriker().player(), is(sameInstance(nz.battingOrder().get(1))));
+        assertThat(over.striker(), is(sameInstance(nz.battingOrder().get(0))));
+        assertThat(over.nonStriker(), is(sameInstance(nz.battingOrder().get(1))));
         assertThat(over.runs(), is(0));
     }
 

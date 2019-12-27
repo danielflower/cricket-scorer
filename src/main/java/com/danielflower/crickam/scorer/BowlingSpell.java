@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import static com.danielflower.crickam.scorer.BowlerInnings.addOverWithPreviousRemovedIfSame;
+
 /**
  * A bowling spell for a single bowler.
  * <p>Any overs bowled consecutively by a bowler (i.e. where there is a gap of just one over between two overs)
@@ -92,7 +94,8 @@ public final class BowlingSpell {
     }
 
     BowlingSpell onBall(Over over, Ball ball) {
-        return new BowlingSpell(bowler, spellNumber, overs.add(over), balls.add(ball));
+        ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
+        return new BowlingSpell(bowler, spellNumber, newOvers, balls.add(ball));
     }
 }
 

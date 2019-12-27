@@ -3,6 +3,7 @@ package com.danielflower.crickam.scorer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 public class AsciiScorecardRenderer {
 
@@ -46,20 +47,37 @@ public class AsciiScorecardRenderer {
         }
         writer.append(NEWLINE);
 
-        int[] cols = new int[]{15, 24, 4, 4, 4, 3, 3, 7};
         for (Innings innings : match.inningsList()) {
             writer.append(NEWLINE).append(innings.battingTeam().team().name()).append(" Innings");
             if (innings.originalNumberOfScheduledOvers().isPresent()) {
-                writer.append("(").append(innings.originalNumberOfScheduledOvers().get().toString()).append(" overs maximum)").append(NEWLINE);
-                renderLine(writer, cols, "BATTER", "", "R", "M", "B", "4s", "6s", "SR");
-                for (BatterInnings bi : innings.batterInningsList()) {
-                    Score s = bi.score();
-                    String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
-                    String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString() : "not out";
-                    renderLine(writer, cols, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.validDeliveries(), s.fours(), s.sixes(), sr);
-                }
+                writer.append(" (").append(innings.originalNumberOfScheduledOvers().get().toString()).append(" overs maximum)").append(NEWLINE);
             }
+            int[] batColWidths = {-17, -26, 4, 4, 4, 3, 3, 7};
+            renderLine(writer, batColWidths, "BATTER", "", "R", "M", "B", "4s", "6s", "SR");
+            for (BatterInnings bi : innings.batterInningsList()) {
+                Score s = bi.score();
+                String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
+                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString() : "not out";
+                renderLine(writer, batColWidths, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.validDeliveries(), s.fours(), s.sixes(), sr);
+            }
+            renderLine(writer, batColWidths, "Extras", getExtraDetails(innings.score()), innings.score().extras());
+            renderLine(writer, batColWidths, "TOTAL", "(" + innings.score().wickets() + " wkts; " + innings.ballNumber() + " overs)", innings.score().teamRuns());
+            writer.append(NEWLINE);
+
+            if (!innings.yetToBat().isEmpty()) {
+                writer.append(innings.state() == Innings.State.COMPLETED ? "Did not bat: " : "Yet to bat: ");
+                writer.append(innings.yetToBat().stream().map(Player::firstInitialWithSurname).collect(Collectors.joining(", ")));
+            }
+
             writer.append(NEWLINE).append(NEWLINE);
+
+            int[] bowlColWidths = {-20, 4, 4, 4, 4, 7, 3, 3, 3, 3, 3};
+            renderLine(writer, bowlColWidths, "BOWLING", "O", "M", "R", "W", "Econ", "0s", "4s", "6s", "WD", "NB");
+            for (BowlerInnings bi : innings.bowlerInningsList()) {
+                Score s = bi.score();
+                renderLine(writer, bowlColWidths, bi.bowler().firstInitialWithSurname(), bi.overs().size(), bi.maidens(),
+                    s.bowlerRuns(), s.wickets(), s.bowlerEconomyRate(), s.dots(), s.fours(), s.sixes(), s.wides(), s.noBalls());
+            }
 
         }
 
@@ -67,18 +85,22 @@ public class AsciiScorecardRenderer {
 
     private static void renderLine(Appendable writer, int[] colWidths, Object... values) throws IOException {
         for (int i = 0; i < colWidths.length; i++) {
+            if (i < values.length) {
                 int colsSize = colWidths[i];
+                boolean leftAlign = colsSize < 0;
+                colsSize = Math.abs(colsSize);
                 String str = values[i].toString();
                 if (str.length() > colsSize - 1) {
                     str = str.substring(0, colsSize - 1);
                 }
-                if (i < 2) {
+                if (leftAlign) {
                     writer.append(String.format("%-" + colsSize + "s", str));
                 } else {
                     writer.append(String.format("%" + colsSize + "s", str));
                 }
             }
-            writer.append(NEWLINE);
+        }
+        writer.append(NEWLINE);
     }
 
 //    public static String asciiScorecard(Innings innings) {

@@ -31,7 +31,7 @@ public class T20 {
     @Test
     public void canScoreT20Games() throws IOException {
 
-        // Actual game: https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
+        // A recreation of https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
 
         LineUp nz = LineUp.lineUp()
             .withTeam(Team.team()
@@ -290,7 +290,7 @@ public class T20 {
         control.onEvent(ballCompleted("2"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCH_SANTNER));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCH_SANTNER).withFielder(BILLINGS));
         control.onEvent(overCompleted());
 
 
@@ -300,9 +300,6 @@ public class T20 {
             .withBowlingTeam(nz)
             .withTime(localTime(14, 0))
         );
-
-
-        control.onEvent(batterInningsStarting());
 
         control.onEvent(overStarting("Southee"));
         control.onEvent(ballCompleted("0"));

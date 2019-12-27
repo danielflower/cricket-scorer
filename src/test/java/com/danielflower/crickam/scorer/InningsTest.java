@@ -80,8 +80,8 @@ class InningsTest {
         assertThat(over.isComplete(), is(false));
         assertThat(over.validDeliveries(), is(0));
         assertThat(over.numberInInnings(), is(0));
-        assertThat(over.striker().player(), is(opener1));
-        assertThat(over.nonStriker().player(), is(opener2));
+        assertThat(over.striker(), is(opener1));
+        assertThat(over.nonStriker(), is(opener2));
         assertThat(over.balls().size(), is(0));
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.bowler(), is(bowler1));
@@ -317,8 +317,10 @@ class InningsTest {
             .onEvent(ballCompleted().withRunsScored(Score.DOT_BALL).withBowler(bowler2).build())
             .onEvent(overCompleted().build());
         assertThat(innings.maidens(), is(1));
+        assertThat(innings.bowlerInningsList().get(0).bowler(), is(bowler1));
         assertThat(innings.bowlerInningsList().get(0).maidens(), is(0));
         assertThat(innings.bowlerInningsList().get(0).spells().get(0).maidens(), is(0));
+        assertThat(innings.bowlerInningsList().get(1).bowler(), is(bowler2));
         assertThat(innings.bowlerInningsList().get(1).maidens(), is(0));
         assertThat(innings.bowlerInningsList().get(1).spells().get(0).maidens(), is(0));
 

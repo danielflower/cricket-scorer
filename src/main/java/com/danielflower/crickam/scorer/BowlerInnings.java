@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Optional;
 
 /**
@@ -62,10 +64,10 @@ public final class BowlerInnings {
         this.overs = overs;
     }
 
-    static BowlerInnings newInnings(Player player) {
-        BowlingSpell spell = new BowlingSpell(player, 1, new ImmutableList<>(), new Balls());
+    static BowlerInnings newInnings(Over over, Player bowler) {
+        BowlingSpell spell = new BowlingSpell(bowler, 1, ImmutableList.of(over), new Balls());
         ImmutableList<BowlingSpell> spells = new ImmutableList<>();
-        return new BowlerInnings(player, new Balls(), spells.add(spell), new ImmutableList<>());
+        return new BowlerInnings(bowler, new Balls(), spells.add(spell), ImmutableList.of(over));
     }
 
     BowlerInnings onBall(Over over, Ball ball) {
@@ -73,11 +75,22 @@ public final class BowlerInnings {
         Optional<Over> previousOver = bowlingSpell.overs().last();
         ImmutableList<BowlingSpell> spells;
         if (previousOver.isPresent() && (over.numberInInnings() - previousOver.get().numberInInnings()) > 2) {
-            spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, new ImmutableList<>(), new Balls()).onBall(over, ball));
+            spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, ImmutableList.of(over), new Balls()).onBall(over, ball));
         } else {
             spells = this.spells.removeLast().copy().add(bowlingSpell.onBall(over, ball));
         }
-        return new BowlerInnings(bowler, balls.add(ball), spells, overs.add(over));
+        ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
+        return new BowlerInnings(bowler, balls.add(ball), spells, newOvers);
+    }
+
+    @NotNull
+    static ImmutableList<Over> addOverWithPreviousRemovedIfSame(ImmutableList<Over> overs, Over toAddOrReplace) {
+        ImmutableList<Over> newOvers = overs;
+        if (overs.last().get().numberInInnings() == toAddOrReplace.numberInInnings()) {
+            newOvers = newOvers.view(0, overs.size() - 2).copy();
+        }
+        newOvers = newOvers.add(toAddOrReplace);
+        return newOvers;
     }
 
     @Override

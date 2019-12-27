@@ -15,6 +15,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Innings {
 
+
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
     }
@@ -37,9 +38,6 @@ public final class Innings {
         if (state == State.COMPLETED) {
             throw new IllegalStateException("No events can be added after innings completion");
         }
-        if (event instanceof BallCompletedEvent && state != State.IN_PROGRESS) {
-            throw new IllegalStateException("Cannot process a ball when the innings state is " + state);
-        }
 
         ImmutableList<BatterInnings> batters = this.batters;
         ImmutableList<Partnership> partnerships = this.partnerships;
@@ -55,11 +53,6 @@ public final class Innings {
         Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
             OverStartingEvent e = (OverStartingEvent) event;
-            BowlerInnings bi = getBowlerInnings(e.bowler());
-            if (bi == null) {
-                bi = BowlerInnings.newInnings(e.bowler());
-                bowlerInningses = bowlerInningses.add(bi);
-            }
 
             boolean isFirst = overs.last().isEmpty();
             Player strikerPlayer = Objects.requireNonNullElse(e.striker(), playerOrNull(isFirst ? currentStriker() : currentNonStriker()));
@@ -69,8 +62,17 @@ public final class Innings {
 
             currentOver = Over.newOver(overs.size(), strikerPlayer, nonStrikerPlayer, e.bowler(), e.ballsInOver(), e.time().orElse(null));
             overs = overs.add(currentOver);
+
+            BowlerInnings bi = getBowlerInnings(e.bowler());
+            if (bi == null) {
+                bi = BowlerInnings.newInnings(currentOver, currentOver.bowler());
+                bowlerInningses = bowlerInningses.add(bi);
+            }
             newState = State.IN_PROGRESS;
         } else if (event instanceof BallCompletedEvent) {
+            if (state != State.IN_PROGRESS) {
+                throw new IllegalStateException("Cannot process a ball when the innings state is " + state);
+            }
             newState = State.IN_PROGRESS;
             if (currentStriker().isEmpty() || currentNonStriker().isEmpty())
                 throw new IllegalStateException("There is only one batter in. Make sure an "
@@ -95,7 +97,7 @@ public final class Innings {
 
             BowlerInnings bi = getBowlerInnings(bowler);
             if (bi == null) {
-                bi = BowlerInnings.newInnings(bowler).onBall(currentOver, ball);
+                bi = BowlerInnings.newInnings(currentOver, bowler).onBall(currentOver, ball);
                 bowlerInningses = bowlerInningses.add(bi);
             } else {
                 bi = bi.onBall(currentOver, ball);
@@ -154,8 +156,10 @@ public final class Innings {
             partnerships = partnerships.add(newPartnership);
             if (striker == null) {
                 striker = newBatterInnings;
-            } else {
+            } else if (nonStriker == null) {
                 nonStriker = newBatterInnings;
+            } else {
+                throw new IllegalStateException("A new batter innings cannot start when there are already two batters in");
             }
         }
 
@@ -351,6 +355,29 @@ public final class Innings {
         }
         return null;
     }
+
+    /**
+     * Gets the number of the last ball as a string in the format <em>over.ball</em>, for example &quot;0.1&quot;
+     * <p>After 6 balls but before an {@link OverCompletedEvent} it will return a value such as &quot;0.6&quot;
+     * while after the over is completed it will be &quot;1.0&quot;</p>
+     * @return The number of the last ball
+     */
+    public String ballNumber() {
+        Optional<Ball> ball = balls.list().last();
+        Optional<Over> over = overs.last();
+        if (ball.isPresent() && over.isPresent()) {
+            int b = ball.get().numberInOver();
+            int o = over.get().numberInInnings();
+            if (b == 6 && currentOver().isEmpty()) {
+                b = 0;
+                o++;
+            }
+            return o + "." + b;
+        } else {
+            return "0.0";
+        }
+    }
+
 
     /**
      * @return The team that is currently batting
