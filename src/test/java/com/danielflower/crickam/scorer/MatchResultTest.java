@@ -2,12 +2,14 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import org.junit.jupiter.api.Test;
 
 import java.util.OptionalInt;
 
 import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
+import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
 import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
 import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
@@ -20,11 +22,10 @@ class MatchResultTest {
     private static final Player ausBowler = aus.battingOrder().get(10);
     private static final LineUp nz = NewZealand.oneDayLineUp().build();
     private static final Player nzBowler = nz.battingOrder().get(10);
-    private Match match;
 
     @Test
-    void limitedOversMatchesAreWonIfSecondInningsScoreIsHigherThanFirst() {
-        match = MatchControl.newMatch(MatchStartingEvent.matchStarting()
+    void limitedOversCanBeWonOrTied() {
+        Match match = MatchControl.newMatch(MatchStartingEvent.matchStarting()
             .withMatchID("1")
             .withTeams(ImmutableList.of(aus, nz))
             .withMatchType(MatchType.ODI)
@@ -51,7 +52,6 @@ class MatchResultTest {
 
         Match twoToWin = match;
         assertThat(MatchResult.fromMatch(twoToWin).toString(), is("No result"));
-
 
 
         assertThat(MatchResult.fromMatch(twoToWin
@@ -84,6 +84,101 @@ class MatchResultTest {
                 .onEvent(ballCompleted("4"))
             ).toString(),
             is("New Zealand won by 10 wickets"));
+    }
+
+    @Test
+    void firstClassMatchesCanBeWonOrTiedOrDrawn() {
+        Match match = MatchControl.newMatch(MatchStartingEvent.matchStarting()
+            .withMatchID("1")
+            .withTeams(ImmutableList.of(aus, nz))
+            .withMatchType(MatchType.TEST)
+            .withNumberOfInningsPerTeam(2)
+            .build()).current();
+        assertThat(MatchResult.fromMatch(match).toString(), is("No result"));
+        match = match.onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler))
+            .onEvent(ballCompleted("4"))
+            .onEvent(inningsCompleted().withDeclared(true))
+            .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(overStarting().withBowler(ausBowler))
+            .onEvent(ballCompleted("6"));
+
+        assertThat(match.currentInnings().get().target(), is(OptionalInt.empty()));
+
+        Match threeToWin = match.onEvent(inningsCompleted().withDeclared(true))
+            .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler))
+            .onEvent(ballCompleted("4"))
+            .onEvent(inningsCompleted().withDeclared(true))
+            .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(overStarting().withBowler(ausBowler).withBallsInOver(12));
+
+        assertThat(threeToWin.currentInnings().get().target(), is(OptionalInt.of(3)));
+        assertThat(MatchResult.fromMatch(threeToWin).toString(), is("No result"));
+
+        assertThat(MatchResult.fromMatch(threeToWin
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(inningsCompleted())
+            ).toString(),
+            is("Australia won by 2 runs"));
+
+        assertThat(MatchResult.fromMatch(threeToWin
+                .onEvent(ballCompleted("2"))
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(wicket())
+                .onEvent(inningsCompleted())
+            ).toString(),
+            is("Match tied"));
+
+        assertThat(MatchResult.fromMatch(threeToWin
+                .onEvent(ballCompleted("3"))
+            ).toString(),
+            is("New Zealand won by 10 wickets"));
+        assertThat(MatchResult.fromMatch(threeToWin
+                .onEvent(wicket())
+                .onEvent(batterInningsStarting())
+                .onEvent(ballCompleted("4"))
+            ).toString(),
+            is("New Zealand won by 9 wickets"));
+    }
+
+    private static BallCompletedEvent.Builder wicket() {
+        return ballCompleted("W").withDismissal(DismissalType.Bowled);
     }
 
 }
