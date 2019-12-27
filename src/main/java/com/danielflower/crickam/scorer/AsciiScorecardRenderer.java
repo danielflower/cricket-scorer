@@ -50,7 +50,7 @@ public class AsciiScorecardRenderer {
         for (Innings innings : match.inningsList()) {
             writer.append(NEWLINE).append(innings.battingTeam().team().name()).append(" Innings");
             if (innings.originalNumberOfScheduledOvers().isPresent()) {
-                writer.append(" (").append(innings.originalNumberOfScheduledOvers().get().toString()).append(" overs maximum)").append(NEWLINE);
+                writer.append(" (").append(String.valueOf(innings.originalNumberOfScheduledOvers().getAsInt())).append(" overs maximum)").append(NEWLINE);
             }
             int[] batColWidths = {-17, -26, 4, 4, 4, 3, 3, 7};
             renderLine(writer, batColWidths, "BATTER", "", "R", "M", "B", "4s", "6s", "SR");

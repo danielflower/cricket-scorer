@@ -4,6 +4,7 @@ import com.danielflower.crickam.scorer.*;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static java.util.Objects.requireNonNull;
 
@@ -67,8 +68,8 @@ public final class MatchStartingEvent implements MatchEvent {
         return inningsPerTeam;
     }
 
-    public Optional<Integer> oversPerInnings() {
-        return Optional.ofNullable(oversPerInnings);
+    public OptionalInt oversPerInnings() {
+        return Crictils.toOptional(oversPerInnings);
     }
 
     public Optional<Venue> venue() {
@@ -79,8 +80,8 @@ public final class MatchStartingEvent implements MatchEvent {
         return numberOfScheduledDays;
     }
 
-    public Optional<Integer> ballsPerInnings() {
-        return Optional.ofNullable(ballsPerInnings);
+    public OptionalInt ballsPerInnings() {
+        return Crictils.toOptional(ballsPerInnings);
     }
 
     public static Builder matchStarting() {

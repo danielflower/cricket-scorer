@@ -15,8 +15,8 @@ public final class MatchControl {
         matches.add(match);
     }
 
-    public static MatchControl newMatch(MatchStartingEvent match) {
-        return new MatchControl(new Match(match, new ImmutableList<>()));
+    public static MatchControl newMatch(MatchStartingEvent event) {
+        return new MatchControl(Match.newMatch(event));
     }
 
     public Match onEvent(MatchEventBuilder<?> eventBuilder) {

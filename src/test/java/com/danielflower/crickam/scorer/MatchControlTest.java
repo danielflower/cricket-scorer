@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static com.danielflower.crickam.scorer.data.England.MAHMOOD;
 import static com.danielflower.crickam.scorer.data.England.TOM_CURRAN;
@@ -47,8 +48,8 @@ class MatchControlTest {
     @Test
     public void eventsAreAdded() {
         assertThat(control.current(), sameInstance(match));
-        assertThat(match.oversPerInnings(), is(Optional.of(50)));
-        assertThat(match.ballsPerInnings(), is(Optional.of(300)));
+        assertThat(match.oversPerInnings(), is(OptionalInt.of(50)));
+        assertThat(match.ballsPerInnings(), is(OptionalInt.of(300)));
         assertThat(match.currentInnings().isPresent(), is(true));
 
         Innings innings = match.currentInnings().get();

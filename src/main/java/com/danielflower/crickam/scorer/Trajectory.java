@@ -2,6 +2,9 @@ package com.danielflower.crickam.scorer;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
+
+import static com.danielflower.crickam.scorer.Crictils.toOptional;
 
 /**
  * The trajectory of the ball coming off the bat
@@ -51,8 +54,8 @@ public final class Trajectory {
         return Optional.ofNullable(launchAngle);
     }
 
-    public Optional<Integer> speedInKms() {
-        return Optional.ofNullable(speedInKms);
+    public OptionalInt speedInKms() {
+        return toOptional(speedInKms);
     }
 
     public Optional<Double> distanceInMeters() {

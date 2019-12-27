@@ -6,7 +6,9 @@ import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.OptionalInt;
 
+import static com.danielflower.crickam.scorer.Crictils.toOptional;
 import static java.util.Objects.requireNonNull;
 
 public final class InningsStartingEvent implements MatchEvent {
@@ -46,8 +48,8 @@ public final class InningsStartingEvent implements MatchEvent {
     /**
      * @return The max number of balls allowed in this innings, or empty to get it from the match object
      */
-    public Optional<Integer> numberOfBalls() {
-        return Optional.ofNullable(numberOfBalls);
+    public OptionalInt numberOfBalls() {
+        return toOptional(numberOfBalls);
     }
 
     public static Builder inningsStarting() {

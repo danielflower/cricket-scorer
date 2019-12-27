@@ -6,7 +6,9 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 
+import static com.danielflower.crickam.scorer.Crictils.toOptional;
 import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
 
@@ -321,12 +323,12 @@ public final class Innings {
     /**
      * @return The number of scheduled balls remaining in the innings, or empty if this innings does not have a limit.
      */
-    public Optional<Integer> numberOfBallsRemaining() {
-        Optional<Integer> scheduled = numberOfScheduledBalls();
+    public OptionalInt numberOfBallsRemaining() {
+        OptionalInt scheduled = numberOfScheduledBalls();
         if (scheduled.isEmpty()) {
             return scheduled;
         }
-        return Optional.of(scheduled.get() - balls().score().validDeliveries());
+        return OptionalInt.of(scheduled.getAsInt() - balls().score().validDeliveries());
     }
 
     /**
@@ -419,22 +421,22 @@ public final class Innings {
      * to bad weather. (Returns empty if there is no limit)
      * @see #originalNumberOfScheduledBalls()
      */
-    public Optional<Integer> numberOfScheduledBalls() {
-        return Optional.of(maxBalls);
+    public OptionalInt numberOfScheduledBalls() {
+        return toOptional(maxBalls);
     }
 
     /**
      * @return The number of scheduled balls at the beginning of the innings, or empty if there is no limit.
      * @see #numberOfScheduledBalls()
      */
-    public Optional<Integer> originalNumberOfScheduledBalls() {
+    public OptionalInt originalNumberOfScheduledBalls() {
         return data.matchAtStart.ballsPerInnings();
     }
 
     /**
      * @return The number of scheduled overs in this match, or empty if there is no limit
      */
-    public Optional<Integer> originalNumberOfScheduledOvers() {
+    public OptionalInt originalNumberOfScheduledOvers() {
         return data.matchAtStart.oversPerInnings();
     }
 
