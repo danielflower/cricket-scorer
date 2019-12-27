@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,17 +16,22 @@ import java.util.UUID;
 import static com.danielflower.crickam.scorer.Venue.venue;
 import static com.danielflower.crickam.scorer.data.England.*;
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
+import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
 import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
 import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
+import static com.danielflower.crickam.scorer.events.MatchCompletedEvent.matchCompleted;
 import static com.danielflower.crickam.scorer.events.MatchStartingEvent.matchStarting;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
 
 public class T20 {
 
     public static final TimeZone NZ_TIME = TimeZone.getTimeZone("Pacific/Auckland");
+    private MatchControl control;
 
     @Test
-    public void canScoreT20Games() {
+    public void canScoreT20Games() throws IOException {
+
+        // Actual game: https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
 
         LineUp nz = LineUp.lineUp()
             .withTeam(Team.team()
@@ -66,7 +72,7 @@ public class T20 {
             .withWicketKeeper(BILLINGS)
             .build();
 
-        MatchControl control = MatchControl.newMatch(
+        control = MatchControl.newMatch(
             matchStarting()
                 .withMatchType(MatchType.T20I)
                 .withOversPerInnings(20)
@@ -91,8 +97,200 @@ public class T20 {
                 .withBowlingTeam(eng)
                 .withTime(localTime(14, 0))
             );
-        control.onEvent(overStarting(eng, "SM Curran"));
+
+        control.onEvent(overStarting("SM Curran"));
         control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Brown"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(TOM_CURRAN));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(MAHMOOD));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Brown"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("6"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Parkinson"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Parkinson"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2w"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Gregory"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Brown"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Gregory"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(ball("5nb"));
+        control.onEvent(ball("1nb"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(BANTON));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Brown"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.LegBeforeWicket));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCH_SANTNER));
         control.onEvent(overCompleted());
 
 
@@ -104,6 +302,206 @@ public class T20 {
         );
 
 
+        control.onEvent(batterInningsStarting());
+
+        control.onEvent(overStarting("Southee"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("1lb"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Tickner"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Tickner"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Southee"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Santner"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Neesham"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("2"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Santner"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(MARTIN_GUPTILL));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Santner"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("4"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Tickner"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("4"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Santner"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Southee"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.RunOut).withFielder(COLIN_MUNRO));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Tickner"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(TIM_SOUTHEE));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(ball("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO));
+        control.onEvent(batterInningsStarting());
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("1w"));
+        control.onEvent(ball("6"));
+        control.onEvent(ball("1"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(overStarting("Southee"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("0"));
+        control.onEvent(ball("1"));
+        control.onEvent(ball("2"));
+        control.onEvent(overCompleted());
+
+        control.onEvent(inningsCompleted().withTime(localTime(18, 38)));
+        control.onEvent(matchCompleted().withTime(localTime(18, 38)));
+
+        Match matchAtEnd = control.current();
+        AsciiScorecardRenderer.render(matchAtEnd, System.out);
+
     }
 
     private BallCompletedEvent.Builder ball(String scoreText) {
@@ -113,8 +511,9 @@ public class T20 {
     }
 
     @NotNull
-    private OverStartingEvent.Builder overStarting(LineUp eng, String name) {
-        Optional<Player> bowler = eng.findPlayer(name);
+    private OverStartingEvent.Builder overStarting(String name) {
+        LineUp team = control.current().currentInnings().get().bowlingTeam();
+        Optional<Player> bowler = team.findPlayer(name);
         if (bowler.isEmpty()) {
             throw new RuntimeException("Not sure who " + name + " is");
         }

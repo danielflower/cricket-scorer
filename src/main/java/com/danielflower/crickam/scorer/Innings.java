@@ -59,25 +59,22 @@ public final class Innings {
                 bowlerInningses = bowlerInningses.add(bi);
             }
 
-            if (e.striker() == null || e.nonStriker() == null) {
+            Player strikerPlayer = e.striker();
+            Player nonStrikerPlayer = e.nonStriker();
+            if (strikerPlayer == null || nonStrikerPlayer == null) {
                 Optional<Over> previousOver = overs.last();
                 if (previousOver.isPresent()) {
-                    striker = previousOver.get().nonStriker();
-                    nonStriker = previousOver.get().striker();
+                    if (strikerPlayer == null) strikerPlayer = previousOver.get().nonStriker();
+                    if (nonStrikerPlayer == null) nonStrikerPlayer = previousOver.get().striker();
                 } else {
-                    striker = this.batters.get(0);
-                    nonStriker = this.batters.get(1);
+                    if (strikerPlayer == null) strikerPlayer = this.batters.get(0).player();
+                    if (nonStrikerPlayer == null) nonStrikerPlayer = this.batters.get(1).player();
                 }
             }
-            if (e.striker() != null) {
-                striker = findBatterInnings(e.striker());
-            }
-            if (e.nonStriker() != null) {
-                nonStriker = findBatterInnings(e.nonStriker());
-            }
+            striker = findBatterInnings(strikerPlayer);
+            nonStriker = findBatterInnings(nonStrikerPlayer);
 
-
-            currentOver = Over.newOver(overs.size(), striker, nonStriker, e.bowler(), e.ballsInOver(), e.time().orElse(null));
+            currentOver = Over.newOver(overs.size(), strikerPlayer, nonStrikerPlayer, e.bowler(), e.ballsInOver(), e.time().orElse(null));
             overs = overs.add(currentOver);
             newState = State.IN_PROGRESS;
         } else if (event instanceof BallCompletedEvent) {

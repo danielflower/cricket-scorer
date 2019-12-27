@@ -155,15 +155,25 @@ public final class BallCompletedEvent implements MatchEvent {
          * method and the number of runs set.
          *
          * @param type The type of dismissal
-         * @param dismissedBatter The batter who was dismissed (or null to indicate the current striker)
          * @return This builder
          */
-        public Builder withDismissal(@NotNull DismissalType type, @Nullable Player dismissedBatter) {
+        public Builder withDismissal(@NotNull DismissalType type) {
             this.dismissalType = requireNonNull(type);
-            this.dismissedBatter = dismissedBatter;
             if (runsScored == null) {
                 runsScored = Score.WICKET;
             }
+            return this;
+        }
+
+        /**
+         * Indicates the player that was dismissed if {@link #withDismissal(DismissalType)} has been called. As this
+         * defaults to the current striker, it can be left unset unless the non-striker was dismissed.
+         *
+         * @param dismissedBatter The batter who was dismissed (or null to indicate the current striker)
+         * @return This builder
+         */
+        public Builder withDismissedBatter(Player dismissedBatter) {
+            this.dismissedBatter = dismissedBatter;
             return this;
         }
 
@@ -199,7 +209,10 @@ public final class BallCompletedEvent implements MatchEvent {
 
         public BallCompletedEvent build() {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
-            boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed.booleanValue();
+            if (runsScored.wickets() > 0 && dismissalType == null) {
+                throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");
+            }
+            boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed;
             return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, dismissedBatter, delivery, swing, trajectoryAtImpact, fielder, dateCompleted);
         }
 

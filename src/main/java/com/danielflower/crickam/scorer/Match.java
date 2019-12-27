@@ -1,9 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-import com.danielflower.crickam.scorer.events.InningsStartingEvent;
-import com.danielflower.crickam.scorer.events.MatchEvent;
-import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.*;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -27,6 +24,13 @@ public final class Match {
      */
     public Optional<Innings> currentInnings() {
         return inningsList.last();
+    }
+
+    /**
+     * @return The innings played in the match
+     */
+    public ImmutableList<Innings> inningsList() {
+        return inningsList;
     }
 
     /**
@@ -108,6 +112,8 @@ public final class Match {
             InningsStartingEvent ise = (InningsStartingEvent) event;
             Integer scheduledBalls = data.ballsPerInnings().orElse(null);
             newInningsList = inningsList.add(Innings.newInnings(this, ise.battingTeam(), ise.bowlingTeam(), ise.openers(), inningsList.size() + 1, Instant.now(), scheduledBalls));
+        } else if (event instanceof MatchCompletedEvent) {
+            // don't pass to the innings
         } else {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {

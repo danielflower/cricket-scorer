@@ -18,10 +18,10 @@ public final class LineUp {
 	private final Player wicketKeeper;
 
     private LineUp(ImmutableList<Player> players, Team team, Player captain, Player wicketKeeper) {
-        this.players = requireNonNull(players);
-        this.team = requireNonNull(team);
-        this.captain = requireNonNull(captain);
-        this.wicketKeeper = requireNonNull(wicketKeeper);
+        this.players = requireNonNull(players, "players");
+        this.team = requireNonNull(team, "team");
+        this.captain = requireNonNull(captain, "captain");
+        this.wicketKeeper = requireNonNull(wicketKeeper, "wicketKeeper");
     }
 
     /**
@@ -91,6 +91,8 @@ public final class LineUp {
         List<Player> matchingSurnames = players.stream().filter(p -> p.familyName().equalsIgnoreCase(familyName)).collect(Collectors.toList());
         if (matchingSurnames.isEmpty()) {
             return Optional.empty();
+        } else if (matchingSurnames.size() == 1) {
+            return Optional.of(matchingSurnames.get(0));
         }
         return matchingSurnames.stream()
             .filter(p -> p.givenName().toLowerCase().charAt(0) == bits[0].toLowerCase().charAt(0))

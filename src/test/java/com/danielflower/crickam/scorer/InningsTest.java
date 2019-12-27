@@ -161,7 +161,7 @@ class InningsTest {
 
         innings = innings
             .onEvent(ballCompleted()
-                .withDismissal(DismissalType.Bowled, null)
+                .withDismissal(DismissalType.Bowled)
                 .withDateCompleted(Instant.now())
                 .build());
         Over over = innings.currentOver().get();
@@ -180,7 +180,6 @@ class InningsTest {
         assertThat(innings.partnerships().last().get().firstBatterContribution().score().batterRuns(), is(1));
         assertThat(innings.partnerships().last().get().secondBatterContribution().size(), is(2));
         assertThat(innings.partnerships().last().get().secondBatterContribution().score().teamRuns(), is(5));
-
 
         innings = innings.onEvent(overCompleted().build());
         assertThat(innings.state(), is(Innings.State.BETWEEN_OVERS));
@@ -409,7 +408,7 @@ class InningsTest {
     }
 
     private BallCompletedEvent wicket() {
-        return ballCompleted().withRunsScored(WICKET).withDismissal(DismissalType.Bowled, null).build();
+        return ballCompleted().withRunsScored(WICKET).withDismissal(DismissalType.Bowled).build();
     }
 
     private BallCompletedEvent four() {

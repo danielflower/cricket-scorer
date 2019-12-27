@@ -106,7 +106,7 @@ public final class BatterInnings {
 
     @Override
 	public String toString() {
-		return player.familyName() + " (" + balls.score().batterRuns() + " runs)";
+		return player.familyName() + " - " + score().batterRuns() + " (" + score().validDeliveries() + "b)";
 	}
 
     @Override

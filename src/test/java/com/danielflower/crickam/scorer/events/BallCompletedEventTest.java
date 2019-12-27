@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.DismissalType;
 import com.danielflower.crickam.scorer.Score;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,11 @@ class BallCompletedEventTest {
     }
 
     private static boolean crossedFor(Score score) {
-        return ballCompleted().withRunsScored(score).build().playersCrossed();
+        BallCompletedEvent.Builder builder = ballCompleted().withRunsScored(score);
+        if (score.wickets() > 0) {
+            builder.withDismissal(DismissalType.Bowled);
+        }
+        return builder.build().playersCrossed();
     }
 
 }

@@ -11,34 +11,34 @@ import java.util.Objects;
  */
 public final class Over {
 	private final int numberInInnings;
-	private final BatterInnings striker;
-	private final BatterInnings nonStriker;
+	private final Player striker;
+	private final Player nonStriker;
 	private final Balls balls;
 	private final Player bowler;
 	private final int ballsInOver;
 	private final Instant startTime;
 
-    static Over newOver(int numberInInnings, BatterInnings striker, BatterInnings nonStriker, Player bowler, int ballsInOver, Instant startTime) {
+    static Over newOver(int numberInInnings, Player striker, Player nonStriker, Player bowler, int ballsInOver, Instant startTime) {
         return new Over(numberInInnings, striker, nonStriker, new Balls(), bowler, ballsInOver, startTime);
     }
 
     Over onBall(Ball ball) {
-        BatterInnings striker = ball.playersCrossed() ? this.nonStriker : this.striker;
-        BatterInnings nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
+        Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;
+        Player nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
         return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
     }
 
     /**
      * @return The current batter that is going to face the next ball
      */
-    public BatterInnings striker() {
+    public Player striker() {
 		return striker;
 	}
 
     /**
      * @return The batter that is currently at the non-facing end
      */
-	public BatterInnings nonStriker() {
+	public Player nonStriker() {
 		return nonStriker;
 	}
 
@@ -70,10 +70,13 @@ public final class Over {
 	    return balls.score();
     }
 
-	private Over(int numberInInnings, BatterInnings striker, BatterInnings nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
+	private Over(int numberInInnings, Player striker, Player nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
 		this.numberInInnings = numberInInnings;
         this.striker = Objects.requireNonNull(striker);
         this.nonStriker = Objects.requireNonNull(nonStriker);
+        if (striker.equals(nonStriker)) {
+            throw new IllegalStateException(striker + " has been set as both striker and non-striker for over " + numberInInnings);
+        }
         this.balls = Objects.requireNonNull(balls);
         this.bowler = Objects.requireNonNull(bowler);
         this.ballsInOver = ballsInOver;
