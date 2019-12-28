@@ -17,18 +17,18 @@ public class MatchResult {
     /**
      * Describes how a match was won, drawn, tied or otherwise concluded
      */
-    enum ResultType {Won, Tied, Drawn, NoResult, Abandoned, Awarded, Conceded}
+    public enum ResultType {WON, TIED, DRAWN, NO_RESULT, ABANDONED, AWARDED, CONCEDED}
 
     /**
      * Specifies the measure used to determine the winning team
      */
-    enum Measure {
-        Wickets(false, "wicket", "wickets"),
-        Runs(false, "run", "runs"),
-        InningsAndRuns(false, "run", "runs"),
-        WicketCount(true, "in wicket count (tie breaker)", null),
-        BoundaryCount(true, "boundaries in boundary count (tie breaker)", null),
-        WicketsInBowlOut(true, "wickets in bowl out (tie breaker)", null);
+    public enum Measure {
+        WICKETS(false, "wicket", "wickets"),
+        RUNS(false, "run", "runs"),
+        INNINGS_AND_RUNS(false, "run", "runs"),
+        WICKET_COUNT(true, "in wicket count (tie breaker)", null),
+        BOUNDARY_COUNT(true, "boundaries in boundary count (tie breaker)", null),
+        WICKETS_IN_BOWL_OUT(true, "wickets in bowl out (tie breaker)", null);
 
         private final boolean isTieBreaker;
         private final String singular;
@@ -41,8 +41,15 @@ public class MatchResult {
         }
 
         public String toString(int count) {
-            String prefix = (this == InningsAndRuns) ? "an innings and " : "";
+            String prefix = (this == INNINGS_AND_RUNS) ? "an innings and " : "";
             return prefix + count + " " + ((count == 1) ? singular : requireNonNull(plural, singular));
+        }
+
+        /**
+         * @return True if the match was tied and then the winner was decided on some other measure
+         */
+        public boolean tieBreakerUsed() {
+            return isTieBreaker;
         }
     }
 
@@ -54,7 +61,7 @@ public class MatchResult {
 
     private MatchResult(@NotNull MatchResult.ResultType resultType, LineUp winningTeam, Measure wonBy, Integer wonByAmount, boolean duckworthLewisApplied) {
         this.resultType = requireNonNull(resultType);
-        boolean hasWinner = resultType == ResultType.Awarded || resultType == ResultType.Conceded || resultType == ResultType.Won;
+        boolean hasWinner = resultType == ResultType.AWARDED || resultType == ResultType.CONCEDED || resultType == ResultType.WON;
         if (hasWinner) {
             requireNonNull(winningTeam, "winningTeam must be set for a result of type " + resultType);
             requireNonNull(wonBy, "wonBy must be set for a result of type " + resultType);
@@ -76,7 +83,7 @@ public class MatchResult {
     }
 
     /**
-     * If {@link #resultType()} is {@link ResultType#Won}, {@link ResultType#Awarded} or {@link ResultType#Conceded}, then this is the team that won the match
+     * If {@link #resultType()} is {@link ResultType#WON}, {@link ResultType#AWARDED} or {@link ResultType#CONCEDED}, then this is the team that won the match
      *
      * @return The winning team, if there is one
      */
@@ -115,21 +122,21 @@ public class MatchResult {
     @Override
     public String toString() {
         switch (resultType) {
-            case NoResult:
+            case NO_RESULT:
                 return "No result";
-            case Awarded:
+            case AWARDED:
                 return "Awarded to " + winningTeam.team().name();
-            case Conceded:
+            case CONCEDED:
                 return "Conceded. Won by " + winningTeam.team().name();
-            case Won:
+            case WON:
                 return winningTeam.team().name() + " won by " + wonBy.toString(wonByAmount);
-            case Tied:
+            case TIED:
                 return "Match tied";
         }
         return resultType.toString();
     }
 
-    public static final MatchResult NoResult = MatchResult.matchResult().withResultType(ResultType.NoResult).build();
+    public static final MatchResult NoResult = MatchResult.matchResult().withResultType(ResultType.NO_RESULT).build();
 
     public static class Builder {
         private ResultType resultType;
@@ -210,9 +217,9 @@ public class MatchResult {
                     int difference = otherTeamScore - justFinishedBattingTotalScore;
                     if (difference > 0) {
                         return MatchResult.matchResult()
-                            .withResultType(ResultType.Won)
+                            .withResultType(ResultType.WON)
                             .withWinningTeam(innings.bowlingTeam())
-                            .withWonBy(Measure.InningsAndRuns)
+                            .withWonBy(Measure.INNINGS_AND_RUNS)
                             .withWonByAmount(difference)
                             .build();
                     }
@@ -222,21 +229,21 @@ public class MatchResult {
                 int remaining = innings.target().getAsInt() - innings.score().teamRuns();
                 if (remaining <= 0) {
                     return matchResult()
-                        .withResultType(ResultType.Won)
+                        .withResultType(ResultType.WON)
                         .withWinningTeam(innings.battingTeam())
-                        .withWonBy(Measure.Wickets)
+                        .withWonBy(Measure.WICKETS)
                         .withWonByAmount(innings.yetToBat().size() + 1)
                         .build();
                 } else if (innings.state() == Innings.State.COMPLETED) {
                     if (remaining > 1) {
                         return matchResult()
-                            .withResultType(ResultType.Won)
+                            .withResultType(ResultType.WON)
                             .withWinningTeam(innings.bowlingTeam())
-                            .withWonBy(Measure.Runs)
+                            .withWonBy(Measure.RUNS)
                             .withWonByAmount(remaining - 1)
                             .build();
                     } else if (remaining == 1) {
-                        return MatchResult.matchResult().withResultType(ResultType.Tied).build();
+                        return MatchResult.matchResult().withResultType(ResultType.TIED).build();
                     }
                 }
             }

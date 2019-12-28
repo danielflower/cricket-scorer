@@ -84,7 +84,7 @@ class MatchControlTest {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(TOM_CURRAN));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
 
         assertThat(curInnings().currentStriker(), is(Optional.empty()));
         assertThat(curInnings().currentNonStriker().get(), is(withBatter(HENRY_NICHOLLS)));
@@ -104,7 +104,7 @@ class MatchControlTest {
 
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MAHMOOD));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));

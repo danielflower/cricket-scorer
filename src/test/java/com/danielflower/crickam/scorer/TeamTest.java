@@ -18,7 +18,7 @@ class TeamTest {
     public static Team.Builder aTeam() {
         return new Team.Builder()
             .withId(UUID.randomUUID().toString())
-            .withLevel(TeamLevel.International)
+            .withLevel(TeamLevel.INTERNATIONAL)
             .withName("New Zealand")
             .withShortName("NZL")
             .withTeamColour("#000000");

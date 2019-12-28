@@ -35,7 +35,7 @@ class BallCompletedEventTest {
     private static boolean crossedFor(Score score) {
         BallCompletedEvent.Builder builder = ballCompleted().withRunsScored(score);
         if (score.wickets() > 0) {
-            builder.withDismissal(DismissalType.Bowled);
+            builder.withDismissal(DismissalType.BOWLED);
         }
         return builder.build().playersCrossed();
     }

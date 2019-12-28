@@ -43,8 +43,8 @@ public final class Dismissal {
     }
 
     /**
-     * @return The player that caught the ball if the {@link #type()} is {@link DismissalType#Caught}, or the fielder
-     * the enacted the runout or stumping. It will be an empty value for dismissal types such as {@link DismissalType#Bowled} etc
+     * @return The player that caught the ball if the {@link #type()} is {@link DismissalType#CAUGHT}, or the fielder
+     * the enacted the runout or stumping. It will be an empty value for dismissal types such as {@link DismissalType#BOWLED} etc
      */
     public Optional<Player> executor() {
         return Optional.ofNullable(executor);
@@ -57,18 +57,18 @@ public final class Dismissal {
         String bowler = this.bowler == null ? null : this.bowler().familyName();
         String fielder = this.executor == null ? null : this.executor.familyName();
         switch (type) {
-            case Bowled:
+            case BOWLED:
                 return "b " + bowler;
-            case Caught:
+            case CAUGHT:
                 String catcher = (this.executor == this.bowler()) ? "&" : fielder;
                 return "c " + catcher + " b " + bowler;
-            case HitWicket:
+            case HIT_WICKET:
                 return "hw " + bowler;
-            case LegBeforeWicket:
+            case LEG_BEFORE_WICKET:
                 return "lbw b " + bowler;
-            case RunOut:
+            case RUN_OUT:
                 return fielder == null ? "run out" : "run out (" + fielder + ")";
-            case Stumped:
+            case STUMPED:
                 return "st " + fielder + " b " + bowler;
         }
         return type.toString();

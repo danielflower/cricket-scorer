@@ -105,8 +105,8 @@ public final class Player {
         private ImmutableList<String> givenNames;
         private String familyName;
         private String fullName;
-        private Handedness battingHandedness = Handedness.RightHanded;
-        private Handedness bowlingHandedness = Handedness.RightHanded;
+        private Handedness battingHandedness = Handedness.RIGHT_HANDED;
+        private Handedness bowlingHandedness = Handedness.RIGHT_HANDED;
         private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
         private Gender gender;
 

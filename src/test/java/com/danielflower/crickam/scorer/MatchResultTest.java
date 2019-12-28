@@ -221,7 +221,7 @@ class MatchResultTest {
     }
 
     private static BallCompletedEvent.Builder wicket() {
-        return ballCompleted("W").withDismissal(DismissalType.Bowled);
+        return ballCompleted("W").withDismissal(DismissalType.BOWLED);
     }
 
 }

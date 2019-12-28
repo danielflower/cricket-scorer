@@ -162,7 +162,7 @@ class InningsTest {
 
         innings = innings
             .onEvent(ballCompleted()
-                .withDismissal(DismissalType.Bowled)
+                .withDismissal(DismissalType.BOWLED)
                 .withDateCompleted(Instant.now())
                 .build());
         Over over = innings.currentOver().get();
@@ -411,7 +411,7 @@ class InningsTest {
     }
 
     private BallCompletedEvent wicket() {
-        return ballCompleted().withRunsScored(WICKET).withDismissal(DismissalType.Bowled).build();
+        return ballCompleted().withRunsScored(WICKET).withDismissal(DismissalType.BOWLED).build();
     }
 
     private BallCompletedEvent four() {

@@ -35,7 +35,7 @@ public class T20 {
             .withTeam(Team.team()
                 .withShortName("NZL")
                 .withName("New Zealand")
-                .withLevel(TeamLevel.International)
+                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
@@ -47,7 +47,7 @@ public class T20 {
             .withTeam(Team.team()
                 .withShortName("ENG")
                 .withName("England")
-                .withLevel(TeamLevel.International)
+                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(
                 BANTON, MALAN, VINCE, MORGAN, BILLINGS, SAM_CURRAN, GREGORY, TOM_CURRAN, MAHMOOD, BROWN, PARKINSON
@@ -109,7 +109,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(TOM_CURRAN));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
@@ -117,7 +117,7 @@ public class T20 {
         control.onEvent(overStarting(findPlayer("TK Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MAHMOOD));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));
@@ -148,7 +148,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
@@ -216,7 +216,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(BANTON));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(BANTON));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
@@ -246,7 +246,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("6"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.LegBeforeWicket));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.LEG_BEFORE_WICKET));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -259,7 +259,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1w"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
@@ -269,7 +269,7 @@ public class T20 {
         control.onEvent(ballCompleted("2"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCHELL_SANTNER).withFielder(BILLINGS));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RUN_OUT).withDismissedBatter(MITCHELL_SANTNER).withFielder(BILLINGS));
         control.onEvent(overCompleted());
 
 
@@ -304,7 +304,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
@@ -374,7 +374,7 @@ public class T20 {
 
         control.onEvent(overStarting(findPlayer("Sodhi")));
         control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MARTIN_GUPTILL).withPlayersCrossed(true));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MARTIN_GUPTILL).withPlayersCrossed(true));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -417,7 +417,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(COLIN_MUNRO));
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
@@ -425,7 +425,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withFielder(COLIN_MUNRO));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RUN_OUT).withFielder(COLIN_MUNRO));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
@@ -438,17 +438,17 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("2"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(TIM_SOUTHEE));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TIM_SOUTHEE));
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
         control.onEvent(overStarting(findPlayer("Ferguson")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO).withPlayersCrossed(true));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(COLIN_MUNRO).withPlayersCrossed(true));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());

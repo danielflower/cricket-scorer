@@ -4,40 +4,40 @@ import com.danielflower.crickam.scorer.*;
 
 import java.util.UUID;
 
-import static com.danielflower.crickam.scorer.Handedness.LeftHanded;
+import static com.danielflower.crickam.scorer.Handedness.LEFT_HANDED;
 import static com.danielflower.crickam.scorer.PlayingRole.*;
 import static com.danielflower.crickam.scorer.data.DataUtil.player;
 
 public class Australia {
 
     public static final Player SEAN_ABBOT = player("Sean Abbot").withPlayingRole(BOWLER).build();
-    public static final Player JASON_BEHRENDORFF = player("Jason Behrendorff").withPlayingRole(BOWLER).withBowlingHandedness(LeftHanded).build();
+    public static final Player JASON_BEHRENDORFF = player("Jason Behrendorff").withPlayingRole(BOWLER).withBowlingHandedness(LEFT_HANDED).build();
     public static final Player PAT_CUMMINS = player("Pat Cummins").withPlayingRole(BOWLER).build();
-    public static final Player MARCUS_HARRIS = player("Marcus Harris").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).withBowlingHandedness(LeftHanded).build();
-    public static final Player USMAN_KHAWAJA = player("Usman Khawaja").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).build();
+    public static final Player MARCUS_HARRIS = player("Marcus Harris").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
+    public static final Player USMAN_KHAWAJA = player("Usman Khawaja").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player BEN_MC_DERMOTT = player("Ben McDermott").withPlayingRole(WICKET_KEEPER).build();
     public static final Player TIM_PAINE = player("Tim Paine").withPlayingRole(WICKET_KEEPER).build();
     public static final Player PETER_SIDDLE = player("Peter Siddle").withPlayingRole(BOWLER).build();
-    public static final Player MITCHELL_STARC = player("Mitchell Starc").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).build();
-    public static final Player MATTHEW_WADE = player("Matthew Wade").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LeftHanded).build();
-    public static final Player ASHTON_AGAR = player("Ashton Agar").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).withBowlingHandedness(LeftHanded).build();
+    public static final Player MITCHELL_STARC = player("Mitchell Starc").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
+    public static final Player MATTHEW_WADE = player("Matthew Wade").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LEFT_HANDED).build();
+    public static final Player ASHTON_AGAR = player("Ashton Agar").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
     public static final Player JOE_BURNS = player("Joe Burns").withPlayingRole(BATTER).build();
-    public static final Player AARON_FINCH = player("Aaron Finch").withPlayingRole(BATTER).withBowlingHandedness(LeftHanded).build();
-    public static final Player JOSH_HAZLEWOOD = player("Josh Hazlewood").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).build();
+    public static final Player AARON_FINCH = player("Aaron Finch").withPlayingRole(BATTER).withBowlingHandedness(LEFT_HANDED).build();
+    public static final Player JOSH_HAZLEWOOD = player("Josh Hazlewood").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player MARNUS_LABUSCHAGNE = player("Marnus Labuschagne").withPlayingRole(BATTER).build();
     public static final Player MITCHELL_MARSH = player("Mitchell Marsh").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player JAMES_PATTINSON = player("James Pattinson").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).build();
+    public static final Player JAMES_PATTINSON = player("James Pattinson").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player STEVEN_SMITH = player("Steven Smith").withPlayingRole(BATTER).build();
     public static final Player MARCUS_STOINIS = player("Marcus Stoinis").withPlayingRole(BOWLER).build();
-    public static final Player DAVID_WARNER = player("David Warner").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).build();
+    public static final Player DAVID_WARNER = player("David Warner").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player CAMERON_BANCROFT = player("Cameron Bancroft").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player ALEX_CAREY = player("Alex Carey").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LeftHanded).build();
+    public static final Player ALEX_CAREY = player("Alex Carey").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player PETER_HANDSCOMB = player("Peter Handscomb").withPlayingRole(BATTER).build();
-    public static final Player TRAVIS_HEAD = player("Travis Head").withPlayingRole(BATTER).withBattingHandedness(LeftHanded).build();
+    public static final Player TRAVIS_HEAD = player("Travis Head").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player NATHON_LYON = player("Nathon Lyon").withPlayingRole(BOWLER).build();
     public static final Player GLENN_MAXWELL = player("Glenn Maxwell").withPlayingRole(ALL_ROUNDER).build();
     public static final Player KANE_RICHARDSON = player("Kane Richardson").withPlayingRole(BOWLER).build();
-    public static final Player BILLY_STANLAKE = player("Billy Stanlake").withPlayingRole(BOWLER).withBattingHandedness(LeftHanded).build();
+    public static final Player BILLY_STANLAKE = player("Billy Stanlake").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
     public static final Player ASHTON_TURNER = player("Ashton Turner").withPlayingRole(BATTER).build();
     public static final Player ADAM_ZAMPA = player("Adam Zampa").withPlayingRole(BOWLER).build();
 
@@ -47,7 +47,7 @@ public class Australia {
             .withTeamColour("#FF0000")
             .withShortName("AUS")
             .withName("Australia")
-            .withLevel(TeamLevel.International);
+            .withLevel(TeamLevel.INTERNATIONAL);
     }
 
     public static LineUp.Builder t20LineUp() {

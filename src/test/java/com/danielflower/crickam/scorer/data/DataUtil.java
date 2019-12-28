@@ -14,8 +14,8 @@ class DataUtil {
             .withGivenNames(ImmutableList.of(names[0]))
             .withFamilyName(names[names.length - 1])
             .withFullName(name)
-            .withBattingHandedness(Handedness.RightHanded)
-            .withBowlingHandedness(Handedness.RightHanded)
+            .withBattingHandedness(Handedness.RIGHT_HANDED)
+            .withBowlingHandedness(Handedness.RIGHT_HANDED)
             .withGender(Gender.MALE)
             .withId(UUID.randomUUID().toString());
     }
