@@ -1,15 +1,11 @@
 package e2e;
 
 import com.danielflower.crickam.scorer.*;
-import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.AsciiScorecardRenderer.NEWLINE;
 import static com.danielflower.crickam.scorer.Venue.venue;
@@ -22,6 +18,7 @@ import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inning
 import static com.danielflower.crickam.scorer.events.MatchCompletedEvent.matchCompleted;
 import static com.danielflower.crickam.scorer.events.MatchStartingEvent.matchStarting;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
+import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class T20 {
@@ -30,28 +27,24 @@ public class T20 {
     private MatchControl control;
 
     @Test
-    public void canScoreT20Games() throws IOException {
+    public void canScoreT20Games() {
 
         // A recreation of https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
 
         LineUp nz = LineUp.lineUp()
             .withTeam(Team.team()
-                .withId("NZMEN")
-                .withTeamColour("#000000")
                 .withShortName("NZL")
                 .withName("New Zealand")
                 .withLevel(TeamLevel.International)
                 .build())
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
-                JAMES_NEESHAM, MITCH_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
+                JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
             .withCaptain(TIM_SOUTHEE)
             .withWicketKeeper(TIM_SEIFERT)
             .build();
 
         LineUp eng = LineUp.lineUp()
             .withTeam(Team.team()
-                .withId(UUID.randomUUID().toString())
-                .withTeamColour("#FFFFFF")
                 .withShortName("ENG")
                 .withName("England")
                 .withLevel(TeamLevel.International)
@@ -64,21 +57,16 @@ public class T20 {
             .build();
 
         control = MatchControl.newMatch(
-            matchStarting()
-                .withMatchType(MatchType.T20I)
-                .withOversPerInnings(20)
-                .withNumberOfInningsPerTeam(1)
-                .withMatchID("1187667")
+            matchStarting(MatchType.T20I)
                 .withTeams(ImmutableList.of(nz, eng))
-                .withTime(localTime(13, 0))
-                .withScheduledStartTime(localTime(14, 0))
-                .withVenue(
-                    venue()
-                        .withName("Saxton Oval")
-                        .withCity("Nelson")
-                        .withTerritory("New Zealand")
-                        .withTimeZone(NZ_TIME)
-                        .build()
+                .withTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 13, 0))
+                .withScheduledStartTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 14, 0))
+                .withVenue(venue()
+                    .withName("Saxton Oval")
+                    .withCity("Nelson")
+                    .withTerritory("New Zealand")
+                    .withTimeZone(NZ_TIME)
+                    .build()
                 )
                 .build()
         );
@@ -86,10 +74,10 @@ public class T20 {
         control.onEvent(inningsStarting()
             .withBattingTeam(nz)
             .withBowlingTeam(eng)
-            .withTime(localTime(14, 0))
+            .withTime(control.localTime(14, 0, 0))
         );
 
-        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(overStarting(findPlayer("SM Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -98,7 +86,7 @@ public class T20 {
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(overStarting(findPlayer("TK Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
@@ -107,7 +95,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(overStarting(findPlayer("Mahmood")));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("4"));
@@ -116,7 +104,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Brown"));
+        control.onEvent(overStarting(findPlayer("Brown")));
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -126,7 +114,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(overStarting(findPlayer("TK Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MAHMOOD));
@@ -137,7 +125,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Brown"));
+        control.onEvent(overStarting(findPlayer("Brown")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));
@@ -146,7 +134,7 @@ public class T20 {
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(overStarting(findPlayer("Mahmood")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("4"));
@@ -155,7 +143,7 @@ public class T20 {
         control.onEvent(ballCompleted("6"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Parkinson"));
+        control.onEvent(overStarting(findPlayer("Parkinson")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -165,7 +153,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(overStarting(findPlayer("SM Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
@@ -174,7 +162,7 @@ public class T20 {
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Parkinson"));
+        control.onEvent(overStarting(findPlayer("Parkinson")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("6"));
         control.onEvent(ballCompleted("1"));
@@ -184,7 +172,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(overStarting(findPlayer("SM Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("4"));
@@ -194,7 +182,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Gregory"));
+        control.onEvent(overStarting(findPlayer("Gregory")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
@@ -203,7 +191,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Brown"));
+        control.onEvent(overStarting(findPlayer("Brown")));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("6"));
         control.onEvent(ballCompleted("1"));
@@ -212,7 +200,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Gregory"));
+        control.onEvent(overStarting(findPlayer("Gregory")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(ballCompleted("5nb"));
@@ -223,7 +211,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(overStarting(findPlayer("TK Curran")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -233,7 +221,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(overStarting(findPlayer("Mahmood")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1w"));
         control.onEvent(ballCompleted("1"));
@@ -245,7 +233,7 @@ public class T20 {
         control.onEvent(ballCompleted("4"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Brown"));
+        control.onEvent(overStarting(findPlayer("Brown")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -254,7 +242,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Mahmood"));
+        control.onEvent(overStarting(findPlayer("Mahmood")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("6"));
         control.onEvent(ballCompleted("1"));
@@ -264,7 +252,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("SM Curran"));
+        control.onEvent(overStarting(findPlayer("SM Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1lb"));
         control.onEvent(ballCompleted("4"));
@@ -275,24 +263,24 @@ public class T20 {
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("TK Curran"));
+        control.onEvent(overStarting(findPlayer("TK Curran")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("2"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCH_SANTNER).withFielder(BILLINGS));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.RunOut).withDismissedBatter(MITCHELL_SANTNER).withFielder(BILLINGS));
         control.onEvent(overCompleted());
 
 
-        control.onEvent(inningsCompleted().withTime(localTime(15, 38)));
+        control.onEvent(inningsCompleted().withTime(control.localTime(15, 38, 0)));
         control.onEvent(inningsStarting()
             .withBattingTeam(eng)
             .withBowlingTeam(nz)
-            .withTime(localTime(14, 0))
+            .withTime(control.localTime(14, 0, 0))
         );
 
-        control.onEvent(overStarting("Southee"));
+        control.onEvent(overStarting(findPlayer("Southee")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -301,7 +289,7 @@ public class T20 {
         control.onEvent(ballCompleted("4"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(overStarting(findPlayer("Ferguson")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("6"));
@@ -311,7 +299,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Tickner"));
+        control.onEvent(overStarting(findPlayer("Tickner")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
@@ -321,7 +309,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(overStarting(findPlayer("Ferguson")));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -330,7 +318,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Tickner"));
+        control.onEvent(overStarting(findPlayer("Tickner")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
@@ -339,7 +327,7 @@ public class T20 {
         control.onEvent(ballCompleted("2"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Southee"));
+        control.onEvent(overStarting(findPlayer("Southee")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("0"));
@@ -348,7 +336,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(overStarting(findPlayer("Sodhi")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("4"));
@@ -357,7 +345,7 @@ public class T20 {
         control.onEvent(ballCompleted("4"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Santner"));
+        control.onEvent(overStarting(findPlayer("Santner")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
@@ -366,7 +354,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Neesham"));
+        control.onEvent(overStarting(findPlayer("Neesham")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("2"));
         control.onEvent(ballCompleted("1"));
@@ -375,7 +363,7 @@ public class T20 {
         control.onEvent(ballCompleted("2"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Santner"));
+        control.onEvent(overStarting(findPlayer("Santner")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("2"));
@@ -384,7 +372,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(overStarting(findPlayer("Sodhi")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MARTIN_GUPTILL).withPlayersCrossed(true));
         control.onEvent(batterInningsStarting());
@@ -394,7 +382,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Santner"));
+        control.onEvent(overStarting(findPlayer("Santner")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
@@ -403,7 +391,7 @@ public class T20 {
         control.onEvent(ballCompleted("4"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Tickner"));
+        control.onEvent(overStarting(findPlayer("Tickner")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("4"));
         control.onEvent(ballCompleted("6"));
@@ -412,7 +400,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(overStarting(findPlayer("Ferguson")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -421,7 +409,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Santner"));
+        control.onEvent(overStarting(findPlayer("Santner")));
         control.onEvent(ballCompleted("6"));
         control.onEvent(ballCompleted("1w"));
         control.onEvent(ballCompleted("6"));
@@ -433,7 +421,7 @@ public class T20 {
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Southee"));
+        control.onEvent(overStarting(findPlayer("Southee")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -443,7 +431,7 @@ public class T20 {
         control.onEvent(ballCompleted("0"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Tickner"));
+        control.onEvent(overStarting(findPlayer("Tickner")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1w"));
@@ -454,7 +442,7 @@ public class T20 {
         control.onEvent(batterInningsStarting());
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Ferguson"));
+        control.onEvent(overStarting(findPlayer("Ferguson")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
@@ -465,7 +453,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Sodhi"));
+        control.onEvent(overStarting(findPlayer("Sodhi")));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -475,7 +463,7 @@ public class T20 {
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
 
-        control.onEvent(overStarting("Southee"));
+        control.onEvent(overStarting(findPlayer("Southee")));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("0"));
         control.onEvent(ballCompleted("1"));
@@ -484,8 +472,8 @@ public class T20 {
         control.onEvent(ballCompleted("2"));
         control.onEvent(overCompleted());
 
-        control.onEvent(inningsCompleted().withTime(localTime(18, 38)));
-        control.onEvent(matchCompleted().withTime(localTime(18, 38)));
+        control.onEvent(inningsCompleted().withTime(control.localTime(18, 38, 0)));
+        control.onEvent(matchCompleted().withTime(control.localTime(18, 38, 0)));
 
         Match matchAtEnd = control.current();
 
@@ -514,8 +502,8 @@ public class T20 {
             "" + NEWLINE +
             "Did not bat: I Sodhi, L Ferguson, B Tickner" + NEWLINE +
             "" + NEWLINE +
-            "Fall of wickets: 1-40 (M Guptill), 2-42 (C Munro), 3-69 (T Seifert)," + NEWLINE +
-            "4-135 (C de Grandhomme), 5-162 (R Taylor), 6-171 (J Neesham), 7-180 (M Santner)" + NEWLINE +
+            "Fall of wickets: 1-40 (Martin Guptill, 3.5 ov), 2-42 (Colin Munro, 4.3 ov), 3-69 (Tim Seifert, 7.5 ov)," + NEWLINE +
+            "4-135 (Colin de Grandhomme, 14.5 ov), 5-162 (Ross Taylor, 17.4 ov), 6-171 (James Neesham, 18.6 ov), 7-180 (Mitchell Santner, 19.6 ov)" + NEWLINE +
             "" + NEWLINE +
             "BOWLING                O   M   R   W   Econ 0s 4s 6s WD NB" + NEWLINE +
             "S Curran               4   0  29   1    7.2  8  3  0  2  0" + NEWLINE +
@@ -543,8 +531,8 @@ public class T20 {
             "" + NEWLINE +
             "Did not bat: P Brown, M Parkinson" + NEWLINE +
             "" + NEWLINE +
-            "Fall of wickets: 1-27 (T Banton), 2-90 (D Malan), 3-139 (E Morgan)," + NEWLINE +
-            "4-142 (S Billings), 5-147 (J Vince), 6-148 (L Gregory), 7-149 (S Curran)" + NEWLINE +
+            "Fall of wickets: 1-27 (Tom Banton, 2.5 ov), 2-90 (Dawid Malan, 10.2 ov), 3-139 (Eoin Morgan, 14.6 ov)," + NEWLINE +
+            "4-142 (Sam Billings, 15.4 ov), 5-147 (James Vince, 16.6 ov), 6-148 (Lewis Gregory, 17.3 ov), 7-149 (Sam Curran, 17.5 ov)" + NEWLINE +
             "" + NEWLINE +
             "BOWLING                O   M   R   W   Econ 0s 4s 6s WD NB" + NEWLINE +
             "T Southee              4   0  28   0    7.0  9  4  0  0  0" + NEWLINE +
@@ -553,25 +541,23 @@ public class T20 {
             "I Sodhi                3   0  30   1   10.0  4  3  1  1  0" + NEWLINE +
             "M Santner              4   0  41   1   10.2  7  3  2  2  0" + NEWLINE +
             "J Neesham              1   0  16   0   16.0  0  1  1  0  0" + NEWLINE;
-        assertEquals(
-            expected,
-            actual);
-
+        assertEquals(expected, actual);
     }
 
     @NotNull
-    private OverStartingEvent.Builder overStarting(String name) {
-        LineUp team = control.current().currentInnings().get().bowlingTeam();
+    private Player findPlayer(String name) {
+        return player(control, name);
+    }
+
+    @NotNull
+    static Player player(MatchControl control, String name) {
+        LineUp team = control.current().currentInnings().orElseThrow().bowlingTeam();
         Optional<Player> bowler = team.findPlayer(name);
         if (bowler.isEmpty()) {
             throw new RuntimeException("Not sure who " + name + " is");
         }
-        return OverStartingEvent.overStarting()
-            .withBowler(bowler.get());
+        return bowler.get();
     }
 
-    private static Instant localTime(int hour, int minute) {
-        return Crictils.localTime(NZ_TIME, 2019, 11, 5, hour, minute);
-    }
 
 }

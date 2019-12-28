@@ -57,7 +57,7 @@ public class AsciiScorecardRenderer {
                 renderLine(writer, batColWidths, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.facedByBatter(), s.fours(), s.sixes(), sr);
             }
             renderLine(writer, batColWidths, "Extras", getExtraDetails(innings.score()), innings.score().extras());
-            renderLine(writer, batColWidths, "TOTAL", "(" + innings.score().wickets() + " wkts; " + innings.ballNumber() + " overs)", innings.score().teamRuns());
+            renderLine(writer, batColWidths, "TOTAL", "(" + innings.score().wickets() + " wkts; " + innings.overDotBallString() + " overs)", innings.score().teamRuns());
             writer.append(NEWLINE);
 
 
@@ -84,7 +84,8 @@ public class AsciiScorecardRenderer {
                     }
                     Player dismissed = ball.dismissal().get().batter();
                     String scoreText = score.wickets() + "-" + score.teamRuns();
-                    writer.append(scoreText).append(" (").append(dismissed.firstInitialWithSurname()).append(")");
+                    writer.append(scoreText).append(" (").append(dismissed.fullName())
+                        .append(", ").append(ball.overDotBallString()).append(" ov)");
                 }
             }
             writer.append(NEWLINE).append(NEWLINE);

@@ -9,6 +9,7 @@ public final class Ball {
     private final Player striker;
     private final Player nonStriker;
     private final Player bowler;
+    private final int overNumber;
     private final int numberInOver;
     private final Score score;
     private final boolean playersCrossed;
@@ -18,12 +19,13 @@ public final class Ball {
     private final Trajectory trajectoryAtImpact;
     private final int id;
     private final Player fielder;
-	private final Instant dateCompleted;
+    private final Instant dateCompleted;
 
-    Ball(int id, Player striker, Player nonStriker, int numberInOver, Player bowler,
+    Ball(int id, Player striker, Player nonStriker, int overNumber, int numberInOver, Player bowler,
          Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
          Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
         this.id = id;
+        this.overNumber = overNumber;
         this.fielder = fielder;
         this.trajectoryAtImpact = trajectoryAtImpact;
         this.bowler = requireNonNull(bowler, "bowler");
@@ -58,6 +60,10 @@ public final class Ball {
         return numberInOver;
     }
 
+    public int overNumber() {
+        return overNumber;
+    }
+
     public Optional<Delivery> delivery() {
         return Optional.ofNullable(delivery);
     }
@@ -85,6 +91,10 @@ public final class Ball {
         return score().validDeliveries() > 0;
     }
 
+    public Swing batSwing() {
+        return swing;
+    }
+
     public Optional<Trajectory> trajectoryAtImpact() {
         return Optional.ofNullable(trajectoryAtImpact);
     }
@@ -96,4 +106,13 @@ public final class Ball {
 	public Optional<Instant> dateCompleted() {
 		return Optional.ofNullable(dateCompleted);
 	}
+
+    /**
+     * Gets the number of the this ball as a string in the format <em>over.ball</em>, for example &quot;0.1&quot;
+     *
+     * @return The number of the last ball
+     */
+	public String overDotBallString() {
+        return overNumber + "." + numberInOver;
+    }
 }

@@ -85,14 +85,15 @@ public final class Innings {
             striker = e.striker().isEmpty() ? currentStriker().get() : findBatterInnings(e.striker().get());
             nonStriker = e.nonStriker().isEmpty() ? currentNonStriker().get() : findBatterInnings(e.nonStriker().get());
 
-            Player bowler = e.bowler().isEmpty() ? currentOver().get().bowler() : e.bowler().get();
+            Over over = currentOver().orElseThrow();
+            Player bowler = e.bowler().isEmpty() ? over.bowler() : e.bowler().get();
             Player fielder = e.fielder().orElse(null);
             Dismissal dismissal = e.dismissal().isEmpty() ? null : new Dismissal(e.dismissal().get(), e.dismissedBatter().orElse(striker.player()), bowler, fielder);
-            Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), overs.last().get().validDeliveries() + 1, bowler,
+            Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), over.numberInInnings(), over.validDeliveries() + 1, bowler,
                 e.delivery().orElse(null), e.swing().orElse(null), e.trajectoryAtImpact().orElse(null), e.runsScored(), dismissal, e.playersCrossed(), fielder, e.time().orElse(null));
             balls = balls.add(ball);
 
-            currentOver = currentOver().get().onBall(ball);
+            currentOver = over.onBall(ball);
             overs = overs.removeLast().copy().add(currentOver);
 
             Partnership currentPartnership = currentPartnership().get();
@@ -367,7 +368,7 @@ public final class Innings {
      *
      * @return The number of the last ball
      */
-    public String ballNumber() {
+    public String overDotBallString() {
         Optional<Ball> ball = balls.list().last();
         Optional<Over> over = overs.last();
         if (ball.isPresent() && over.isPresent()) {

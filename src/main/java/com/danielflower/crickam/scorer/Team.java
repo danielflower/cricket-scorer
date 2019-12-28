@@ -1,8 +1,10 @@
 package com.danielflower.crickam.scorer;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 
 /**
  * A cricket team
@@ -10,13 +12,13 @@ import static java.util.Objects.requireNonNull;
  * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
  */
 public final class Team {
-	private final String id;
-	private final String shortName;
-	private final TeamLevel level;
-	private final String name;
-	private final String teamColour;
+    private final String id;
+    private final String shortName;
+    private final TeamLevel level;
+    private final String name;
+    private final String teamColour;
 
-	public TeamLevel level() {
+    public TeamLevel level() {
         return level;
     }
 
@@ -24,20 +26,20 @@ public final class Team {
         return name;
     }
 
-	private Team(String id, String name, String shortName, TeamLevel level, String teamColour) {
+    private Team(String id, String name, String shortName, TeamLevel level, String teamColour) {
         this.id = requireNonNull(id);
         this.name = requireNonNull(name);
         this.shortName = requireNonNull(shortName);
         this.level = requireNonNull(level);
-		this.teamColour = teamColour;
+        this.teamColour = teamColour;
     }
 
-	public String id() {
-		return id;
-	}
+    public String id() {
+        return id;
+    }
 
     public String toString() {
-		return name;
+        return name;
     }
 
     /**
@@ -65,7 +67,7 @@ public final class Team {
     }
 
     public static Builder team() {
-	    return new Builder();
+        return new Builder();
     }
 
     public static final class Builder {
@@ -105,6 +107,7 @@ public final class Team {
         }
 
         public Team build() {
+            String id = requireNonNullElseGet(this.id, () -> UUID.randomUUID().toString());
             return new Team(id, name, shortName, level, teamColour);
         }
     }

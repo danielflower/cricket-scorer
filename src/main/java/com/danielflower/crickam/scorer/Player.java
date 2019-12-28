@@ -106,7 +106,7 @@ public final class Player {
         private String familyName;
         private String fullName;
         private Handedness battingHandedness = Handedness.RightHanded;
-        private Handedness bowlingHandedness;
+        private Handedness bowlingHandedness = Handedness.RightHanded;
         private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
         private Gender gender;
 

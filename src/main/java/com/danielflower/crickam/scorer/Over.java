@@ -86,7 +86,7 @@ public final class Over {
     /**
      * @return The number of runs gained by the team in this over (including extras).
      */
-	public int runs() {
+	public int teamRuns() {
 		return balls.score().teamRuns();
 	}
 

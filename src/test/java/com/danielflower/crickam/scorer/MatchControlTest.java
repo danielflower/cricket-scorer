@@ -29,7 +29,7 @@ class MatchControlTest {
         .withWicketKeeper(TOM_LATHAM)
         .withTeam(team().build())
         .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
-            JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCH_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON)).build();
+            JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON)).build();
     private final LineUp aus = Australia.oneDayLineUp().build();
 
     private MatchControl control = MatchControl.newMatch(
@@ -70,7 +70,7 @@ class MatchControlTest {
         assertThat(over.isMaiden(), is(false));
         assertThat(over.striker(), is(sameInstance(nz.battingOrder().get(0))));
         assertThat(over.nonStriker(), is(sameInstance(nz.battingOrder().get(1))));
-        assertThat(over.runs(), is(0));
+        assertThat(over.teamRuns(), is(0));
     }
 
     @Test

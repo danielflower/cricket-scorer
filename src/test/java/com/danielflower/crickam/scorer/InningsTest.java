@@ -76,7 +76,7 @@ class InningsTest {
         assertThat(innings.overs().size(), is(1));
         Over over = innings.overs().get(0);
         assertThat(over.remainingBalls(), is(6));
-        assertThat(over.runs(), is(0));
+        assertThat(over.teamRuns(), is(0));
         assertThat(over.isMaiden(), is(false));
         assertThat(over.isComplete(), is(false));
         assertThat(over.validDeliveries(), is(0));

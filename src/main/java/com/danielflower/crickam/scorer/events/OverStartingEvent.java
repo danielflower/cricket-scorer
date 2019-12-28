@@ -43,6 +43,10 @@ public final class OverStartingEvent implements MatchEvent {
         return new Builder();
     }
 
+    public static Builder overStarting(Player bowler) {
+        return overStarting().withBowler(bowler);
+    }
+
     @Override
     public Optional<Instant> time() {
         return Optional.ofNullable(time);

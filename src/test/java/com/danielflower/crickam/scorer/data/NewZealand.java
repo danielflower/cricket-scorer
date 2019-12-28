@@ -23,7 +23,7 @@ public class NewZealand {
     public static final Player KANE_WILLIAMSON = player("Kane Williamson").withPlayingRole(BATTER).build();
     public static final Player BLAIR_TICKNER = player("Blair Tickner").withPlayingRole(BOWLER).build();
     public static final Player WILLIAM_SOMERVILLE = player("William Somerville").withPlayingRole(BOWLER).build();
-    public static final Player MITCH_SANTNER = player("Mitch Santner").withPlayingRole(ALL_ROUNDER).withBowlingHandedness(LeftHanded).build();
+    public static final Player MITCHELL_SANTNER = player("Mitchell Santner").withPlayingRole(ALL_ROUNDER).withBowlingHandedness(LeftHanded).build();
     public static final Player SETH_RANCE = player("Seth Rance").withPlayingRole(BOWLER).build();
     public static final Player JAMES_NEESHAM = player("James Neesham").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LeftHanded).build();
     public static final Player TOM_LATHAM = player("Tom Latham").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LeftHanded).build();
@@ -57,7 +57,7 @@ public class NewZealand {
             .withWicketKeeper(TIM_SEIFERT)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, COLIN_MUNRO, KANE_WILLIAMSON, ROSS_TAYLOR, TIM_SEIFERT,
-                COLIN_DE_GRANDHOMME, JAMES_NEESHAM, MITCH_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON));
+                COLIN_DE_GRANDHOMME, JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON));
     }
 
     public static LineUp.Builder oneDayLineUp() {
@@ -66,7 +66,7 @@ public class NewZealand {
             .withWicketKeeper(TOM_LATHAM)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
-                JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCH_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON));
+                JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON));
     }
 
     public static LineUp.Builder testLineUp() {
@@ -75,7 +75,7 @@ public class NewZealand {
             .withWicketKeeper(BJ_WATLING)
             .withTeam(team().build())
             .withBattingOrder(ImmutableList.of(JEET_RAVAL, TOM_LATHAM, KANE_WILLIAMSON, ROSS_TAYLOR, HENRY_NICHOLLS,
-                BJ_WATLING, COLIN_DE_GRANDHOMME, MITCH_SANTNER, TIM_SOUTHEE, NEIL_WAGNER, LOCKIE_FERGUSON));
+                BJ_WATLING, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, TIM_SOUTHEE, NEIL_WAGNER, LOCKIE_FERGUSON));
     }
 
 }
