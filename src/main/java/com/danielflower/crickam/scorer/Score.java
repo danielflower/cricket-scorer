@@ -57,11 +57,11 @@ public final class Score {
     /**
      * A single bye of a valid delivery.
      */
-    public static final Score BYE = new Score(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score BYE = new Score(0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
     /**
      * A single leg bye of a valid delivery.
      */
-    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
 
     /**
      * A wicket taken off a valid delivery that is credited to the bowler.
@@ -210,7 +210,10 @@ public final class Score {
     }
 
     /**
-     * @return The number of dot balls (i.e. balls with no runs and no extras)
+     * The number of dot balls is considered to be the number of balls where no runs were scored off the
+     * bat and no bowling extras were bowled.
+     * <p>Note that this means a valid delivery where byes or leg byes were scored is considered a dot ball.</p>
+     * @return The number of dot balls
      */
     public int dots() {
         return dots;
@@ -467,12 +470,10 @@ public final class Score {
                 case "b":
                     batterRuns = 0;
                     score.withByes(1).withValidDeliveries(1);
-                    dotBallIfNoRuns = false;
                     break;
                 case "lb":
                     batterRuns = 0;
-                    score.withLegByes(1).withValidDeliveries(1);
-                    dotBallIfNoRuns = false;
+                    score.withLegByes(1).withValidDeliveries(1).withDots(1);
                     break;
             }
         }
