@@ -54,7 +54,7 @@ public class AsciiScorecardRenderer {
                 Score s = bi.score();
                 String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
                 String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString() : "not out";
-                renderLine(writer, batColWidths, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.validDeliveries(), s.fours(), s.sixes(), sr);
+                renderLine(writer, batColWidths, bi.player().firstInitialWithSurname(), dismissal, s.batterRuns(), "", s.facedByBatter(), s.fours(), s.sixes(), sr);
             }
             renderLine(writer, batColWidths, "Extras", getExtraDetails(innings.score()), innings.score().extras());
             renderLine(writer, batColWidths, "TOTAL", "(" + innings.score().wickets() + " wkts; " + innings.ballNumber() + " overs)", innings.score().teamRuns());
@@ -95,7 +95,7 @@ public class AsciiScorecardRenderer {
             for (BowlerInnings bi : innings.bowlerInningsList()) {
                 Score s = bi.score();
                 renderLine(writer, bowlColWidths, bi.bowler().firstInitialWithSurname(), bi.overs().size(), bi.maidens(),
-                    s.bowlerRuns(), s.wickets(), s.bowlerEconomyRate(), s.dots(), s.fours(), s.sixes(), s.wides(), s.noBalls());
+                    s.bowlerRuns(), bi.wickets(), s.bowlerEconomyRate(), s.dots(), s.fours(), s.sixes(), s.wides(), s.noBalls());
             }
 
         }

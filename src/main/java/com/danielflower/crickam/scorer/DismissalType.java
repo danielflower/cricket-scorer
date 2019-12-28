@@ -1,16 +1,29 @@
 package com.danielflower.crickam.scorer;
 
 public enum DismissalType {
-	Retired,
-	Bowled,
-	TimedOut,
-	Caught,
-	HandledTheBall,
-	HitTheBallTwice,
-	HitWicket,
-	LegBeforeWicket,
-	ObstructingTheField,
-	RunOut,
-	Stumped
+	Bowled(true),
+	TimedOut(false),
+	Caught(true),
+	HandledTheBall(false),
+	HitTheBallTwice(false),
+	HitWicket(true),
+	LegBeforeWicket(true),
+	ObstructingTheField(false),
+	RunOut(false),
+	Stumped(true);
+
+	private final boolean bowler;
+
+    DismissalType(boolean bowler) {
+        this.bowler = bowler;
+    }
+
+    public boolean creditedToBowler() {
+        return bowler;
+    }
+
+    public boolean creditedToWicketKeeper() {
+        return this == Stumped;
+    }
 }
 

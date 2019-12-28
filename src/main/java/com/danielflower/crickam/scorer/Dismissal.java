@@ -66,8 +66,6 @@ public final class Dismissal {
                 return "hw " + bowler;
             case LegBeforeWicket:
                 return "lbw b " + bowler;
-            case Retired:
-                return "retired hurt";
             case RunOut:
                 return fielder == null ? "run out" : "run out (" + fielder + ")";
             case Stumped:

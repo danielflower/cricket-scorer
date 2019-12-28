@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.Objects;
+
 import static com.danielflower.crickam.scorer.BowlerInnings.addOverWithPreviousRemovedIfSame;
 
 /**
@@ -12,6 +14,7 @@ public final class BowlingSpell {
     private final int spellNumber;
     private final ImmutableList<Over> overs;
 	private final Balls balls;
+    private final int wickets;
 
     /**
      * @return The bowler
@@ -55,47 +58,53 @@ public final class BowlingSpell {
         return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().equals(bowler)).count();
     }
 
-	BowlingSpell(Player bowler, int spellNumber, ImmutableList<Over> overs, Balls balls) {
+    /**
+     * The number of wickets credited to the bowler, which may differ from the wickets reported by {@link #score()}
+     * which includes dismissals such as run-outs
+     * @return The number of wickets credited to the bowler
+     */
+    public int wickets() {
+        return wickets;
+    }
+
+	BowlingSpell(Player bowler, int spellNumber, ImmutableList<Over> overs, Balls balls, int wickets) {
 		this.bowler = bowler;
         this.spellNumber = spellNumber;
         this.overs = overs;
         this.balls = balls;
+        this.wickets = wickets;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BowlingSpell that = (BowlingSpell) o;
-
-        if (spellNumber != that.spellNumber) return false;
-        if (!overs.equals(that.overs)) return false;
-        if (!balls.equals(that.balls)) return false;
-
-        return true;
+        return spellNumber == that.spellNumber &&
+            wickets == that.wickets &&
+            Objects.equals(bowler, that.bowler) &&
+            Objects.equals(overs, that.overs) &&
+            Objects.equals(balls, that.balls);
     }
 
     @Override
     public int hashCode() {
-        int result = spellNumber;
-        result = 31 * result + overs.hashCode();
-        result = 31 * result + balls.hashCode();
-        return result;
+        return Objects.hash(bowler, spellNumber, overs, balls, wickets);
     }
 
     @Override
     public String toString() {
-        return "BowlingSpell{" +
-                "spellNumber=" + spellNumber +
-                ", overs=" + overs +
-                ", balls=" + balls +
-                '}';
+        Score s = balls.score();
+        return bowler + "    " + overs.size() + " Overs; " + s.teamRuns() + " Runs; " + wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
     }
 
     BowlingSpell onBall(Over over, Ball ball) {
         ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
-        return new BowlingSpell(bowler, spellNumber, newOvers, balls.add(ball));
+        int wickets = this.wickets;
+        if (ball.dismissal().isPresent() && ball.dismissal().get().type().creditedToBowler()) {
+            wickets++;
+        }
+        return new BowlingSpell(bowler, spellNumber, newOvers, balls.add(ball), wickets);
     }
 }
 

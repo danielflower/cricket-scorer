@@ -397,7 +397,7 @@ public class T20 {
 
         control.onEvent(overStarting("Sodhi"));
         control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MARTIN_GUPTILL));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(MARTIN_GUPTILL).withPlayersCrossed(true));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(ballCompleted("1"));
@@ -471,7 +471,7 @@ public class T20 {
         control.onEvent(ballCompleted("W").withDismissal(DismissalType.Bowled));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO));
+        control.onEvent(ballCompleted("W").withDismissal(DismissalType.Caught).withFielder(COLIN_MUNRO).withPlayersCrossed(true));
         control.onEvent(batterInningsStarting());
         control.onEvent(ballCompleted("1"));
         control.onEvent(overCompleted());
@@ -542,8 +542,8 @@ public class T20 {
             "BATTER                                        R   M   B 4s 6s     SR" + NEWLINE +
             "T Banton         b Tickner                   18      10  2  1  180.0" + NEWLINE +
             "D Malan          c Guptill b Sodhi           55      34  8  1  161.8" + NEWLINE +
-            "J Vince          c Munro b Santner           49      39  4  1  125.6" + NEWLINE +
-            "E Morgan         c Southee b Tickner         18      13  0  2  138.4" + NEWLINE +
+            "J Vince          c Southee b Tickner         49      39  4  1  125.6" + NEWLINE +
+            "E Morgan         c Munro b Santner           18      13  0  2  138.5" + NEWLINE +
             "S Billings       run out (Munro)              1       2  0  0   50.0" + NEWLINE +
             "S Curran         c Munro b Ferguson           2       6  0  0   33.3" + NEWLINE +
             "L Gregory        b Ferguson                   0       2  0  0    0.0" + NEWLINE +

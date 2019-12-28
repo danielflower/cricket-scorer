@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -12,6 +13,7 @@ public final class BowlerInnings {
     private final Balls balls;
     private final ImmutableList<BowlingSpell> spells;
     private final ImmutableList<Over> overs;
+    private final int wickets;
 
     /**
      * @return The bowler
@@ -43,6 +45,15 @@ public final class BowlerInnings {
     }
 
     /**
+     * The number of wickets credited to the bowler, which may differ from the wickets reported by {@link #score()}
+     * which includes dismissals such as run-outs
+     * @return The number of wickets credited to the bowler
+     */
+    public int wickets() {
+        return wickets;
+    }
+
+    /**
      * @return The total score in this bowler's innings.
      */
     public Score score() {
@@ -57,17 +68,18 @@ public final class BowlerInnings {
         return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().equals(bowler)).count();
     }
 
-    private BowlerInnings(Player bowler, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs) {
+    private BowlerInnings(Player bowler, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs, int wickets) {
         this.bowler = bowler;
         this.balls = balls;
         this.spells = spells;
         this.overs = overs;
+        this.wickets = wickets;
     }
 
     static BowlerInnings newInnings(Over over, Player bowler) {
-        BowlingSpell spell = new BowlingSpell(bowler, 1, ImmutableList.of(over), new Balls());
+        BowlingSpell spell = new BowlingSpell(bowler, 1, ImmutableList.of(over), new Balls(), 0);
         ImmutableList<BowlingSpell> spells = new ImmutableList<>();
-        return new BowlerInnings(bowler, new Balls(), spells.add(spell), ImmutableList.of(over));
+        return new BowlerInnings(bowler, new Balls(), spells.add(spell), ImmutableList.of(over), 0);
     }
 
     BowlerInnings onBall(Over over, Ball ball) {
@@ -75,12 +87,16 @@ public final class BowlerInnings {
         Optional<Over> previousOver = bowlingSpell.overs().last();
         ImmutableList<BowlingSpell> spells;
         if (previousOver.isPresent() && (over.numberInInnings() - previousOver.get().numberInInnings()) > 2) {
-            spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, ImmutableList.of(over), new Balls()).onBall(over, ball));
+            spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, ImmutableList.of(over), new Balls(), wickets).onBall(over, ball));
         } else {
             spells = this.spells.removeLast().copy().add(bowlingSpell.onBall(over, ball));
         }
+        int wickets = this.wickets;
+        if (ball.dismissal().isPresent() && ball.dismissal().get().type().creditedToBowler()) {
+            wickets++;
+        }
         ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
-        return new BowlerInnings(bowler, balls.add(ball), spells, newOvers);
+        return new BowlerInnings(bowler, balls.add(ball), spells, newOvers, wickets);
     }
 
     @NotNull
@@ -96,29 +112,24 @@ public final class BowlerInnings {
     @Override
     public String toString() {
         Score s = balls.score();
-        return bowler + "    " + overs.size() + " Overs; " + s.teamRuns() + " Runs; " + s.wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
+        return bowler + "    " + overs.size() + " Overs; " + s.teamRuns() + " Runs; " + wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         BowlerInnings that = (BowlerInnings) o;
-
-        if (!bowler.equals(that.bowler)) return false;
-        if (!balls.equals(that.balls)) return false;
-        if (!spells.equals(that.spells)) return false;
-
-        return true;
+        return wickets == that.wickets &&
+            Objects.equals(bowler, that.bowler) &&
+            Objects.equals(balls, that.balls) &&
+            Objects.equals(spells, that.spells) &&
+            Objects.equals(overs, that.overs);
     }
 
     @Override
     public int hashCode() {
-        int result = bowler.hashCode();
-        result = 31 * result + balls.hashCode();
-        result = 31 * result + spells.hashCode();
-        return result;
+        return Objects.hash(bowler, balls, spells, overs, wickets);
     }
 }
 
