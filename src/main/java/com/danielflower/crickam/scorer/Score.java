@@ -17,56 +17,56 @@ public final class Score {
     /**
      * No balls delivered, with no wickets or runs scored.
      */
-    public static final Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static final Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     /**
      * No runs scored from a valid delivery.
      */
-    public static final Score DOT_BALL = new Score(0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score DOT_BALL = new Score(0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
     /**
      * One run scored from the bat off of a valid delivery.
      */
-    public static final Score SINGLE = new Score(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
+    public static final Score SINGLE = new Score(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
     /**
      * Two runs scored from the bat off of a valid delivery.
      */
-    public static final Score TWO = new Score(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0);
+    public static final Score TWO = new Score(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1);
     /**
      * Three runs scored from the bat off of a valid delivery.
      */
-    public static final Score THREE = new Score(3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0);
+    public static final Score THREE = new Score(3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1);
 
     /**
      * Four runs scored by hitting the ball to the boundary from a valid delivery.
      * <p>Note that this is different from 4 runs run by the batters without it going to the boundary (which would have {@link #batterRuns} being 4 but {@link #fours()} being 0).</p>
      */
-    public static final Score FOUR = new Score(4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0);
+    public static final Score FOUR = new Score(4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1);
     /**
      * Six runs scored by hitting the ball over the boundary on the full from a valid delivery.
      */
-    public static final Score SIX = new Score(6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0);
+    public static final Score SIX = new Score(6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1);
     /**
      * A wide (with no extra runs or wicket taken).
      */
-    public static final Score WIDE = new Score(0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score WIDE = new Score(0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     /**
      * A no-ball (with no extra runs or wicket taken).
      */
-    public static final Score NO_BALL = new Score(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score NO_BALL = new Score(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     /**
      * A single bye of a valid delivery.
      */
-    public static final Score BYE = new Score(0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score BYE = new Score(0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1);
     /**
      * A single leg bye of a valid delivery.
      */
-    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1);
 
     /**
      * A wicket taken off a valid delivery that is credited to the bowler.
      */
-    public static final Score WICKET = new Score(0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score WICKET = new Score(0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1);
 
     private final int batterRuns;
     private final int facedByBatter;
@@ -84,15 +84,11 @@ public final class Score {
     private final int fours;
     private final int sixes;
     private final int validDeliveries;
-    private final int invalidDeliveries;
 
-    private Score(int batterRuns, int facedByBatter, int wides, int wideDeliveries, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int validDeliveries, int invalidDeliveries) {
+    private Score(int batterRuns, int facedByBatter, int wides, int wideDeliveries, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int validDeliveries) {
         this.facedByBatter = facedByBatter;
         this.wideDeliveries = wideDeliveries;
-        if ((wides > 0 || noBalls > 0) && invalidDeliveries == 0) {
-            throw new IllegalStateException("When wides and/or no-balls are set, the number of invalid deliveries must be set also with the withInvalidDeliveries(int) method.");
-        }
-        if ((singles > 0 || twos > 0 || threes > 0 || fours > 0 || sixes > 0 || byes > 0 || legByes > 0) && ((validDeliveries + invalidDeliveries) == 0)) {
+        if ((singles > 0 || twos > 0 || threes > 0 || fours > 0 || sixes > 0 || byes > 0 || legByes > 0) && ((validDeliveries + wideDeliveries + noBalls) == 0)) {
             throw new IllegalStateException("Wickets and runs from the bat can only be scored with valid or invalid balls are set too.");
         }
         if (facedByBatter < validDeliveries) {
@@ -115,7 +111,6 @@ public final class Score {
         this.fours = fours;
         this.sixes = sixes;
         this.validDeliveries = validDeliveries;
-        this.invalidDeliveries = invalidDeliveries;
     }
 
     /**
@@ -264,10 +259,10 @@ public final class Score {
     }
 
     /**
-     * @return The number of deliveries bowled by the bowler which were wides or no-balls
+     * @return The number of deliveries bowled that are {@link #wideDeliveries()} or {@link #noBalls()}
      */
     public int invalidDeliveries() {
-        return invalidDeliveries;
+        return wideDeliveries() + noBalls();
     }
 
     /**
@@ -357,7 +352,6 @@ public final class Score {
             .withFours(fours + other.fours)
             .withSixes(sixes + other.sixes)
             .withValidDeliveries(validDeliveries + other.validDeliveries)
-            .withInvalidDeliveries(invalidDeliveries + other.invalidDeliveries)
             .build();
     }
 
@@ -386,7 +380,6 @@ public final class Score {
             .withFours(fours - other.fours)
             .withSixes(sixes - other.sixes)
             .withValidDeliveries(validDeliveries - other.validDeliveries)
-            .withInvalidDeliveries(invalidDeliveries - other.invalidDeliveries)
             .build();
     }
 
@@ -409,7 +402,6 @@ public final class Score {
             ", fours=" + fours +
             ", sixes=" + sixes +
             ", validDeliveries=" + validDeliveries +
-            ", invalidDeliveries=" + invalidDeliveries +
             '}';
     }
 
@@ -459,12 +451,12 @@ public final class Score {
                     break;
                 case "w":
                     batterRuns = 0;
-                    score.withWides(runs).withInvalidDeliveries(1).withWideDeliveries(1).withFacedByBatter(0);
+                    score.withWides(runs).withWideDeliveries(1).withFacedByBatter(0);
                     dotBallIfNoRuns = false;
                     break;
                 case "nb":
                     batterRuns = runs - 1;
-                    score.withNoBalls(1).withInvalidDeliveries(1).withBatterRuns(batterRuns);
+                    score.withNoBalls(1).withBatterRuns(batterRuns);
                     dotBallIfNoRuns = false;
                     break;
                 case "b":
@@ -508,20 +500,19 @@ public final class Score {
             threes == score.threes &&
             fours == score.fours &&
             sixes == score.sixes &&
-            validDeliveries == score.validDeliveries &&
-            invalidDeliveries == score.invalidDeliveries;
+            validDeliveries == score.validDeliveries;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(batterRuns, facedByBatter, wides, wideDeliveries, noBalls, legByes, byes, penaltyRuns, wickets, dots, singles, twos, threes, fours, sixes, validDeliveries, invalidDeliveries);
+        return Objects.hash(batterRuns, facedByBatter, wides, wideDeliveries, noBalls, legByes, byes, penaltyRuns, wickets, dots, singles, twos, threes, fours, sixes, validDeliveries);
     }
 
     /**
      * A builder to create a {@link Score} object.
-     * <p>The runs scored and the number of valid or invalid deliveries need to be set on almost all scores. For
+     * <p>The runs scored and the number of valid deliveries needs to be set on almost all scores. For
      * example, if setting {@link #withLegByes(int)} off a fair delivery, then {@link #withValidDeliveries(int)}
-     * should be called as well. However, if the ball was a no-ball, then {@link #withInvalidDeliveries(int)} should be
+     * should be called as well. However, if the ball was a wide, then {@link #withWides(int)} should be
      * called instead.</p>
      */
     public static final class Builder {
@@ -539,7 +530,6 @@ public final class Score {
         private int sixes = 0;
         private int validDeliveries = 0;
         private int dots = 0;
-        private int invalidDeliveries = 0;
         private int facedByBatter = 0;
         private int wideDeliveries = 0;
 
@@ -578,12 +568,12 @@ public final class Score {
         }
 
         /**
-         * The number of runs scored from no-balls. Note this is a separate from the number of deliveries that were bowled
-         * which needs to also be set with {@link #withInvalidDeliveries(int)}.
+         * The number of runs no-balls delivered.
+         * <p>Note that if runs were scored off a no-ball, then this value would be 1 and the runs scored would
+         * be set with {@link #withBatterRuns(int)}.</p>
          *
-         * @param noBalls The number of runs scored from no-balls.
+         * @param noBalls The number of no-balls delivered.
          * @return This builder
-         * @see #withInvalidDeliveries(int)
          */
         public Builder withNoBalls(int noBalls) {
             this.noBalls = noBalls;
@@ -718,20 +708,6 @@ public final class Score {
         }
 
         /**
-         * Sets the invalid balls. Note a situation where a single ball results in 4 wides the score would
-         * have <code>.withInvalidDeliveries(1).withWides(4)</code>
-         *
-         * @param count The number of balls that were wide or no-balls.
-         * @return This builder
-         * @see #withWides(int)
-         * @see #withNoBalls(int)
-         */
-        public Builder withInvalidDeliveries(int count) {
-            this.invalidDeliveries = count;
-            return this;
-        }
-
-        /**
          * Creates a builder from a score instance
          *
          * @param score The score to base the builder on
@@ -744,7 +720,6 @@ public final class Score {
                 .withSingles(score.singles())
                 .withBatterRuns(score.batterRuns())
                 .withValidDeliveries(score.validDeliveries())
-                .withInvalidDeliveries(score.invalidDeliveries())
                 .withFacedByBatter(score.facedByBatter())
                 .withDots(score.dots())
                 .withByes(score.byes())
@@ -764,7 +739,7 @@ public final class Score {
 
         public Score build() {
             Score score = new Score(batterRuns, facedByBatter, wides, wideDeliveries, noBalls, legByes, byes, penaltyRuns, wickets,
-                dots, singles, twos, threes, fours, sixes, validDeliveries, invalidDeliveries);
+                dots, singles, twos, threes, fours, sixes, validDeliveries);
             for (Score cached : COMMON) {
                 if (score.equals(cached)) {
                     return cached;
