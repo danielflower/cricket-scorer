@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import static com.danielflower.crickam.scorer.AsciiScorecardRenderer.NEWLINE;
 import static com.danielflower.crickam.scorer.Venue.venue;
 import static com.danielflower.crickam.scorer.data.England.*;
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
@@ -22,6 +23,7 @@ import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inning
 import static com.danielflower.crickam.scorer.events.MatchCompletedEvent.matchCompleted;
 import static com.danielflower.crickam.scorer.events.MatchStartingEvent.matchStarting;
 import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class T20 {
 
@@ -93,10 +95,10 @@ public class T20 {
         );
 
         control.onEvent(inningsStarting()
-                .withBattingTeam(nz)
-                .withBowlingTeam(eng)
-                .withTime(localTime(14, 0))
-            );
+            .withBattingTeam(nz)
+            .withBowlingTeam(eng)
+            .withTime(localTime(14, 0))
+        );
 
         control.onEvent(overStarting("SM Curran"));
         control.onEvent(ballCompleted("1"));
@@ -497,7 +499,74 @@ public class T20 {
         control.onEvent(matchCompleted().withTime(localTime(18, 38)));
 
         Match matchAtEnd = control.current();
-        AsciiScorecardRenderer.render(matchAtEnd, System.out);
+
+        String actual = AsciiScorecardRenderer.toString(matchAtEnd);
+        String expected = "NEW ZEALAND vs ENGLAND" + NEWLINE +
+            "======================" + NEWLINE +
+            "" + NEWLINE +
+            "T20I at Saxton Oval, Nelson, Nov 5 2019" + NEWLINE +
+            "" + NEWLINE +
+            "New Zealand won by 14 runs" + NEWLINE +
+            "" + NEWLINE +
+            "New Zealand Innings (20 overs maximum)" + NEWLINE +
+            "--------------------------------------" + NEWLINE +
+            "" + NEWLINE +
+            "BATTER                                        R   M   B 4s 6s     SR" + NEWLINE +
+            "C Munro          c Mahmood b Curran           6       8  0  0   75.0" + NEWLINE +
+            "M Guptill        c Curran b Brown            33      17  7  0  194.1" + NEWLINE +
+            "T Seifert        b Parkinson                  7      12  1  0   58.3" + NEWLINE +
+            "C de Grandhomme  c Banton b Curran           55      35  5  3  157.1" + NEWLINE +
+            "R Taylor         lbw b Mahmood               27      24  2  1  112.5" + NEWLINE +
+            "J Neesham        b Curran                    20      15  2  1  133.3" + NEWLINE +
+            "M Santner        run out (Billings)          15       9  2  0  166.7" + NEWLINE +
+            "T Southee        not out                      1       2  0  0   50.0" + NEWLINE +
+            "Extras           (lb 6, w 8, nb 2)           16" + NEWLINE +
+            "TOTAL            (7 wkts; 20.0 overs)       180" + NEWLINE +
+            "" + NEWLINE +
+            "Did not bat: I Sodhi, L Ferguson, B Tickner" + NEWLINE +
+            "" + NEWLINE +
+            "Fall of wickets: 1-40 (M Guptill), 2-42 (C Munro), 3-69 (T Seifert)," + NEWLINE +
+            "4-135 (C de Grandhomme), 5-162 (R Taylor), 6-171 (J Neesham), 7-180 (M Santner)" + NEWLINE +
+            "" + NEWLINE +
+            "BOWLING                O   M   R   W   Econ 0s 4s 6s WD NB" + NEWLINE +
+            "S Curran               4   0  29   1    7.2  8  3  0  2  0" + NEWLINE +
+            "T Curran               4   0  29   2    7.2  9  4  0  1  0" + NEWLINE +
+            "S Mahmood              4   0  49   1   12.2  6  6  2  3  0" + NEWLINE +
+            "P Brown                4   0  34   1    8.5 10  5  1  0  0" + NEWLINE +
+            "M Parkinson            2   0  14   1    7.0  5  0  1  1  0" + NEWLINE +
+            "L Gregory              2   0  19   0    9.5  4  1  1  0  2" + NEWLINE +
+            "" + NEWLINE +
+            "England Innings (20 overs maximum)" + NEWLINE +
+            "----------------------------------" + NEWLINE +
+            "" + NEWLINE +
+            "BATTER                                        R   M   B 4s 6s     SR" + NEWLINE +
+            "T Banton         b Tickner                   18      10  2  1  180.0" + NEWLINE +
+            "D Malan          c Guptill b Sodhi           55      34  8  1  161.8" + NEWLINE +
+            "J Vince          c Munro b Santner           49      39  4  1  125.6" + NEWLINE +
+            "E Morgan         c Southee b Tickner         18      13  0  2  138.4" + NEWLINE +
+            "S Billings       run out (Munro)              1       2  0  0   50.0" + NEWLINE +
+            "S Curran         c Munro b Ferguson           2       6  0  0   33.3" + NEWLINE +
+            "L Gregory        b Ferguson                   0       2  0  0    0.0" + NEWLINE +
+            "T Curran         not out                     14      10  0  1  140.0" + NEWLINE +
+            "S Mahmood        not out                      3       4  0  0   75.0" + NEWLINE +
+            "Extras           (lb 1, w 5)                  6" + NEWLINE +
+            "TOTAL            (7 wkts; 20.0 overs)       166" + NEWLINE +
+            "" + NEWLINE +
+            "Did not bat: P Brown, M Parkinson" + NEWLINE +
+            "" + NEWLINE +
+            "Fall of wickets: 1-27 (T Banton), 2-90 (D Malan), 3-139 (E Morgan)," + NEWLINE +
+            "4-142 (S Billings), 5-147 (J Vince), 6-148 (L Gregory), 7-149 (S Curran)" + NEWLINE +
+            "" + NEWLINE +
+            "BOWLING                O   M   R   W   Econ 0s 4s 6s WD NB" + NEWLINE +
+            "T Southee              4   0  28   0    7.0  9  4  0  0  0" + NEWLINE +
+            "L Ferguson             4   0  25   2    6.2 11  2  1  1  0" + NEWLINE +
+            "B Tickner              4   0  25   2    6.2 11  1  1  1  0" + NEWLINE +
+            "I Sodhi                3   0  30   1   10.0  4  3  1  1  0" + NEWLINE +
+            "M Santner              4   0  41   1   10.2  7  3  2  2  0" + NEWLINE +
+            "J Neesham              1   0  16   0   16.0  0  1  1  0  0" + NEWLINE;
+        assertEquals(
+            expected,
+            actual);
 
     }
 

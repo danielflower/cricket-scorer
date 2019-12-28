@@ -182,9 +182,13 @@ class ScoreTest {
         assertThat(Score.parse("1lb").get(), is(sameInstance(LEG_BYE)));
         assertThat(Score.parse("1nb").get(), is(sameInstance(NO_BALL)));
         assertThat(Score.parse("1w").get(), is(sameInstance(WIDE)));
+        assertThat(Score.parse("2w").get(), is(score().withInvalidDeliveries(1).withWides(2).build()));
         assertThat(Score.parse("W").get(), is(sameInstance(WICKET)));
         assertThat(Score.parse("5w").get(), is(score().withInvalidDeliveries(1).withWides(5).build()));
-        assertThat(Score.parse("5nb").get(), is(score().withInvalidDeliveries(1).withNoBalls(1).withBatterRuns(4).build()));
+        assertThat(Score.parse("5nb").get(), is(score().withInvalidDeliveries(1).withNoBalls(1).withBatterRuns(4).withFours(1).build()));
+        assertThat(Score.parse("7nb").get(), is(score().withInvalidDeliveries(1).withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
+
+
 
     }
 

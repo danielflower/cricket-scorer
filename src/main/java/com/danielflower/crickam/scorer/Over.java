@@ -91,11 +91,11 @@ public final class Over {
 	}
 
     /**
-     * @return True if no runs have been scored in this over. If not {@link #isComplete()} then returns false even if there
-     * are no runs so far.
+     * @return True if no runs have been scored from the bat or as bowling extras in this over.
+     * If not {@link #isComplete()} then returns false even if there are no runs so far.
      */
 	public boolean isMaiden() {
-		return isComplete() && runs() == 0;
+		return isComplete() && (score().batterRuns() + score().bowlingExtras()) == 0;
 	}
 
     /**

@@ -29,6 +29,7 @@ class BallCompletedEventTest {
         assertThat(crossedFor(Score.score().withPenaltyRuns(1).withValidDeliveries(1).build()), is(false));
         assertThat(crossedFor(Score.score().withWides(5).withInvalidDeliveries(1).build()), is(false));
         assertThat(crossedFor(Score.score().withNoBalls(1).withBatterRuns(4).withInvalidDeliveries(1).build()), is(false));
+        assertThat(crossedFor(Score.parse("2w").get()), is(true));
     }
 
     private static boolean crossedFor(Score score) {

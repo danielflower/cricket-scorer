@@ -109,6 +109,7 @@ public final class Score {
 
     /**
      * Creates a new score builder
+     *
      * @return A new builder
      */
     public static Builder score() {
@@ -352,6 +353,7 @@ public final class Score {
 
     /**
      * Checks for value equality.
+     *
      * @param o The object to compare
      * @return Returns true if every field of the two scores match.
      */
@@ -441,6 +443,7 @@ public final class Score {
      *     <li><strong>5nb</strong> which a no-ball with 4 runs off the bat</li>
      *     <li>etc</li>
      * </ul>
+     *
      * @param text A score, such as &quot;1&quot;, &quot;1lb&quot; &quot;W&quot; etc
      * @return A built score, or empty if unknown
      */
@@ -455,36 +458,46 @@ public final class Score {
         int runs = Integer.parseInt(matcher.group("num"));
         String modifier = matcher.group("modifier");
         Builder score = Score.score();
+        int batterRuns = runs;
+        boolean dotBallIfNoRuns = true;
         if (modifier == null) {
-            score.withValidDeliveries(1)
-                .withBatterRuns(runs)
-                .withDots(runs == 0 ? 1 : 0)
-                .withSingles(runs == 1 ? 1 : 0)
-                .withTwos(runs == 2 ? 1 : 0)
-                .withThrees(runs == 3 ? 1 : 0)
-                .withFours(runs == 4 ? 1 : 0)
-                .withSixes(runs == 6 ? 1 : 0)
-                ;
+            score.withValidDeliveries(1);
         } else {
             switch (modifier) {
                 case "W":
                     score.withWickets(1).withValidDeliveries(1).withBatterRuns(runs);
                     break;
                 case "w":
+                    batterRuns = 0;
                     score.withWides(runs).withInvalidDeliveries(1);
+                    dotBallIfNoRuns = false;
                     break;
                 case "nb":
-                    score.withNoBalls(1).withInvalidDeliveries(1).withBatterRuns(runs - 1);
+                    batterRuns = runs - 1;
+                    score.withNoBalls(1).withInvalidDeliveries(1).withBatterRuns(batterRuns);
+                    dotBallIfNoRuns = false;
                     break;
                 case "b":
+                    batterRuns = 0;
                     score.withByes(1).withValidDeliveries(1);
+                    dotBallIfNoRuns = false;
                     break;
                 case "lb":
+                    batterRuns = 0;
                     score.withLegByes(1).withValidDeliveries(1);
+                    dotBallIfNoRuns = false;
                     break;
             }
         }
-        return Optional.of(score.build());
+        return Optional.of(score
+            .withBatterRuns(batterRuns)
+            .withDots(dotBallIfNoRuns && batterRuns == 0 ? 1 : 0)
+            .withSingles(batterRuns == 1 ? 1 : 0)
+            .withTwos(batterRuns == 2 ? 1 : 0)
+            .withThrees(batterRuns == 3 ? 1 : 0)
+            .withFours(batterRuns == 4 ? 1 : 0)
+            .withSixes(batterRuns == 6 ? 1 : 0)
+            .build());
     }
 
     /**
@@ -513,8 +526,8 @@ public final class Score {
 
         /**
          * @param batterRuns The number of runs scored off the bat. You should also call one of {@link #withSingles(int)},
-         *                    {@link #withTwos(int)}, {@link #withThrees(int)}, {@link #withFours(int)}, {@link #withSixes(int)}
-         *                    if it is one of those amounts.
+         *                   {@link #withTwos(int)}, {@link #withThrees(int)}, {@link #withFours(int)}, {@link #withSixes(int)}
+         *                   if it is one of those amounts.
          * @return This builder
          */
         public Builder withBatterRuns(int batterRuns) {
@@ -525,6 +538,7 @@ public final class Score {
         /**
          * The number of runs scored from wides. Note this is a separate from the number of deliveries that were bowled
          * that were wides, which needs to also be set with {@link #withInvalidDeliveries(int)}.
+         *
          * @param wides The number of runs scored from wides.
          * @return This builder
          * @see #withInvalidDeliveries(int)
@@ -537,6 +551,7 @@ public final class Score {
         /**
          * The number of runs scored from no-balls. Note this is a separate from the number of deliveries that were bowled
          * which needs to also be set with {@link #withInvalidDeliveries(int)}.
+         *
          * @param noBalls The number of runs scored from no-balls.
          * @return This builder
          * @see #withInvalidDeliveries(int)
@@ -595,6 +610,7 @@ public final class Score {
         /**
          * Sets the number of singles run. For a single valid delivery where one run is scored off the bat, this value should be 1;
          * {@link #withBatterRuns(int)} should be 1; and {@link #withValidDeliveries(int)} should be 1.
+         *
          * @param singles The number of times a single was scored from the bat
          * @return This builder
          */
@@ -606,6 +622,7 @@ public final class Score {
         /**
          * Sets the number of twos. For a single valid delivery where two runs are scored off the bat, this value should be 1;
          * {@link #withBatterRuns(int)} should be 2; and {@link #withValidDeliveries(int)} should be 1.
+         *
          * @param twos The number of times a two was scored from the bat
          * @return This builder
          */
@@ -617,6 +634,7 @@ public final class Score {
         /**
          * Sets the number of threes. For a single valid delivery where three runs are scored off the bat, this value should be 1;
          * {@link #withBatterRuns(int)} should be 3; and {@link #withValidDeliveries(int)} should be 1.
+         *
          * @param threes The number of times a three was scored from the bat
          * @return This builder
          */
@@ -630,6 +648,7 @@ public final class Score {
          * run by the batters, or when 4 wides, byes, or leg-byes occur). For a single valid delivery the boundary is
          * scored off the bat, this value should be 1; {@link #withBatterRuns(int)} should be 4; and
          * {@link #withValidDeliveries(int)} should be 1.
+         *
          * @param fours The number of boundaries (for four) hit off the bat.
          * @return This builder.
          */
@@ -642,6 +661,7 @@ public final class Score {
          * Sets the number of balls that were struck over boundary on the full (so this excludes the unlikely case where
          * the batters run 6 runs). For a single valid delivery where a six is hit, this value should be 1;
          * {@link #withBatterRuns(int)} should be 6; and {@link #withValidDeliveries(int)} should be 1.
+         *
          * @param sixes The number of sixes hit.
          * @return This builder.
          */
@@ -662,6 +682,7 @@ public final class Score {
         /**
          * Sets the invalid balls. Note a situation where a single ball results in 4 wides the score would
          * have <code>.withInvalidDeliveries(1).withWides(4)</code>
+         *
          * @param count The number of balls that were wide or no-balls.
          * @return This builder
          * @see #withWides(int)
@@ -674,6 +695,7 @@ public final class Score {
 
         /**
          * Creates a builder from a score instance
+         *
          * @param score The score to base the builder on
          * @return A new builder
          */

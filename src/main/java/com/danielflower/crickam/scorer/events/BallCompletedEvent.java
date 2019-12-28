@@ -238,6 +238,10 @@ public final class BallCompletedEvent implements MatchEvent {
         }
 
         private boolean guessIfCrossed(Score score) {
+            if (score.batterRuns() == 0 && score.wides() > 0) {
+                return score.wides() % 2 == 0;
+            }
+
             return (score.batterRuns() + score.legByes() + score.byes()) % 2 == 1;
         }
     }
