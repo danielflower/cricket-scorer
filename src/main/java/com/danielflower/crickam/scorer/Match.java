@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.Crictils.toInteger;
 
@@ -14,29 +15,33 @@ import static com.danielflower.crickam.scorer.Crictils.toInteger;
  */
 public final class Match {
 
-    public enum State {
-        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED
-    }
 
+
+    public enum State {
+        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED;
+    }
     private final FixedData data;
+
     private final State state;
     private final MatchResult result;
     private final ImmutableList<Innings> inningsList;
-
     private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> inningsList) {
         this.data = Objects.requireNonNull(data);
         this.state = Objects.requireNonNull(state);
         this.result = result;
         this.inningsList = Objects.requireNonNull(inningsList);
     }
+
     static Match newMatch(MatchStartingEvent e) {
+        Venue venue = e.venue().orElse(null);
+        TimeZone timeZone = e.timeZone().orElse(null);
         FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
-            e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), e.venue().orElse(null),
-            e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()));
+            e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
+            e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
         return new Match(fd, State.NOT_STARTED, null, new ImmutableList<>());
     }
-
     private static class FixedData {
+
         private final String matchID;
         private final Series series;
         private final Instant time;
@@ -48,7 +53,8 @@ public final class Match {
         private final Venue venue;
         private final int numberOfScheduledDays;
         private final Integer ballsPerInnings;
-        public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings) {
+        private final TimeZone timeZone;
+        public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
             this.matchID = matchID;
             this.series = series;
             this.time = time;
@@ -60,9 +66,9 @@ public final class Match {
             this.venue = venue;
             this.numberOfScheduledDays = numberOfScheduledDays;
             this.ballsPerInnings = ballsPerInnings;
+            this.timeZone = timeZone;
         }
     }
-
     /**
      * @return The current match state
      */
@@ -100,6 +106,13 @@ public final class Match {
      */
     public Optional<Instant> time() {
         return Optional.ofNullable(data.time);
+    }
+
+    /**
+     * @return The timezone that the match is played in
+     */
+    public Optional<TimeZone> timeZone() {
+        return Optional.ofNullable(data.timeZone);
     }
 
     /**

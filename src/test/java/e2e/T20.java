@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -582,9 +581,7 @@ public class T20 {
     }
 
     private static Instant localTime(int hour, int minute) {
-        return LocalDateTime.of(2019, 11, 5, hour, minute)
-            .atZone(NZ_TIME.toZoneId())
-            .toInstant();
+        return Crictils.localTime(NZ_TIME, 2019, 11, 5, hour, minute);
     }
 
 }

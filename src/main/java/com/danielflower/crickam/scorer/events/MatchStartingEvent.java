@@ -5,8 +5,11 @@ import com.danielflower.crickam.scorer.*;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 
 public final class MatchStartingEvent implements MatchEvent {
 
@@ -21,8 +24,9 @@ public final class MatchStartingEvent implements MatchEvent {
     private final Venue venue;
     private final int numberOfScheduledDays;
     private final Integer ballsPerInnings;
+    private final TimeZone timeZone;
 
-    private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings) {
+    private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
         this.time = time;
@@ -34,6 +38,7 @@ public final class MatchStartingEvent implements MatchEvent {
         this.venue = venue;
         this.numberOfScheduledDays = numberOfScheduledDays;
         this.ballsPerInnings = ballsPerInnings;
+        this.timeZone = timeZone;
     }
 
     /**
@@ -88,6 +93,26 @@ public final class MatchStartingEvent implements MatchEvent {
         return new Builder();
     }
 
+    public static Builder matchStarting(MatchType matchType) {
+        Builder builder = matchStarting().withMatchType(matchType);
+        switch (matchType) {
+            case TEST:
+            case FIRST_CLASS:
+                return builder.withNumberOfInningsPerTeam(2).withNumberOfScheduledDays(5);
+            case ODI:
+            case ONE_DAY:
+                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(50);
+            case T20I:
+            case T20:
+                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(20);
+        }
+        return builder;
+    }
+
+    public Optional<TimeZone> timeZone() {
+        return Optional.ofNullable(timeZone);
+    }
+
     public static final class Builder implements MatchEventBuilder<MatchStartingEvent> {
         private String matchID;
         private Series series;
@@ -100,6 +125,7 @@ public final class MatchStartingEvent implements MatchEvent {
         private int numberOfScheduledDays;
         private Venue venue;
         private Integer ballsPerInnings;
+        private TimeZone timeZone;
 
         public Builder withMatchID(String matchID) {
             this.matchID = matchID;
@@ -114,6 +140,7 @@ public final class MatchStartingEvent implements MatchEvent {
         /**
          * Sets the time of the event. Note this is separate from {@link #withScheduledStartTime(Instant)} which is
          * the expected time of the first ball.
+         *
          * @param time The time match is starting.
          * @return This builder
          */
@@ -166,12 +193,29 @@ public final class MatchStartingEvent implements MatchEvent {
             return this;
         }
 
+        /**
+         * The time zone that this match is played in. This is optional, and if left unset then then timezone
+         * of the venue will be used if that has been set with {@link #withVenue(Venue)}
+         *
+         * @param timeZone The time zone that this match was played in
+         * @return This builder
+         */
+        public Builder withTimeZone(TimeZone timeZone) {
+            this.timeZone = timeZone;
+            return this;
+        }
+
         public MatchStartingEvent build() {
             Integer bpi = this.ballsPerInnings;
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;
             }
-            return new MatchStartingEvent(matchID, series, time, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi);
+            TimeZone timeZone = this.timeZone;
+            if (timeZone == null && venue != null) {
+                timeZone = venue.timeZone();
+            }
+            String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
+            return new MatchStartingEvent(matchID, series, time, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
         }
     }
 }
