@@ -3,21 +3,29 @@ package com.danielflower.crickam.scorer;
 public enum DeliveryType {
     LEG_BREAK,
     GOOGLY,
-    FLIPPER,
-    SLIDER,
+    TOP_SPINNER,
     FLICKER_BALL,
+    SLIDER,
+    FLIPPER,
+
     OFF_BREAK,
     DOOSRA,
-    ARM_BALL,
     TOPSPINNER,
     CARROM_BALL,
+    ARM_BALL,
     TEESRA,
+
+    BOUNCER,
     STRAIGHT,
     INSWINGER,
     REVERSE_SWING,
     LEG_CUTTER,
     OFF_CUTTER,
-    OUTSWINGER;
+    OUTSWINGER,
+    YORKER,
+    BEAMER,
+    KNUCKLEBALL,
+    SLOWER_BALL;
 
     @Override
     public String toString() {
