@@ -19,7 +19,6 @@ class ScoreTest {
         .withWideDeliveries(4)
         .withWickets(15)
         .withValidDeliveries(67)
-        .withFacedByBatter(68)
         .withDots(7)
         .withSingles(8)
         .withTwos(9)
@@ -62,7 +61,6 @@ class ScoreTest {
             .withWideDeliveries(1)
             .withWickets(3)
             .withValidDeliveries(1)
-            .withFacedByBatter(2)
             .withDots(1)
             .withSingles(1)
             .withTwos(1)
@@ -82,7 +80,6 @@ class ScoreTest {
             .withWideDeliveries(1+4)
             .withWickets(3+15)
             .withValidDeliveries(1+67)
-            .withFacedByBatter(2+68)
             .withDots(1+7)
             .withSingles(1+8)
             .withTwos(1+9)
@@ -97,21 +94,21 @@ class ScoreTest {
 
     @Test
     void strikeRateIsBasedOnBatterRunsAndBatterFaces() {
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(8).withFacedByBatter(10).withSingles(5).withBatterRuns(5).build().battingStrikeRate(), is(Optional.of(50.0)));
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(8).withFacedByBatter(10).build().battingStrikeRate(), is(Optional.of(0.0)));
-        assertThat(score().withWides(10).withNoBalls(3).build().battingStrikeRate(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).withSingles(5).withBatterRuns(5).build().battingStrikeRate(), is(Optional.of(50.0)));
+        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).build().battingStrikeRate(), is(Optional.of(0.0)));
+        assertThat(score().withWides(10).build().battingStrikeRate(), is(Optional.empty()));
     }
 
     @Test
     void averageIsBasedOnBatterRunsAndWickets() {
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withFacedByBatter(11).withSingles(5).withBatterRuns(5).withWickets(2).build().battingAverage(), is(Optional.of(2.5)));
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withFacedByBatter(11).withSingles(5).withBatterRuns(5).withWickets(0).build().battingAverage(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(2).build().battingAverage(), is(Optional.of(2.5)));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().battingAverage(), is(Optional.empty()));
     }
 
     @Test
     public void bowlerStrikeRateIsBasedOnValidDeliveriesBowled() {
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withFacedByBatter(11).withSingles(1).withBatterRuns(1).withWickets(2).build().bowlingStrikeRate(), is(Optional.of(5.0)));
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withFacedByBatter(11).withSingles(5).withBatterRuns(5).withWickets(0).build().bowlingStrikeRate(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(1).withBatterRuns(1).withWickets(2).build().bowlingStrikeRate(), is(Optional.of(5.0)));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().bowlingStrikeRate(), is(Optional.empty()));
     }
 
     @Test
@@ -122,13 +119,13 @@ class ScoreTest {
 
     @Test
     void rpoIsTotalRunsByValidDeliveries() {
-        assertThat(score().withWides(1).withNoBalls(1).withLegByes(2).withValidDeliveries(9).withFacedByBatter(10)
+        assertThat(score().withWides(1).withNoBalls(1).withLegByes(2).withValidDeliveries(9)
             .withSingles(2).withBatterRuns(2).withWickets(2).build().runsPerOver().toString(), is("4.0"));
     }
 
     @Test
     public void bowlerEconomyRateExcludesFieldingExtras(){
-        assertThat(score().withWides(1).withNoBalls(1).withPenaltyRuns(1).withLegByes(2).withValidDeliveries(9).withFacedByBatter(10)
+        assertThat(score().withWides(1).withNoBalls(1).withPenaltyRuns(1).withLegByes(2).withValidDeliveries(9)
             .withSingles(2).withBatterRuns(2).withWickets(2).build().bowlerEconomyRate().toString(), is("2.6"));
     }
 
@@ -142,16 +139,16 @@ class ScoreTest {
 
     @Test
     public void cachedVersionsAreReturnedForCommonOnes() {
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withSingles(1).withBatterRuns(1).build(), is(sameInstance(SINGLE)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withDots(1).build(), is(sameInstance(DOT_BALL)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withBatterRuns(6).withSixes(1).build(), is(sameInstance(SIX)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withBatterRuns(4).withFours(1).build(), is(sameInstance(FOUR)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withThrees(1).withBatterRuns(3).build(), is(sameInstance(THREE)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withTwos(1).withBatterRuns(2).build(), is(sameInstance(TWO)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withSingles(1).withBatterRuns(1).build(), is(sameInstance(SINGLE)));
+        assertThat(score().withValidDeliveries(1).withSingles(1).withBatterRuns(1).build(), is(sameInstance(SINGLE)));
+        assertThat(score().withValidDeliveries(1).withDots(1).build(), is(sameInstance(DOT_BALL)));
+        assertThat(score().withValidDeliveries(1).withBatterRuns(6).withSixes(1).build(), is(sameInstance(SIX)));
+        assertThat(score().withValidDeliveries(1).withBatterRuns(4).withFours(1).build(), is(sameInstance(FOUR)));
+        assertThat(score().withValidDeliveries(1).withThrees(1).withBatterRuns(3).build(), is(sameInstance(THREE)));
+        assertThat(score().withValidDeliveries(1).withTwos(1).withBatterRuns(2).build(), is(sameInstance(TWO)));
+        assertThat(score().withValidDeliveries(1).withSingles(1).withBatterRuns(1).build(), is(sameInstance(SINGLE)));
         assertThat(score().withWides(1).withWideDeliveries(1).build(), is(sameInstance(WIDE)));
-        assertThat(score().withNoBalls(1).withFacedByBatter(1).build(), is(sameInstance(NO_BALL)));
-        assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withDots(1).withWickets(1).build(), is(sameInstance(WICKET)));
+        assertThat(score().withNoBalls(1).build(), is(sameInstance(NO_BALL)));
+        assertThat(score().withValidDeliveries(1).withDots(1).withWickets(1).build(), is(sameInstance(WICKET)));
         assertThat(score().build(), is(sameInstance(EMPTY)));
     }
 
@@ -187,8 +184,8 @@ class ScoreTest {
         assertThat(Score.parse("2w").get(), is(score().withWides(2).withWideDeliveries(1).build()));
         assertThat(Score.parse("W").get(), is(sameInstance(WICKET)));
         assertThat(Score.parse("5w").get(), is(score().withWides(5).withWideDeliveries(1).build()));
-        assertThat(Score.parse("5nb").get(), is(score().withFacedByBatter(1).withNoBalls(1).withBatterRuns(4).withFours(1).build()));
-        assertThat(Score.parse("7nb").get(), is(score().withFacedByBatter(1).withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
+        assertThat(Score.parse("5nb").get(), is(score().withNoBalls(1).withBatterRuns(4).withFours(1).build()));
+        assertThat(Score.parse("7nb").get(), is(score().withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
     }
 
     @Test

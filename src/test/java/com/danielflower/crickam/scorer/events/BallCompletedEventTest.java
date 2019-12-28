@@ -26,9 +26,9 @@ class BallCompletedEventTest {
         assertThat(crossedFor(Score.LEG_BYE), is(true));
         assertThat(crossedFor(Score.BYE), is(true));
         assertThat(crossedFor(Score.EMPTY), is(false));
-        assertThat(crossedFor(Score.score().withPenaltyRuns(1).withValidDeliveries(1).withFacedByBatter(1).build()), is(false));
+        assertThat(crossedFor(Score.score().withPenaltyRuns(1).withValidDeliveries(1).build()), is(false));
         assertThat(crossedFor(Score.score().withWides(5).withWideDeliveries(1).build()), is(false));
-        assertThat(crossedFor(Score.score().withNoBalls(1).withBatterRuns(4).withFacedByBatter(1).build()), is(false));
+        assertThat(crossedFor(Score.score().withNoBalls(1).withBatterRuns(4).build()), is(false));
         assertThat(crossedFor(Score.parse("2w").get()), is(true));
     }
 
