@@ -95,7 +95,7 @@ public class AsciiScorecardRenderer {
             for (BowlerInnings bi : innings.bowlerInningsList()) {
                 Score s = bi.score();
                 renderLine(writer, bowlColWidths, bi.bowler().firstInitialWithSurname(), bi.overs().size(), bi.maidens(),
-                    s.bowlerRuns(), bi.wickets(), s.bowlerEconomyRate(), s.dots(), s.fours(), s.sixes(), s.wides(), s.noBalls());
+                    s.bowlerRuns(), bi.wickets(), s.bowlerEconomyRate(), s.dots(), s.fours(), s.sixes(), s.wideDeliveries(), s.noBalls());
             }
 
         }

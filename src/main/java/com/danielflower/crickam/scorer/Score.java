@@ -17,60 +17,61 @@ public final class Score {
     /**
      * No balls delivered, with no wickets or runs scored.
      */
-    public static final Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    public static final Score EMPTY = new Score(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     /**
      * No runs scored from a valid delivery.
      */
-    public static final Score DOT_BALL = new Score(0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score DOT_BALL = new Score(0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0);
     /**
      * One run scored from the bat off of a valid delivery.
      */
-    public static final Score SINGLE = new Score(1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
+    public static final Score SINGLE = new Score(1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0);
     /**
      * Two runs scored from the bat off of a valid delivery.
      */
-    public static final Score TWO = new Score(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0);
+    public static final Score TWO = new Score(2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0);
     /**
      * Three runs scored from the bat off of a valid delivery.
      */
-    public static final Score THREE = new Score(3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0);
+    public static final Score THREE = new Score(3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0);
 
     /**
      * Four runs scored by hitting the ball to the boundary from a valid delivery.
      * <p>Note that this is different from 4 runs run by the batters without it going to the boundary (which would have {@link #batterRuns} being 4 but {@link #fours()} being 0).</p>
      */
-    public static final Score FOUR = new Score(4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0);
+    public static final Score FOUR = new Score(4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0);
     /**
      * Six runs scored by hitting the ball over the boundary on the full from a valid delivery.
      */
-    public static final Score SIX = new Score(6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0);
+    public static final Score SIX = new Score(6, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0);
     /**
      * A wide (with no extra runs or wicket taken).
      */
-    public static final Score WIDE = new Score(0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score WIDE = new Score(0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
     /**
      * A no-ball (with no extra runs or wicket taken).
      */
-    public static final Score NO_BALL = new Score(0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
+    public static final Score NO_BALL = new Score(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);
 
     /**
      * A single bye of a valid delivery.
      */
-    public static final Score BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score BYE = new Score(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
     /**
      * A single leg bye of a valid delivery.
      */
-    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score LEG_BYE = new Score(0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);
 
     /**
      * A wicket taken off a valid delivery that is credited to the bowler.
      */
-    public static final Score WICKET = new Score(0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0);
+    public static final Score WICKET = new Score(0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0);
 
     private final int batterRuns;
     private final int facedByBatter;
     private final int wides;
+    private final int wideDeliveries;
     private final int noBalls;
     private final int legByes;
     private final int byes;
@@ -85,8 +86,9 @@ public final class Score {
     private final int validDeliveries;
     private final int invalidDeliveries;
 
-    private Score(int batterRuns, int facedByBatter, int wides, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int validDeliveries, int invalidDeliveries) {
+    private Score(int batterRuns, int facedByBatter, int wides, int wideDeliveries, int noBalls, int legByes, int byes, int penaltyRuns, int wickets, int dots, int singles, int twos, int threes, int fours, int sixes, int validDeliveries, int invalidDeliveries) {
         this.facedByBatter = facedByBatter;
+        this.wideDeliveries = wideDeliveries;
         if ((wides > 0 || noBalls > 0) && invalidDeliveries == 0) {
             throw new IllegalStateException("When wides and/or no-balls are set, the number of invalid deliveries must be set also with the withInvalidDeliveries(int) method.");
         }
@@ -95,6 +97,9 @@ public final class Score {
         }
         if (facedByBatter < validDeliveries) {
             throw new IllegalStateException("The number of deliveries faced by the batter should be at least at many as the valid delivery count");
+        }
+        if (wideDeliveries > wides) {
+            throw new IllegalStateException("There cannot be more wide deliveries than wide runs");
         }
         this.batterRuns = batterRuns;
         this.wides = wides;
@@ -152,10 +157,20 @@ public final class Score {
 
     /**
      * @return The number of runs scored from wides (e.g. a single wide delivery that goes to the boundary would
-     * have a value of 4).
+     * have a value of 5).
+     * @see #wideDeliveries()
      */
     public int wides() {
         return wides;
+    }
+
+    /**
+     * @return The number of deliveries which were bowled wide (e.g. a single wide delivery that goes to the boundary would
+     * have a value of 5).
+     * @see #wides()
+     */
+    public int wideDeliveries() {
+        return wideDeliveries;
     }
 
     /**
@@ -326,6 +341,7 @@ public final class Score {
             .withBatterRuns(batterRuns + other.batterRuns)
             .withFacedByBatter(facedByBatter + other.facedByBatter)
             .withWides(wides + other.wides)
+            .withWideDeliveries(wideDeliveries + other.wideDeliveries)
             .withNoBalls(noBalls + other.noBalls)
             .withLegByes(legByes + other.legByes)
             .withByes(byes + other.byes)
@@ -354,6 +370,7 @@ public final class Score {
             .withBatterRuns(batterRuns - other.batterRuns)
             .withFacedByBatter(facedByBatter - other.facedByBatter)
             .withWides(wides - other.wides)
+            .withWideDeliveries(wideDeliveries - other.wideDeliveries)
             .withNoBalls(noBalls - other.noBalls)
             .withLegByes(legByes - other.legByes)
             .withByes(byes - other.byes)
@@ -370,51 +387,13 @@ public final class Score {
             .build();
     }
 
-    /**
-     * Checks for value equality.
-     *
-     * @param o The object to compare
-     * @return Returns true if every field of the two scores match.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Score that = (Score) o;
-
-        if (validDeliveries != that.validDeliveries) return false;
-        if (invalidDeliveries != that.invalidDeliveries) return false;
-        if (facedByBatter != that.facedByBatter) return false;
-        if (byes != that.byes) return false;
-        if (fours != that.fours) return false;
-        if (legByes != that.legByes) return false;
-        if (noBalls != that.noBalls) return false;
-        if (penaltyRuns != that.penaltyRuns) return false;
-        if (batterRuns != that.batterRuns) return false;
-        if (dots != that.dots) return false;
-        if (singles != that.singles) return false;
-        if (sixes != that.sixes) return false;
-        if (threes != that.threes) return false;
-        if (twos != that.twos) return false;
-        if (wickets != that.wickets) return false;
-        if (wides != that.wides) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(batterRuns, facedByBatter, wides, noBalls, legByes, byes, penaltyRuns, wickets,
-            dots, singles, twos, threes, fours, sixes, validDeliveries, invalidDeliveries);
-    }
-
     @Override
     public String toString() {
         return "Score{" +
             "batterRuns=" + batterRuns +
             ", facedByBatter=" + facedByBatter +
             ", wides=" + wides +
+            ", wideDeliveries=" + wideDeliveries +
             ", noBalls=" + noBalls +
             ", legByes=" + legByes +
             ", byes=" + byes +
@@ -477,7 +456,7 @@ public final class Score {
                     break;
                 case "w":
                     batterRuns = 0;
-                    score.withWides(runs).withInvalidDeliveries(1).withFacedByBatter(0);
+                    score.withWides(runs).withInvalidDeliveries(1).withWideDeliveries(1).withFacedByBatter(0);
                     dotBallIfNoRuns = false;
                     break;
                 case "nb":
@@ -508,6 +487,35 @@ public final class Score {
             .build());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Score score = (Score) o;
+        return batterRuns == score.batterRuns &&
+            facedByBatter == score.facedByBatter &&
+            wides == score.wides &&
+            wideDeliveries == score.wideDeliveries &&
+            noBalls == score.noBalls &&
+            legByes == score.legByes &&
+            byes == score.byes &&
+            penaltyRuns == score.penaltyRuns &&
+            wickets == score.wickets &&
+            dots == score.dots &&
+            singles == score.singles &&
+            twos == score.twos &&
+            threes == score.threes &&
+            fours == score.fours &&
+            sixes == score.sixes &&
+            validDeliveries == score.validDeliveries &&
+            invalidDeliveries == score.invalidDeliveries;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(batterRuns, facedByBatter, wides, wideDeliveries, noBalls, legByes, byes, penaltyRuns, wickets, dots, singles, twos, threes, fours, sixes, validDeliveries, invalidDeliveries);
+    }
+
     /**
      * A builder to create a {@link Score} object.
      * <p>The runs scored and the number of valid or invalid deliveries need to be set on almost all scores. For
@@ -532,6 +540,7 @@ public final class Score {
         private int dots = 0;
         private int invalidDeliveries = 0;
         private int facedByBatter = 0;
+        private int wideDeliveries = 0;
 
         /**
          * @param batterRuns The number of runs scored off the bat. You should also call one of {@link #withSingles(int)},
@@ -546,14 +555,24 @@ public final class Score {
 
         /**
          * The number of runs scored from wides. Note this is a separate from the number of deliveries that were bowled
-         * that were wides, which needs to also be set with {@link #withInvalidDeliveries(int)}.
+         * that were wides, which needs to also be set with both {@link #withWideDeliveries(int)}.
          *
          * @param wides The number of runs scored from wides.
          * @return This builder
-         * @see #withInvalidDeliveries(int)
+         * @see #withWideDeliveries(int)
          */
         public Builder withWides(int wides) {
             this.wides = wides;
+            return this;
+        }
+
+        /**
+         * @param wideDeliveries The number of deliveries that were bowled wide
+         * @return This builder
+         * @see #withWides(int)
+         */
+        public Builder withWideDeliveries(int wideDeliveries) {
+            this.wideDeliveries = wideDeliveries;
             return this;
         }
 
@@ -734,7 +753,8 @@ public final class Score {
                 .withPenaltyRuns(score.penaltyRuns())
                 .withSixes(score.sixes())
                 .withWickets(score.wickets())
-                .withWides(score.wides());
+                .withWides(score.wides())
+                .withWideDeliveries(score.wideDeliveries());
         }
 
         private static final Score[] COMMON = new Score[]{
@@ -742,7 +762,7 @@ public final class Score {
         };
 
         public Score build() {
-            Score score = new Score(batterRuns, facedByBatter, wides, noBalls, legByes, byes, penaltyRuns, wickets,
+            Score score = new Score(batterRuns, facedByBatter, wides, wideDeliveries, noBalls, legByes, byes, penaltyRuns, wickets,
                 dots, singles, twos, threes, fours, sixes, validDeliveries, invalidDeliveries);
             for (Score cached : COMMON) {
                 if (score.equals(cached)) {

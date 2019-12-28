@@ -16,6 +16,7 @@ class ScoreTest {
         .withNoBalls(3)
         .withPenaltyRuns(4)
         .withWides(5)
+        .withWideDeliveries(4)
         .withWickets(15)
         .withValidDeliveries(67)
         .withFacedByBatter(68)
@@ -59,6 +60,7 @@ class ScoreTest {
             .withNoBalls(1)
             .withPenaltyRuns(1)
             .withWides(1)
+            .withWideDeliveries(1)
             .withWickets(3)
             .withValidDeliveries(1)
             .withInvalidDeliveries(2)
@@ -79,6 +81,7 @@ class ScoreTest {
             .withNoBalls(1+3)
             .withPenaltyRuns(1+4)
             .withWides(1+5)
+            .withWideDeliveries(1+4)
             .withWickets(3+15)
             .withValidDeliveries(1+67)
             .withFacedByBatter(2+68)
@@ -150,7 +153,7 @@ class ScoreTest {
         assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withThrees(1).withBatterRuns(3).build(), is(sameInstance(THREE)));
         assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withTwos(1).withBatterRuns(2).build(), is(sameInstance(TWO)));
         assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withSingles(1).withBatterRuns(1).build(), is(sameInstance(SINGLE)));
-        assertThat(score().withWides(1).withInvalidDeliveries(1).build(), is(sameInstance(WIDE)));
+        assertThat(score().withWides(1).withWideDeliveries(1).withInvalidDeliveries(1).build(), is(sameInstance(WIDE)));
         assertThat(score().withNoBalls(1).withFacedByBatter(1).withInvalidDeliveries(1).build(), is(sameInstance(NO_BALL)));
         assertThat(score().withValidDeliveries(1).withFacedByBatter(1).withDots(1).withWickets(1).build(), is(sameInstance(WICKET)));
         assertThat(score().build(), is(sameInstance(EMPTY)));
@@ -186,9 +189,9 @@ class ScoreTest {
         assertThat(Score.parse("1lb").get(), is(sameInstance(LEG_BYE)));
         assertThat(Score.parse("1nb").get(), is(sameInstance(NO_BALL)));
         assertThat(Score.parse("1w").get(), is(sameInstance(WIDE)));
-        assertThat(Score.parse("2w").get(), is(score().withInvalidDeliveries(1).withWides(2).build()));
+        assertThat(Score.parse("2w").get(), is(score().withInvalidDeliveries(1).withWides(2).withWideDeliveries(1).build()));
         assertThat(Score.parse("W").get(), is(sameInstance(WICKET)));
-        assertThat(Score.parse("5w").get(), is(score().withInvalidDeliveries(1).withWides(5).build()));
+        assertThat(Score.parse("5w").get(), is(score().withInvalidDeliveries(1).withWides(5).withWideDeliveries(1).build()));
         assertThat(Score.parse("5nb").get(), is(score().withInvalidDeliveries(1).withFacedByBatter(1).withNoBalls(1).withBatterRuns(4).withFours(1).build()));
         assertThat(Score.parse("7nb").get(), is(score().withInvalidDeliveries(1).withFacedByBatter(1).withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
     }
