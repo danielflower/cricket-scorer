@@ -5,7 +5,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A team with a squad of players.
+ * A cricket team
  * <p>Note that when a team plays in a match, the actual batting order is specified with the {@link LineUp} class.</p>
  * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
  */
@@ -13,7 +13,6 @@ public final class Team {
 	private final String id;
 	private final String shortName;
 	private final TeamLevel level;
-	private final ImmutableList<Player> squad;
 	private final String name;
 	private final String teamColour;
 
@@ -21,19 +20,15 @@ public final class Team {
         return level;
     }
 
-    public ImmutableList<Player> squad() {
-        return squad;
-    }
     public String name() {
         return name;
     }
 
-	private Team(String id, String name, String shortName, ImmutableList<Player> squad, TeamLevel level, String teamColour) {
+	private Team(String id, String name, String shortName, TeamLevel level, String teamColour) {
         this.id = requireNonNull(id);
         this.name = requireNonNull(name);
         this.shortName = requireNonNull(shortName);
         this.level = requireNonNull(level);
-        this.squad = requireNonNull(squad);
 		this.teamColour = teamColour;
     }
 
@@ -77,7 +72,6 @@ public final class Team {
         private String id;
         private String name;
         private String shortName;
-        private ImmutableList<Player> players;
         private TeamLevel level;
         private String teamColour;
 
@@ -100,11 +94,6 @@ public final class Team {
             return this;
         }
 
-        public Builder withSquad(ImmutableList<Player> players) {
-            this.players = players;
-            return this;
-        }
-
         public Builder withLevel(TeamLevel level) {
             this.level = level;
             return this;
@@ -116,7 +105,7 @@ public final class Team {
         }
 
         public Team build() {
-            return new Team(id, name, shortName, players, level, teamColour);
+            return new Team(id, name, shortName, level, teamColour);
         }
     }
 }

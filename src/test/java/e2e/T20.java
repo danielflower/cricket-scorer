@@ -41,13 +41,7 @@ public class T20 {
                 .withShortName("NZL")
                 .withName("New Zealand")
                 .withLevel(TeamLevel.International)
-                .withSquad(ImmutableList.of(
-                    TODD_ASTLE, TOM_BRUCE, LOCKIE_FERGUSON, SCOTT_KUGGELEIJN, COLIN_MUNRO, AJAZ_PATEL, HAMISH_RUTHERFORD,
-                    ISH_SODHI, ROSS_TAYLOR, BJ_WATLING, TRENT_BOULT, MARK_CHAPMAN, MARTIN_GUPTILL, TOM_LATHAM,
-                    JAMES_NEESHAM, SETH_RANCE, MITCH_SANTNER, WILLIAM_SOMERVILLE, BLAIR_TICKNER, KANE_WILLIAMSON,
-                    DOUG_BRACEWELL, COLIN_DE_GRANDHOMME, MATT_HENRY, DARYL_MITCHELL, HENRY_NICHOLLS, JEET_RAVAL,
-                    TIM_SEIFERT, TIM_SOUTHEE, NEIL_WAGNER, GEORGE_WORKER
-                )).build())
+                .build())
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCH_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
             .withCaptain(TIM_SOUTHEE)
@@ -61,11 +55,7 @@ public class T20 {
                 .withShortName("ENG")
                 .withName("England")
                 .withLevel(TeamLevel.International)
-                .withSquad(ImmutableList.of(
-                    ALI, ANDERSON, ARCHER, BAIRSTOW, BANTON, BILLINGS, BROAD, BROWN, BURNS, BUTTLER, CRAWLEY, SAM_CURRAN,
-                    TOM_CURRAN, DENLY, GREGORY, JORDAN, LEACH, MAHMOOD, MALAN, MORGAN, OVERTON, PARKINSON, POPE, RASHID,
-                    ROOT, ROY, SIBLEY, STOKES, VINCE, WOAKES
-                )).build())
+                .build())
             .withBattingOrder(ImmutableList.of(
                 BANTON, MALAN, VINCE, MORGAN, BILLINGS, SAM_CURRAN, GREGORY, TOM_CURRAN, MAHMOOD, BROWN, PARKINSON
             ))

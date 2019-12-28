@@ -48,14 +48,7 @@ public class NewZealand {
             .withTeamColour("#000000")
             .withShortName("NZL")
             .withName("New Zealand")
-            .withLevel(TeamLevel.International)
-            .withSquad(ImmutableList.of(
-                TODD_ASTLE, TOM_BRUCE, LOCKIE_FERGUSON, SCOTT_KUGGELEIJN, COLIN_MUNRO, AJAZ_PATEL, HAMISH_RUTHERFORD,
-                ISH_SODHI, ROSS_TAYLOR, BJ_WATLING, TRENT_BOULT, MARK_CHAPMAN, MARTIN_GUPTILL, TOM_LATHAM,
-                JAMES_NEESHAM, SETH_RANCE, MITCH_SANTNER, WILLIAM_SOMERVILLE, BLAIR_TICKNER, KANE_WILLIAMSON,
-                DOUG_BRACEWELL, COLIN_DE_GRANDHOMME, MATT_HENRY, DARYL_MITCHELL, HENRY_NICHOLLS, JEET_RAVAL,
-                TIM_SEIFERT, TIM_SOUTHEE, NEIL_WAGNER, GEORGE_WORKER
-            ));
+            .withLevel(TeamLevel.International);
     }
 
     public static LineUp.Builder t20LineUp() {

@@ -1,6 +1,5 @@
 package com.danielflower.crickam.scorer.data;
 
-import com.danielflower.crickam.scorer.ImmutableList;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 import com.danielflower.crickam.scorer.TeamLevel;
@@ -49,11 +48,6 @@ public class England {
             .withTeamColour("#FFFFFF")
             .withShortName("ENG")
             .withName("England")
-            .withLevel(TeamLevel.International)
-            .withSquad(ImmutableList.of(
-                ALI, ANDERSON, ARCHER, BAIRSTOW, BANTON, BILLINGS, BROAD, BROWN, BURNS, BUTTLER, CRAWLEY, SAM_CURRAN,
-                TOM_CURRAN, DENLY, GREGORY, JORDAN, LEACH, MAHMOOD, MALAN, MORGAN, OVERTON, PARKINSON, POPE, RASHID,
-                ROOT, ROY, SIBLEY, STOKES, VINCE, WOAKES
-            ));
+            .withLevel(TeamLevel.International);
     }
 }

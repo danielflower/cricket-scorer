@@ -47,14 +47,7 @@ public class Australia {
             .withTeamColour("#FF0000")
             .withShortName("AUS")
             .withName("Australia")
-            .withLevel(TeamLevel.International)
-            .withSquad(ImmutableList.of(
-                SEAN_ABBOT, JASON_BEHRENDORFF, PAT_CUMMINS, MARCUS_HARRIS, USMAN_KHAWAJA, BEN_MC_DERMOTT, TIM_PAINE,
-                PETER_SIDDLE, MITCHELL_STARC, MATTHEW_WADE, ASHTON_AGAR, JOE_BURNS, AARON_FINCH, JOSH_HAZLEWOOD,
-                MARNUS_LABUSCHAGNE, MITCHELL_MARSH, JAMES_PATTINSON, STEVEN_SMITH, MARCUS_STOINIS, DAVID_WARNER,
-                CAMERON_BANCROFT, ALEX_CAREY, PETER_HANDSCOMB, TRAVIS_HEAD, NATHON_LYON, GLENN_MAXWELL, KANE_RICHARDSON,
-                BILLY_STANLAKE, ASHTON_TURNER, ADAM_ZAMPA
-            ));
+            .withLevel(TeamLevel.International);
     }
 
     public static LineUp.Builder t20LineUp() {

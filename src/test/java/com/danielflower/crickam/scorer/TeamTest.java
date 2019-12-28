@@ -21,10 +21,7 @@ class TeamTest {
             .withLevel(TeamLevel.International)
             .withName("New Zealand")
             .withShortName("NZL")
-            .withTeamColour("#000000")
-            .withSquad(ImmutableList.of(
-                PlayerTest.aPlayer().build()
-            ));
+            .withTeamColour("#000000");
     }
 
 }
