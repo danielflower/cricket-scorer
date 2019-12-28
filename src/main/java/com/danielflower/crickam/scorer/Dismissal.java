@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 import java.util.Optional;
 
@@ -51,9 +53,10 @@ public final class Dismissal {
     }
 
     /**
+     * @param wicketKeeper If specified, the wicket keeper will be marked with a &quot;†&quot; symbol if this is caught
      * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
      */
-    public String toScorecardString() {
+    public String toScorecardString(@Nullable Player wicketKeeper) {
         String bowler = this.bowler == null ? null : this.bowler().familyName();
         String fielder = this.executor == null ? null : this.executor.familyName();
         switch (type) {
@@ -61,7 +64,8 @@ public final class Dismissal {
                 return "b " + bowler;
             case CAUGHT:
                 String catcher = (this.executor == this.bowler()) ? "&" : fielder;
-                return "c " + catcher + " b " + bowler;
+                String prefix = this.executor == wicketKeeper ? "†" : "";
+                return "c " + prefix + catcher + " b " + bowler;
             case HIT_WICKET:
                 return "hw " + bowler;
             case LEG_BEFORE_WICKET:
@@ -71,12 +75,12 @@ public final class Dismissal {
             case STUMPED:
                 return "st " + fielder + " b " + bowler;
         }
-        return type.toString();
+        return type.toString().toLowerCase().replace('_', ' ');
     }
 
     @Override
     public String toString() {
-        return toScorecardString();
+        return toScorecardString(null);
     }
 
     @Override

@@ -47,6 +47,7 @@ public final class BowlerInnings {
     /**
      * The number of wickets credited to the bowler, which may differ from the wickets reported by {@link #score()}
      * which includes dismissals such as run-outs
+     *
      * @return The number of wickets credited to the bowler
      */
     public int wickets() {
@@ -107,6 +108,20 @@ public final class BowlerInnings {
         }
         newOvers = newOvers.add(toAddOrReplace);
         return newOvers;
+    }
+
+    /**
+     * @return The number of overs bowled, for example &quot;2&quot; if 2 complete overs have been bowled;
+     * or &quot;2.3&quot; if 2 overs and 3 balls have been bowled.
+     */
+    public String overDotBallString() {
+        Over over = overs.last().get();
+        int count = overs.size();
+        if (over.isComplete()) {
+            return String.valueOf(count);
+        } else {
+            return (count - 1) + "." + over.validDeliveries();
+        }
     }
 
     @Override

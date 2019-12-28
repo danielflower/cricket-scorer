@@ -152,6 +152,9 @@ public final class Innings {
             nonStriker = null;
         } else if (event instanceof BatterInningsStartingEvent) {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
+            if (e.batter() == null && yetToBat.isEmpty()) {
+                throw new IllegalStateException("A new batter innings was declared without a specific batter, and there are no batters left in the line up");
+            }
             Player batter = e.batter() != null ? e.batter() : yetToBat.get(0);
             yetToBat = yetToBat.stream().filter(p -> !p.equals(batter)).collect(toImmutableList());
             BatterInnings newBatterInnings = BatterInnings.newInnings(batter, batters.size());

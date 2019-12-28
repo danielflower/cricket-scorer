@@ -130,6 +130,15 @@ public final class Player {
             return this;
         }
 
+        /**
+         * @param handedness the hand that this person predominantly bats and bowls with.
+         * @return This builder
+         */
+        public Builder withHandedness(Handedness handedness) {
+            return withBattingHandedness(handedness)
+                .withBowlingHandedness(handedness);
+        }
+
         public Builder withBattingHandedness(Handedness battingHandedness) {
             this.battingHandedness = battingHandedness;
             return this;

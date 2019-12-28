@@ -34,4 +34,19 @@ public class Crictils {
             .atZone(timeZone.toZoneId())
             .toInstant();
     }
+
+    /**
+     * For an input of &quot;1&quot; this returns the string &quot;1st&quot;
+     * @param number The number
+     * @return The given number with its suffix
+     */
+    public static String withOrdinal(int number) {
+        int last = number % 10;
+        String suffix = (last == 1) ? "st"
+            : (last == 2) ? "nd"
+            : (last == 3) ? "rd"
+            : "th";
+        return number + suffix;
+    }
+
 }

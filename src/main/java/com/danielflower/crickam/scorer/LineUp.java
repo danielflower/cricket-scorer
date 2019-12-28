@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -88,7 +89,9 @@ public final class LineUp {
     public Optional<Player> findPlayer(String name) {
         String[] bits = name.trim().split("\\W+");
         String familyName = bits[bits.length - 1];
-        List<Player> matchingSurnames = players.stream().filter(p -> p.familyName().equalsIgnoreCase(familyName)).collect(Collectors.toList());
+        List<Player> matchingSurnames = players.stream().filter(p ->
+            Arrays.equals(p.familyName().split("\\W+"), bits) || p.familyName().equalsIgnoreCase(familyName)
+        ).collect(Collectors.toList());
         if (matchingSurnames.isEmpty()) {
             return Optional.empty();
         } else if (matchingSurnames.size() == 1) {
