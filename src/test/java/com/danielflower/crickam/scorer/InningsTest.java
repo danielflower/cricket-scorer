@@ -31,6 +31,7 @@ class InningsTest {
     private final Innings firstInnings =
         MatchControl.newMatch(MatchTest.aMatch().withOversPerInnings(50).build())
             .onEvent(inningsStarting().withBattingTeam(nz).withBowlingTeam(aus).withOpeners(nz.battingOrder().subList(0, 1)))
+            .match()
             .currentInnings().get();
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);

@@ -5,8 +5,8 @@ import com.danielflower.crickam.scorer.events.MatchEventBuilder;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 
 public final class MatchControl {
 
@@ -34,32 +34,31 @@ public final class MatchControl {
         }
     }
 
-    private final List<EventResult> events = new ArrayList<>();
+    private final ImmutableList<EventResult> events;
 
-    private MatchControl(MatchStartingEvent event, Match match) {
-        events.add(new EventResult(event, match));
+    private MatchControl(ImmutableList<EventResult> events) {
+        this.events = events;
     }
 
     public static MatchControl newMatch(MatchStartingEvent event) {
-        return new MatchControl(event, Match.newMatch(event));
+        return new MatchControl(ImmutableList.of(new EventResult(event, Match.newMatch(event))));
     }
 
-    public Match onEvent(MatchEventBuilder<?> eventBuilder) {
+    public MatchControl onEvent(MatchEventBuilder<?> eventBuilder) {
         return onEvent(eventBuilder.build());
     }
 
-    public Match onEvent(MatchEvent event) {
-        Match match = current().onEvent(event);
-        events.add(new EventResult(event, match));
-        return match;
+    public MatchControl onEvent(MatchEvent event) {
+        Match match = match().onEvent(event);
+        return new MatchControl(events.add(new EventResult(event, match)));
     }
 
-    public Match current() {
+    public Match match() {
         return events.get(events.size() - 1).match();
     }
 
-    public List<EventResult> events() {
-        return List.copyOf(events);
+    public ImmutableList<EventResult> events() {
+        return events;
     }
 
     /**
@@ -72,7 +71,10 @@ public final class MatchControl {
      * @return An instant based on the current match date and local time zone
      */
     public Instant localTime(int hour, int minute, int second) {
-        ZoneId zoneId = current().timeZone()
+        requireInRange("hour", hour, 0, 23);
+        requireInRange("minute", minute, 0, 59);
+        requireInRange("second", second, 0, 59);
+        ZoneId zoneId = match().timeZone()
             .orElseThrow(() -> new UnsupportedOperationException("No time zone was set on the match (or on the venue) so local times cannot be calculated"))
             .toZoneId();
         for (int i = events.size() - 1; i >= 0; i--) {
@@ -80,7 +82,7 @@ public final class MatchControl {
             if (er.event().time().isPresent()) {
                 Instant lastKnownTime = er.event().time().get();
                 LocalDate date = LocalDate.ofInstant(lastKnownTime, zoneId);
-                LocalTime time = LocalTime.of(hour, minute);
+                LocalTime time = LocalTime.of(hour, minute, second);
                 LocalDateTime dateTime = LocalDateTime.of(date, time);
                 return dateTime.atZone(zoneId).toInstant();
             }

@@ -4,6 +4,7 @@ import com.danielflower.crickam.scorer.ImmutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,16 @@ class ImmutableListTest {
 
         assertThat(ImmutableList.of(1).removeLast().size(), is(0));
         Assertions.assertThrows(IllegalStateException.class, () -> new ImmutableList<Integer>().removeLast());
+    }
+
+    @Test
+    public void canAddWhileIterating() {
+        ImmutableList<Integer> list = ImmutableList.of(1,2,3);
+        Iterator<Integer> iterator = list.iterator();
+        assertThat(iterator.next(), is(1));
+        ImmutableList<Integer> list2 = list.add(4);
+        assertThat(iterator.next(), is(2));
+        assertThat(list2.iterator().next(), is(1));
     }
 
 }

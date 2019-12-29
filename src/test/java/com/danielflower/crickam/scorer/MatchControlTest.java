@@ -38,29 +38,31 @@ class MatchControlTest {
             .withOversPerInnings(50)
             .withTeams(ImmutableList.of(nz, aus))
             .build()
-    );
-
-    private Match match = control.onEvent(inningsStarting()
+    ).onEvent(inningsStarting()
         .withBattingTeam(nz)
         .withBowlingTeam(aus)
         .withOpeners(nz.battingOrder().get(0), nz.battingOrder().get(1))
         .withTime(Instant.now())
     );
 
+    private Match match() {
+        return control.match();
+    }
+
     @Test
     public void eventsAreAdded() {
-        assertThat(control.current(), sameInstance(match));
-        assertThat(match.oversPerInnings(), is(OptionalInt.of(50)));
-        assertThat(match.ballsPerInnings(), is(OptionalInt.of(300)));
-        assertThat(match.currentInnings().isPresent(), is(true));
+        
+        assertThat(match().oversPerInnings(), is(OptionalInt.of(50)));
+        assertThat(match().ballsPerInnings(), is(OptionalInt.of(300)));
+        assertThat(match().currentInnings().isPresent(), is(true));
 
-        Innings innings = match.currentInnings().get();
+        Innings innings = match().currentInnings().get();
         assertThat(innings.inningsNumber(), is(1));
         assertThat(innings.yetToBat(), equalTo(nz.battingOrder().subList(2, 10)));
 
-        match = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()));
+        control = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()));
 
-        Over over = match.currentInnings().get().currentOver().get();
+        Over over = match().currentInnings().get().currentOver().get();
         assertThat(over.balls().size(), is(0));
         assertThat(over.bowler(), sameInstance(aus.battingOrder().last().get()));
         assertThat(over.numberInInnings(), is(0));
@@ -79,38 +81,38 @@ class MatchControlTest {
         Player bowler1 = aus.battingOrder().get(10);
         Player bowler2 = aus.battingOrder().get(9);
 
-        control.onEvent(overStarting().withBowler(bowler1));
-        control.onEvent(ballCompleted("1lb"));
-        control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("4"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
+        control = control.onEvent(overStarting().withBowler(bowler1));
+        control = control.onEvent(ballCompleted("1lb"));
+        control = control.onEvent(ballCompleted("1"));
+        control = control.onEvent(ballCompleted("0"));
+        control = control.onEvent(ballCompleted("4"));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
 
         assertThat(curInnings().currentStriker(), is(Optional.empty()));
         assertThat(curInnings().currentNonStriker().get(), is(withBatter(HENRY_NICHOLLS)));
 
-        control.onEvent(batterInningsStarting());
+        control = control.onEvent(batterInningsStarting());
         assertThat(curInnings().currentStriker().get(), is(withBatter(KANE_WILLIAMSON)));
         assertThat(curInnings().currentNonStriker().get(), is(withBatter(HENRY_NICHOLLS)));
-        control.onEvent(ballCompleted("0"));
-        control.onEvent(overCompleted());
+        control = control.onEvent(ballCompleted("0"));
+        control = control.onEvent(overCompleted());
 
         assertThat(curInnings().currentStriker().get(), is(withBatter(KANE_WILLIAMSON)));
         assertThat(curInnings().currentNonStriker().get(), is(withBatter(HENRY_NICHOLLS)));
 
-        control.onEvent(overStarting().withBowler(bowler2));
+        control = control.onEvent(overStarting().withBowler(bowler2));
         assertThat(curInnings().currentStriker().get(), is(withBatter(HENRY_NICHOLLS)));
         assertThat(curInnings().currentNonStriker().get(), is(withBatter(KANE_WILLIAMSON)));
 
-        control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("1"));
-        control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
-        control.onEvent(batterInningsStarting());
-        control.onEvent(ballCompleted("0"));
-        control.onEvent(ballCompleted("4"));
-        control.onEvent(ballCompleted("1w"));
-        control.onEvent(ballCompleted("0"));
-        control.onEvent(overCompleted());
+        control = control.onEvent(ballCompleted("1"));
+        control = control.onEvent(ballCompleted("1"));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
+        control = control.onEvent(batterInningsStarting());
+        control = control.onEvent(ballCompleted("0"));
+        control = control.onEvent(ballCompleted("4"));
+        control = control.onEvent(ballCompleted("1w"));
+        control = control.onEvent(ballCompleted("0"));
+        control = control.onEvent(overCompleted());
 
 
         System.out.println("innings.currentStriker() = " + curInnings().currentStriker());
@@ -120,7 +122,7 @@ class MatchControlTest {
 
     @NotNull
     private Innings curInnings() {
-        return control.current().currentInnings().get();
+        return control.match().currentInnings().get();
     }
 
     @Test
@@ -133,18 +135,18 @@ class MatchControlTest {
                 .withTimeZone(nz)
                 .build()
         );
-        control.onEvent(inningsStarting().withBattingTeam(this.nz));
-        control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()).withBallsInOver(100));
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz));
+        control = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()).withBallsInOver(100));
 
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-26T22:30:00Z"));
         assertThat(control.localTime(14, 30, 0).toString(), is("2019-09-27T02:30:00Z"));
 
         // go to the next day
-        control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 28, 10, 0)));
+        control = control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 28, 10, 0)));
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-27T22:30:00Z"));
 
         // go to the next day, which happens to be the day after daylight savings ended
-        control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 29, 10, 0)));
+        control = control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 29, 10, 0)));
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-28T21:30:00Z"));
     }
 

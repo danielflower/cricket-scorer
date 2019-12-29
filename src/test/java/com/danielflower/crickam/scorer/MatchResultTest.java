@@ -32,7 +32,7 @@ class MatchResultTest {
             .withNumberOfInningsPerTeam(1)
             .withOversPerInnings(1)
             .withBallsPerInnings(3)
-            .build()).current();
+            .build()).match();
         assertThat(MatchResult.fromMatch(match).toString(), is("No result"));
         match = match.onEvent(inningsStarting().withBattingTeam(aus));
 
@@ -93,7 +93,7 @@ class MatchResultTest {
             .withTeams(ImmutableList.of(aus, nz))
             .withMatchType(MatchType.TEST)
             .withNumberOfInningsPerTeam(2)
-            .build()).current();
+            .build()).match();
         assertThat(MatchResult.fromMatch(match).toString(), is("No result"));
         match = match.onEvent(inningsStarting().withBattingTeam(aus))
             .onEvent(overStarting().withBowler(nzBowler))
@@ -184,7 +184,7 @@ class MatchResultTest {
             .withTeams(ImmutableList.of(aus, nz))
             .withMatchType(MatchType.TEST)
             .withNumberOfInningsPerTeam(2)
-            .build()).current()
+            .build()).match()
             .onEvent(inningsStarting().withBattingTeam(aus))
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("0"))

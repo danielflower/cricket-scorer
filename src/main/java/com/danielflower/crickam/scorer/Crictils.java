@@ -49,4 +49,13 @@ public class Crictils {
         return number + suffix;
     }
 
+    public static int requireInRange(String name, int value, int min, int max) {
+        if (value < min) {
+            throw new IllegalArgumentException("The min value allowed for " + name + " is " + min + " but it was " + value);
+        } else if (value > max) {
+            throw new IllegalArgumentException("The max value allowed for " + name + " is " + max + " but it was " + value);
+        }
+        return value;
+    }
+
 }

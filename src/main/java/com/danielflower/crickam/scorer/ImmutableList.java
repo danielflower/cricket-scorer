@@ -135,7 +135,7 @@ public final class ImmutableList<T> implements Iterable<T> {
 
     @NotNull
     private List<T> asList() {
-        return Collections.unmodifiableList(this.arrayList.subList(first, last + 1));
+        return List.copyOf(this.arrayList.subList(first, last + 1));
     }
 
     @Override
