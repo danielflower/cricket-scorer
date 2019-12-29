@@ -89,26 +89,6 @@ public final class MatchStartingEvent implements MatchEvent {
         return Crictils.toOptional(ballsPerInnings);
     }
 
-    public static Builder matchStarting() {
-        return new Builder();
-    }
-
-    public static Builder matchStarting(MatchType matchType) {
-        Builder builder = matchStarting().withMatchType(matchType);
-        switch (matchType) {
-            case TEST:
-            case FIRST_CLASS:
-                return builder.withNumberOfInningsPerTeam(2).withNumberOfScheduledDays(5);
-            case ODI:
-            case ONE_DAY:
-                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(50);
-            case T20I:
-            case T20:
-                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(20);
-        }
-        return builder;
-    }
-
     public Optional<TimeZone> timeZone() {
         return Optional.ofNullable(timeZone);
     }

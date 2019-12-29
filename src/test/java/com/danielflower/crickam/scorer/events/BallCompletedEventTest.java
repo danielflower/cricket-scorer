@@ -4,7 +4,7 @@ import com.danielflower.crickam.scorer.DismissalType;
 import com.danielflower.crickam.scorer.Score;
 import org.junit.jupiter.api.Test;
 
-import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
+import static com.danielflower.crickam.scorer.events.MatchEvents.ballCompleted;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

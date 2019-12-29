@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
-import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.MatchEvents;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,11 +14,7 @@ import java.util.TimeZone;
 import static com.danielflower.crickam.scorer.data.England.MAHMOOD;
 import static com.danielflower.crickam.scorer.data.England.TOM_CURRAN;
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
-import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
-import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
-import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
-import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
-import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static scaffolding.BatterInningsMatcher.withBatter;
@@ -133,7 +129,7 @@ class MatchControlTest {
     public void canFigureOutInstantsBasedOnLocalTimesAndLastEventTimes() {
         TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
         MatchControl control = MatchControl.newMatch(
-            MatchStartingEvent.matchStarting(MatchType.TEST)
+            MatchEvents.matchStarting(MatchType.TEST)
                 .withTeams(ImmutableList.of(this.nz, aus))
                 .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
                 .withTimeZone(nz)

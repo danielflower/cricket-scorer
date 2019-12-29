@@ -48,7 +48,7 @@ public final class MatchControl {
         return onEvent(builder.build(match()));
     }
 
-    public MatchControl onEvent(MatchEvent event) {
+    MatchControl onEvent(MatchEvent event) {
         Match match = match().onEvent(event);
         return new MatchControl(events.add(new EventResult(event, match)));
     }

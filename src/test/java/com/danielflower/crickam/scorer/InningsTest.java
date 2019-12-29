@@ -2,7 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
-import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.Test;
 
@@ -11,12 +11,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import static com.danielflower.crickam.scorer.Score.SINGLE;
-import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
-import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
-import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
-import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
-import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
-import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +23,7 @@ class InningsTest {
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player opener2 = nz.battingOrder().get(1);
     private final Player number3 = nz.battingOrder().get(2);
-    private MatchControl control = MatchControl.newMatch(MatchStartingEvent.matchStarting(MatchType.ODI)
+    private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.ODI)
         .withTeams(ImmutableList.of(aus, nz))
         .build())
         .onEvent(inningsStarting().withBattingTeam(nz));

@@ -10,13 +10,7 @@ import java.util.TimeZone;
 import static com.danielflower.crickam.scorer.Venue.venue;
 import static com.danielflower.crickam.scorer.data.England.*;
 import static com.danielflower.crickam.scorer.data.SouthAfrica.*;
-import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
-import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
-import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
-import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
-import static com.danielflower.crickam.scorer.events.MatchStartingEvent.matchStarting;
-import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
-import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InProgressTest {

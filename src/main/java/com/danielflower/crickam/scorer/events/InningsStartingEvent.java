@@ -107,10 +107,6 @@ public final class InningsStartingEvent implements MatchEvent {
         return isFollowingOn;
     }
 
-    public static Builder inningsStarting() {
-        return new Builder();
-    }
-
     public static final class Builder implements MatchEventBuilder<InningsStartingEvent> {
 
         private LineUp battingTeam;

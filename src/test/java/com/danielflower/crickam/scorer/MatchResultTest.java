@@ -2,17 +2,12 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
-import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.MatchEvents;
 import org.junit.jupiter.api.Test;
 
 import java.util.OptionalInt;
 
-import static com.danielflower.crickam.scorer.events.BallCompletedEvent.ballCompleted;
-import static com.danielflower.crickam.scorer.events.BatterInningsStartingEvent.batterInningsStarting;
-import static com.danielflower.crickam.scorer.events.InningsCompletedEvent.inningsCompleted;
-import static com.danielflower.crickam.scorer.events.InningsStartingEvent.inningsStarting;
-import static com.danielflower.crickam.scorer.events.OverCompletedEvent.overCompleted;
-import static com.danielflower.crickam.scorer.events.OverStartingEvent.overStarting;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -24,7 +19,7 @@ class MatchResultTest {
 
     @Test
     void limitedOversCanBeWonOrTied() {
-        MatchControl control = MatchControl.newMatch(MatchStartingEvent.matchStarting()
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting()
             .withMatchID("1")
             .withTeams(ImmutableList.of(aus, nz))
             .withMatchType(MatchType.ODI)
@@ -91,7 +86,7 @@ class MatchResultTest {
 
     @Test
     void firstClassMatchesCanBeWonOrTiedOrDrawn() {
-        MatchControl control = MatchControl.newMatch(MatchStartingEvent.matchStarting(MatchType.TEST)
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
             .withTeams(ImmutableList.of(aus, nz))
             .build());
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
@@ -180,7 +175,7 @@ class MatchResultTest {
 
     @Test
     void knowsAboutBeingBeatenByAnInnings() {
-        MatchControl control = MatchControl.newMatch(MatchStartingEvent.matchStarting(MatchType.TEST)
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
             .withTeams(ImmutableList.of(aus, nz))
             .build())
             .onEvent(inningsStarting().withBattingTeam(aus))

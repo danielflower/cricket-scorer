@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
+import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ class MatchTest {
     }
 
     public static MatchStartingEvent.Builder aMatch() {
-        return MatchStartingEvent.matchStarting()
+        return MatchEvents.matchStarting()
             .withMatchID(UUID.randomUUID().toString())
             .withNumberOfInningsPerTeam(1)
             .withMatchType(MatchType.ODI)

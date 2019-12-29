@@ -25,10 +25,6 @@ public final class MatchCompletedEvent implements MatchEvent {
         return Optional.ofNullable(result);
     }
 
-    public static Builder matchCompleted() {
-        return new Builder();
-    }
-
     public final static class Builder implements MatchEventBuilder<MatchCompletedEvent> {
 
         private Instant time;

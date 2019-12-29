@@ -91,27 +91,6 @@ public final class BallCompletedEvent implements MatchEvent {
         return Optional.ofNullable(time);
     }
 
-    /**
-     * @return A builder with no values set.
-     */
-    public static Builder ballCompleted() {
-        return new Builder();
-    }
-
-    /**
-     * Creates a ball based on a text score such as &quot;1&quot;, &quot;W&quot etc
-     * <p>For the case where a wicket was taken, call {@link Builder#withDismissal(DismissalType)}
-     * on the returned builder.</p>
-     * @param scoreText a string allowed by {@link Score#parse(String)}
-     * @return A BallCompletedEvent builder
-     * @throws IllegalArgumentException if {@code scoreText} was not a valid score
-     */
-    public static Builder ballCompleted(String scoreText) {
-        Score score = Score.parse(scoreText).orElseThrow(() -> new IllegalArgumentException("Unknown score: " + scoreText));
-        return ballCompleted()
-            .withRunsScored(score);
-    }
-
     public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
 
         private Player bowler;

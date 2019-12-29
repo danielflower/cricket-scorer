@@ -18,10 +18,6 @@ public final class OverCompletedEvent implements MatchEvent {
         return Optional.ofNullable(time);
     }
 
-    public static Builder overCompleted() {
-        return new Builder();
-    }
-
     public static final class Builder implements MatchEventBuilder<OverCompletedEvent> {
 
         private Instant time;

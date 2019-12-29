@@ -25,10 +25,6 @@ public final class BatterInningsStartingEvent implements MatchEvent {
         return batter;
     }
 
-    public static Builder batterInningsStarting() {
-        return new Builder();
-    }
-
     public static final class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
         private Instant time;
         private Player batter;

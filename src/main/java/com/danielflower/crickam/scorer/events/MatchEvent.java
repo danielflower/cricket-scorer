@@ -6,7 +6,8 @@ import java.time.Instant;
 import java.util.Optional;
 
 /**
- * A match event that the API user feeds into the {@link MatchControl#onEvent(MatchEvent)} to build up a match.
+ * A match event that the API user feeds into the {@link MatchControl#onEvent(MatchEventBuilder)} to build up a match.
+ * <p>Match events are created by builders. Builders can be created by calling the static methods on the {@link MatchEvents} class.</p>
  */
 public interface MatchEvent {
 

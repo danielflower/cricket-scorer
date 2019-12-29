@@ -46,7 +46,4 @@ public final class InningsCompletedEvent implements MatchEvent {
         }
     }
 
-    public static Builder inningsCompleted() {
-        return new Builder();
-    }
 }
