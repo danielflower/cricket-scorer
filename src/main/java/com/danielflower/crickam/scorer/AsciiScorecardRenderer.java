@@ -51,8 +51,8 @@ public class AsciiScorecardRenderer {
         for (Innings innings : match.inningsList()) {
             String inningsNumber = match.numberOfInningsPerTeam() > 1 ? " " + Crictils.withOrdinal(1) : "";
             String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
-            if (innings.originalNumberOfScheduledOvers().isPresent()) {
-                inningsHeader += " (" + innings.originalNumberOfScheduledOvers().getAsInt() + " overs maximum)";
+            if (innings.originalMaxOvers().isPresent()) {
+                inningsHeader += " (" + innings.originalMaxOvers().getAsInt() + " overs maximum)";
             }
 
             writer.append(NEWLINE).append(inningsHeader).append(NEWLINE).append(repeat('-', inningsHeader.length())).append(NEWLINE).append(NEWLINE);

@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.Match;
+
 import java.time.Instant;
 import java.util.Optional;
 
@@ -28,7 +30,7 @@ public final class OverCompletedEvent implements MatchEvent {
             this.time = time;
             return this;
         }
-        public OverCompletedEvent build() {
+        public OverCompletedEvent build(Match match) {
             return new OverCompletedEvent(time);
         }
 

@@ -113,7 +113,7 @@ public final class MatchStartingEvent implements MatchEvent {
         return Optional.ofNullable(timeZone);
     }
 
-    public static final class Builder implements MatchEventBuilder<MatchStartingEvent> {
+    public static final class Builder {
         private String matchID;
         private Series series;
         private Instant time;

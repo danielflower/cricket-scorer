@@ -44,8 +44,8 @@ public final class MatchControl {
         return new MatchControl(ImmutableList.of(new EventResult(event, Match.newMatch(event))));
     }
 
-    public MatchControl onEvent(MatchEventBuilder<?> eventBuilder) {
-        return onEvent(eventBuilder.build());
+    public MatchControl onEvent(MatchEventBuilder<?> builder) {
+        return onEvent(builder.build(match()));
     }
 
     public MatchControl onEvent(MatchEvent event) {
@@ -55,6 +55,16 @@ public final class MatchControl {
 
     public Match match() {
         return events.get(events.size() - 1).match();
+    }
+
+    /**
+     * Gets the current innings, or throws an exception if none are in progress.
+     * <p>To get an optional innings, use {@code match().currentInnings()} instead.</p>
+     * @return The current innings that's in progress
+     * @throws IllegalStateException There is not an innings in progress
+     */
+    public Innings currentInnings() {
+        return match().currentInnings().orElseThrow(() -> new IllegalStateException("There is no innings in progress"));
     }
 
     public ImmutableList<EventResult> events() {

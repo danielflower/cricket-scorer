@@ -11,7 +11,7 @@ public class Crictils {
         return value == null ? OptionalInt.empty() : OptionalInt.of(value);
     }
 
-    static Integer toInteger(OptionalInt value) {
+    public static Integer toInteger(OptionalInt value) {
         if (value.isEmpty()) {
             return null;
         } else {
@@ -49,6 +49,13 @@ public class Crictils {
         return number + suffix;
     }
 
+    public static Integer requireInRange(String name, Integer value, int min, int max) {
+        return value == null ? null : requireInRange(name, value.intValue(), min, max);
+    }
+
+    public static int requireInRange(String name, int value, int min) {
+        return requireInRange(name, value, min, Integer.MAX_VALUE);
+    }
     public static int requireInRange(String name, int value, int min, int max) {
         if (value < min) {
             throw new IllegalArgumentException("The min value allowed for " + name + " is " + min + " but it was " + value);

@@ -182,10 +182,6 @@ public final class Match {
         return MatchResult.fromMatch(this);
     }
 
-    Match onEvent(MatchEventBuilder<?> builder) {
-        return onEvent(builder.build());
-    }
-
     Match onEvent(MatchEvent event) {
 
         if (event instanceof BallCompletedEvent && currentInnings().isEmpty()) {
@@ -197,23 +193,7 @@ public final class Match {
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
             newState = State.IN_PROGRESS;
-            InningsStartingEvent ise = (InningsStartingEvent) event;
-            Integer scheduledBalls = data.ballsPerInnings;
-            LineUp battingTeam = ise.battingTeam();
-            LineUp bowlingTeam = ise.bowlingTeam().orElse(otherTeam(battingTeam));
-            int inningsNumber = inningsList.size() + 1;
-            Integer target = null;
-            if (inningsNumber == (2 * numberOfInningsPerTeam())) {
-                target = toInteger(ise.target());
-                if (target == null) {
-                    int battingScore = scoredByTeam(battingTeam).teamRuns();
-                    int bowlingScore = scoredByTeam(bowlingTeam).teamRuns();
-                    target = (bowlingScore - battingScore) + 1;
-                }
-            } else if (ise.target().isPresent()) {
-                throw new IllegalStateException("There should not be a target specified until the last scheduled innings");
-            }
-            newInningsList = inningsList.add(Innings.newInnings(this, battingTeam, bowlingTeam, ise.openers(), inningsNumber, Instant.now(), scheduledBalls, target));
+            newInningsList = inningsList.add(Innings.newInnings((InningsStartingEvent) event));
         } else if (event instanceof MatchCompletedEvent) {
             // don't pass to the innings
             newState = State.COMPLETED;
@@ -244,7 +224,7 @@ public final class Match {
         return total;
     }
 
-    private LineUp otherTeam(LineUp someTeam) {
+    public LineUp otherTeam(LineUp someTeam) {
         return this.teams().stream().filter(t -> !t.equals(someTeam)).findFirst().orElseThrow();
     }
 }

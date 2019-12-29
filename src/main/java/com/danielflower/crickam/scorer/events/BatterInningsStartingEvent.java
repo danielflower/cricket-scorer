@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
@@ -47,7 +48,7 @@ public final class BatterInningsStartingEvent implements MatchEvent {
             return this;
         }
 
-        public BatterInningsStartingEvent build() {
+        public BatterInningsStartingEvent build(Match match) {
             return new BatterInningsStartingEvent(time, batter);
         }
     }

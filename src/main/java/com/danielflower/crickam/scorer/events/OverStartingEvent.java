@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
@@ -105,7 +106,7 @@ public final class OverStartingEvent implements MatchEvent {
             return this;
         }
 
-        public OverStartingEvent build() {
+        public OverStartingEvent build(Match match) {
             return new OverStartingEvent(bowler, striker, nonStriker, time, ballsInOver);
         }
     }

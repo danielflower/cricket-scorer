@@ -19,10 +19,11 @@ public final class Innings {
 
 
     public enum State {
-        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
-    }
+        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
 
+    }
     private final ImmutableList<Partnership> partnerships;
+
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
     private final ImmutableList<BatterInnings> batters;
@@ -32,10 +33,46 @@ public final class Innings {
     private final Instant endTime;
     private final Balls balls;
     private final ImmutableList<BowlerInnings> bowlerInningses;
-    private final FixedData data;
+    private final InningsStartingEvent data;
     private final State state;
+    private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
+
+    private Innings(InningsStartingEvent data, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
+        this.maxOvers = maxOvers;
+        this.maxBalls = maxBalls;
+        this.target = target;
+        if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
+            throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
+        }
+        this.data = requireNonNull(data);
+        this.partnerships = requireNonNull(partnerships);
+        this.currentStriker = currentStriker;
+        this.currentNonStriker = currentNonStriker;
+        this.batters = requireNonNull(batters);
+        this.overs = requireNonNull(overs);
+        this.currentOver = currentOver;
+        this.endTime = endTime;
+        this.balls = requireNonNull(balls);
+        this.bowlerInningses = bowlerInningses;
+        this.yetToBat = requireNonNull(yetToBat);
+        this.state = requireNonNull(state);
+    }
+
+    static Innings newInnings(InningsStartingEvent event) {
+        ImmutableList<Player> openers = event.openers();
+        BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
+        BatterInnings currentNonStriker = BatterInnings.newInnings(openers.get(1), 2);
+
+        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker.player(), currentNonStriker.player()));
+        ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
+
+        ImmutableList<Player> yetToBat = event.battingTeam().battingOrder().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
+        return new Innings(event, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(),
+            null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED,
+            Crictils.toInteger(event.maxOvers()), Crictils.toInteger(event.maxBalls()), Crictils.toInteger(event.target()));
+    }
 
     Innings onEvent(MatchEvent event) {
         if (state == State.COMPLETED) {
@@ -170,7 +207,7 @@ public final class Innings {
             }
         }
 
-        return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxBalls, target);
+        return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
     }
 
     @Nullable
@@ -293,44 +330,12 @@ public final class Innings {
         return state;
     }
 
-    private Innings(FixedData fixedData, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxBalls, Integer target) {
-        this.maxBalls = maxBalls;
-        this.target = target;
-        if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
-            throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
-        }
-        this.data = requireNonNull(fixedData);
-        this.partnerships = requireNonNull(partnerships);
-        this.currentStriker = currentStriker;
-        this.currentNonStriker = currentNonStriker;
-        this.batters = requireNonNull(batters);
-        this.overs = requireNonNull(overs);
-        this.currentOver = currentOver;
-        this.endTime = endTime;
-        this.balls = requireNonNull(balls);
-        this.bowlerInningses = bowlerInningses;
-        this.yetToBat = requireNonNull(yetToBat);
-        this.state = requireNonNull(state);
-    }
-
-    static Innings newInnings(Match match, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, int inningsNumber, Instant startTime, Integer scheduledNumberOfBalls, Integer target) {
-        FixedData fixedData = new FixedData(match, battingTeam, bowlingTeam, inningsNumber, startTime);
-
-        BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
-        BatterInnings currentNonStriker = BatterInnings.newInnings(openers.get(1), 2);
-
-        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker.player(), currentNonStriker.player()));
-        ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
-
-        ImmutableList<Player> yetToBat = battingTeam.battingOrder().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-        return new Innings(fixedData, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(), null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED, scheduledNumberOfBalls, target);
-    }
 
     /**
      * @return The number of scheduled balls remaining in the innings, or empty if this innings does not have a limit.
      */
     public OptionalInt numberOfBallsRemaining() {
-        OptionalInt scheduled = numberOfScheduledBalls();
+        OptionalInt scheduled = maxBalls();
         if (scheduled.isEmpty()) {
             return scheduled;
         }
@@ -399,28 +404,35 @@ public final class Innings {
      * @return The team that is currently batting
      */
     public LineUp battingTeam() {
-        return data.battingTeam;
+        return data.battingTeam();
     }
 
     /**
      * @return The team that is currently bowling
      */
     public LineUp bowlingTeam() {
-        return data.bowlingTeam;
+        return data.bowlingTeam();
     }
 
     /**
      * @return 1 for the first innings in a match; 2 for the second etc
      */
     public int inningsNumber() {
-        return data.inningsNumber;
+        return data.inningsNumberForMatch();
+    }
+
+    /**
+     * @return 1 for the first innings that the current batting team is batting for in a match; 2 for the second etc
+     */
+    public int inningsNumberForBattingTeam() {
+        return data.inningsNumberForBattingTeam();
     }
 
     /**
      * @return The time the innings started
      */
-    public Instant startTime() {
-        return data.startTime;
+    public Optional<Instant> startTime() {
+        return data.time();
     }
 
     /**
@@ -433,25 +445,34 @@ public final class Innings {
     /**
      * @return The current total number of scheduled balls in the innings, after adjustments such as reductions due
      * to bad weather. (Returns empty if there is no limit)
-     * @see #originalNumberOfScheduledBalls()
+     * @see #originalMaxBalls()
      */
-    public OptionalInt numberOfScheduledBalls() {
+    public OptionalInt maxBalls() {
         return toOptional(maxBalls);
     }
 
     /**
-     * @return The number of scheduled balls at the beginning of the innings, or empty if there is no limit.
-     * @see #numberOfScheduledBalls()
+     * @return The current total number of scheduled overs in the innings, after adjustments such as reductions due
+     * to bad weather. (Returns empty if there is no limit)
+     * @see #originalMaxOvers()
      */
-    public OptionalInt originalNumberOfScheduledBalls() {
-        return data.matchAtStart.ballsPerInnings();
+    public OptionalInt maxOvers() {
+        return toOptional(maxOvers);
+    }
+
+    /**
+     * @return The number of scheduled balls at the beginning of the innings, or empty if there is no limit.
+     * @see #maxBalls()
+     */
+    public OptionalInt originalMaxBalls() {
+        return data.maxBalls();
     }
 
     /**
      * @return The number of scheduled overs in this match, or empty if there is no limit
      */
-    public OptionalInt originalNumberOfScheduledOvers() {
-        return data.matchAtStart.oversPerInnings();
+    public OptionalInt originalMaxOvers() {
+        return data.maxOvers();
     }
 
     /**
@@ -463,7 +484,7 @@ public final class Innings {
 
     @Override
     public String toString() {
-        return data.battingTeam.team().name() + " innings " + inningsNumber() + " - " +
+        return battingTeam().team().name() + " innings " + inningsNumber() + " - " +
             score().teamRuns() + "/" + score().wickets() + " from " + overDotBallString() + " ov";
     }
 

@@ -228,7 +228,7 @@ public final class BallCompletedEvent implements MatchEvent {
             return this;
         }
 
-        public BallCompletedEvent build() {
+        public BallCompletedEvent build(Match match) {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
             if (runsScored.wickets() > 0 && dismissalType == null) {
                 throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");

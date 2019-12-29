@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.Match;
+
 import java.time.Instant;
 import java.util.Optional;
 
@@ -29,10 +31,6 @@ public final class InningsCompletedEvent implements MatchEvent {
         private Instant time;
         private boolean declared;
 
-        public InningsCompletedEvent build() {
-            return new InningsCompletedEvent(time, declared);
-        }
-
         public Builder withTime(Instant time) {
             this.time = time;
             return this;
@@ -41,6 +39,10 @@ public final class InningsCompletedEvent implements MatchEvent {
         public Builder withDeclared(boolean declared) {
             this.declared = declared;
             return this;
+        }
+
+        public InningsCompletedEvent build(Match match) {
+            return new InningsCompletedEvent(time, declared);
         }
     }
 

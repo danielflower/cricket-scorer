@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.MatchResult;
 
 import java.time.Instant;
@@ -51,7 +52,7 @@ public final class MatchCompletedEvent implements MatchEvent {
             return this;
         }
 
-        public MatchCompletedEvent build() {
+        public MatchCompletedEvent build(Match match) {
             return new MatchCompletedEvent(time, result);
         }
 

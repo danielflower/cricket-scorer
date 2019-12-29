@@ -37,7 +37,7 @@ class BallCompletedEventTest {
         if (score.wickets() > 0) {
             builder.withDismissal(DismissalType.BOWLED);
         }
-        return builder.build().playersCrossed();
+        return builder.build(null).playersCrossed();
     }
 
 }

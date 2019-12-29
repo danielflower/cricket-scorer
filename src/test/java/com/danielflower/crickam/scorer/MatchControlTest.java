@@ -3,6 +3,7 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -32,18 +33,21 @@ class MatchControlTest {
             JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON)).build();
     private final LineUp aus = Australia.oneDayLineUp().build();
 
-    private MatchControl control = MatchControl.newMatch(
-        MatchTest.aMatch()
-            .withNumberOfInningsPerTeam(1)
-            .withOversPerInnings(50)
-            .withTeams(ImmutableList.of(nz, aus))
-            .build()
-    ).onEvent(inningsStarting()
-        .withBattingTeam(nz)
-        .withBowlingTeam(aus)
-        .withOpeners(nz.battingOrder().get(0), nz.battingOrder().get(1))
-        .withTime(Instant.now())
-    );
+    private MatchControl control;
+    @BeforeEach
+    public void setup() {
+        control = MatchControl.newMatch(
+            MatchTest.aMatch()
+                .withNumberOfInningsPerTeam(1)
+                .withOversPerInnings(50)
+                .withTeams(ImmutableList.of(nz, aus))
+                .build()
+        );
+        control = control.onEvent(inningsStarting()
+            .withBattingTeam(nz)
+            .withTime(Instant.now())
+        );
+    }
 
     private Match match() {
         return control.match();
