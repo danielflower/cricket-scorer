@@ -3,12 +3,12 @@ package com.danielflower.crickam.scorer;
 import com.danielflower.crickam.scorer.events.*;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.Crictils.toInteger;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A lovely game of cricket between two teams
@@ -16,20 +16,22 @@ import static com.danielflower.crickam.scorer.Crictils.toInteger;
 public final class Match {
 
 
-
     public enum State {
         NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED;
+
     }
     private final FixedData data;
-
     private final State state;
+
     private final MatchResult result;
     private final ImmutableList<Innings> inningsList;
-    private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> inningsList) {
-        this.data = Objects.requireNonNull(data);
-        this.state = Objects.requireNonNull(state);
+    private final Balls balls;
+    private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> inningsList, Balls balls) {
+        this.data = requireNonNull(data);
+        this.state = requireNonNull(state);
         this.result = result;
-        this.inningsList = Objects.requireNonNull(inningsList);
+        this.inningsList = requireNonNull(inningsList);
+        this.balls = requireNonNull(balls);
     }
 
     static Match newMatch(MatchStartingEvent e) {
@@ -38,7 +40,11 @@ public final class Match {
         FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
             e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
             e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
-        return new Match(fd, State.NOT_STARTED, null, new ImmutableList<>());
+        return new Match(fd, State.NOT_STARTED, null, new ImmutableList<>(), new Balls());
+    }
+
+    public Balls balls() {
+        return balls;
     }
     private static class FixedData {
 
@@ -189,6 +195,7 @@ public final class Match {
         }
         State newState = this.state;
         MatchResult newResult = this.result;
+        Balls newBalls = this.balls;
 
         ImmutableList<Innings> newInningsList = inningsList;
         if (event instanceof InningsStartingEvent) {
@@ -203,10 +210,13 @@ public final class Match {
             if (lastInnings.isPresent()) {
                 Innings i = lastInnings.get().onEvent(event);
                 newInningsList = newInningsList.removeLast().add(i);
+                if (event instanceof BallCompletedEvent) {
+                    newBalls = newBalls.add(i.balls().list().last().orElseThrow()); // a bit hacky?
+                }
             }
         }
 
-        return new Match(data, newState, newResult, newInningsList);
+        return new Match(data, newState, newResult, newInningsList, newBalls);
     }
 
     /**

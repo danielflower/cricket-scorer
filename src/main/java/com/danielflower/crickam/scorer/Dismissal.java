@@ -14,13 +14,17 @@ public final class Dismissal {
     private final DismissalType type;
     private final Player batter;
     private final Player bowler;
-    private final Player executor;
+    private final Player fielder;
 
-    Dismissal(DismissalType type, Player batter, Player bowler, Player executor) {
+    public Dismissal(DismissalType type, Player batter, Player bowler, Player fielder) {
         this.type = requireNonNull(type);
         this.batter = requireNonNull(batter);
-        this.bowler = requireNonNull(bowler);
-        this.executor = executor;
+        if (type.creditedToBowler()) {
+            this.bowler = requireNonNull(bowler, "For dismissals of type " + type + " the bowler must be specified");
+        } else {
+            this.bowler = null;
+        }
+        this.fielder = fielder;
     }
 
     /**
@@ -38,18 +42,18 @@ public final class Dismissal {
     }
 
     /**
-     * @return The bowler
+     * @return The bowler credited with the dismissal, or empty if {@link DismissalType#creditedToBowler()} is false
      */
-    public Player bowler() {
-        return bowler;
+    public Optional<Player> bowler() {
+        return Optional.ofNullable(bowler);
     }
 
     /**
      * @return The player that caught the ball if the {@link #type()} is {@link DismissalType#CAUGHT}, or the fielder
      * the enacted the runout or stumping. It will be an empty value for dismissal types such as {@link DismissalType#BOWLED} etc
      */
-    public Optional<Player> executor() {
-        return Optional.ofNullable(executor);
+    public Optional<Player> fielder() {
+        return Optional.ofNullable(fielder);
     }
 
     /**
@@ -57,14 +61,14 @@ public final class Dismissal {
      * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
      */
     public String toScorecardString(@Nullable Player wicketKeeper) {
-        String bowler = this.bowler == null ? null : this.bowler().familyName();
-        String fielder = this.executor == null ? null : this.executor.familyName();
+        String bowler = this.bowler == null ? null : this.bowler.familyName();
+        String fielder = this.fielder == null ? null : this.fielder.familyName();
         switch (type) {
             case BOWLED:
                 return "b " + bowler;
             case CAUGHT:
-                String catcher = (this.executor == this.bowler()) ? "&" : fielder;
-                String prefix = this.executor == wicketKeeper ? "†" : "";
+                String catcher = (this.fielder == this.bowler) ? "&" : fielder;
+                String prefix = this.fielder == wicketKeeper ? "†" : "";
                 return "c " + prefix + catcher + " b " + bowler;
             case HIT_WICKET:
                 return "hw " + bowler;
@@ -90,13 +94,13 @@ public final class Dismissal {
         Dismissal dismissal = (Dismissal) o;
         return type == dismissal.type &&
             batter.equals(dismissal.batter) &&
-            bowler.equals(dismissal.bowler) &&
-            Objects.equals(executor, dismissal.executor);
+            Objects.equals(bowler, dismissal.bowler) &&
+            Objects.equals(fielder, dismissal.fielder);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, batter, bowler, executor);
+        return Objects.hash(type, batter, bowler, fielder);
     }
 }
 

@@ -101,7 +101,6 @@ public final class Over {
 	    return balls.score();
     }
 
-
     /**
      * @return The number of runs gained by the team in this over (including extras).
      */

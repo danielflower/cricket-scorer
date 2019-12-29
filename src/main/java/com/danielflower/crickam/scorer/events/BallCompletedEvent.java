@@ -7,7 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import java.time.Instant;
 import java.util.Optional;
 
+import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static java.util.Objects.requireNonNull;
+import static java.util.Objects.requireNonNullElseGet;
 
 public final class BallCompletedEvent implements MatchEvent {
 
@@ -16,25 +18,32 @@ public final class BallCompletedEvent implements MatchEvent {
     private final Player nonStriker;
     private final Score runsScored;
     private final boolean playersCrossed;
-    private final DismissalType dismissal;
+    private final Dismissal dismissal;
     private final Delivery delivery;
     private final Swing swing;
     private final Trajectory trajectoryAtImpact;
     private final Player fielder;
     private final Instant time;
-    private final Player dismissedBatter;
+    private final int overNumber;
+    private final int numberInOver;
+    private final int numberInMatch;
 
-    private BallCompletedEvent(@Nullable Player bowler, @Nullable Player striker, @Nullable Player nonStriker, Score runsScored, boolean playersCrossed, DismissalType dismissal, @Nullable Player dismissedBatter, @Nullable Delivery delivery, @Nullable Swing swing, @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, Instant time) {
-        if (striker != null && striker.equals(nonStriker)) {
+    private BallCompletedEvent(@NotNull Player bowler, @NotNull Player striker, @NotNull Player nonStriker, @NotNull Score runsScored,
+                               boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
+                               @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, int overNumber,
+                               int numberInOver, int numberInMatch) {
+        this.bowler = requireNonNull(bowler, "bowler");
+        this.striker = requireNonNull(striker, "striker");
+        this.nonStriker = requireNonNull(nonStriker, "nonStriker");
+        this.runsScored = requireNonNull(runsScored, "runsScored");
+        this.overNumber = requireInRange("overNumber", overNumber, 0);
+        this.numberInOver = requireInRange("numberInOver", numberInOver, 0);
+        this.numberInMatch = requireInRange("numberInMatch", numberInMatch, 0);
+        if (striker.equals(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
-        this.bowler = bowler;
-        this.striker = striker;
-        this.nonStriker = nonStriker;
-        this.runsScored = requireNonNull(runsScored);
         this.playersCrossed = playersCrossed;
         this.dismissal = dismissal;
-        this.dismissedBatter = dismissedBatter;
         this.delivery = delivery;
         this.swing = swing;
         this.trajectoryAtImpact = trajectoryAtImpact;
@@ -42,16 +51,16 @@ public final class BallCompletedEvent implements MatchEvent {
         this.time = time;
     }
 
-    public Optional<Player> bowler() {
-        return Optional.ofNullable(bowler);
+    public Player bowler() {
+        return bowler;
     }
 
-    public Optional<Player> striker() {
-        return Optional.ofNullable(striker);
+    public Player striker() {
+        return striker;
     }
 
-    public Optional<Player> nonStriker() {
-        return Optional.ofNullable(nonStriker);
+    public Player nonStriker() {
+        return nonStriker;
     }
 
     public Score runsScored() {
@@ -62,12 +71,8 @@ public final class BallCompletedEvent implements MatchEvent {
         return playersCrossed;
     }
 
-    public Optional<DismissalType> dismissal() {
+    public Optional<Dismissal> dismissal() {
         return Optional.ofNullable(dismissal);
-    }
-
-    public Optional<Player> dismissedBatter() {
-        return Optional.ofNullable(dismissedBatter);
     }
 
     public Optional<Delivery> delivery() {
@@ -89,6 +94,18 @@ public final class BallCompletedEvent implements MatchEvent {
     @Override
     public Optional<Instant> time() {
         return Optional.ofNullable(time);
+    }
+
+    public int overNumber() {
+        return overNumber;
+    }
+
+    public int numberInOver() {
+        return numberInOver;
+    }
+
+    public int numberInMatch() {
+        return numberInMatch;
     }
 
     public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
@@ -212,15 +229,30 @@ public final class BallCompletedEvent implements MatchEvent {
             if (runsScored.wickets() > 0 && dismissalType == null) {
                 throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");
             }
+            Innings innings = match.currentInnings().orElseThrow(() -> new IllegalStateException("A ball cannot be bowled when there is no current innings"));
+            BatterInnings strikerInnings = innings.currentStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter on strike"));
+            BatterInnings nonStrikerInnings = innings.currentNonStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end"));
+
+            Over over = innings.currentOver().orElseThrow();
+            Player bowler = requireNonNullElseGet(this.bowler, over::bowler);
+            Player striker = requireNonNullElseGet(this.striker, strikerInnings::player);
+            Player nonStriker = requireNonNullElseGet(this.nonStriker, nonStrikerInnings::player);
+
+            Dismissal dismissal = dismissalType == null ? null :
+                new Dismissal(dismissalType, dismissedBatter != null ? dismissedBatter : striker, dismissalType.creditedToBowler() ? bowler : null, fielder);
+
             boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed;
-            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissalType, dismissedBatter, delivery, swing, trajectoryAtImpact, fielder, dateCompleted);
+            int overNumber = over.overNumber();
+            int numberInOver = over.validDeliveries() + 1;
+            int numberInMatch = match.balls().size();
+            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
+                delivery, swing, trajectoryAtImpact, fielder, dateCompleted, overNumber, numberInOver, numberInMatch);
         }
 
-        private boolean guessIfCrossed(Score score) {
+        private static boolean guessIfCrossed(Score score) {
             if (score.batterRuns() == 0 && score.wides() > 0) {
                 return score.wides() % 2 == 0;
             }
-
             return (score.batterRuns() + score.legByes() + score.byes()) % 2 == 1;
         }
     }

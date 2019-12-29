@@ -112,15 +112,12 @@ public final class Innings {
                     + OverStartingEvent.class.getSimpleName() + " has been raised at the beginning of the over and that a "
                     + BatterInningsStartingEvent.class.getSimpleName() + " is called after a wicket");
             BallCompletedEvent e = (BallCompletedEvent) event;
-            striker = e.striker().isEmpty() ? currentStriker().get() : findBatterInnings(e.striker().get());
-            nonStriker = e.nonStriker().isEmpty() ? currentNonStriker().get() : findBatterInnings(e.nonStriker().get());
+            striker = findBatterInnings(e.striker());
+            nonStriker = findBatterInnings(e.nonStriker());
 
             Over over = currentOver().orElseThrow();
-            Player bowler = e.bowler().isEmpty() ? over.bowler() : e.bowler().get();
-            Player fielder = e.fielder().orElse(null);
-            Dismissal dismissal = e.dismissal().isEmpty() ? null : new Dismissal(e.dismissal().get(), e.dismissedBatter().orElse(striker.player()), bowler, fielder);
-            Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), over.overNumber(), over.validDeliveries() + 1, bowler,
-                e.delivery().orElse(null), e.swing().orElse(null), e.trajectoryAtImpact().orElse(null), e.runsScored(), dismissal, e.playersCrossed(), fielder, e.time().orElse(null));
+            Player bowler = e.bowler();
+            Ball ball = new Ball(e);
             balls = balls.add(ball);
 
             currentOver = over.onBall(ball);
@@ -158,7 +155,8 @@ public final class Innings {
                 }
             }
 
-            if (dismissal != null) {
+            if (e.dismissal().isPresent()) {
+                Dismissal dismissal = e.dismissal().get();
                 if (dismissal.batter().equals(striker.player())) {
                     striker = null;
                 } else if (dismissal.batter().equals(nonStriker.player())) {

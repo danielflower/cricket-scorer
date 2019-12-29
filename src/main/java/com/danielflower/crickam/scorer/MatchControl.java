@@ -40,6 +40,11 @@ public final class MatchControl {
         this.events = events;
     }
 
+    public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
+        return newMatch(builder.build());
+    }
+
+
     public static MatchControl newMatch(MatchStartingEvent event) {
         return new MatchControl(ImmutableList.of(new EventResult(event, Match.newMatch(event))));
     }

@@ -1,7 +1,8 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.DismissalType;
-import com.danielflower.crickam.scorer.Score;
+import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.data.Australia;
+import com.danielflower.crickam.scorer.data.NewZealand;
 import org.junit.jupiter.api.Test;
 
 import static com.danielflower.crickam.scorer.events.MatchEvents.ballCompleted;
@@ -9,6 +10,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class BallCompletedEventTest {
+
+    private final LineUp nz = NewZealand.oneDayLineUp().build();
+    private final LineUp aus = Australia.oneDayLineUp().build();
+    private final Match match = MatchControl.newMatch(
+        MatchEvents.matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, aus))
+    )
+        .onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
+        .onEvent(MatchEvents.overStarting(aus.battingOrder().last().get()))
+        .match();
 
     @Test
     public void itGuessesIfTheBattersCrossedIfNotSet() {
@@ -32,12 +42,12 @@ class BallCompletedEventTest {
         assertThat(crossedFor(Score.parse("2w").get()), is(true));
     }
 
-    private static boolean crossedFor(Score score) {
+    private boolean crossedFor(Score score) {
         BallCompletedEvent.Builder builder = ballCompleted().withRunsScored(score);
         if (score.wickets() > 0) {
             builder.withDismissal(DismissalType.BOWLED);
         }
-        return builder.build(null).playersCrossed();
+        return builder.build(match).playersCrossed();
     }
 
 }

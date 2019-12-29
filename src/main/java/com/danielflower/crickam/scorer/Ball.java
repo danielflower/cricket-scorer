@@ -1,87 +1,62 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+
 import java.time.Instant;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 public final class Ball {
-    private final Player striker;
-    private final Player nonStriker;
-    private final Player bowler;
-    private final int overNumber;
-    private final int numberInOver;
-    private final Score score;
-    private final boolean playersCrossed;
-    private final Dismissal dismissal;
-    private final Delivery delivery;
-    private final Swing swing;
-    private final Trajectory trajectoryAtImpact;
-    private final int id;
-    private final Player fielder;
-    private final Instant dateCompleted;
 
-    Ball(int id, Player striker, Player nonStriker, int overNumber, int numberInOver, Player bowler,
-         Delivery delivery, Swing swing, Trajectory trajectoryAtImpact,
-         Score score, Dismissal dismissal, boolean playersCrossed, Player fielder, Instant dateCompleted) {
-        this.id = id;
-        this.overNumber = overNumber;
-        this.fielder = fielder;
-        this.trajectoryAtImpact = trajectoryAtImpact;
-        this.bowler = requireNonNull(bowler, "bowler");
-        this.striker = requireNonNull(striker);
-        this.nonStriker = requireNonNull(nonStriker);
-        this.numberInOver = numberInOver;
-        this.delivery = delivery;
-        this.swing = swing;
-        this.score = requireNonNull(score);
-        this.dismissal = dismissal;
-        this.playersCrossed = playersCrossed;
-        this.dateCompleted = dateCompleted;
+    private final BallCompletedEvent e;
+
+    Ball(BallCompletedEvent event) {
+        this.e = requireNonNull(event, "event");
     }
 
-    public int id() {
-        return id;
+    /**
+     * @return The 0-indexed number that this ball is in the match (including invalid deliveries and dead balls)
+     */
+    public int numberInMatch() {
+        return e.numberInMatch();
     }
 
 	public Player striker() {
-        return striker;
+        return e.striker();
     }
 
     public Player nonStriker() {
-        return nonStriker;
+        return e.nonStriker();
     }
 
     public Player bowler() {
-        return bowler;
+        return e.bowler();
     }
 
     public int numberInOver() {
-        return numberInOver;
+        return e.numberInOver();
     }
 
     public int overNumber() {
-        return overNumber;
+        return e.overNumber();
     }
 
-    public Optional<Delivery> delivery() {
-        return Optional.ofNullable(delivery);
+    public Optional<Delivery> deliveryType() {
+        return e.delivery();
     }
 
-    public Optional<Swing> batterSwing() {
-        return Optional.ofNullable(swing);
-    }
 
     public Score score() {
-        return score;
+        return e.runsScored();
     }
 
     public boolean playersCrossed() {
-        return playersCrossed;
+        return e.playersCrossed();
     }
 
     public Optional<Dismissal> dismissal() {
-        return Optional.ofNullable(dismissal);
+        return e.dismissal();
     }
 
     /**
@@ -91,20 +66,20 @@ public final class Ball {
         return score().validDeliveries() > 0;
     }
 
-    public Swing batSwing() {
-        return swing;
+    public Optional<Swing> batSwing() {
+        return e.swing();
     }
 
     public Optional<Trajectory> trajectoryAtImpact() {
-        return Optional.ofNullable(trajectoryAtImpact);
+        return e.trajectoryAtImpact();
     }
 
     public Optional<Player> fielder() {
-        return Optional.ofNullable(fielder);
+        return e.fielder();
     }
 
 	public Optional<Instant> dateCompleted() {
-		return Optional.ofNullable(dateCompleted);
+		return e.time();
 	}
 
     /**
@@ -113,6 +88,6 @@ public final class Ball {
      * @return The number of the last ball
      */
 	public String overDotBallString() {
-        return overNumber + "." + numberInOver;
+        return overNumber() + "." + numberInOver();
     }
 }
