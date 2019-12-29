@@ -1,10 +1,8 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -93,14 +91,9 @@ public final class Innings {
         Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
             OverStartingEvent e = (OverStartingEvent) event;
-
-            boolean isFirst = overs.last().isEmpty();
-            Player strikerPlayer = Objects.requireNonNullElse(e.striker(), playerOrNull(isFirst ? currentStriker() : currentNonStriker()));
-            Player nonStrikerPlayer = Objects.requireNonNullElse(e.nonStriker(), playerOrNull(isFirst ? currentNonStriker() : currentStriker()));
-            striker = findBatterInnings(strikerPlayer);
-            nonStriker = findBatterInnings(nonStrikerPlayer);
-
-            currentOver = Over.newOver(overs.size(), strikerPlayer, nonStrikerPlayer, e.bowler(), e.ballsInOver(), e.time().orElse(null));
+            striker = findBatterInnings(e.striker());
+            nonStriker = findBatterInnings(e.nonStriker());
+            currentOver = Over.newOver(e);
             overs = overs.add(currentOver);
 
             BowlerInnings bi = getBowlerInnings(e.bowler());
@@ -126,7 +119,7 @@ public final class Innings {
             Player bowler = e.bowler().isEmpty() ? over.bowler() : e.bowler().get();
             Player fielder = e.fielder().orElse(null);
             Dismissal dismissal = e.dismissal().isEmpty() ? null : new Dismissal(e.dismissal().get(), e.dismissedBatter().orElse(striker.player()), bowler, fielder);
-            Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), over.numberInInnings(), over.validDeliveries() + 1, bowler,
+            Ball ball = new Ball(balls.size() + 1, striker.player(), nonStriker.player(), over.overNumber(), over.validDeliveries() + 1, bowler,
                 e.delivery().orElse(null), e.swing().orElse(null), e.trajectoryAtImpact().orElse(null), e.runsScored(), dismissal, e.playersCrossed(), fielder, e.time().orElse(null));
             balls = balls.add(ball);
 
@@ -208,27 +201,6 @@ public final class Innings {
         }
 
         return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
-    }
-
-    @Nullable
-    private Player playerOrNull(Optional<BatterInnings> batterInnings) {
-        return batterInnings.isPresent() ? batterInnings.get().player() : null;
-    }
-
-    private static class FixedData {
-        private final Match matchAtStart;
-        private final LineUp battingTeam;
-        private final LineUp bowlingTeam;
-        private final int inningsNumber;
-        private final Instant startTime;
-
-        private FixedData(Match matchAtStart, LineUp battingTeam, LineUp bowlingTeam, int inningsNumber, Instant startTime) {
-            this.matchAtStart = matchAtStart;
-            this.battingTeam = battingTeam;
-            this.bowlingTeam = bowlingTeam;
-            this.inningsNumber = inningsNumber;
-            this.startTime = startTime;
-        }
     }
 
     /**
@@ -381,7 +353,7 @@ public final class Innings {
         Optional<Over> over = overs.last();
         if (ball.isPresent() && over.isPresent()) {
             int b = ball.get().numberInOver();
-            int o = over.get().numberInInnings();
+            int o = over.get().overNumber();
             if (b == 6 && currentOver().isEmpty()) {
                 b = 0;
                 o++;

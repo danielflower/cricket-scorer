@@ -1,11 +1,16 @@
 package com.danielflower.crickam.scorer.events;
 
+import com.danielflower.crickam.scorer.BatterInnings;
+import com.danielflower.crickam.scorer.Innings;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
+import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static java.util.Objects.requireNonNull;
 
 public final class OverStartingEvent implements MatchEvent {
@@ -15,13 +20,17 @@ public final class OverStartingEvent implements MatchEvent {
     private final Player nonStriker;
     private final Instant time;
     private final int ballsInOver;
+    private final int overNumber;
+    private final int inningsNumber;
 
-    private OverStartingEvent(Player bowler, Player striker, Player nonStriker, Instant time, int ballsInOver) {
-        this.bowler = requireNonNull(bowler, "The bowler of an over must be set");
-        this.striker = striker;
-        this.nonStriker = nonStriker;
+    private OverStartingEvent(Player bowler, Player striker, Player nonStriker, Instant time, int ballsInOver, int overNumber, int inningsNumber) {
+        this.bowler = requireNonNull(bowler, "bowler");
+        this.striker = requireNonNull(striker, "striker");
+        this.nonStriker = requireNonNull(nonStriker, "nonStriker");
         this.time = time;
-        this.ballsInOver = ballsInOver;
+        this.ballsInOver = requireInRange("ballsInOver", ballsInOver, 1);
+        this.overNumber = overNumber;
+        this.inningsNumber = inningsNumber;
     }
 
     public Player bowler() {
@@ -43,6 +52,17 @@ public final class OverStartingEvent implements MatchEvent {
     @Override
     public Optional<Instant> time() {
         return Optional.ofNullable(time);
+    }
+
+    /**
+     * @return The zero-based index of this over in the current innings (i.e. the first over in an innings is 0)
+     */
+    public int overNumber() {
+        return overNumber;
+    }
+
+    public int inningsNumber() {
+        return inningsNumber;
     }
 
     public static final class Builder implements MatchEventBuilder<OverStartingEvent> {
@@ -99,7 +119,17 @@ public final class OverStartingEvent implements MatchEvent {
         }
 
         public OverStartingEvent build(Match match) {
-            return new OverStartingEvent(bowler, striker, nonStriker, time, ballsInOver);
+            Innings innings = match.currentInnings().orElseThrow(() -> new IllegalStateException("An over cannot start when there is no current innings"));
+            boolean isFirst = innings.overs().last().isEmpty();
+            Player strikerPlayer = Objects.requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
+            Player nonStrikerPlayer = Objects.requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));
+            int numberInInnings = innings.overs().size();
+            return new OverStartingEvent(bowler, strikerPlayer, nonStrikerPlayer, time, ballsInOver, numberInInnings, innings.inningsNumber());
+        }
+
+        @Nullable
+        private static Player playerOrNull(Optional<BatterInnings> batterInnings) {
+            return batterInnings.isPresent() ? batterInnings.get().player() : null;
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
+
 import java.time.Instant;
 import java.util.Objects;
 
@@ -10,7 +12,8 @@ import java.util.Objects;
  * one before the over starts and one after it finishes.</p>
  */
 public final class Over {
-	private final int numberInInnings;
+	private final int inningsNumber;
+	private final int overNumber;
 	private final Player striker;
 	private final Player nonStriker;
 	private final Balls balls;
@@ -18,14 +21,28 @@ public final class Over {
 	private final int ballsInOver;
 	private final Instant startTime;
 
-    static Over newOver(int numberInInnings, Player striker, Player nonStriker, Player bowler, int ballsInOver, Instant startTime) {
-        return new Over(numberInInnings, striker, nonStriker, new Balls(), bowler, ballsInOver, startTime);
+    private Over(int inningsNumber, int overNumber, Player striker, Player nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
+        this.inningsNumber = inningsNumber;
+        this.overNumber = overNumber;
+        this.striker = Objects.requireNonNull(striker);
+        this.nonStriker = Objects.requireNonNull(nonStriker);
+        if (striker.equals(nonStriker)) {
+            throw new IllegalStateException(striker + " has been set as both striker and non-striker for over " + overNumber);
+        }
+        this.balls = Objects.requireNonNull(balls);
+        this.bowler = Objects.requireNonNull(bowler);
+        this.ballsInOver = ballsInOver;
+        this.startTime = startTime;
+    }
+
+    static Over newOver(OverStartingEvent e) {
+        return new Over(e.inningsNumber(), e.overNumber(), e.striker(), e.nonStriker(), new Balls(), e.bowler(), e.ballsInOver(), e.time().orElse(null));
     }
 
     Over onBall(Ball ball) {
         Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;
         Player nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
-        return new Over(numberInInnings, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
+        return new Over(inningsNumber, overNumber, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
     }
 
     /**
@@ -52,9 +69,23 @@ public final class Over {
     /**
      * @return The zero-indexed number of this over (e.g. the first over in an innings returns 0)
      */
-	public int numberInInnings() {
-		return numberInInnings;
+	public int overNumber() {
+		return overNumber;
 	}
+
+    /**
+     * @return The 1-indexed innings number that this over is in
+     */
+    public int inningsNumber() {
+        return inningsNumber;
+    }
+
+    /**
+     * @return The max number of valid deliveries allowed in the over
+     */
+    public int ballsInOver() {
+        return ballsInOver;
+    }
 
     /**
      * @return The balls bowled in this over
@@ -70,18 +101,6 @@ public final class Over {
 	    return balls.score();
     }
 
-	private Over(int numberInInnings, Player striker, Player nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
-		this.numberInInnings = numberInInnings;
-        this.striker = Objects.requireNonNull(striker);
-        this.nonStriker = Objects.requireNonNull(nonStriker);
-        if (striker.equals(nonStriker)) {
-            throw new IllegalStateException(striker + " has been set as both striker and non-striker for over " + numberInInnings);
-        }
-        this.balls = Objects.requireNonNull(balls);
-        this.bowler = Objects.requireNonNull(bowler);
-        this.ballsInOver = ballsInOver;
-        this.startTime = startTime;
-    }
 
     /**
      * @return The number of runs gained by the team in this over (including extras).
@@ -123,8 +142,14 @@ public final class Over {
     @Override
     public String toString() {
         return "Over{" +
-                "numberInInnings=" + numberInInnings +
-                '}';
+            "inningsNumber=" + inningsNumber +
+            ", overNumber=" + overNumber +
+            ", striker=" + striker +
+            ", nonStriker=" + nonStriker +
+            ", bowler=" + bowler +
+            ", ballsInOver=" + ballsInOver +
+            ", startTime=" + startTime +
+            '}';
     }
 }
 

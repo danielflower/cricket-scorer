@@ -79,7 +79,7 @@ class InningsTest {
         assertThat(over.isMaiden(), is(false));
         assertThat(over.isComplete(), is(false));
         assertThat(over.validDeliveries(), is(0));
-        assertThat(over.numberInInnings(), is(0));
+        assertThat(over.overNumber(), is(0));
         assertThat(over.striker(), is(opener1));
         assertThat(over.nonStriker(), is(opener2));
         assertThat(over.balls().size(), is(0));
@@ -110,7 +110,7 @@ class InningsTest {
                 .withStriker(opener1)
                 .withNonStriker(opener2));
 
-        assertThat(innings().currentOver().get().numberInInnings(), is(0));
+        assertThat(innings().currentOver().get().overNumber(), is(0));
 
         control = control.onEvent(ballCompleted()
             .withBowler(bowler1)
@@ -289,7 +289,7 @@ class InningsTest {
         BowlerInnings bowler1Innings = innings().bowlerInningsList().get(0);
         assertThat(bowler1Innings.balls().size(), is(2));
         assertThat(bowler2Innings.balls().size(), is(1));
-        assertThat(bowler1Innings.spells().get(0).overs().get(0).numberInInnings(), is(bowler2Innings.spells().get(0).overs().get(0).numberInInnings()));
+        assertThat(bowler1Innings.spells().get(0).overs().get(0).overNumber(), is(bowler2Innings.spells().get(0).overs().get(0).overNumber()));
         assertThat(innings().overs(), contains(bowler2Innings.spells().get(0).overs().get(0)));
 
         assertThat(bowler1Innings.balls().score().runsPerOver().toString(), is("3.0"));

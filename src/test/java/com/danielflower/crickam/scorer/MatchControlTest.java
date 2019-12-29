@@ -65,7 +65,7 @@ class MatchControlTest {
         Over over = match().currentInnings().get().currentOver().get();
         assertThat(over.balls().size(), is(0));
         assertThat(over.bowler(), sameInstance(aus.battingOrder().last().get()));
-        assertThat(over.numberInInnings(), is(0));
+        assertThat(over.overNumber(), is(0));
         assertThat(over.validDeliveries(), is(0));
         assertThat(over.remainingBalls(), is(6));
         assertThat(over.isComplete(), is(false));
