@@ -90,7 +90,7 @@ public final class BowlerInnings {
         if (previousOver.isPresent() && (over.numberInInnings() - previousOver.get().numberInInnings()) > 2) {
             spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, ImmutableList.of(over), new Balls(), wickets).onBall(over, ball));
         } else {
-            spells = this.spells.removeLast().copy().add(bowlingSpell.onBall(over, ball));
+            spells = this.spells.removeLast().add(bowlingSpell.onBall(over, ball));
         }
         int wickets = this.wickets;
         if (ball.dismissal().isPresent() && ball.dismissal().get().type().creditedToBowler()) {
@@ -104,7 +104,7 @@ public final class BowlerInnings {
     static ImmutableList<Over> addOverWithPreviousRemovedIfSame(ImmutableList<Over> overs, Over toAddOrReplace) {
         ImmutableList<Over> newOvers = overs;
         if (overs.last().get().numberInInnings() == toAddOrReplace.numberInInnings()) {
-            newOvers = newOvers.view(0, overs.size() - 2).copy();
+            newOvers = newOvers.subList(0, overs.size() - 2);
         }
         newOvers = newOvers.add(toAddOrReplace);
         return newOvers;

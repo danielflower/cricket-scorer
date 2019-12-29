@@ -39,6 +39,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         this(new ArrayList<>(values), 0, values.size() - 1);
     }
 
+    @SafeVarargs
     public static <V> ImmutableList<V> of(V... values) {
         ArrayList<V> objects = new ArrayList<>(Arrays.asList(values));
         return new ImmutableList<>(objects, 0, objects.size() - 1);
@@ -50,20 +51,28 @@ public final class ImmutableList<T> implements Iterable<T> {
     }
 
     public ImmutableList<T> add(T value) {
-        arrayList.add(value);
-        return new ImmutableList<>(arrayList, first, last + 1);
+        List<T> toUse = this.arrayList;
+        int newFirst = this.first;
+        int newLast = this.last + 1;
+        if (last < toUse.size() - 1) {
+            toUse = new ArrayList<>(arrayList.subList(first, last + 1));
+            newFirst = 0;
+            newLast = last - first + 1;
+        }
+        toUse.add(value);
+        return new ImmutableList<>(toUse, newFirst, newLast);
     }
 
     public boolean isEmpty() {
         return first > last;
     }
 
-    public ImmutableList<T> view(int firstIndex, int lastIndex) {
+    public ImmutableList<T> subList(int firstIndex, int lastIndex) {
         if (firstIndex < 0) throw new IllegalArgumentException("firstIndex must be non-negative but was " + firstIndex);
         int newFirst = this.first + firstIndex;
         int newLast = this.first + lastIndex;
         if (newLast > last) throw new IllegalArgumentException("The lastIndex value " + lastIndex + " is too large. Max value allowed is " + (size() - 1));
-        return new ImmutableList<>(Collections.unmodifiableList(arrayList), newFirst, newLast);
+        return new ImmutableList<>(arrayList, newFirst, newLast);
     }
 
 
@@ -95,16 +104,11 @@ public final class ImmutableList<T> implements Iterable<T> {
         return false;
     }
 
-    public ImmutableList<T> copy() {
-        List<T> view = arrayList.subList(first, last + 1);
-        return new ImmutableList<>(view);
-    }
-
     public ImmutableList<T> removeLast() {
         if (size() == 0) {
             throw new IllegalStateException("The list was empty");
         }
-        return view(0, last -1);
+        return subList(0, last -1);
     }
 
     private class ImmutableListIterator implements Iterator<T> {
@@ -150,7 +154,7 @@ public final class ImmutableList<T> implements Iterable<T> {
      * @return a {@code Collector} which collects all the input elements into an {@link ImmutableList}, in encounter order
      */
     public static <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
-        return new ImmutableListCollector<T>();
+        return new ImmutableListCollector<>();
     }
 
 

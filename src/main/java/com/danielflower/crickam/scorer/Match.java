@@ -222,7 +222,7 @@ public final class Match {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {
                 Innings i = lastInnings.get().onEvent(event);
-                newInningsList = newInningsList.removeLast().copy().add(i);
+                newInningsList = newInningsList.removeLast().add(i);
             }
         }
 

@@ -94,10 +94,10 @@ public final class Innings {
             balls = balls.add(ball);
 
             currentOver = over.onBall(ball);
-            overs = overs.removeLast().copy().add(currentOver);
+            overs = overs.removeLast().add(currentOver);
 
             Partnership currentPartnership = currentPartnership().get();
-            partnerships = partnerships.removeLast().copy().add(currentPartnership.onBall(ball));
+            partnerships = partnerships.removeLast().add(currentPartnership.onBall(ball));
 
             BowlerInnings bi = getBowlerInnings(bowler);
             if (bi == null) {

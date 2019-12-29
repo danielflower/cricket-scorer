@@ -30,7 +30,7 @@ class InningsTest {
     private final Player number3 = nz.battingOrder().get(2);
     private final Innings firstInnings =
         MatchControl.newMatch(MatchTest.aMatch().withOversPerInnings(50).build())
-            .onEvent(inningsStarting().withBattingTeam(nz).withBowlingTeam(aus).withOpeners(nz.battingOrder().view(0, 1)))
+            .onEvent(inningsStarting().withBattingTeam(nz).withBowlingTeam(aus).withOpeners(nz.battingOrder().subList(0, 1)))
             .currentInnings().get();
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);
@@ -404,7 +404,7 @@ class InningsTest {
         assertThat(batters.get(0).player(), is(sameInstance(opener1)));
         assertThat(batters.get(1).player(), is(sameInstance(opener2)));
         assertThat(batters.get(2).player(), is(sameInstance(number3)));
-        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().view(3, 10)));
+        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().subList(3, 10)));
         assertThat(innings.partnerships().size(), is(2));
         assertThat(innings.partnerships().get(0).brokenByWicket(), is(true));
         assertThat(innings.partnerships().get(1).brokenByWicket(), is(false));

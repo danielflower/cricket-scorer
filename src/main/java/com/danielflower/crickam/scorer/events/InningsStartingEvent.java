@@ -165,7 +165,7 @@ public final class InningsStartingEvent implements MatchEvent {
 
         public InningsStartingEvent build() {
             requireNonNull(battingTeam, "battingTeam");
-            ImmutableList<Player> openers = this.openers == null ? battingTeam.battingOrder().view(0, 1) : this.openers;
+            ImmutableList<Player> openers = this.openers == null ? battingTeam.battingOrder().subList(0, 1) : this.openers;
             return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, numberOfBalls, target, isFollowingOn);
         }
     }

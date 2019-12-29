@@ -56,7 +56,7 @@ class MatchControlTest {
 
         Innings innings = match.currentInnings().get();
         assertThat(innings.inningsNumber(), is(1));
-        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().view(2, 10)));
+        assertThat(innings.yetToBat(), equalTo(nz.battingOrder().subList(2, 10)));
 
         match = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()));
 
