@@ -453,11 +453,11 @@ public final class Score {
                     break;
                 case "b":
                     batterRuns = 0;
-                    score.withByes(1).withValidDeliveries(1);
+                    score.withByes(runs).withValidDeliveries(1);
                     break;
                 case "lb":
                     batterRuns = 0;
-                    score.withLegByes(1).withValidDeliveries(1).withDots(1);
+                    score.withLegByes(runs).withValidDeliveries(1).withDots(1);
                     break;
             }
         }

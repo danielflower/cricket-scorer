@@ -179,6 +179,7 @@ class ScoreTest {
         assertThat(Score.parse("6").get(), is(sameInstance(SIX)));
         assertThat(Score.parse("1b").get(), is(sameInstance(BYE)));
         assertThat(Score.parse("1lb").get(), is(sameInstance(LEG_BYE)));
+        assertThat(Score.parse("4lb").get(), is(score().withValidDeliveries(1).withLegByes(4).withDots(1).build()));
         assertThat(Score.parse("1nb").get(), is(sameInstance(NO_BALL)));
         assertThat(Score.parse("1w").get(), is(sameInstance(WIDE)));
         assertThat(Score.parse("2w").get(), is(score().withWides(2).withWideDeliveries(1).build()));

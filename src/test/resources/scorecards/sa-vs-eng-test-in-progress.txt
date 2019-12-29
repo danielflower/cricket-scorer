@@ -40,9 +40,9 @@ England 1st Innings
 BATTER                                                R   M   B 4s 6s     SR
 R Burns              c †de Kock b Philander           9      15  2  0   60.0
 D Sibley             c †de Kock b Rabada              4      12  1  0   33.3
-J Denly              c †de Kock b Philander          50     111  9  0   45.0
-J Root (c)           c †de Kock b Nortje             29      49  5  0   59.2
-B Stokes             c †de Kock b Pretorius          35      46  4  2   76.1
+J Denly              c †de Kock b Pretorius          50     111  9  0   45.0
+J Root (c)           c †de Kock b Philander          29      49  5  0   59.2
+B Stokes             c †de Kock b Nortje             35      46  4  2   76.1
 J Bairstow           b Nortje                         1       6  0  0   16.7
 J Buttler †          c †de Kock b Philander          12      39  2  0   30.8
 S Curran             c Hamza b Rabada                20      24  4  0   83.3
@@ -52,8 +52,8 @@ J Anderson           not out                          0       2  0  0    0.0
 Extras               (b 4, lb 5, w 5, nb 2)          16
 TOTAL                (10 wkts; 53.2 overs)          181
 
-Fall of wickets: 1-11 (Rory Burns, 3.1 ov), 2-15 (Dom Sibley, 4.6 ov), 3-70 (Joe Root, 23.1 ov), 4-142 (Joe Denly, 37.5 ov),
-5-143 (Jonny Bairstow, 38.5 ov), 6-150 (Ben Stokes, 40.3 ov), 7-176 (Sam Curran, 48.5 ov),
+Fall of wickets: 1-11 (Rory Burns, 3.1 ov), 2-15 (Dom Sibley, 4.6 ov), 3-70 (Joe Root, 23.1 ov),
+4-142 (Joe Denly, 37.5 ov), 5-143 (Jonny Bairstow, 38.5 ov), 6-150 (Ben Stokes, 40.3 ov), 7-176 (Sam Curran, 48.5 ov),
 8-176 (Jos Buttler, 51.1 ov), 9-181 (Stuart Broad, 52.4 ov), 10-181 (Jofra Archer, 53.2 ov)
 
 BOWLING                 O   M   R   W   Econ    4s 6s WD NB
@@ -62,3 +62,4 @@ V Philander          14.2   8  16   4    1.1     2  0  0  0
 D Pretorius             8   2  23   1    2.8     4  0  0  0
 A Nortje               12   2  47   2    3.9     7  0  1  0
 K Maharaj               4   1  18   0    4.5     1  2  0  0
+

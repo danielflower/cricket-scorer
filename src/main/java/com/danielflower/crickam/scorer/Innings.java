@@ -463,7 +463,8 @@ public final class Innings {
 
     @Override
     public String toString() {
-        return data.battingTeam.team().name() + " innings " + inningsNumber();
+        return data.battingTeam.team().name() + " innings " + inningsNumber() + " - " +
+            score().teamRuns() + "/" + score().wickets() + " from " + overDotBallString() + " ov";
     }
 
 }
