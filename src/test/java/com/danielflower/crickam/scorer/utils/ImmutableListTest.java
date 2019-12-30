@@ -115,4 +115,33 @@ class ImmutableListTest {
         assertThat(list2.iterator().next(), is(1));
     }
 
+    @Test
+    void canFindIndexOfThings() {
+        ImmutableList<Integer> l = new ImmutableList<>();
+        assertThat(l.contains(1), is(false));
+        assertThat(l.indexOf(1), is(-1));
+
+        assertThat(ImmutableList.of(1,2,3,4).subList(1,2).indexOf(3), is(1));
+        assertThat(ImmutableList.of(1,2,3,4).subList(1,2).contains(3), is(true));
+        assertThat(ImmutableList.of(1,2,3,4).subList(1,2).indexOf(4), is(-1));
+        assertThat(ImmutableList.of(1,2,3,4).subList(1,2).indexOf(1), is(-1));
+
+    }
+
+    @Test
+    void canReplaceItems() {
+        assertThat(new ImmutableList<>().replace(1, 2).isEmpty(), is(true));
+        assertThat(new ImmutableList<>().replaceOrAdd(1, 2), contains(2));
+        ImmutableList<Integer> _123 = ImmutableList.of(1, 2, 3);
+        assertThat(_123.replace(0, 4), is(sameInstance(_123)));
+        assertThat(_123.replace(3, 4), contains(1,2,4));
+        assertThat(_123.replace(2, 4), contains(1,4,3));
+        assertThat(_123.replace(1, 4), contains(4,2,3));
+        assertThat(_123.replace(3, 3), is(sameInstance(_123)));
+
+        ImmutableList<Integer> _121314151 = ImmutableList.of(1, 2, 1, 3, 1, 4, 1, 5, 1);
+        assertThat(_121314151.replace(1, 0), contains(0,2,0,3,0,4,0,5,0));
+        assertThat(_121314151.replaceOrAdd(0, 6), contains(1, 2, 1, 3, 1, 4, 1, 5, 1, 6));
+    }
+
 }

@@ -1,5 +1,9 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.MatchEvent;
+
 import java.time.Instant;
 import java.util.Optional;
 
@@ -8,7 +12,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A batting partnership
  */
-public final class Partnership {
+public final class Partnership implements MatchEventListener<Partnership> {
+    private final BatterInnings.State state;
     private final Balls balls;
 	private final Balls firstBatterContribution;
 	private final Balls secondBatterContribution;
@@ -31,7 +36,7 @@ public final class Partnership {
 
     static Partnership newPartnership(int numberInInnings, Player first, Player second) {
         FixedData data = new FixedData(first, second, numberInInnings, Instant.now());
-        return new Partnership(data, new Balls(), new Balls(), new Balls(), null);
+        return new Partnership(BatterInnings.State.IN_PROGRESS, data, new Balls(), new Balls(), new Balls(), null);
     }
 
     /**
@@ -90,7 +95,8 @@ public final class Partnership {
 	    return data.startTime;
     }
 
-    private Partnership(FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
+    private Partnership(BatterInnings.State state, FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
+        this.state = state;
         this.data = requireNonNull(data);
         this.balls = requireNonNull(balls);
         this.firstBatterContribution = requireNonNull(firstBatterContribution);
@@ -112,12 +118,19 @@ public final class Partnership {
         return secondBatterContribution;
     }
 
-    Partnership onBall(Ball ball) {
-        Balls balls = this.balls.add(ball);
-        Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
-        Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
-        Instant endTime = ball.dismissal().isPresent() ? ball.dateCompleted().orElse(null) : null;
-        return new Partnership(data, balls, firstBatterContribution, secondBatterContribution, endTime);
+    public Partnership onEvent(MatchEvent event) {
+        if (event instanceof BallCompletedEvent) {
+            BallCompletedEvent ball = (BallCompletedEvent) event;
+            Balls balls = this.balls.add(ball);
+            Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
+            Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
+            Instant endTime = ball.dismissal().isPresent() ? ball.time().orElse(null) : null;
+            return new Partnership(state, data, balls, firstBatterContribution, secondBatterContribution, endTime);
+        } else if (event instanceof BatterInningsEndedEvent) {
+            BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+            return new Partnership(e.reason(), data, balls, firstBatterContribution, secondBatterContribution, e.time().orElse(null));
+        }
+        return this;
     }
 }
 

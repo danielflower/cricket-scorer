@@ -13,15 +13,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * An innings in a match
  */
-public final class Innings {
-
+public final class Innings implements MatchEventListener<Innings> {
 
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
 
     }
     private final ImmutableList<Partnership> partnerships;
-
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
     private final ImmutableList<BatterInnings> batters;
@@ -72,7 +70,7 @@ public final class Innings {
             Crictils.toInteger(event.maxOvers()), Crictils.toInteger(event.maxBalls()), Crictils.toInteger(event.target()));
     }
 
-    Innings onEvent(MatchEvent event) {
+    public Innings onEvent(MatchEvent event) {
         if (state == State.COMPLETED) {
             throw new IllegalStateException("No events can be added after innings completion");
         }
@@ -106,25 +104,23 @@ public final class Innings {
             if (state != State.IN_PROGRESS) {
                 throw new IllegalStateException("Cannot process a ball when the innings state is " + state);
             }
-            newState = State.IN_PROGRESS;
             if (currentStriker().isEmpty() || currentNonStriker().isEmpty())
                 throw new IllegalStateException("There is only one batter in. Make sure an "
                     + OverStartingEvent.class.getSimpleName() + " has been raised at the beginning of the over and that a "
                     + BatterInningsStartingEvent.class.getSimpleName() + " is called after a wicket");
-            BallCompletedEvent e = (BallCompletedEvent) event;
-            striker = findBatterInnings(e.striker());
-            nonStriker = findBatterInnings(e.nonStriker());
+            BallCompletedEvent ball = (BallCompletedEvent) event;
+            striker = findBatterInnings(ball.striker());
+            nonStriker = findBatterInnings(ball.nonStriker());
 
             Over over = currentOver().orElseThrow();
-            Player bowler = e.bowler();
-            Ball ball = new Ball(e);
+            Player bowler = ball.bowler();
             balls = balls.add(ball);
 
-            currentOver = over.onBall(ball);
+            currentOver = over.onEvent(ball);
             overs = overs.removeLast().add(currentOver);
 
             Partnership currentPartnership = currentPartnership().get();
-            partnerships = partnerships.removeLast().add(currentPartnership.onBall(ball));
+            partnerships = partnerships.removeLast().add(currentPartnership.onEvent(ball));
 
             BowlerInnings bi = getBowlerInnings(bowler);
             if (bi == null) {
@@ -142,8 +138,8 @@ public final class Innings {
                 }
             }
 
-            striker = striker.onBall(ball);
-            nonStriker = nonStriker.onBall(ball);
+            striker = striker.onEvent(ball);
+            nonStriker = nonStriker.onEvent(ball);
             batters = new ImmutableList<>();
             for (BatterInnings existing : this.batterInningsList()) {
                 if (existing.isSameInnings(striker)) {
@@ -155,8 +151,8 @@ public final class Innings {
                 }
             }
 
-            if (e.dismissal().isPresent()) {
-                Dismissal dismissal = e.dismissal().get();
+            if (ball.dismissal().isPresent()) {
+                Dismissal dismissal = ball.dismissal().get();
                 if (dismissal.batter().equals(striker.player())) {
                     striker = null;
                 } else if (dismissal.batter().equals(nonStriker.player())) {
@@ -164,7 +160,7 @@ public final class Innings {
                 }
             }
 
-            if (e.playersCrossed()) {
+            if (ball.playersCrossed()) {
                 BatterInnings temp = striker;
                 striker = nonStriker;
                 nonStriker = temp;
@@ -196,9 +192,33 @@ public final class Innings {
             } else {
                 throw new IllegalStateException("A new batter innings cannot start when there are already two batters in");
             }
+        } else {
+
+            if (this.currentStriker != null) {
+                striker = this.currentStriker.onEvent(event);
+                batters = batters.replace(this.currentStriker, striker);
+            }
+            if (this.currentNonStriker != null) {
+                nonStriker = this.currentNonStriker.onEvent(event);
+                batters = batters.replace(this.currentNonStriker, nonStriker);
+            }
+
+            Partnership currentValue = currentPartnership().orElse(null);
+            if (currentValue != null) {
+                partnerships = partnerships.replace(currentValue, currentValue.onEvent(event));
+            }
+
         }
 
         return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
+    }
+
+    private static <L extends MatchEventListener<L>> ImmutableList<L> applyAndAdd(MatchEvent event, ImmutableList<L> currentList, L currentValue) {
+        if (currentValue == null) {
+            return currentList;
+        }
+        L newValue = currentValue.onEvent(event);
+        return currentList.replace(currentValue, newValue);
     }
 
     /**
@@ -347,7 +367,7 @@ public final class Innings {
      * @return The number of the last ball
      */
     public String overDotBallString() {
-        Optional<Ball> ball = balls.list().last();
+        Optional<BallCompletedEvent> ball = balls.list().last();
         Optional<Over> over = overs.last();
         if (ball.isPresent() && over.isPresent()) {
             int b = ball.get().numberInOver();

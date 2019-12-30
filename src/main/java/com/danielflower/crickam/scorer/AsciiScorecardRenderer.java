@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
@@ -86,7 +88,7 @@ public class AsciiScorecardRenderer {
             writer.append("Fall of wickets: ");
             // TODO: handle case where innings started with penalties credited
             Score score = Score.EMPTY;
-            for (Ball ball : innings.balls()) {
+            for (BallCompletedEvent ball : innings.balls()) {
                 score = score.add(ball.score());
                 if (ball.dismissal().isPresent()) {
                     if (score.wickets() > 1) {

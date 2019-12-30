@@ -1,17 +1,16 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 public final class Ball {
 
-    private final BallCompletedEvent e;
+    private final com.danielflower.crickam.scorer.events.BallCompletedEvent e;
 
-    Ball(BallCompletedEvent event) {
+    Ball(com.danielflower.crickam.scorer.events.BallCompletedEvent event) {
         this.e = requireNonNull(event, "event");
     }
 
@@ -89,5 +88,23 @@ public final class Ball {
      */
 	public String overDotBallString() {
         return overNumber() + "." + numberInOver();
+    }
+
+    public String toString() {
+	    return overDotBallString() + " " + bowler().familyName() + " to " + striker().familyName() +  " " + score().teamRuns()
+            + " runs " + (score().wickets() > 0 ? " OUT "  : "");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ball ball = (Ball) o;
+        return Objects.equals(e, ball.e);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(e);
     }
 }

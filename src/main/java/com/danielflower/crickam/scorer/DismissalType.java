@@ -42,6 +42,13 @@ public enum DismissalType {
         throw new IllegalArgumentException("No dismissal abbreviation " + abbreviation);
     }
 
+    /**
+     * @return The name of this dismissal in lowercase english, such as &quot;leg before wicket&quot;
+     */
+    public String fullName() {
+        return this.name().toLowerCase().replace('_', ' ');
+    }
+
     public boolean creditedToBowler() {
         return bowler;
     }

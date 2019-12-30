@@ -1,5 +1,6 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -83,7 +84,7 @@ public final class BowlerInnings {
         return new BowlerInnings(bowler, new Balls(), spells.add(spell), ImmutableList.of(over), 0);
     }
 
-    BowlerInnings onBall(Over over, Ball ball) {
+    BowlerInnings onBall(Over over, BallCompletedEvent ball) {
         BowlingSpell bowlingSpell = this.spells.last().get();
         Optional<Over> previousOver = bowlingSpell.overs().last();
         ImmutableList<BowlingSpell> spells;

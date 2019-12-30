@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+
 import java.util.Objects;
 
 import static com.danielflower.crickam.scorer.BowlerInnings.addOverWithPreviousRemovedIfSame;
@@ -98,7 +100,7 @@ public final class BowlingSpell {
         return bowler + "    " + overs.size() + " Overs; " + s.teamRuns() + " Runs; " + wickets() + " Wkts; " + s.runsPerOver() + " RPO; " + s.dots() + " 0s; " + s.fours() + " 4s; " + s.sixes() + " 6s";
     }
 
-    BowlingSpell onBall(Over over, Ball ball) {
+    BowlingSpell onBall(Over over, BallCompletedEvent ball) {
         ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
         int wickets = this.wickets;
         if (ball.dismissal().isPresent() && ball.dismissal().get().type().creditedToBowler()) {

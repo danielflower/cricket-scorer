@@ -45,9 +45,48 @@ public final class ImmutableList<T> implements Iterable<T> {
         return new ImmutableList<>(objects, 0, objects.size() - 1);
     }
 
-
     public int size() {
         return last - first + 1;
+    }
+
+    public ImmutableList<T> replace(T oldValue, T newValue) {
+        if (Objects.equals(oldValue, newValue)) {
+            return this;
+        }
+        if (!contains(oldValue)) {
+            return this;
+        }
+        if (this.last().orElseThrow().equals(oldValue) && indexOf(oldValue) == last) {
+            return this.removeLast().add(newValue);
+        }
+        ImmutableList<T> copy = new ImmutableList<>();
+        for (T existing : this) {
+            if (Objects.equals(oldValue, existing)) {
+                copy = copy.add(newValue);
+            } else {
+                copy = copy.add(existing);
+            }
+        }
+        return copy;
+    }
+
+    public ImmutableList<T> replaceOrAdd(T oldValue, T newValue) {
+        if (contains(oldValue)) {
+            return replace(oldValue, newValue);
+        } else {
+            return this.add(newValue);
+        }
+    }
+
+    public int indexOf(T value) {
+        int index = 0;
+        for (T val : this) {
+            if (Objects.equals(val, value)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     public ImmutableList<T> add(T value) {
@@ -87,6 +126,16 @@ public final class ImmutableList<T> implements Iterable<T> {
         return StreamSupport.stream(spliterator(), false);
     }
 
+    /**
+     * @return the first item in this list, or empty if the list is empty
+     */
+    public Optional<T> first() {
+        return isEmpty() ? Optional.empty() : Optional.of(arrayList.get(first));
+    }
+
+    /**
+     * @return the last item in this list, or empty if the list is empty
+     */
     public Optional<T> last() {
         return isEmpty() ? Optional.empty() : Optional.of(arrayList.get(last));
     }
@@ -96,12 +145,7 @@ public final class ImmutableList<T> implements Iterable<T> {
     }
 
     public boolean contains(T item) {
-        for (T val : this) {
-            if (Objects.equals(val, item)) {
-                return true;
-            }
-        }
-        return false;
+        return indexOf(item) > -1;
     }
 
     public ImmutableList<T> removeLast() {

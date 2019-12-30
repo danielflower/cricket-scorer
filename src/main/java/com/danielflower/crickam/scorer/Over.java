@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+import com.danielflower.crickam.scorer.events.MatchEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 
 import java.time.Instant;
@@ -39,10 +41,15 @@ public final class Over {
         return new Over(e.inningsNumber(), e.overNumber(), e.striker(), e.nonStriker(), new Balls(), e.bowler(), e.ballsInOver(), e.time().orElse(null));
     }
 
-    Over onBall(Ball ball) {
-        Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;
-        Player nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
-        return new Over(inningsNumber, overNumber, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
+    Over onEvent(MatchEvent event) {
+        if (event instanceof BallCompletedEvent) {
+            BallCompletedEvent ball = (BallCompletedEvent) event;
+            Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;
+            Player nonStriker = ball.playersCrossed() ? this.striker : this.nonStriker;
+            return new Over(inningsNumber, overNumber, striker, nonStriker, balls.add(ball), bowler, ballsInOver, startTime);
+        } else {
+            return this;
+        }
     }
 
     /**
@@ -127,7 +134,7 @@ public final class Over {
      * @return The number of valid (or legal) balls bowled so far in this over.
      */
 	public int validDeliveries() {
-		return (int) balls.list().stream().filter(Ball::isValid).count();
+		return (int) balls.list().stream().filter(BallCompletedEvent::isValid).count();
 	}
 
     /**

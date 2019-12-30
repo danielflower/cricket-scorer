@@ -1,21 +1,22 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
 
 /**
- * An immutable list of {@link Ball} objects and their total score.
+ * An immutable list of {@link BallCompletedEvent} objects and their total score.
  */
-public final class Balls implements Iterable<Ball> {
-    private final ImmutableList<Ball> balls;
+public final class Balls implements Iterable<BallCompletedEvent> {
+    private final ImmutableList<BallCompletedEvent> balls;
     private final Score score;
 
     Balls() {
         this(new ImmutableList<>(), Score.EMPTY);
     }
-    private Balls(@NotNull ImmutableList<Ball> balls, @NotNull Score score) {
+    private Balls(@NotNull ImmutableList<BallCompletedEvent> balls, @NotNull Score score) {
         this.balls = Objects.requireNonNull(balls);
         this.score = Objects.requireNonNull(score);
     }
@@ -30,11 +31,11 @@ public final class Balls implements Iterable<Ball> {
     /**
      * @return The balls as an immutable list
      */
-    public ImmutableList<Ball> list() {
+    public ImmutableList<BallCompletedEvent> list() {
         return balls;
     }
 
-    Balls add(Ball ball) {
+    Balls add(BallCompletedEvent ball) {
         return new Balls(balls.add(ball), score.add(ball.score()));
     }
 
@@ -50,9 +51,8 @@ public final class Balls implements Iterable<Ball> {
         return balls.size() + " (" + score.teamRuns() + " runs)";
     }
 
-    @NotNull
     @Override
-    public Iterator<Ball> iterator() {
+    public Iterator<BallCompletedEvent> iterator() {
         return balls.iterator();
     }
 

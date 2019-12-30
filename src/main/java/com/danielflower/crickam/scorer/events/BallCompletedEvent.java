@@ -108,6 +108,33 @@ public final class BallCompletedEvent implements MatchEvent {
         return numberInMatch;
     }
 
+    public Score score() {
+        return runsScored;
+    }
+
+    /**
+     * @return True if this is a valid, or legal delivery (i.e. a ball that was not a wide or no-ball)
+     */
+    public boolean isValid() {
+        return score().validDeliveries() > 0;
+    }
+
+
+    /**
+     * Gets the number of the this ball as a string in the format <em>over.ball</em>, for example &quot;0.1&quot;
+     *
+     * @return The number of the last ball
+     */
+    public String overDotBallString() {
+        return overNumber() + "." + numberInOver();
+    }
+
+    public String toString() {
+        String out = dismissal != null ? " OUT " + dismissal.type().fullName() : "";
+        return overDotBallString() + " " + bowler().familyName() + " to " + striker().familyName() + " "
+            + runsScored().teamRuns() + " runs " + out;
+    }
+
     public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
 
         private Player bowler;

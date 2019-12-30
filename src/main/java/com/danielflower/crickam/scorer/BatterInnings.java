@@ -1,5 +1,9 @@
 package com.danielflower.crickam.scorer;
 
+import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.MatchEvent;
+
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Optional;
@@ -9,7 +13,36 @@ import static java.util.Objects.requireNonNull;
 /**
  * The innings of a batter at a specific point in time.
  */
-public final class BatterInnings {
+public final class BatterInnings implements MatchEventListener<BatterInnings> {
+
+    public enum State {
+        /**
+         * The innings is in progress
+         */
+        IN_PROGRESS,
+
+        /**
+         * The batter retired due to illness, injury, or some other unavoidable reason, and may bat again.
+         */
+        RETIRED,
+
+        /**
+         * The batter chose to retire, so cannot resume their innings (unless the opposition caption agrees)
+         */
+        RETIRED_OUT,
+
+        /**
+         * The batter was dismissed
+         */
+        DISMISSED,
+
+        /**
+         * The batter was not out when the team's innings ended
+         */
+        INNINGS_ENDED
+    }
+
+    private final State state;
     private final Player player;
     private final Balls balls;
     private final int numberCameIn;
@@ -17,7 +50,8 @@ public final class BatterInnings {
 	private final Instant inningsEndTime;
 	private final Dismissal dismissal;
 
-    BatterInnings(Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
+    private BatterInnings(State state, Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
+        this.state = state;
         this.player = requireNonNull(player);
         this.balls = requireNonNull(balls);
         this.numberCameIn = numberCameIn;
@@ -27,11 +61,18 @@ public final class BatterInnings {
     }
 
     static BatterInnings newInnings(Player player, int numberCameIn) {
-        return new BatterInnings(player, new Balls(), numberCameIn, Instant.now(), null, null);
+        return new BatterInnings(State.IN_PROGRESS, player, new Balls(), numberCameIn, Instant.now(), null, null);
     }
 
     boolean isSameInnings(BatterInnings other) {
         return player().equals(other.player());
+    }
+
+    /**
+     * @return The state that this innings is in
+     */
+    public State state() {
+        return state;
     }
 
     /**
@@ -49,7 +90,7 @@ public final class BatterInnings {
     }
 
     /**
-     * @return How this innings was ended (if the player is out or retired)
+     * @return How this innings was ended, if it was ended in dismissal
      */
 	public Optional<Dismissal> dismissal() {
 		return Optional.ofNullable(dismissal);
@@ -84,20 +125,6 @@ public final class BatterInnings {
     }
 
     /**
-     * @return True if the batter is out or retired
-     */
-    public boolean isOut() {
-        return dismissal != null;
-    }
-
-    /**
-     * @return True if the batter is not out
-     */
-    public boolean isNotOut() {
-        return dismissal == null;
-    }
-
-    /**
      * @return The batter's score.
      */
     public Score score() {
@@ -106,7 +133,7 @@ public final class BatterInnings {
 
     @Override
 	public String toString() {
-        String notout = isNotOut() ? "*" : "";
+        String notout = state != State.DISMISSED ? "*" : "";
 		return player.familyName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
 	}
 
@@ -128,20 +155,34 @@ public final class BatterInnings {
         return Objects.hash(player, balls, numberCameIn, inningsStartTime, inningsEndTime, dismissal);
     }
 
-    BatterInnings onBall(Ball ball) {
+    public BatterInnings onEvent(MatchEvent event) {
+        boolean somethingChanged = false;
         Instant endTime = this.inningsEndTime;
         Dismissal dismissal = null;
-        boolean somethingChanged = false;
-        if (ball.dismissal().isPresent() && ball.dismissal().get().batter().equals(this.player)) {
-            endTime = ball.dateCompleted().orElse(null);
-            dismissal = ball.dismissal().get();
-            somethingChanged = true;
-        }
         Balls newBalls = this.balls;
-        if (ball.striker().equals(this.player)) {
-            newBalls = newBalls.add(ball);
+        State newState = this.state;
+
+        if (event instanceof BallCompletedEvent) {
+            BallCompletedEvent ball = (BallCompletedEvent) event;
+            if (newState != State.IN_PROGRESS) {
+                throw new IllegalStateException("The current batter's innings was " + newState + " but received ball " + ball);
+            }
+
+            if (ball.dismissal().isPresent() && ball.dismissal().get().batter().equals(this.player)) {
+                endTime = ball.time().orElse(null);
+                dismissal = ball.dismissal().get();
+                somethingChanged = true;
+            }
+            if (ball.striker().equals(this.player)) {
+                newBalls = newBalls.add(ball);
+                somethingChanged = true;
+            }
+        } else if (event instanceof BatterInningsEndedEvent) {
+            BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+            newState = e.reason();
+            endTime = e.time().orElse(null);
             somethingChanged = true;
         }
-        return somethingChanged ? new BatterInnings(player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;
+        return somethingChanged ? new BatterInnings(newState, player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;
     }
 }
