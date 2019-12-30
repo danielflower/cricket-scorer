@@ -57,15 +57,7 @@ public final class Innings implements MatchEventListener<Innings> {
     }
 
     static Innings newInnings(InningsStartingEvent event) {
-        ImmutableList<Player> openers = event.openers();
-        BatterInnings currentStriker = BatterInnings.newInnings(openers.get(0), 1);
-        BatterInnings currentNonStriker = BatterInnings.newInnings(openers.get(1), 2);
-
-        ImmutableList<Partnership> partnerships = ImmutableList.of(Partnership.newPartnership(1, currentStriker.player(), currentNonStriker.player()));
-        ImmutableList<BatterInnings> batters = ImmutableList.of(currentStriker, currentNonStriker);
-
-        ImmutableList<Player> yetToBat = event.battingTeam().battingOrder().stream().filter(p -> !openers.contains(p)).collect(toImmutableList());
-        return new Innings(event, partnerships, currentStriker, currentNonStriker, batters, yetToBat, new ImmutableList<>(),
+        return new Innings(event, new ImmutableList<>(), null, null, new ImmutableList<>(), event.battingTeam().battingOrder(), new ImmutableList<>(),
             null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED,
             Crictils.toInteger(event.maxOvers()), Crictils.toInteger(event.maxBalls()), Crictils.toInteger(event.target()));
     }
@@ -176,15 +168,13 @@ public final class Innings implements MatchEventListener<Innings> {
             nonStriker = null;
         } else if (event instanceof BatterInningsStartingEvent) {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
-            if (e.batter() == null && yetToBat.isEmpty()) {
-                throw new IllegalStateException("A new batter innings was declared without a specific batter, and there are no batters left in the line up");
-            }
-            Player batter = e.batter() != null ? e.batter() : yetToBat.get(0);
-            yetToBat = yetToBat.stream().filter(p -> !p.equals(batter)).collect(toImmutableList());
-            BatterInnings newBatterInnings = BatterInnings.newInnings(batter, batters.size());
+            yetToBat = yetToBat.stream().filter(p -> !p.equals(e.batter())).collect(toImmutableList());
+            BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1);
             batters = batters.add(newBatterInnings);
-            Partnership newPartnership = Partnership.newPartnership(partnerships.size(), striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player());
-            partnerships = partnerships.add(newPartnership);
+            if (striker != null || nonStriker != null) {
+                Partnership newPartnership = Partnership.newPartnership(partnerships.size() + 1, striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player());
+                partnerships = partnerships.add(newPartnership);
+            }
             if (striker == null) {
                 striker = newBatterInnings;
             } else if (nonStriker == null) {
@@ -213,13 +203,6 @@ public final class Innings implements MatchEventListener<Innings> {
         return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
     }
 
-    private static <L extends MatchEventListener<L>> ImmutableList<L> applyAndAdd(MatchEvent event, ImmutableList<L> currentList, L currentValue) {
-        if (currentValue == null) {
-            return currentList;
-        }
-        L newValue = currentValue.onEvent(event);
-        return currentList.replace(currentValue, newValue);
-    }
 
     /**
      * @return The over being bowled, or empty if between overs or before/after the innings has started

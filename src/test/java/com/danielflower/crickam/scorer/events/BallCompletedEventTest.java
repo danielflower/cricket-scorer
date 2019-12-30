@@ -5,7 +5,7 @@ import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import org.junit.jupiter.api.Test;
 
-import static com.danielflower.crickam.scorer.events.MatchEvents.ballCompleted;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -14,10 +14,12 @@ class BallCompletedEventTest {
     private final LineUp nz = NewZealand.oneDayLineUp().build();
     private final LineUp aus = Australia.oneDayLineUp().build();
     private final Match match = MatchControl.newMatch(
-        MatchEvents.matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, aus))
+        matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, aus))
     )
-        .onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
-        .onEvent(MatchEvents.overStarting(aus.battingOrder().last().get()))
+        .onEvent(inningsStarting().withBattingTeam(nz))
+        .onEvent(batterInningsStarting())
+        .onEvent(batterInningsStarting())
+        .onEvent(overStarting(aus.battingOrder().last().get()))
         .match();
 
     @Test

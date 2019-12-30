@@ -39,10 +39,9 @@ class MatchControlTest {
                 .withTeams(ImmutableList.of(nz, aus))
                 .build()
         );
-        control = control.onEvent(inningsStarting()
-            .withBattingTeam(nz)
-            .withTime(Instant.now())
-        );
+        control = control.onEvent(inningsStarting().withBattingTeam(nz).withTime(Instant.now()))
+            .onEvent(MatchEvents.batterInningsStarting())
+            .onEvent(MatchEvents.batterInningsStarting());
     }
 
     private Match match() {
@@ -135,7 +134,9 @@ class MatchControlTest {
                 .withTimeZone(nz)
                 .build()
         );
-        control = control.onEvent(inningsStarting().withBattingTeam(this.nz));
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz))
+            .onEvent(MatchEvents.batterInningsStarting())
+            .onEvent(MatchEvents.batterInningsStarting());
         control = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()).withBallsInOver(100));
 
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-26T22:30:00Z"));

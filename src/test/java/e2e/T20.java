@@ -1,6 +1,7 @@
 package e2e;
 
 import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.events.MatchEvents;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import scaffolding.ScorecardLoader;
@@ -64,10 +65,10 @@ public class T20 {
                 .build()
         );
 
-        control = control.onEvent(inningsStarting()
-            .withBattingTeam(nz)
-            .withTime(control.localTime(14, 0, 0))
-        );
+        control = control
+            .onEvent(inningsStarting().withBattingTeam(nz).withTime(control.localTime(14, 0, 0)))
+            .onEvent(MatchEvents.batterInningsStarting()) // opener 1
+            .onEvent(MatchEvents.batterInningsStarting()); // opener 2
 
         control = control.onEvent(overStarting(findFielder("SM Curran")));
         control = control.onEvent(ballCompleted("1"));
@@ -266,10 +267,9 @@ public class T20 {
 
 
         control = control.onEvent(inningsCompleted().withTime(control.localTime(15, 38, 0)));
-        control = control.onEvent(inningsStarting()
-            .withBattingTeam(eng)
-            .withTime(control.localTime(14, 0, 0))
-        );
+        control = control.onEvent(inningsStarting().withBattingTeam(eng).withTime(control.localTime(14, 0, 0)))
+            .onEvent(MatchEvents.batterInningsStarting()) // opener 1
+            .onEvent(MatchEvents.batterInningsStarting()); // opener 2;
 
         control = control.onEvent(overStarting(findFielder("Southee")));
         control = control.onEvent(ballCompleted("0"));

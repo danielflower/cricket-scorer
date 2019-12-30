@@ -120,6 +120,9 @@ public final class OverStartingEvent implements MatchEvent {
 
         public OverStartingEvent build(Match match) {
             Innings innings = match.currentInnings().orElseThrow(() -> new IllegalStateException("An over cannot start when there is no current innings"));
+            if (innings.currentStriker().isEmpty() && innings.currentNonStriker().isEmpty()) {
+                throw new IllegalStateException("An over can only start with two batters at the crease. Did you miss sending a " + BatterInningsStartingEvent.class.getSimpleName() + " event?");
+            }
             boolean isFirst = innings.overs().last().isEmpty();
             Player strikerPlayer = Objects.requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
             Player nonStrikerPlayer = Objects.requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));

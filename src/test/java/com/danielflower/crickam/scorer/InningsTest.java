@@ -26,7 +26,9 @@ class InningsTest {
     private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.ODI)
         .withTeams(ImmutableList.of(aus, nz))
         .build())
-        .onEvent(inningsStarting().withBattingTeam(nz));
+        .onEvent(inningsStarting().withBattingTeam(nz))
+        .onEvent(MatchEvents.batterInningsStarting())
+        .onEvent(MatchEvents.batterInningsStarting());
     
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);
