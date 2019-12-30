@@ -26,12 +26,10 @@ class MatchResultTest {
             .withNumberOfInningsPerTeam(1)
             .withOversPerInnings(1)
             .withBallsPerInnings(3).build()
-        );
+            );
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
-        control = control.onEvent(inningsStarting().withBattingTeam(aus))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting());
+        control = control.onEvent(inningsStarting().withBattingTeam(aus));
 
         assertThat(control.match().currentInnings().get().target(), is(OptionalInt.empty()));
 
@@ -42,8 +40,6 @@ class MatchResultTest {
             .onEvent(overCompleted())
             .onEvent(inningsCompleted())
             .onEvent(inningsStarting().withBattingTeam(nz))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting(ausBowler).withBallsInOver(2))
             .onEvent(ballCompleted("1"));
 
@@ -95,14 +91,10 @@ class MatchResultTest {
             .build());
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("4"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"));
 
@@ -110,14 +102,10 @@ class MatchResultTest {
 
         MatchControl threeToWin = control.onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(aus))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("4"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler).withBallsInOver(12));
 
         assertThat(threeToWin.currentInnings().target(), is(OptionalInt.of(3)));
@@ -191,20 +179,14 @@ class MatchResultTest {
             .withTeams(ImmutableList.of(aus, nz))
             .build())
             .onEvent(inningsStarting().withBattingTeam(aus))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("0"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(aus))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler).withBallsInOver(20))
             .onEvent(ballCompleted("2"))
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))

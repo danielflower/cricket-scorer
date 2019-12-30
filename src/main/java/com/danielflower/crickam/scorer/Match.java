@@ -8,6 +8,7 @@ import java.util.OptionalInt;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.Crictils.toInteger;
+import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -40,7 +41,7 @@ public final class Match {
         FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
             e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
             e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
-        return new Match(fd, State.NOT_STARTED, null, new ImmutableList<>(), new Balls());
+        return new Match(fd, State.NOT_STARTED, null, emptyList(), new Balls());
     }
 
     public Balls balls() {

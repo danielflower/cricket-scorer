@@ -144,4 +144,14 @@ class ImmutableListTest {
         assertThat(_121314151.replaceOrAdd(0, 6), contains(1, 2, 1, 3, 1, 4, 1, 5, 1, 6));
     }
 
+    @Test
+    public void differentThingsCanBeAddedToEmptyLists() {
+        ImmutableList<String> strings = ImmutableList.emptyList();
+        strings = strings.add("Hello");
+        ImmutableList<Integer> ints = ImmutableList.<Integer>emptyList().add(1);
+
+        assertThat(strings, contains("Hello"));
+        assertThat(ints, contains(1));
+    }
+
 }

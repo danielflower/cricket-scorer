@@ -26,9 +26,7 @@ class InningsTest {
     private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.ODI)
         .withTeams(ImmutableList.of(aus, nz))
         .build())
-        .onEvent(inningsStarting().withBattingTeam(nz))
-        .onEvent(MatchEvents.batterInningsStarting())
-        .onEvent(MatchEvents.batterInningsStarting());
+        .onEvent(inningsStarting().withBattingTeam(nz));
     
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);
@@ -343,14 +341,14 @@ class InningsTest {
 
         BatterInnings o1i = innings().batterInningsList().get(0);
         assertThat(o1i.player(), is(sameInstance(opener1)));
-        assertThat(o1i.state(), is(BatterInnings.State.IN_PROGRESS));
+        assertThat(o1i.state(), is(BattingState.IN_PROGRESS));
         assertThat(o1i.numberCameIn(), is(1));
         assertThat(o1i.balls().size(), is(2));
         assertThat(o1i.balls().score().batterRuns(), is(2));
 
         BatterInnings o2i = innings().batterInningsList().get(1);
         assertThat(o2i.player(), is(sameInstance(opener2)));
-        assertThat(o2i.state(), is(BatterInnings.State.IN_PROGRESS));
+        assertThat(o2i.state(), is(BattingState.IN_PROGRESS));
         assertThat(o2i.numberCameIn(), is(2));
         assertThat(o2i.balls().size(), is(1));
         assertThat(o2i.balls().score().batterRuns(), is(1));

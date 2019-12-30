@@ -55,7 +55,15 @@ public final class MatchControl {
 
     MatchControl onEvent(MatchEvent event) {
         Match match = match().onEvent(event);
-        return new MatchControl(events.add(new EventResult(event, match)));
+        ImmutableList<EventResult> newEvents = events.add(new EventResult(event, match));
+
+        for (MatchEventBuilder<?> builder : event.generatedEvents()) {
+            MatchEvent generatedEvent = builder.build(match);
+            match = match.onEvent(generatedEvent);
+            newEvents = newEvents.add(new EventResult(generatedEvent, match));
+        }
+
+        return new MatchControl(newEvents);
     }
 
     public Match match() {

@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * A batting partnership
  */
 public final class Partnership implements MatchEventListener<Partnership> {
-    private final BatterInnings.State state;
+    private final BattingState state;
     private final Balls balls;
 	private final Balls firstBatterContribution;
 	private final Balls secondBatterContribution;
@@ -36,7 +36,7 @@ public final class Partnership implements MatchEventListener<Partnership> {
 
     static Partnership newPartnership(int numberInInnings, Player first, Player second) {
         FixedData data = new FixedData(first, second, numberInInnings, Instant.now());
-        return new Partnership(BatterInnings.State.IN_PROGRESS, data, new Balls(), new Balls(), new Balls(), null);
+        return new Partnership(BattingState.IN_PROGRESS, data, new Balls(), new Balls(), new Balls(), null);
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Partnership implements MatchEventListener<Partnership> {
 	    return data.startTime;
     }
 
-    private Partnership(BatterInnings.State state, FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
+    private Partnership(BattingState state, FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
         this.state = state;
         this.data = requireNonNull(data);
         this.balls = requireNonNull(balls);
@@ -124,7 +124,6 @@ public final class Partnership implements MatchEventListener<Partnership> {
             Balls balls = this.balls.add(ball);
             Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
             Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
-            Instant endTime = ball.dismissal().isPresent() ? ball.time().orElse(null) : null;
             return new Partnership(state, data, balls, firstBatterContribution, secondBatterContribution, endTime);
         } else if (event instanceof BatterInningsEndedEvent) {
             BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;

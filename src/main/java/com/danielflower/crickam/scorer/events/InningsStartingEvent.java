@@ -1,9 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.Crictils;
-import com.danielflower.crickam.scorer.Innings;
-import com.danielflower.crickam.scorer.LineUp;
-import com.danielflower.crickam.scorer.Match;
+import com.danielflower.crickam.scorer.*;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -18,6 +15,7 @@ public final class InningsStartingEvent implements MatchEvent {
     private final LineUp battingTeam;
     private final LineUp bowlingTeam;
     private final Instant time;
+    private final ImmutableList<Player> openers;
     private final int inningsNumberForMatch;
     private final int inningsNumberForBattingTeam;
     private final boolean isFinalInnings;
@@ -25,15 +23,19 @@ public final class InningsStartingEvent implements MatchEvent {
     private final Integer target;
     private final boolean isFollowingOn;
     private final Integer maxOvers;
+    private final ImmutableList<MatchEventBuilder<?>> generatedEvents;
 
-    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings) {
+    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?>> generatedEvents) {
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
         this.bowlingTeam = requireNonNull(bowlingTeam, "bowlingTeam");
         this.time = time;
+        this.openers = requireNonNull(openers, "openers");
         this.maxOvers = maxOvers;
+        this.generatedEvents = requireNonNull(generatedEvents, "generatedEvents");
         this.inningsNumberForMatch = requireInRange("inningsNumberForMatch", inningsNumberForMatch, isFinalInnings ? 2 : 1);
         this.inningsNumberForBattingTeam = requireInRange("inningsNumberForBattingTeam", inningsNumberForBattingTeam, 1);
         this.isFinalInnings = isFinalInnings;
+        if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
         this.maxBalls = requireInRange("numberOfBalls", maxBalls, 1, Integer.MAX_VALUE);
         if (isFinalInnings) {
             requireNonNull(target, "The target cannot be null for the final innings");
@@ -57,6 +59,9 @@ public final class InningsStartingEvent implements MatchEvent {
         return Optional.ofNullable(time);
     }
 
+    public ImmutableList<Player> openers() {
+        return openers;
+    }
 
     /**
      * @return The number of the innings in the match, starting at 1
@@ -104,11 +109,17 @@ public final class InningsStartingEvent implements MatchEvent {
         return isFollowingOn;
     }
 
+    @Override
+    public ImmutableList<MatchEventBuilder<?>> generatedEvents() {
+        return generatedEvents;
+    }
+
     public static final class Builder implements MatchEventBuilder<InningsStartingEvent> {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;
         private Instant time;
+        private ImmutableList<Player> openers;
         private Integer maxBalls;
         private Integer target;
         private Boolean isFollowingOn;
@@ -139,6 +150,24 @@ public final class InningsStartingEvent implements MatchEvent {
         public Builder withTime(Instant startTime) {
             this.time = startTime;
             return this;
+        }
+
+        /**
+         * @param openers The two openers for the batting team
+         * @return This builder
+         */
+        public Builder withOpeners(ImmutableList<Player> openers) {
+            this.openers = openers;
+            return this;
+        }
+
+        /**
+         * @param first  The opener who will face the first ball
+         * @param second The opener who will be at the non-striker's end
+         * @return This builder
+         */
+        public Builder withOpeners(Player first, Player second) {
+            return withOpeners(ImmutableList.of(first, second));
         }
 
         /**
@@ -212,6 +241,13 @@ public final class InningsStartingEvent implements MatchEvent {
                 followOn = isFollowingOn != null && isFollowingOn;
             }
 
+            openers = openers == null ? battingTeam.battingOrder().subList(0, 1) : this.openers;
+            for (Player opener : openers) {
+                if (!battingTeam.battingOrder().contains(opener)) {
+                    throw new IllegalStateException("The opener " + opener + " is not in the batting team " + battingTeam);
+                }
+            }
+
             if (maxOvers == null && maxBalls == null) {
                 maxOvers = Crictils.toInteger(match.oversPerInnings());
                 maxBalls = Crictils.toInteger(match.ballsPerInnings());
@@ -242,8 +278,11 @@ public final class InningsStartingEvent implements MatchEvent {
                 }
             }
 
-            return new InningsStartingEvent(battingTeam, bowlingTeam, time, maxBalls, maxOvers, target, followOn,
-                inningsNumber, battingInningsNumber, finalInnings);
+            ImmutableList<MatchEventBuilder<?>> generatedEvents = openers.stream()
+                .map(player -> MatchEvents.batterInningsStarting().withBatter(player).withTime(time))
+                .collect(ImmutableList.toImmutableList());
+            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, maxBalls, maxOvers, target, followOn,
+                inningsNumber, battingInningsNumber, finalInnings, generatedEvents);
         }
     }
 }

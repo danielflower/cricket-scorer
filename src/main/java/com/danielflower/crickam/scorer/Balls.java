@@ -14,7 +14,7 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     private final Score score;
 
     Balls() {
-        this(new ImmutableList<>(), Score.EMPTY);
+        this(ImmutableList.emptyList(), Score.EMPTY);
     }
     private Balls(@NotNull ImmutableList<BallCompletedEvent> balls, @NotNull Score score) {
         this.balls = Objects.requireNonNull(balls);

@@ -6,7 +6,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import static com.danielflower.crickam.scorer.Crictils.toInteger;
 import static com.danielflower.crickam.scorer.Crictils.toOptional;
+import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
 
@@ -19,6 +21,7 @@ public final class Innings implements MatchEventListener<Innings> {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
 
     }
+
     private final ImmutableList<Partnership> partnerships;
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
@@ -39,7 +42,7 @@ public final class Innings implements MatchEventListener<Innings> {
         this.maxOvers = maxOvers;
         this.maxBalls = maxBalls;
         this.target = target;
-        if (currentStriker != null && currentNonStriker != null && currentStriker.isSameInnings(currentNonStriker)) {
+        if (currentStriker != null && currentNonStriker != null && currentStriker.sameInnings(currentNonStriker)) {
             throw new IllegalArgumentException("The striker and non-striker were both set to " + currentStriker);
         }
         this.data = requireNonNull(data);
@@ -57,9 +60,9 @@ public final class Innings implements MatchEventListener<Innings> {
     }
 
     static Innings newInnings(InningsStartingEvent event) {
-        return new Innings(event, new ImmutableList<>(), null, null, new ImmutableList<>(), event.battingTeam().battingOrder(), new ImmutableList<>(),
-            null, null, new Balls(), new ImmutableList<>(), State.NOT_STARTED,
-            Crictils.toInteger(event.maxOvers()), Crictils.toInteger(event.maxBalls()), Crictils.toInteger(event.target()));
+        return new Innings(event, emptyList(), null, null, emptyList(), event.battingTeam().battingOrder(),
+            emptyList(), null, null, new Balls(), emptyList(), State.NOT_STARTED,
+            toInteger(event.maxOvers()), toInteger(event.maxBalls()), toInteger(event.target()));
     }
 
     public Innings onEvent(MatchEvent event) {
@@ -120,7 +123,7 @@ public final class Innings implements MatchEventListener<Innings> {
                 bowlerInningses = bowlerInningses.add(bi);
             } else {
                 bi = bi.onBall(currentOver, ball);
-                bowlerInningses = new ImmutableList<>();
+                bowlerInningses = emptyList();
                 for (BowlerInnings existing : this.bowlerInningses) {
                     if (existing.bowler().equals(bowler)) {
                         bowlerInningses = bowlerInningses.add(bi);
@@ -132,25 +135,17 @@ public final class Innings implements MatchEventListener<Innings> {
 
             striker = striker.onEvent(ball);
             nonStriker = nonStriker.onEvent(ball);
-            batters = new ImmutableList<>();
+            batters = emptyList();
             for (BatterInnings existing : this.batterInningsList()) {
-                if (existing.isSameInnings(striker)) {
+                if (existing.sameInnings(striker)) {
                     batters = batters.add(striker);
-                } else if (existing.isSameInnings(nonStriker)) {
+                } else if (existing.sameInnings(nonStriker)) {
                     batters = batters.add(nonStriker);
                 } else {
                     batters = batters.add(existing);
                 }
             }
 
-            if (ball.dismissal().isPresent()) {
-                Dismissal dismissal = ball.dismissal().get();
-                if (dismissal.batter().equals(striker.player())) {
-                    striker = null;
-                } else if (dismissal.batter().equals(nonStriker.player())) {
-                    nonStriker = null;
-                }
-            }
 
             if (ball.playersCrossed()) {
                 BatterInnings temp = striker;
@@ -196,6 +191,16 @@ public final class Innings implements MatchEventListener<Innings> {
             Partnership currentValue = currentPartnership().orElse(null);
             if (currentValue != null) {
                 partnerships = partnerships.replace(currentValue, currentValue.onEvent(event));
+            }
+
+            if (event instanceof BatterInningsEndedEvent) {
+                BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+                Player dismissalBatter = e.batter();
+                if (dismissalBatter.equals(striker.player())) {
+                    striker = null;
+                } else if (dismissalBatter.equals(nonStriker.player())) {
+                    nonStriker = null;
+                }
             }
 
         }

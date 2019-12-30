@@ -73,7 +73,7 @@ public final class MatchEvents {
         return new BatterInningsEndedEvent.Builder();
     }
 
-    public static BatterInningsEndedEvent.Builder batterInningsCompleted(BatterInnings.State reason) {
+    public static BatterInningsEndedEvent.Builder batterInningsCompleted(BattingState reason) {
         return batterInningsCompleted().withReason(reason);
     }
 

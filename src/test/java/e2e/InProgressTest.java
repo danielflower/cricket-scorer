@@ -64,9 +64,10 @@ public class InProgressTest {
                 .build()
         );
 
-        control = control.onEvent(inningsStarting().withBattingTeam(sa).withTime(control.localTime(14, 0, 0)))
-            .onEvent(batterInningsStarting()) // opener 1
-            .onEvent(batterInningsStarting()); // opener 2
+        control = control.onEvent(inningsStarting()
+            .withBattingTeam(sa)
+            .withTime(control.localTime(14, 0, 0))
+        );
 
 
         // Beginning of innings 1
@@ -850,9 +851,7 @@ public class InProgressTest {
         // End of innings 1
 
         // Start of innings 2
-        control = control.onEvent(inningsStarting().withBattingTeam(eng).withTime(control.localTime(15, 55, 0)))
-            .onEvent(batterInningsStarting())
-            .onEvent(batterInningsStarting());
+        control = control.onEvent(inningsStarting().withBattingTeam(eng).withTime(control.localTime(15, 55, 0)));
 
         control = control.onEvent(overStarting(findFielder("Rabada")));
         control = control.onEvent(ballCompleted("0"));

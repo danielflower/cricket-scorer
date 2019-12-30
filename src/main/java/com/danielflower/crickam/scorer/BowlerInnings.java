@@ -80,7 +80,7 @@ public final class BowlerInnings {
 
     static BowlerInnings newInnings(Over over, Player bowler) {
         BowlingSpell spell = new BowlingSpell(bowler, 1, ImmutableList.of(over), new Balls(), 0);
-        ImmutableList<BowlingSpell> spells = new ImmutableList<>();
+        ImmutableList<BowlingSpell> spells = ImmutableList.emptyList();
         return new BowlerInnings(bowler, new Balls(), spells.add(spell), ImmutableList.of(over), 0);
     }
 

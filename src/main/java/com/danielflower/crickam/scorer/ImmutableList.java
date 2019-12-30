@@ -13,6 +13,7 @@ import java.util.stream.StreamSupport;
 
 public final class ImmutableList<T> implements Iterable<T> {
 
+    public static final ImmutableList<?> EMPTY = new ImmutableList<>();
     private final List<T> arrayList;
 
     /**
@@ -199,6 +200,10 @@ public final class ImmutableList<T> implements Iterable<T> {
      */
     public static <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
         return new ImmutableListCollector<>();
+    }
+
+    public static <T> ImmutableList<T> emptyList() {
+        return (ImmutableList<T>)EMPTY;
     }
 
 
