@@ -37,7 +37,6 @@ class MatchControlTest {
                 .withNumberOfInningsPerTeam(1)
                 .withOversPerInnings(50)
                 .withTeams(ImmutableList.of(nz, aus))
-                .build()
         );
         control = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
@@ -133,7 +132,6 @@ class MatchControlTest {
                 .withTeams(ImmutableList.of(this.nz, aus))
                 .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
                 .withTimeZone(nz)
-                .build()
         );
         control = control.onEvent(inningsStarting().withBattingTeam(this.nz));
         control = control.onEvent(overStarting().withBowler(aus.battingOrder().last().get()).withBallsInOver(100));

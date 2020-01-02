@@ -12,10 +12,10 @@ import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A lovely game of cricket between two teams
+ * A lovely game of cricket between two teams.
+ * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(MatchType)} to {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
  */
 public final class Match {
-
 
     public enum State {
         NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED;
@@ -27,6 +27,7 @@ public final class Match {
     private final MatchResult result;
     private final ImmutableList<Innings> inningsList;
     private final Balls balls;
+
     private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> inningsList, Balls balls) {
         this.data = requireNonNull(data);
         this.state = requireNonNull(state);

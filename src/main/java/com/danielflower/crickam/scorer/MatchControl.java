@@ -13,8 +13,8 @@ import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 
 /**
  * This class is the main entry point of the API.
- * <p>To generate a cricket match model, create a new control with one of the {@link #newMatch(MatchStartingEvent.Builder)}
- * or {@link #newMatch(MatchStartingEvent)} methods, then feed in events to {@link #onEvent(MatchEventBuilder)}.</p>
+ * <p>To generate a cricket match model, create a new control with {@link #newMatch(MatchStartingEvent.Builder)},
+ * then feed in events to {@link #onEvent(MatchEventBuilder)}.</p>
  * <p>After events have been passed in, the current state can be found by calling {@link #match()} and historical
  * states can be found in {@link #history()}.</p>
  * <p>You can also look up specific events, and then get a match control object at that point in time using the
@@ -43,16 +43,7 @@ public final class MatchControl {
      * @see MatchEvents#matchStarting(MatchType)
      */
     public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
-        return newMatch(builder.build());
-    }
-
-    /**
-     * Creates a new match control object
-     * @param event a new-match event
-     * @return A match control object you can use to build up match state
-     * @see MatchEvents#matchStarting(MatchType)
-     */
-    public static MatchControl newMatch(MatchStartingEvent event) {
+        MatchStartingEvent event = builder.build();
         return new MatchControl(ImmutableList.of(new EventOutput(event, Match.newMatch(event))));
     }
 

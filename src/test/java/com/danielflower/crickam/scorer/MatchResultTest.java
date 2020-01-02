@@ -25,7 +25,7 @@ class MatchResultTest {
             .withMatchType(MatchType.ODI)
             .withNumberOfInningsPerTeam(1)
             .withOversPerInnings(1)
-            .withBallsPerInnings(3).build()
+            .withBallsPerInnings(3)
             );
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
@@ -87,8 +87,7 @@ class MatchResultTest {
     @Test
     void firstClassMatchesCanBeWonOrTiedOrDrawn() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
-            .withTeams(ImmutableList.of(aus, nz))
-            .build());
+            .withTeams(ImmutableList.of(aus, nz)));
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus))
             .onEvent(overStarting().withBowler(nzBowler))
@@ -176,8 +175,7 @@ class MatchResultTest {
     @Test
     void knowsAboutBeingBeatenByAnInnings() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
-            .withTeams(ImmutableList.of(aus, nz))
-            .build())
+            .withTeams(ImmutableList.of(aus, nz)))
             .onEvent(inningsStarting().withBattingTeam(aus))
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("0"))

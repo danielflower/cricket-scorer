@@ -61,7 +61,6 @@ public class T20 {
                     .withTimeZone(NZ_TIME)
                     .build()
                 )
-                .build()
         );
 
         control = control.onEvent(inningsStarting()
