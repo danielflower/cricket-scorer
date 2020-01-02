@@ -100,7 +100,7 @@ public class AsciiScorecardRenderer {
 
             // Fall of wickets
             writer.append("Fall of wickets: ");
-            List<EventOutput> dismissals = control.events().stream()
+            List<EventOutput> dismissals = control.history().stream()
                 .filter(EventOutput.sameInnings(innings))
                 .filter(me -> me.event() instanceof BatterInningsCompletedEvent)
                 .collect(Collectors.toList());

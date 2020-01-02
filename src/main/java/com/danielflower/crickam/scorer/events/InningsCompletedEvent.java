@@ -9,15 +9,21 @@ public final class InningsCompletedEvent implements MatchEvent {
 
     private final Instant time;
     private final boolean declared;
+    private final int inningsNumber;
 
-    private InningsCompletedEvent(Instant time, boolean declared) {
+    private InningsCompletedEvent(Instant time, boolean declared, int inningsNumber) {
         this.time = time;
         this.declared = declared;
+        this.inningsNumber = inningsNumber;
     }
 
     @Override
     public Optional<Instant> time() {
         return Optional.ofNullable(time);
+    }
+
+    public int inningsNumber() {
+        return inningsNumber;
     }
 
     /**
@@ -42,7 +48,8 @@ public final class InningsCompletedEvent implements MatchEvent {
         }
 
         public InningsCompletedEvent build(Match match) {
-            return new InningsCompletedEvent(time, declared);
+            int inningsNumber = match.inningsList().size();
+            return new InningsCompletedEvent(time, declared, inningsNumber);
         }
     }
 

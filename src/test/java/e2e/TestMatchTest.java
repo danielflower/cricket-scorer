@@ -1,6 +1,7 @@
 package e2e;
 
 import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import scaffolding.ScorecardLoader;
@@ -2780,9 +2781,13 @@ public class TestMatchTest {
 
         control = control.onEvent(matchCompleted());
 
-
-
-//        assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"), AsciiScorecardRenderer.toString(control));
+        // Get the state of the match as at the end of the second innings
+        MatchControl controlAtEndOfInnings2 = control.eventStream(InningsCompletedEvent.class)
+            .filter(ice -> ice.inningsNumber() == 2)
+            .findFirst()
+            .map(e -> control.asAt(e))
+            .orElseThrow();
+        assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"), AsciiScorecardRenderer.toString(controlAtEndOfInnings2));
 
         String actual = AsciiScorecardRenderer.toString(control);
         System.out.println(actual);

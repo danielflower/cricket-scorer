@@ -20,7 +20,7 @@ public class EventOutput {
     /**
      * A predicate that returns true if the innings number of the match after applying the event is the same as the
      * given innings number.
-     * <p>This is designed to be used to filter the result of {@link MatchControl#events()}</p>
+     * <p>This is designed to be used to filter the result of {@link MatchControl#history()}</p>
      * @param innings The innings (at any point of time in that innings) that you are searching for
      * @return A predicate that can be used in a stream filter
      */
