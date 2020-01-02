@@ -18,10 +18,10 @@ import static java.util.Objects.requireNonNull;
 public final class Innings implements MatchEventListener<Innings> {
 
     public enum State {
-        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
-
+        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
     }
 
+    private final Score score;
     private final ImmutableList<Partnership> partnerships;
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
@@ -38,7 +38,8 @@ public final class Innings implements MatchEventListener<Innings> {
     private final Integer maxBalls;
     private final Integer target;
 
-    private Innings(InningsStartingEvent data, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
+    private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
+        this.score = score;
         this.maxOvers = maxOvers;
         this.maxBalls = maxBalls;
         this.target = target;
@@ -60,7 +61,7 @@ public final class Innings implements MatchEventListener<Innings> {
     }
 
     static Innings newInnings(InningsStartingEvent event) {
-        return new Innings(event, emptyList(), null, null, emptyList(), event.battingTeam().battingOrder(),
+        return new Innings(event, event.startingScore(), emptyList(), null, null, emptyList(), event.battingTeam().battingOrder(),
             emptyList(), null, null, new Balls(), emptyList(), State.NOT_STARTED,
             toInteger(event.maxOvers()), toInteger(event.maxBalls()), toInteger(event.target()));
     }
@@ -80,6 +81,8 @@ public final class Innings implements MatchEventListener<Innings> {
         State newState = this.state;
         BatterInnings striker = this.currentStriker;
         BatterInnings nonStriker = this.currentNonStriker;
+        Score newScore = this.score;
+
 
         Over currentOver = this.currentOver;
         if (event instanceof OverStartingEvent) {
@@ -110,6 +113,7 @@ public final class Innings implements MatchEventListener<Innings> {
             Over over = currentOver().orElseThrow();
             Player bowler = ball.bowler();
             balls = balls.add(ball);
+            newScore = score.add(ball.runsScored());
 
             currentOver = over.onEvent(ball);
             overs = overs.removeLast().add(currentOver);
@@ -200,12 +204,19 @@ public final class Innings implements MatchEventListener<Innings> {
                     striker = null;
                 } else if (dismissalBatter.equals(nonStriker.player())) {
                     nonStriker = null;
+                } else {
+                    throw new IllegalStateException(dismissalBatter + " cannot be out as they are not currently batting");
+                }
+
+                boolean specialDismissal = e.dismissal().isPresent() && e.dismissal().get().type() == DismissalType.TIMED_OUT;
+                if (specialDismissal) {
+                    newScore = newScore.add(Score.score().withWickets(1).build());
                 }
             }
 
         }
 
-        return new Innings(data, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
+        return new Innings(data, newScore, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
     }
 
 
@@ -284,7 +295,7 @@ public final class Innings implements MatchEventListener<Innings> {
      * @return The score in the innings so far. Access {@link Score#teamRuns()} for the total number of runs in this innings.
      */
     public Score score() {
-        return balls.score();
+        return score;
     }
 
     /**

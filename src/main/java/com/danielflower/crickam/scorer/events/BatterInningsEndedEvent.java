@@ -69,18 +69,16 @@ public final class BatterInningsEndedEvent implements MatchEvent {
         private Dismissal dismissal;
 
         /**
-         * @param startTime The time the innings ended
+         * @param time The time the innings ended
          * @return This builder
          */
-        public Builder withTime(Instant startTime) {
-            this.time = startTime;
+        public Builder withTime(Instant time) {
+            this.time = time;
             return this;
         }
 
         /**
-         * Specifies the next batter. Leave null to go with the next batter in the line up.
-         *
-         * @param batter The batter to go in next, or null to continue with the next batter in the line up.
+         * @param batter the batter who's innings has ended. Can be left unset if dismissal is set with a batter set.
          * @return This builder
          */
         public Builder withBatter(Player batter) {
@@ -101,12 +99,16 @@ public final class BatterInningsEndedEvent implements MatchEvent {
          * @param dismissal The description of the dismissal, if the reason is {@link BattingState#DISMISSED}
          * @return This builder
          */
-        public MatchEventBuilder<?> withDismissal(Dismissal dismissal) {
+        public Builder withDismissal(Dismissal dismissal) {
             this.dismissal = dismissal;
             return this;
         }
 
         public BatterInningsEndedEvent build(Match match) {
+            Player batter = this.batter;
+            if (batter == null && dismissal != null && dismissal.batter() != null) {
+                batter = dismissal.batter();
+            }
             return new BatterInningsEndedEvent(time, batter, reason, dismissal);
         }
     }

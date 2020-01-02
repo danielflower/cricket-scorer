@@ -209,11 +209,11 @@ public final class Match {
         } else {
             Optional<Innings> lastInnings = inningsList.last();
             if (lastInnings.isPresent()) {
+                if (event instanceof BallCompletedEvent) {
+                    newBalls = newBalls.add((BallCompletedEvent) event);
+                }
                 Innings i = lastInnings.get().onEvent(event);
                 newInningsList = newInningsList.removeLast().add(i);
-                if (event instanceof BallCompletedEvent) {
-                    newBalls = newBalls.add(i.balls().list().last().orElseThrow()); // a bit hacky?
-                }
             }
         }
 

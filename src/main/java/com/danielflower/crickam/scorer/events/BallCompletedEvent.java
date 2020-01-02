@@ -261,6 +261,8 @@ public final class BallCompletedEvent implements MatchEvent {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
             if (runsScored.wickets() > 0 && dismissalType == null) {
                 throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");
+            } else if (runsScored.wickets() == 0 && dismissalType != null) {
+                throw new IllegalStateException("A dismissal was specified, but the runsScored.wickets() was 0");
             }
             Innings innings = match.currentInnings().orElseThrow(() -> new IllegalStateException("A ball cannot be bowled when there is no current innings"));
             BatterInnings strikerInnings = innings.currentStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter on strike"));
@@ -272,7 +274,7 @@ public final class BallCompletedEvent implements MatchEvent {
             Player nonStriker = requireNonNullElseGet(this.nonStriker, nonStrikerInnings::player);
 
             Dismissal dismissal = dismissalType == null ? null :
-                new Dismissal(dismissalType, dismissedBatter != null ? dismissedBatter : striker, dismissalType.creditedToBowler() ? bowler : null, fielder);
+                new Dismissal.Builder().withType(dismissalType).withBatter(dismissedBatter != null ? dismissedBatter : striker).withBowler(dismissalType.creditedToBowler() ? bowler : null).withFielder(fielder).build();
 
             boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed;
             int overNumber = over.overNumber();

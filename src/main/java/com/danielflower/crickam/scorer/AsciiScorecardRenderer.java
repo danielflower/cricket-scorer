@@ -64,7 +64,9 @@ public class AsciiScorecardRenderer {
             for (BatterInnings bi : innings.batterInningsList()) {
                 Score s = bi.score();
                 String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
-                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam().wicketKeeper()) : "not out";
+                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam().wicketKeeper())
+                    : bi.state() == BattingState.RETIRED || bi.state() == BattingState.RETIRED_OUT
+                    ? "retired" : "not out";
                 String batterName = bi.player().firstInitialWithSurname();
                 if (bi.player().equals(innings.battingTeam().wicketKeeper())) {
                     batterName += " †";

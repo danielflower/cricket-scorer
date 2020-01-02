@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 public final class InningsStartingEvent implements MatchEvent {
 
+    private final Score startingScore;
     private final LineUp battingTeam;
     private final LineUp bowlingTeam;
     private final Instant time;
@@ -25,7 +26,8 @@ public final class InningsStartingEvent implements MatchEvent {
     private final Integer maxOvers;
     private final ImmutableList<MatchEventBuilder<?>> generatedEvents;
 
-    private InningsStartingEvent(LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?>> generatedEvents) {
+    private InningsStartingEvent(Score startingScore, LineUp battingTeam, LineUp bowlingTeam, Instant time, ImmutableList<Player> openers, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?>> generatedEvents) {
+        this.startingScore = startingScore;
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
         this.bowlingTeam = requireNonNull(bowlingTeam, "bowlingTeam");
         this.time = time;
@@ -44,6 +46,13 @@ public final class InningsStartingEvent implements MatchEvent {
         }
         this.target = requireInRange("target", target, 1, Integer.MAX_VALUE);
         this.isFollowingOn = isFollowingOn;
+    }
+
+    /**
+     * @return The score the innings started at, which is almost always {@link Score#EMPTY}
+     */
+    public Score startingScore() {
+        return startingScore;
     }
 
     public LineUp battingTeam() {
@@ -124,6 +133,19 @@ public final class InningsStartingEvent implements MatchEvent {
         private Integer target;
         private Boolean isFollowingOn;
         private Integer maxOvers;
+        private Score startingScore;
+
+        /**
+         * This sets the starting score of the batting team in this innings. This is almost also {@link Score#EMPTY}
+         * except on the rare occasions where the team was awarded penalties in the previous innings while they were
+         * bowling.
+         * @param startingScore The score the innings starts at, which defaults to {@link Score#EMPTY}
+         * @return This builder
+         */
+        public Builder withStartingScore(Score startingScore) {
+            this.startingScore = startingScore;
+            return this;
+        }
 
         /**
          * @param battingTeam The batting team. This must be set.
@@ -281,7 +303,8 @@ public final class InningsStartingEvent implements MatchEvent {
             ImmutableList<MatchEventBuilder<?>> generatedEvents = openers.stream()
                 .map(player -> MatchEvents.batterInningsStarting().withBatter(player).withTime(time))
                 .collect(ImmutableList.toImmutableList());
-            return new InningsStartingEvent(battingTeam, bowlingTeam, time, openers, maxBalls, maxOvers, target, followOn,
+            Score startingScore = this.startingScore == null ? Score.EMPTY : this.startingScore;
+            return new InningsStartingEvent(startingScore, battingTeam, bowlingTeam, time, openers, maxBalls, maxOvers, target, followOn,
                 inningsNumber, battingInningsNumber, finalInnings, generatedEvents);
         }
     }

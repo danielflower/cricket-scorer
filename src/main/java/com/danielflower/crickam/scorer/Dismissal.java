@@ -16,7 +16,7 @@ public final class Dismissal {
     private final Player bowler;
     private final Player fielder;
 
-    public Dismissal(DismissalType type, Player batter, Player bowler, Player fielder) {
+    private Dismissal(DismissalType type, Player batter, Player bowler, Player fielder) {
         this.type = requireNonNull(type);
         this.batter = requireNonNull(batter);
         if (type.creditedToBowler()) {
@@ -102,6 +102,52 @@ public final class Dismissal {
     public int hashCode() {
         return Objects.hash(type, batter, bowler, fielder);
     }
+
+    public static Builder dismissal() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+
+        private DismissalType type;
+        private Player batter;
+        private Player bowler;
+        private Player fielder;
+
+        public Builder withType(DismissalType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder withBatter(Player batter) {
+            this.batter = batter;
+            return this;
+        }
+
+        /**
+         * Specifies the bowler credit for the dismissal. Leave unset for types which return code from {@link DismissalType#creditedToBowler()}
+         * @param bowler The bowler credited with the dismissal.
+         * @return This builder
+         */
+        public Builder withBowler(Player bowler) {
+            this.bowler = bowler;
+            return this;
+        }
+
+        /**
+         * @param fielder The fielder who caught the ball, or ran out the batter, or stumped the batter. Leave unset if no fielder for this dismissal.
+         * @return This builder
+         */
+        public Builder withFielder(Player fielder) {
+            this.fielder = fielder;
+            return this;
+        }
+
+        public Dismissal build() {
+            return new Dismissal(type, batter, bowler, fielder);
+        }
+    }
+
 }
 
 

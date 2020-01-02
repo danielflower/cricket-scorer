@@ -120,16 +120,17 @@ public final class BatterInnings implements MatchEventListener<BatterInnings> {
         if (o == null || getClass() != o.getClass()) return false;
         BatterInnings that = (BatterInnings) o;
         return numberCameIn == that.numberCameIn &&
-            player.equals(that.player) &&
-            balls.equals(that.balls) &&
-            inningsStartTime.equals(that.inningsStartTime) &&
+            state == that.state &&
+            Objects.equals(player, that.player) &&
+            Objects.equals(balls, that.balls) &&
+            Objects.equals(inningsStartTime, that.inningsStartTime) &&
             Objects.equals(inningsEndTime, that.inningsEndTime) &&
             Objects.equals(dismissal, that.dismissal);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(player, balls, numberCameIn, inningsStartTime, inningsEndTime, dismissal);
+        return Objects.hash(state, player, balls, numberCameIn, inningsStartTime, inningsEndTime, dismissal);
     }
 
     public BatterInnings onEvent(MatchEvent event) {
