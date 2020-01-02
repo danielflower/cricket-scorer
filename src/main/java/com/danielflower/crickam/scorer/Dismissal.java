@@ -1,7 +1,5 @@
 package com.danielflower.crickam.scorer;
 
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.Optional;
 
@@ -57,27 +55,29 @@ public final class Dismissal {
     }
 
     /**
-     * @param wicketKeeper If specified, the wicket keeper will be marked with a &quot;†&quot; symbol if this is caught
+     * @param team If specified, the wicket keeper will be marked with a &quot;†&quot; symbol if this is caught
      * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
      */
-    public String toScorecardString(@Nullable Player wicketKeeper) {
-        String bowler = this.bowler == null ? null : this.bowler.familyName();
-        String fielder = this.fielder == null ? null : this.fielder.familyName();
+    public String toScorecardString(LineUp team) {
+        String bowlerName = this.bowler == null ? null : this.bowler.familyName();
+        String fielderName = this.fielder == null ? null : this.fielder.familyName();
         switch (type) {
             case BOWLED:
-                return "b " + bowler;
+                return "b " + bowlerName;
             case CAUGHT:
-                String catcher = (this.fielder == this.bowler) ? "&" : fielder;
-                String prefix = this.fielder == wicketKeeper ? "†" : "";
-                return "c " + prefix + catcher + " b " + bowler;
+                String catcher = (this.fielder == this.bowler) ? "&"
+                    : team.battingOrder().contains(this.fielder) ? fielderName
+                    : "sub (" + fielderName + ")";
+                String prefix = this.fielder == team.wicketKeeper() ? "†" : "";
+                return "c " + prefix + catcher + " b " + bowlerName;
             case HIT_WICKET:
-                return "hw " + bowler;
+                return "hw " + bowlerName;
             case LEG_BEFORE_WICKET:
-                return "lbw b " + bowler;
+                return "lbw b " + bowlerName;
             case RUN_OUT:
-                return fielder == null ? "run out" : "run out (" + fielder + ")";
+                return fielderName == null ? "run out" : "run out (" + fielderName + ")";
             case STUMPED:
-                return "st " + fielder + " b " + bowler;
+                return "st " + fielderName + " b " + bowlerName;
         }
         return type.toString().toLowerCase().replace('_', ' ');
     }
@@ -126,6 +126,7 @@ public final class Dismissal {
 
         /**
          * Specifies the bowler credit for the dismissal. Leave unset for types which return code from {@link DismissalType#creditedToBowler()}
+         *
          * @param bowler The bowler credited with the dismissal.
          * @return This builder
          */

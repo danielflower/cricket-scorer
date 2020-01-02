@@ -9,6 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.danielflower.crickam.scorer.Crictils.pluralize;
+
 public class AsciiScorecardRenderer {
 
     public static final String NEWLINE = "\n";
@@ -56,10 +58,13 @@ public class AsciiScorecardRenderer {
 
         // Batting scorecard
         for (Innings innings : match.inningsList()) {
-            String inningsNumber = match.numberOfInningsPerTeam() > 1 ? " " + Crictils.withOrdinal(1) : "";
+            String inningsNumber = match.numberOfInningsPerTeam() > 1 ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
             String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
             if (innings.originalMaxOvers().isPresent()) {
-                inningsHeader += " (" + innings.originalMaxOvers().getAsInt() + " overs maximum)";
+                inningsHeader += " (" + pluralize(innings.originalMaxOvers().getAsInt(), "over") + " maximum)";
+            }
+            if (innings.target().isPresent()) {
+                inningsHeader += " (target: " + pluralize(innings.target().getAsInt(), "run") + ")";
             }
 
             writer.append(NEWLINE).append(inningsHeader).append(NEWLINE).append(repeat('-', inningsHeader.length())).append(NEWLINE).append(NEWLINE);
@@ -69,7 +74,7 @@ public class AsciiScorecardRenderer {
             for (BatterInnings bi : innings.batterInningsList()) {
                 Score s = bi.score();
                 String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
-                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam().wicketKeeper())
+                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam())
                     : bi.state() == BattingState.RETIRED || bi.state() == BattingState.RETIRED_OUT
                     ? "retired" : "not out";
                 String batterName = bi.player().firstInitialWithSurname();

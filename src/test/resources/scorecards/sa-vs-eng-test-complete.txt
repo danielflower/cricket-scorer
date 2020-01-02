@@ -1,0 +1,131 @@
+SOUTH AFRICA vs ENGLAND
+=======================
+
+TEST at Centurion, Johannesburg, Dec 26 to 30 2019
+
+South Africa won by 107 runs
+
+South Africa 1st Innings
+------------------------
+
+BATTER                                                R   M   B 4s 6s     SR
+D Elgar              c †Buttler b Anderson            0       1  0  0    0.0
+A Markram            c Bairstow b Curran             20      23  4  0   87.0
+Z Hamza              c Stokes b Broad                39      72  6  0   54.2
+F du Plessis (c)     c Root b Broad                  29      80  5  0   36.3
+R van der Dussen     c Root b Curran                  6      34  1  0   17.6
+Q de Kock †          c †Buttler b Curran             95     128 14  0   74.2
+D Pretorius          c Root b Curran                 33      45  4  1   73.3
+V Philander          c †Buttler b Broad              35      81  6  0   43.2
+K Maharaj            c Stokes b Archer                6      15  1  0   40.0
+K Rabada             b Broad                         12      24  3  0   50.0
+A Nortje             not out                          0       6  0  0    0.0
+Extras               (lb 4, w 3, nb 2)                9
+TOTAL                (10 wkts; 84.3 overs)          284
+
+Fall of wickets: 1-0 (Dean Elgar, 0.1 ov), 2-32 (Aiden Markram, 9.4 ov), 3-71 (Zubayr Hamza, 21.6 ov),
+4-97 (Rassie van der Dussen, 33.2 ov), 5-111 (Faf du Plessis, 36.3 ov), 6-198 (Dwaine Pretorius, 54.5 ov),
+7-245 (Quinton de Kock, 71.5 ov), 8-252 (Keshav Maharaj, 74.5 ov), 9-277 (Kagiso Rabada, 82.4 ov),
+10-284 (Vernon Philander, 84.3 ov)
+
+BOWLING                 O   M   R   W   Econ    4s 6s WD NB
+J Anderson             20   4  69   1    3.4    12  0  0  0
+S Broad              18.3   4  58   4    3.1     9  0  1  1
+S Curran               20   5  58   4    2.9     9  0  2  0
+J Archer               19   4  65   1    3.4    12  0  0  1
+J Root                  4   0  26   0    6.5     2  1  0  0
+J Denly                 3   0   4   0    1.3     0  0  0  0
+
+
+England 1st Innings
+-------------------
+
+BATTER                                                R   M   B 4s 6s     SR
+R Burns              c †de Kock b Philander           9      15  2  0   60.0
+D Sibley             c †de Kock b Rabada              4      12  1  0   33.3
+J Denly              c †de Kock b Pretorius          50     111  9  0   45.0
+J Root (c)           c †de Kock b Philander          29      49  5  0   59.2
+B Stokes             c †de Kock b Nortje             35      46  4  2   76.1
+J Bairstow           b Nortje                         1       6  0  0   16.7
+J Buttler †          c †de Kock b Philander          12      39  2  0   30.8
+S Curran             c Hamza b Rabada                20      24  4  0   83.3
+J Archer             b Philander                      3      11  0  0   27.3
+S Broad              c Elgar b Rabada                 2       7  0  0   28.6
+J Anderson           not out                          0       2  0  0    0.0
+Extras               (b 4, lb 5, w 5, nb 2)          16
+TOTAL                (10 wkts; 53.2 overs)          181
+
+Fall of wickets: 1-11 (Rory Burns, 3.1 ov), 2-15 (Dom Sibley, 4.6 ov), 3-70 (Joe Root, 23.1 ov),
+4-142 (Joe Denly, 37.5 ov), 5-143 (Jonny Bairstow, 38.5 ov), 6-150 (Ben Stokes, 40.3 ov),
+7-176 (Sam Curran, 48.5 ov), 8-176 (Jos Buttler, 51.1 ov), 9-181 (Stuart Broad, 52.4 ov),
+10-181 (Jofra Archer, 53.2 ov)
+
+BOWLING                 O   M   R   W   Econ    4s 6s WD NB
+K Rabada               15   1  68   3    4.5    13  0  0  2
+V Philander          14.2   8  16   4    1.1     2  0  0  0
+D Pretorius             8   2  23   1    2.8     4  0  0  0
+A Nortje               12   2  47   2    3.9     7  0  1  0
+K Maharaj               4   1  18   0    4.5     1  2  0  0
+
+
+South Africa 2nd Innings
+------------------------
+
+BATTER                                                R   M   B 4s 6s     SR
+A Markram            lbw b Anderson                   2       5  0  0   40.0
+D Elgar              c †Buttler b Archer             22      27  5  0   81.5
+Z Hamza              c †Buttler b Broad               4      16  0  0   25.0
+F du Plessis (c)     c Curran b Archer               20      28  3  1   71.4
+R van der Dussen     lbw b Archer                    51      67  5  0   76.1
+A Nortje             c sub (Crawley) b Archer        40      89  6  0   44.9
+Q de Kock †          c Bairstow b Stokes             34      37  2  3   91.9
+D Pretorius          c Sibley b Stokes                7       7  1  0  100.0
+V Philander          c Bairstow b Curran             46      68  4  0   67.6
+K Maharaj            c Curran b Archer               11      16  1  0   68.8
+K Rabada             not out                         16      12  2  1  133.3
+Extras               (b 5, lb 3, w 9, nb 2)          19
+TOTAL                (10 wkts; 61.4 overs)          272
+
+Fall of wickets: 1-2 (Aiden Markram, 0.5 ov), 2-25 (Zubayr Hamza, 7.4 ov), 3-29 (Dean Elgar, 8.2 ov),
+4-62 (Faf du Plessis, 14.4 ov), 5-153 (Rassie van der Dussen, 38.1 ov), 6-170 (Anrich Nortje, 40.1 ov),
+7-177 (Dwaine Pretorius, 41.2 ov), 8-220 (Quinton de Kock, 51.3 ov), 9-250 (Keshav Maharaj, 58.4 ov),
+10-272 (Vernon Philander, 61.4 ov)
+
+BOWLING                 O   M   R   W   Econ    4s 6s WD NB
+J Anderson             13   1  47   1    3.6     5  0  0  0
+S Broad                11   2  42   1    3.8     6  0  2  0
+J Archer               17   1 102   5    6.0    10  4  2  1
+S Curran             12.4   3  51   1    4.0     5  1  1  0
+B Stokes                8   1  22   2    2.7     3  0  0  1
+
+
+England 2nd Innings (target: 376 runs)
+--------------------------------------
+
+BATTER                                                R   M   B 4s 6s     SR
+R Burns              c Rabada b Nortje               84     154 11  0   54.5
+D Sibley             c & b Maharaj                   29      90  5  0   32.2
+J Denly              lbw b Pretorius                 31      79  3  2   39.2
+J Root (c)           c †de Kock b Nortje             48     101  8  0   47.5
+B Stokes             b Maharaj                       14      55  2  0   25.5
+J Bairstow           c Hamza b Rabada                 9      25  2  0   36.0
+J Buttler †          c Pretorius b Rabada            22      33  2  2   66.7
+S Curran             c †de Kock b Rabada              9      10  2  0   90.0
+J Archer             c van der Dussen b Nortje        4       5  1  0   80.0
+S Broad              b Rabada                         6       6  0  0  100.0
+J Anderson           not out                          0       0  0  0      -
+Extras               (b 8, lb 3, w 1)                12
+TOTAL                (10 wkts; 93.0 overs)          268
+
+Fall of wickets: 1-92 (Dom Sibley, 27.6 ov), 2-139 (Rory Burns, 51.2 ov), 3-158 (Joe Denly, 56.3 ov),
+4-204 (Ben Stokes, 72.3 ov), 5-222 (Jonny Bairstow, 80.2 ov), 6-232 (Joe Root, 87.2 ov),
+7-251 (Sam Curran, 90.4 ov), 8-256 (Jofra Archer, 91.4 ov), 9-262 (Jos Buttler, 92.2 ov),
+10-268 (Stuart Broad, 92.6 ov)
+
+BOWLING                 O   M   R   W   Econ    4s 6s WD NB
+K Rabada               24   3 103   4    4.2    13  3  0  0
+V Philander            20   8  35   0    1.7     4  0  0  0
+A Nortje               17   4  56   3    3.2     9  1  1  0
+D Pretorius            16   6  26   1    1.6     4  0  0  0
+K Maharaj              16   3  37   2    2.3     6  0  0  0
+

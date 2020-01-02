@@ -49,6 +49,13 @@ public class Crictils {
         return number + suffix;
     }
 
+    public static String pluralize(int num, String noun) {
+        return pluralize(num, noun, noun + "s");
+    }
+    public static String pluralize(int num, String singular, String plural) {
+        return num + " " + (num == 1 ? singular : plural);
+    }
+
     public static Integer requireInRange(String name, Integer value, int min, int max) {
         return value == null ? null : requireInRange(name, value.intValue(), min, max);
     }
