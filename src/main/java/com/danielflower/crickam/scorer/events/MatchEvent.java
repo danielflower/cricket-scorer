@@ -21,7 +21,7 @@ public interface MatchEvent {
 
     /**
      * Certain events generate more events, for example a {@link InningsStartingEvent} causes a {@link BatterInningsStartingEvent}
-     * for each of the openers, and a dismissal from a {@link BallCompletedEvent} causes a {@link BatterInningsEndedEvent}
+     * for each of the openers, and a dismissal from a {@link BallCompletedEvent} causes a {@link BatterInningsCompletedEvent}
      * to be raised.
      * <p>These events are applied automatically when using the {@link MatchControl} class</p>
      * @return The list of events generated as a result of applying the current event, or an empty list if none were generated

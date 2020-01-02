@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
@@ -157,8 +157,8 @@ public final class BatterInnings implements MatchEventListener<BatterInnings> {
                 somethingChanged = true;
                 newBalls = newBalls.add(ball);
             }
-        } else if (event instanceof BatterInningsEndedEvent) {
-            BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+        } else if (event instanceof BatterInningsCompletedEvent) {
+            BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
             if (sameInnings(e.batter())) {
                 somethingChanged = true;
                 newState = e.reason();

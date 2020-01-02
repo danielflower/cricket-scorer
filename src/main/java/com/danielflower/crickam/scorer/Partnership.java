@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
@@ -126,8 +126,8 @@ public final class Partnership implements MatchEventListener<Partnership> {
             Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
             Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
             return new Partnership(state, data, balls, firstBatterContribution, secondBatterContribution, endTime);
-        } else if (event instanceof BatterInningsEndedEvent) {
-            BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+        } else if (event instanceof BatterInningsCompletedEvent) {
+            BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
             return new Partnership(e.reason(), data, balls, firstBatterContribution, secondBatterContribution, e.time().orElse(null));
         } else if (event instanceof InningsCompletedEvent) {
             if (state == BattingState.IN_PROGRESS) {

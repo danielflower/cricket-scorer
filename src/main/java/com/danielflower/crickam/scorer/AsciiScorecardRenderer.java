@@ -1,6 +1,6 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -97,7 +97,7 @@ public class AsciiScorecardRenderer {
             writer.append("Fall of wickets: ");
             List<EventOutput> dismissals = control.events().stream()
                 .filter(EventOutput.sameInnings(innings))
-                .filter(me -> me.event() instanceof BatterInningsEndedEvent)
+                .filter(me -> me.event() instanceof BatterInningsCompletedEvent)
                 .collect(Collectors.toList());
 
             int num = 0;
@@ -111,7 +111,7 @@ public class AsciiScorecardRenderer {
                 }
                 Innings innings1 = state.match().currentInnings().orElseThrow();
                 Score score = innings1.score();
-                BatterInningsEndedEvent event = (BatterInningsEndedEvent) state.event();
+                BatterInningsCompletedEvent event = (BatterInningsCompletedEvent) state.event();
                 String scoreText = score.wickets() + "-" + score.teamRuns();
                 String time;
                 if (event.reason() == BattingState.RETIRED_OUT || event.reason() == BattingState.RETIRED) {

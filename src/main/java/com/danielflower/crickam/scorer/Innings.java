@@ -177,8 +177,8 @@ public final class Innings implements MatchEventListener<Innings> {
             partnerships = partnerships.replace(currentValue, currentValue.onEvent(event));
         }
 
-        if (event instanceof BatterInningsEndedEvent) {
-            BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
+        if (event instanceof BatterInningsCompletedEvent) {
+            BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
             Player dismissalBatter = e.batter();
             if (dismissalBatter.equals(striker.player())) {
                 striker = null;

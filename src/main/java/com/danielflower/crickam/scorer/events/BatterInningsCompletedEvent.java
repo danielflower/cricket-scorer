@@ -16,14 +16,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * Indicates that a batter's innings has ended due to dismissal, retirement, or that the team innings ended.
  */
-public final class BatterInningsEndedEvent implements MatchEvent {
+public final class BatterInningsCompletedEvent implements MatchEvent {
 
     private final Instant time;
     private final Player batter;
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsEndedEvent(@Nullable Instant time, @NotNull Player batter, @NotNull BattingState reason, @Nullable Dismissal dismissal) {
+    private BatterInningsCompletedEvent(@Nullable Instant time, @NotNull Player batter, @NotNull BattingState reason, @Nullable Dismissal dismissal) {
         this.time = time;
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
@@ -62,7 +62,7 @@ public final class BatterInningsEndedEvent implements MatchEvent {
         return Optional.ofNullable(dismissal);
     }
 
-    public static final class Builder implements MatchEventBuilder<BatterInningsEndedEvent> {
+    public static final class Builder implements MatchEventBuilder<BatterInningsCompletedEvent> {
         private Instant time;
         private Player batter;
         private BattingState reason;
@@ -104,12 +104,12 @@ public final class BatterInningsEndedEvent implements MatchEvent {
             return this;
         }
 
-        public BatterInningsEndedEvent build(Match match) {
+        public BatterInningsCompletedEvent build(Match match) {
             Player batter = this.batter;
             if (batter == null && dismissal != null && dismissal.batter() != null) {
                 batter = dismissal.batter();
             }
-            return new BatterInningsEndedEvent(time, batter, reason, dismissal);
+            return new BatterInningsCompletedEvent(time, batter, reason, dismissal);
         }
     }
 }

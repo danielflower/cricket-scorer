@@ -69,11 +69,11 @@ public final class MatchEvents {
         return new OverCompletedEvent.Builder();
     }
 
-    public static BatterInningsEndedEvent.Builder batterInningsCompleted() {
-        return new BatterInningsEndedEvent.Builder();
+    public static BatterInningsCompletedEvent.Builder batterInningsCompleted() {
+        return new BatterInningsCompletedEvent.Builder();
     }
 
-    public static BatterInningsEndedEvent.Builder batterInningsCompleted(BattingState reason) {
+    public static BatterInningsCompletedEvent.Builder batterInningsCompleted(BattingState reason) {
         return batterInningsCompleted().withReason(reason);
     }
 
