@@ -23,7 +23,8 @@ TOTAL                (7 wkts; 20.0 overs)           180
 Did not bat: I Sodhi, L Ferguson, B Tickner
 
 Fall of wickets: 1-40 (Martin Guptill, 3.5 ov), 2-42 (Colin Munro, 4.3 ov), 3-69 (Tim Seifert, 7.5 ov),
-4-135 (Colin de Grandhomme, 14.5 ov), 5-162 (Ross Taylor, 17.4 ov), 6-171 (James Neesham, 18.6 ov), 7-180 (Mitchell Santner, 19.6 ov)
+4-135 (Colin de Grandhomme, 14.5 ov), 5-162 (Ross Taylor, 17.4 ov), 6-171 (James Neesham, 18.6 ov),
+7-180 (Mitchell Santner, 19.6 ov)
 
 BOWLING                 O   M   R   W   Econ 0s 4s 6s WD NB
 S Curran                4   0  29   1    7.2  8  3  0  2  0
@@ -53,7 +54,8 @@ TOTAL                (7 wkts; 20.0 overs)           166
 Did not bat: P Brown, M Parkinson
 
 Fall of wickets: 1-27 (Tom Banton, 2.5 ov), 2-90 (Dawid Malan, 10.2 ov), 3-139 (Eoin Morgan, 14.6 ov),
-4-142 (Sam Billings, 15.4 ov), 5-147 (James Vince, 16.6 ov), 6-148 (Lewis Gregory, 17.3 ov), 7-149 (Sam Curran, 17.5 ov)
+4-142 (Sam Billings, 15.4 ov), 5-147 (James Vince, 16.6 ov), 6-148 (Lewis Gregory, 17.3 ov),
+7-149 (Sam Curran, 17.5 ov)
 
 BOWLING                 O   M   R   W   Econ 0s 4s 6s WD NB
 T Southee               4   0  28   0    7.0  9  4  0  0  0

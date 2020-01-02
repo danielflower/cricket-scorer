@@ -17,11 +17,13 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Innings implements MatchEventListener<Innings> {
 
-    public enum State {
-        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
-    }
 
+
+    public enum State {
+        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
+    }
     private final Score score;
+
     private final ImmutableList<Partnership> partnerships;
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
@@ -37,7 +39,6 @@ public final class Innings implements MatchEventListener<Innings> {
     private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
-
     private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
         this.score = score;
         this.maxOvers = maxOvers;
@@ -270,6 +271,14 @@ public final class Innings implements MatchEventListener<Innings> {
     }
 
     /**
+     * @return The score the innings started at, which is {@link Score#EMPTY} unless penalties were conceded by
+     * the team batting in the previous innings
+     */
+    public Score startingScore() {
+        return data.startingScore();
+    }
+
+    /**
      * @return The overs bowled so far in the innings.
      */
     public ImmutableList<Over> overs() {
@@ -365,7 +374,7 @@ public final class Innings implements MatchEventListener<Innings> {
      * @return The number of the last ball
      */
     public String overDotBallString() {
-        Optional<BallCompletedEvent> ball = balls.list().last();
+        Optional<BallCompletedEvent> ball = balls.lastValid();
         Optional<Over> over = overs.last();
         if (ball.isPresent() && over.isPresent()) {
             int b = ball.get().numberInOver();

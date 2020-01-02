@@ -466,9 +466,7 @@ public class T20 {
         control = control.onEvent(inningsCompleted().withTime(control.localTime(18, 38, 0)));
         control = control.onEvent(matchCompleted().withTime(control.localTime(18, 38, 0)));
 
-        Match matchAtEnd = control.match();
-
-        String actual = AsciiScorecardRenderer.toString(matchAtEnd);
+        String actual = AsciiScorecardRenderer.toString(control);
         assertEquals(ScorecardLoader.load("nz-vs-eng-t20i-complete.txt"), actual);
     }
 

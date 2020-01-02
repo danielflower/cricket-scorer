@@ -1,16 +1,17 @@
 package com.danielflower.crickam.scorer.utils;
 
 import com.danielflower.crickam.scorer.ImmutableList;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ImmutableListTest {
 
@@ -75,8 +76,8 @@ class ImmutableListTest {
         ImmutableList<Integer> subList = list.subList(2, 4);
         assertThat(subList.subList(1, 1), contains(3));
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(-1, 1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> subList.subList(1, 3));
+        assertThrows(IllegalArgumentException.class, () -> subList.subList(-1, 1));
+        assertThrows(IllegalArgumentException.class, () -> subList.subList(1, 3));
     }
 
     @Test
@@ -102,7 +103,7 @@ class ImmutableListTest {
         assertThat(list, contains(1,2));
 
         assertThat(ImmutableList.of(1).removeLast().size(), is(0));
-        Assertions.assertThrows(IllegalStateException.class, () -> new ImmutableList<Integer>().removeLast());
+        assertThrows(IllegalStateException.class, () -> new ImmutableList<Integer>().removeLast());
     }
 
     @Test
@@ -152,6 +153,32 @@ class ImmutableListTest {
 
         assertThat(strings, contains("Hello"));
         assertThat(ints, contains(1));
+    }
+
+    @Test
+    public void canIterate() {
+        Iterator<Integer> iter = ImmutableList.of(1, 2, 3).iterator();
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(1));
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(2));
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(3));
+        assertThat(iter.hasNext(), is(false));
+        assertThrows(NoSuchElementException.class, iter::next);
+    }
+
+    @Test
+    public void canIterateInReverse() {
+        Iterator<Integer> iter = ImmutableList.of(3, 2, 1).reverseIterator();
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(1));
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(2));
+        assertThat(iter.hasNext(), is(true));
+        assertThat(iter.next(), is(3));
+        assertThat(iter.hasNext(), is(false));
+        assertThrows(NoSuchElementException.class, iter::next);
     }
 
 }

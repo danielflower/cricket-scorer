@@ -156,6 +156,10 @@ public final class ImmutableList<T> implements Iterable<T> {
         return subList(0, last -1);
     }
 
+    public Iterator<T> reverseIterator() {
+        return new ReversedIterator();
+    }
+
     private class ImmutableListIterator implements Iterator<T> {
         private int index = first;
 
@@ -166,7 +170,27 @@ public final class ImmutableList<T> implements Iterable<T> {
 
         @Override
         public T next() {
-            return arrayList.get(index++);
+            if (hasNext()) {
+                return arrayList.get(index++);
+            }
+            throw new NoSuchElementException();
+        }
+    }
+
+    private class ReversedIterator implements Iterator<T> {
+        private int index = last;
+
+        @Override
+        public boolean hasNext() {
+            return index >= first;
+        }
+
+        @Override
+        public T next() {
+            if (hasNext()) {
+                return arrayList.get(index--);
+            }
+            throw new NoSuchElementException();
         }
     }
 

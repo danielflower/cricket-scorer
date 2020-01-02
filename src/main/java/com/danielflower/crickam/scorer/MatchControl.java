@@ -10,33 +10,9 @@ import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 
 public final class MatchControl {
 
-    public static class EventResult {
-        private final MatchEvent event;
-        private final Match match;
+    private final ImmutableList<EventOutput> events;
 
-        private EventResult(MatchEvent event, Match match) {
-            this.event = event;
-            this.match = match;
-        }
-
-        /**
-         * @return The event that occurred
-         */
-        public MatchEvent event() {
-            return event;
-        }
-
-        /**
-         * @return The match that was created as a result of the event
-         */
-        public Match match() {
-            return match;
-        }
-    }
-
-    private final ImmutableList<EventResult> events;
-
-    private MatchControl(ImmutableList<EventResult> events) {
+    private MatchControl(ImmutableList<EventOutput> events) {
         this.events = events;
     }
 
@@ -46,7 +22,7 @@ public final class MatchControl {
 
 
     public static MatchControl newMatch(MatchStartingEvent event) {
-        return new MatchControl(ImmutableList.of(new EventResult(event, Match.newMatch(event))));
+        return new MatchControl(ImmutableList.of(new EventOutput(event, Match.newMatch(event))));
     }
 
     public MatchControl onEvent(MatchEventBuilder<?> builder) {
@@ -55,12 +31,12 @@ public final class MatchControl {
 
     MatchControl onEvent(MatchEvent event) {
         Match match = match().onEvent(event);
-        ImmutableList<EventResult> newEvents = events.add(new EventResult(event, match));
+        ImmutableList<EventOutput> newEvents = events.add(new EventOutput(event, match));
 
         for (MatchEventBuilder<?> builder : event.generatedEvents()) {
             MatchEvent generatedEvent = builder.build(match);
             match = match.onEvent(generatedEvent);
-            newEvents = newEvents.add(new EventResult(generatedEvent, match));
+            newEvents = newEvents.add(new EventOutput(generatedEvent, match));
         }
 
         return new MatchControl(newEvents);
@@ -80,7 +56,7 @@ public final class MatchControl {
         return match().currentInnings().orElseThrow(() -> new IllegalStateException("There is no innings in progress"));
     }
 
-    public ImmutableList<EventResult> events() {
+    public ImmutableList<EventOutput> events() {
         return events;
     }
 
@@ -101,7 +77,7 @@ public final class MatchControl {
             .orElseThrow(() -> new UnsupportedOperationException("No time zone was set on the match (or on the venue) so local times cannot be calculated"))
             .toZoneId();
         for (int i = events.size() - 1; i >= 0; i--) {
-            EventResult er = events.get(i);
+            EventOutput er = events.get(i);
             if (er.event().time().isPresent()) {
                 Instant lastKnownTime = er.event().time().get();
                 LocalDate date = LocalDate.ofInstant(lastKnownTime, zoneId);

@@ -1352,9 +1352,7 @@ public class InProgressTest {
 //        control = control.onEvent(matchCompleted().withTime(control.localTime(18, 38, 0)));
 
 
-        Match matchAtEnd = control.match();
-
-        String actual = AsciiScorecardRenderer.toString(matchAtEnd);
+        String actual = AsciiScorecardRenderer.toString(control);
         System.out.println(actual);
         assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"), actual);
     }

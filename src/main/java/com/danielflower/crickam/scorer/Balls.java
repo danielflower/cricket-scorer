@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * An immutable list of {@link BallCompletedEvent} objects and their total score.
@@ -67,5 +68,19 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     @Override
     public int hashCode() {
         return Objects.hash(balls);
+    }
+
+    /**
+     * @return The last valid ball in this list, or empty if there are none
+     */
+    public Optional<BallCompletedEvent> lastValid() {
+        Iterator<BallCompletedEvent> ballIterator = list().reverseIterator();
+        while (ballIterator.hasNext()) {
+            BallCompletedEvent next = ballIterator.next();
+            if (next.isValid()) {
+                return Optional.of(next);
+            }
+        }
+        return Optional.empty();
     }
 }

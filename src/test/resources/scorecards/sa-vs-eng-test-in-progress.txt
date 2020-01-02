@@ -22,8 +22,9 @@ Extras               (lb 4, w 3, nb 2)                9
 TOTAL                (10 wkts; 84.3 overs)          284
 
 Fall of wickets: 1-0 (Dean Elgar, 0.1 ov), 2-32 (Aiden Markram, 9.4 ov), 3-71 (Zubayr Hamza, 21.6 ov),
-4-97 (Rassie van der Dussen, 33.2 ov), 5-111 (Faf du Plessis, 36.3 ov), 6-198 (Dwaine Pretorius, 54.5 ov), 7-245 (Quinton de Kock, 71.5 ov),
-8-252 (Keshav Maharaj, 74.5 ov), 9-277 (Kagiso Rabada, 82.4 ov), 10-284 (Vernon Philander, 84.3 ov)
+4-97 (Rassie van der Dussen, 33.2 ov), 5-111 (Faf du Plessis, 36.3 ov), 6-198 (Dwaine Pretorius, 54.5 ov),
+7-245 (Quinton de Kock, 71.5 ov), 8-252 (Keshav Maharaj, 74.5 ov), 9-277 (Kagiso Rabada, 82.4 ov),
+10-284 (Vernon Philander, 84.3 ov)
 
 BOWLING                 O   M   R   W   Econ    4s 6s WD NB
 J Anderson             20   4  69   1    3.4    12  0  0  0
@@ -53,8 +54,9 @@ Extras               (b 4, lb 5, w 5, nb 2)          16
 TOTAL                (10 wkts; 53.2 overs)          181
 
 Fall of wickets: 1-11 (Rory Burns, 3.1 ov), 2-15 (Dom Sibley, 4.6 ov), 3-70 (Joe Root, 23.1 ov),
-4-142 (Joe Denly, 37.5 ov), 5-143 (Jonny Bairstow, 38.5 ov), 6-150 (Ben Stokes, 40.3 ov), 7-176 (Sam Curran, 48.5 ov),
-8-176 (Jos Buttler, 51.1 ov), 9-181 (Stuart Broad, 52.4 ov), 10-181 (Jofra Archer, 53.2 ov)
+4-142 (Joe Denly, 37.5 ov), 5-143 (Jonny Bairstow, 38.5 ov), 6-150 (Ben Stokes, 40.3 ov),
+7-176 (Sam Curran, 48.5 ov), 8-176 (Jos Buttler, 51.1 ov), 9-181 (Stuart Broad, 52.4 ov),
+10-181 (Jofra Archer, 53.2 ov)
 
 BOWLING                 O   M   R   W   Econ    4s 6s WD NB
 K Rabada               15   1  68   3    4.5    13  0  0  2

@@ -61,12 +61,11 @@ public class UnusualDismissalsTest {
         control = control.onEvent(batterInningsCompleted(BattingState.RETIRED).withBatter(MARTIN_GUPTILL));
 
 
-        assertThat(AsciiScorecardRenderer.toString(control.match()), matchesRegex("Guptill" + WS + "retired" + WS + "0" + WS + "0" + WS));
-        assertThat(AsciiScorecardRenderer.toString(control.match()), matchesRegex("Neesham" + WS + "not out" + WS + "0" + WS + "0" + WS));
+        assertThat(AsciiScorecardRenderer.toString(control), matchesRegex("Guptill" + WS + "retired" + WS + "0" + WS + "0" + WS));
+        assertThat(AsciiScorecardRenderer.toString(control), matchesRegex("Neesham" + WS + "not out" + WS + "0" + WS + "0" + WS));
 
         // before the next batter comes in, Neesham retires
         control = control.onEvent(batterInningsCompleted(BattingState.RETIRED_OUT).withBatter(JAMES_NEESHAM));
-        assertThat(AsciiScorecardRenderer.toString(control.match()), not(containsString("not out")));
 
         assertThat(control.match().currentInnings().get().currentStriker(), is(Optional.empty()));
         assertThat(control.match().currentInnings().get().currentNonStriker(), is(Optional.empty()));
@@ -82,13 +81,14 @@ public class UnusualDismissalsTest {
                 .withDismissedBatter(control.match().currentInnings().get().currentNonStriker().get().player()));
 
 
-        AsciiScorecardRenderer.render(control.match(), System.out);
+        AsciiScorecardRenderer.render(control, System.out);
 
-        assertThat(AsciiScorecardRenderer.toString(control.match()), allOf(
-            containsString("(5 wkts; 0.4 overs)"),
+        assertThat(AsciiScorecardRenderer.toString(control), allOf(
+            containsString("(5 wkts; 0.3 overs)"),
             containsString("Yet to bat: I Sodhi, L Ferguson, B Tickner"),
             matchesRegex("Fall of wickets: 1-0 \\(Colin Munro, 0.1 ov\\)," + WS + "2-0 \\(Tim Seifert, 0.2 ov\\)," + WS
-                + "3-0 \\(Colin de Grandhomme, 0.3 ov\\)," + WS + "4-0 \\(Tim Southee, 0.4 ov\\)"),
+                + "3-0 \\(Colin de Grandhomme, 0.3 ov\\)," + WS + "4-0 \\(Ross Taylor, 0.3 ov\\)," + WS + "4-0\\* \\(Martin Guptill, retired not out\\),"
+                + WS + "4-0\\* \\(James Neesham, retired out\\),"+ WS + "5-0 \\(Tim Southee, 0.3 ov\\)"),
             matchesRegex("Lyon" + WS + "0.3" + WS + "0" + WS + "0" + WS + "0" + WS + "0.0" + WS + "3" + WS + "0" + WS + "0" + WS + "0" + WS + "0")
         ));
 

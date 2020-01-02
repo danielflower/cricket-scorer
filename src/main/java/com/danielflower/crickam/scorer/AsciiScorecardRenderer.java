@@ -1,28 +1,30 @@
 package com.danielflower.crickam.scorer;
 
-import com.danielflower.crickam.scorer.events.BallCompletedEvent;
+import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AsciiScorecardRenderer {
 
     public static final String NEWLINE = "\n";
 
-    public static String toString(Match match) {
+    public static String toString(MatchControl control) {
         StringBuilder writer = new StringBuilder();
         try {
-            render(match, writer);
+            render(control, writer);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
         return writer.toString();
     }
 
-    public static void render(Match match, Appendable writer) throws IOException {
+    public static void render(MatchControl control, Appendable writer) throws IOException {
+        Match match = control.match();
 
         String header = match.teams().stream().map(l -> l.team().name().toUpperCase()).collect(Collectors.joining(" vs "));
         writer.append(header).append(NEWLINE).append(repeat('=', header.length()))
@@ -45,11 +47,14 @@ public class AsciiScorecardRenderer {
                 }
             }
         }
+
+        // Match summary
         writer.append(NEWLINE);
         if (match.result().isPresent()) {
             writer.append(NEWLINE).append(match.result().get().toString()).append(NEWLINE);
         }
 
+        // Batting scorecard
         for (Innings innings : match.inningsList()) {
             String inningsNumber = match.numberOfInningsPerTeam() > 1 ? " " + Crictils.withOrdinal(1) : "";
             String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
@@ -81,30 +86,44 @@ public class AsciiScorecardRenderer {
             writer.append(NEWLINE);
 
 
+            // Yet to bat
             if (!innings.yetToBat().isEmpty()) {
                 writer.append(innings.state() == Innings.State.COMPLETED ? "Did not bat: " : "Yet to bat: ");
                 writer.append(innings.yetToBat().stream().map(Player::firstInitialWithSurname).collect(Collectors.joining(", ")))
                     .append(NEWLINE).append(NEWLINE);
             }
 
+            // Fall of wickets
             writer.append("Fall of wickets: ");
-            // TODO: handle case where innings started with penalties credited
-            Score score = Score.EMPTY;
-            for (BallCompletedEvent ball : innings.balls()) {
-                score = score.add(ball.score());
-                if (ball.dismissal().isPresent()) {
-                    if (score.wickets() > 1) {
-                        if (score.wickets() % 4 == 0) {
-                            writer.append(",").append(NEWLINE);
-                        } else {
-                            writer.append(", ");
-                        }
+            List<EventOutput> dismissals = control.events().stream()
+                .filter(EventOutput.sameInnings(innings))
+                .filter(me -> me.event() instanceof BatterInningsEndedEvent)
+                .collect(Collectors.toList());
+
+            int num = 0;
+            for (EventOutput state : dismissals) {
+                if (num != 0) {
+                    if (num % 3 == 0) {
+                        writer.append(",").append(NEWLINE);
+                    } else {
+                        writer.append(", ");
                     }
-                    Player dismissed = ball.dismissal().get().batter();
-                    String scoreText = score.wickets() + "-" + score.teamRuns();
-                    writer.append(scoreText).append(" (").append(dismissed.fullName())
-                        .append(", ").append(ball.overDotBallString()).append(" ov)");
                 }
+                Innings innings1 = state.match().currentInnings().orElseThrow();
+                Score score = innings1.score();
+                BatterInningsEndedEvent event = (BatterInningsEndedEvent) state.event();
+                String scoreText = score.wickets() + "-" + score.teamRuns();
+                String time;
+                if (event.reason() == BattingState.RETIRED_OUT || event.reason() == BattingState.RETIRED) {
+                    scoreText += "*";
+                    time = "retired " + ((event.reason() == BattingState.RETIRED) ? "not out" : "out");
+                } else {
+                    time = innings1.overDotBallString() + " ov";
+                }
+
+                writer.append(scoreText).append(" (").append(event.batter().fullName())
+                    .append(", ").append(time).append(")");
+                num++;
             }
             writer.append(NEWLINE).append(NEWLINE);
 
