@@ -6,8 +6,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static com.danielflower.crickam.scorer.Crictils.toInteger;
-import static com.danielflower.crickam.scorer.Crictils.toOptional;
+import static com.danielflower.crickam.scorer.Crictils.*;
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
@@ -16,8 +15,6 @@ import static java.util.Objects.requireNonNull;
  * An innings in a match
  */
 public final class Innings implements MatchEventListener<Innings> {
-
-
 
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
@@ -29,7 +26,7 @@ public final class Innings implements MatchEventListener<Innings> {
     private final BatterInnings currentNonStriker;
     private final ImmutableList<BatterInnings> batters;
     private final ImmutableList<Player> yetToBat;
-    private final ImmutableList<Over> overs;
+    private final ImmutableList<Over> completedOvers;
     private final Over currentOver;
     private final Instant endTime;
     private final Balls balls;
@@ -39,7 +36,7 @@ public final class Innings implements MatchEventListener<Innings> {
     private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
-    private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> overs, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
+    private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> completedOvers, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
         this.score = score;
         this.maxOvers = maxOvers;
         this.maxBalls = maxBalls;
@@ -52,7 +49,7 @@ public final class Innings implements MatchEventListener<Innings> {
         this.currentStriker = currentStriker;
         this.currentNonStriker = currentNonStriker;
         this.batters = requireNonNull(batters);
-        this.overs = requireNonNull(overs);
+        this.completedOvers = requireNonNull(completedOvers);
         this.currentOver = currentOver;
         this.endTime = endTime;
         this.balls = requireNonNull(balls);
@@ -75,7 +72,8 @@ public final class Innings implements MatchEventListener<Innings> {
         ImmutableList<BatterInnings> batters = this.batters;
         ImmutableList<Partnership> partnerships = this.partnerships;
         ImmutableList<Player> yetToBat = this.yetToBat;
-        ImmutableList<Over> overs = this.overs;
+        ImmutableList<Over> completedOvers = this.completedOvers;
+        Over currentOver = this.currentOver;
         Instant endTime = this.endTime;
         Balls balls = this.balls;
         ImmutableList<BowlerInnings> bowlerInningses = this.bowlerInningses;
@@ -83,7 +81,6 @@ public final class Innings implements MatchEventListener<Innings> {
         BatterInnings striker = this.currentStriker;
         BatterInnings nonStriker = this.currentNonStriker;
         Score newScore = this.score;
-        Over currentOver = this.currentOver;
 
 
         if (event instanceof BallCompletedEvent) {
@@ -106,7 +103,6 @@ public final class Innings implements MatchEventListener<Innings> {
             newScore = newScore.add(ball.runsScored());
 
             currentOver = currentOver.onEvent(ball);
-            overs = overs.removeLast().add(currentOver);
 
             Player bowler = ball.bowler();
             BowlerInnings bowlerInnings = getBowlerInnings(bowler);
@@ -128,7 +124,6 @@ public final class Innings implements MatchEventListener<Innings> {
             striker = findBatterInnings(e.striker());
             nonStriker = findBatterInnings(e.nonStriker());
             currentOver = Over.newOver(e);
-            overs = overs.add(currentOver);
 
             BowlerInnings bi = getBowlerInnings(e.bowler());
             if (bi == null) {
@@ -137,11 +132,13 @@ public final class Innings implements MatchEventListener<Innings> {
             }
             newState = State.IN_PROGRESS;
         } else if (event instanceof OverCompletedEvent) {
+            stateGuard(currentOver != null, () -> "There is no over in progress but got " + event);
             newState = State.BETWEEN_OVERS;
+            completedOvers = completedOvers.add(currentOver);
             currentOver = null;
         } else if (event instanceof InningsCompletedEvent) {
+            stateGuard(currentOver == null || !currentOver.isComplete(), () -> "Because the last ball of the innings completed an over, an overCompleted event should be sent before ending the innings");
             newState = State.COMPLETED;
-            currentOver = null;
             endTime = event.time().orElse(null);
             striker = null;
             nonStriker = null;
@@ -194,7 +191,7 @@ public final class Innings implements MatchEventListener<Innings> {
             }
         }
 
-        return new Innings(data, newScore, partnerships, striker, nonStriker, batters, yetToBat, overs, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
+        return new Innings(data, newScore, partnerships, striker, nonStriker, batters, yetToBat, completedOvers, currentOver, endTime, balls, bowlerInningses, newState, maxOvers, maxBalls, target);
 
     }
 
@@ -222,6 +219,8 @@ public final class Innings implements MatchEventListener<Innings> {
 
     /**
      * @return The over being bowled, or empty if between overs or before/after the innings has started
+     * @see #completedOvers()
+     * @see #overs()
      */
     public Optional<Over> currentOver() {
         return Optional.ofNullable(currentOver);
@@ -279,10 +278,21 @@ public final class Innings implements MatchEventListener<Innings> {
     }
 
     /**
+     * @return The completed overs in the innings so far
+     * @see #overs()
+     * @see #currentOver()
+     */
+    public ImmutableList<Over> completedOvers() {
+        return completedOvers;
+    }
+
+    /**
      * @return The overs bowled so far in the innings.
+     * @see #completedOvers()
+     * @see #currentOver()
      */
     public ImmutableList<Over> overs() {
-        return overs;
+        return currentOver == null ? completedOvers : completedOvers.add(currentOver);
     }
 
     /**
@@ -374,19 +384,8 @@ public final class Innings implements MatchEventListener<Innings> {
      * @return The number of the last ball
      */
     public String overDotBallString() {
-        Optional<BallCompletedEvent> ball = balls.lastValid();
-        Optional<Over> over = overs.last();
-        if (ball.isPresent() && over.isPresent()) {
-            int b = ball.get().numberInOver();
-            int o = over.get().overNumber();
-            if (b == 6 && currentOver().isEmpty()) {
-                b = 0;
-                o++;
-            }
-            return o + "." + b;
-        } else {
-            return "0.0";
-        }
+        int b = (currentOver != null) ? currentOver.validDeliveries() : 0;
+        return completedOvers.size() + "." + b;
     }
 
     /**
@@ -476,7 +475,7 @@ public final class Innings implements MatchEventListener<Innings> {
      * @return The number of maidens in this innings
      */
     public int maidens() {
-        return (int) overs.stream().filter(Over::isMaiden).count();
+        return (int) completedOvers.stream().filter(Over::isMaiden).count();
     }
 
     @Override

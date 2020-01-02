@@ -177,8 +177,10 @@ class InningsTest {
             .onEvent(ballCompleted().withRunsScored(SINGLE))
             .onEvent(inningsCompleted());
 
-        assertThat(innings().currentOver(), is(Optional.empty()));
-        assertThat(innings().state(), is(Innings.State.COMPLETED));
+        assertThrows(IllegalStateException.class, this::innings);
+        Innings last = control.match().completedInningsList().last().orElseThrow();
+        assertThat(last.currentOver().get().validDeliveries(), is(1));
+        assertThat(last.state(), is(Innings.State.COMPLETED));
     }
 
     @Test

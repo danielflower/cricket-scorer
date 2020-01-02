@@ -18,21 +18,22 @@ import static java.util.Objects.requireNonNull;
 public final class Match {
 
     public enum State {
-        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED;
-
+        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED
     }
     private final FixedData data;
     private final State state;
 
     private final MatchResult result;
-    private final ImmutableList<Innings> inningsList;
+    private final ImmutableList<Innings> completedInningsList;
+    private final Innings currentInnings;
     private final Balls balls;
 
-    private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> inningsList, Balls balls) {
+    private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> completedInningsList, Innings currentInnings, Balls balls) {
         this.data = requireNonNull(data);
         this.state = requireNonNull(state);
         this.result = result;
-        this.inningsList = requireNonNull(inningsList);
+        this.completedInningsList = requireNonNull(completedInningsList);
+        this.currentInnings = currentInnings;
         this.balls = requireNonNull(balls);
     }
 
@@ -42,41 +43,16 @@ public final class Match {
         FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
             e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
             e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
-        return new Match(fd, State.NOT_STARTED, null, emptyList(), new Balls());
+        return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
     }
 
+    /**
+     * @return A list of every ball bowled in the match
+     */
     public Balls balls() {
         return balls;
     }
-    private static class FixedData {
 
-        private final String matchID;
-        private final Series series;
-        private final Instant time;
-        private final Instant scheduledStartTime;
-        private final ImmutableList<LineUp> teams;
-        private final MatchType matchType;
-        private final int inningsPerTeam;
-        private final Integer oversPerInnings;
-        private final Venue venue;
-        private final int numberOfScheduledDays;
-        private final Integer ballsPerInnings;
-        private final TimeZone timeZone;
-        public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
-            this.matchID = matchID;
-            this.series = series;
-            this.time = time;
-            this.scheduledStartTime = scheduledStartTime;
-            this.teams = teams;
-            this.matchType = matchType;
-            this.inningsPerTeam = inningsPerTeam;
-            this.oversPerInnings = oversPerInnings;
-            this.venue = venue;
-            this.numberOfScheduledDays = numberOfScheduledDays;
-            this.ballsPerInnings = ballsPerInnings;
-            this.timeZone = timeZone;
-        }
-    }
     /**
      * @return The current match state
      */
@@ -86,16 +62,25 @@ public final class Match {
 
     /**
      * @return The current innings in the match, if an innings is in progress
+     * @see #inningsList()
+     * @see #currentInnings()
      */
     public Optional<Innings> currentInnings() {
-        return inningsList.last();
+        return Optional.ofNullable(currentInnings);
     }
 
     /**
-     * @return The innings played in the match
+     * @return The innings played in the match that have been completed
+     */
+    public ImmutableList<Innings> completedInningsList() {
+        return completedInningsList;
+    }
+
+    /**
+     * @return All innings in the match, including any in-progress innings
      */
     public ImmutableList<Innings> inningsList() {
-        return inningsList;
+        return currentInnings == null ? completedInningsList : completedInningsList.add(currentInnings);
     }
 
     /**
@@ -198,27 +183,30 @@ public final class Match {
         State newState = this.state;
         MatchResult newResult = this.result;
         Balls newBalls = this.balls;
+        Innings newCurrentInnings = this.currentInnings;
 
-        ImmutableList<Innings> newInningsList = inningsList;
+        ImmutableList<Innings> newInningsList = completedInningsList;
         if (event instanceof InningsStartingEvent) {
             newState = State.IN_PROGRESS;
-            newInningsList = inningsList.add(Innings.newInnings((InningsStartingEvent) event));
+            newCurrentInnings = Innings.newInnings((InningsStartingEvent) event);
         } else if (event instanceof MatchCompletedEvent) {
             // don't pass to the innings
             newState = State.COMPLETED;
             newResult = ((MatchCompletedEvent) event).result().orElseGet(this::calculateResult);
         } else {
-            Optional<Innings> lastInnings = inningsList.last();
-            if (lastInnings.isPresent()) {
+            if (newCurrentInnings != null) {
                 if (event instanceof BallCompletedEvent) {
                     newBalls = newBalls.add((BallCompletedEvent) event);
                 }
-                Innings i = lastInnings.get().onEvent(event);
-                newInningsList = newInningsList.removeLast().add(i);
+                newCurrentInnings = newCurrentInnings.onEvent(event);
+
+                if (event instanceof InningsCompletedEvent) {
+                    newInningsList = newInningsList.add(newCurrentInnings);
+                    newCurrentInnings = null;
+                }
             }
         }
-
-        return new Match(data, newState, newResult, newInningsList, newBalls);
+        return new Match(data, newState, newResult, newInningsList, newCurrentInnings, newBalls);
     }
 
     /**
@@ -228,7 +216,7 @@ public final class Match {
      */
     public Score scoredByTeam(LineUp team) {
         Score total = Score.EMPTY;
-        for (Innings innings : inningsList) {
+        for (Innings innings : completedInningsList) {
             if (innings.battingTeam().equals(team)) {
                 total = total.add(innings.score());
             }
@@ -236,7 +224,42 @@ public final class Match {
         return total;
     }
 
+    /**
+     * @param someTeam Either the bowling team line-up or the batting team line-up
+     * @return The bowling team if the batting team is given; or the batting team if the bowling team is given
+     * @throws java.util.NoSuchElementException An invalid line-up was given
+     */
     public LineUp otherTeam(LineUp someTeam) {
         return this.teams().stream().filter(t -> !t.equals(someTeam)).findFirst().orElseThrow();
+    }
+
+    private static class FixedData {
+
+        private final String matchID;
+        private final Series series;
+        private final Instant time;
+        private final Instant scheduledStartTime;
+        private final ImmutableList<LineUp> teams;
+        private final MatchType matchType;
+        private final int inningsPerTeam;
+        private final Integer oversPerInnings;
+        private final Venue venue;
+        private final int numberOfScheduledDays;
+        private final Integer ballsPerInnings;
+        private final TimeZone timeZone;
+        public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+            this.matchID = matchID;
+            this.series = series;
+            this.time = time;
+            this.scheduledStartTime = scheduledStartTime;
+            this.teams = teams;
+            this.matchType = matchType;
+            this.inningsPerTeam = inningsPerTeam;
+            this.oversPerInnings = oversPerInnings;
+            this.venue = venue;
+            this.numberOfScheduledDays = numberOfScheduledDays;
+            this.ballsPerInnings = ballsPerInnings;
+            this.timeZone = timeZone;
+        }
     }
 }

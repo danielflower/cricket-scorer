@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.OptionalInt;
 import java.util.TimeZone;
+import java.util.function.Supplier;
 
 public class Crictils {
 
@@ -16,6 +17,12 @@ public class Crictils {
             return null;
         } else {
             return value.getAsInt();
+        }
+    }
+
+    public static void stateGuard(boolean assertion, Supplier<String> message) {
+        if (!assertion) {
+            throw new IllegalStateException(message.get());
         }
     }
 

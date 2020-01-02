@@ -2774,6 +2774,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(overCompleted());
 
         control = control.onEvent(inningsCompleted());
 
@@ -2790,6 +2791,7 @@ public class TestMatchTest {
 
         String actual = AsciiScorecardRenderer.toString(control);
         System.out.println(actual);
+//        Thread.sleep(Long.MAX_VALUE);
         assertEquals(ScorecardLoader.load("sa-vs-eng-test-complete.txt"), actual);
 
     }
