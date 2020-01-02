@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
 import java.time.Instant;
@@ -35,6 +36,13 @@ public final class BatterInnings implements MatchEventListener<BatterInnings> {
 
     static BatterInnings newInnings(Player player, int numberCameIn) {
         return new BatterInnings(BattingState.IN_PROGRESS, player, new Balls(), numberCameIn, Instant.now(), null, null);
+    }
+
+    public static boolean sameBatter(BatterInnings one, BatterInnings two) {
+        if (one == null || two == null) {
+            return false;
+        }
+        return one.player().equals(two.player());
     }
 
     boolean sameInnings(BatterInnings other) {
@@ -146,16 +154,22 @@ public final class BatterInnings implements MatchEventListener<BatterInnings> {
                 throw new IllegalStateException("The innings of " + player.familyName() + " was " + newState + " but received ball " + ball);
             }
             if (ball.striker().equals(this.player)) {
-                newBalls = newBalls.add(ball);
                 somethingChanged = true;
+                newBalls = newBalls.add(ball);
             }
         } else if (event instanceof BatterInningsEndedEvent) {
             BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
             if (sameInnings(e.batter())) {
+                somethingChanged = true;
                 newState = e.reason();
                 endTime = e.time().orElse(null);
-                somethingChanged = true;
                 dismissal = e.dismissal().orElse(null);
+            }
+        } else if (event instanceof InningsCompletedEvent) {
+            if (newState == BattingState.IN_PROGRESS) {
+                somethingChanged = true;
+                newState = BattingState.INNINGS_ENDED;
+                endTime = event.time().orElse(null);
             }
         }
         return somethingChanged ? new BatterInnings(newState, player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;

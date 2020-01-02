@@ -13,7 +13,7 @@ import java.util.Objects;
  * there will be multiple over objects generated for a single over in a match- one for each ball in the over plus
  * one before the over starts and one after it finishes.</p>
  */
-public final class Over {
+public final class Over implements MatchEventListener<Over> {
 	private final int inningsNumber;
 	private final int overNumber;
 	private final Player striker;
@@ -41,7 +41,8 @@ public final class Over {
         return new Over(e.inningsNumber(), e.overNumber(), e.striker(), e.nonStriker(), new Balls(), e.bowler(), e.ballsInOver(), e.time().orElse(null));
     }
 
-    Over onEvent(MatchEvent event) {
+    @Override
+    public Over onEvent(MatchEvent event) {
         if (event instanceof BallCompletedEvent) {
             BallCompletedEvent ball = (BallCompletedEvent) event;
             Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;

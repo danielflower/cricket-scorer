@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.BatterInningsEndedEvent;
+import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
 import java.time.Instant;
@@ -128,6 +129,10 @@ public final class Partnership implements MatchEventListener<Partnership> {
         } else if (event instanceof BatterInningsEndedEvent) {
             BatterInningsEndedEvent e = (BatterInningsEndedEvent) event;
             return new Partnership(e.reason(), data, balls, firstBatterContribution, secondBatterContribution, e.time().orElse(null));
+        } else if (event instanceof InningsCompletedEvent) {
+            if (state == BattingState.IN_PROGRESS) {
+                return new Partnership(BattingState.INNINGS_ENDED, data, balls, firstBatterContribution, secondBatterContribution, event.time().orElse(null));
+            }
         }
         return this;
     }

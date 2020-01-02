@@ -18,8 +18,7 @@ import static org.hamcrest.Matchers.*;
 
 public class UnusualDismissalsTest {
 
-    private static final String WS = "\\W+";
-    private MatchControl control;
+    private static final String WS = "[\\s]+";
 
     @Test
     public void unusualDimissalsCanBeRecorded() throws IOException {
@@ -34,7 +33,7 @@ public class UnusualDismissalsTest {
         LineUp eng = Australia.oneDayLineUp().build();
         Player bowler1 = eng.battingOrder().get(10);
 
-        control = MatchControl.newMatch(matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, eng)).build());
+        MatchControl control = MatchControl.newMatch(matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, eng)).build());
 
         control = control.onEvent(inningsStarting().withBattingTeam(nz));
 
@@ -88,7 +87,8 @@ public class UnusualDismissalsTest {
         assertThat(AsciiScorecardRenderer.toString(control.match()), allOf(
             containsString("(5 wkts; 0.4 overs)"),
             containsString("Yet to bat: I Sodhi, L Ferguson, B Tickner"),
-//            matchesRegex("Fall of wickets: 1-0 (Colin Munro, 0.1 ov)," + WS + "2-0 (Tim Seifert, 0.2 ov)," + WS + "3-0 (Colin de Grandhomme, 0.3 ov)," + WS + "4-0 (Tim Southee, 0.4 ov)"),
+            matchesRegex("Fall of wickets: 1-0 \\(Colin Munro, 0.1 ov\\)," + WS + "2-0 \\(Tim Seifert, 0.2 ov\\)," + WS
+                + "3-0 \\(Colin de Grandhomme, 0.3 ov\\)," + WS + "4-0 \\(Tim Southee, 0.4 ov\\)"),
             matchesRegex("Lyon" + WS + "0.3" + WS + "0" + WS + "0" + WS + "0" + WS + "0.0" + WS + "3" + WS + "0" + WS + "0" + WS + "0" + WS + "0")
         ));
 
