@@ -161,9 +161,9 @@ public final class MatchControl {
      * the match is found as at the end of the second innings:</p>
      * <pre><code>
      * MatchControl controlAtEndOfInnings2 = control.eventStream(InningsCompletedEvent.class)
-     *         .filter(ice -> ice.inningsNumber() == 2)
+     *         .filter(ice -&gt; ice.inningsNumber() == 2)
      *         .findFirst()
-     *         .map(e -> control.asAt(e))
+     *         .map(e -&gt; control.asAt(e))
      *         .orElseThrow();
      * </code></pre>
      * @param event The event to look up

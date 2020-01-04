@@ -47,7 +47,7 @@ public final class MatchEvents {
     }
 
     /**
-     * Creates a ball based on a text score such as &quot;1&quot;, &quot;W&quot etc
+     * Creates a ball based on a text score such as &quot;1&quot;, &quot;W&quot; etc
      * <p>For the case where a wicket was taken, call {@link BallCompletedEvent.Builder#withDismissal(DismissalType)}
      * on the returned builder.</p>
      *

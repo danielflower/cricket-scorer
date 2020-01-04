@@ -41,6 +41,7 @@ public final class Trajectory {
      * empty = unknown
      * </li>
      * </ul>
+     * @return The direction that the ball was hit in
      */
     public Optional<Double> directionInDegreesRelativeToBatter() {
         return Optional.ofNullable(directionInDegreesRelativeToBatter);
@@ -122,6 +123,8 @@ public final class Trajectory {
          * null = unknown
          * </li>
          * </ul>
+         * @param directionInDegreesRelativeToBatter The direction
+         * @return This builder
          */
         public Builder withDirectionInDegreesRelativeToBatter(Double directionInDegreesRelativeToBatter) {
             this.directionInDegreesRelativeToBatter = directionInDegreesRelativeToBatter;
@@ -131,7 +134,7 @@ public final class Trajectory {
         /**
          * @param launchAngle The angle the ball came off the bat. A negative number is hitting into the ground
          *                    (with -90.0 being directly downward); positive is in the air (with 90.0 being straight up).
-         * @return This ball
+         * @return This builder
          */
         public Builder withLaunchAngle(Double launchAngle) {
             this.launchAngle = launchAngle;

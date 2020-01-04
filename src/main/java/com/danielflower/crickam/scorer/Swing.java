@@ -37,7 +37,7 @@ public final class Swing {
     }
 
     /**
-     * A number between -1 and 1 where -1 indicates the foot went back to the wicket; 0 is at the crease; 1 is a
+     * @return A number between -1 and 1 where -1 indicates the foot went back to the wicket; 0 is at the crease; 1 is a
      * long way stretched forward;
      */
     public Optional<Double> footDirection() {
@@ -45,7 +45,7 @@ public final class Swing {
     }
 
     /**
-     * A number between 0 and 1, where 0 is no movement of the bat; 0.5 is a normal shot; and 1 is the batter's
+     * @return A number between 0 and 1, where 0 is no movement of the bat; 0.5 is a normal shot; and 1 is the batter's
      * maximum power.
      */
     public Optional<Double> power() {
