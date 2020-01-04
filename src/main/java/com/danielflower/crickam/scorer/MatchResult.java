@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.MatchCompletedEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -59,7 +58,7 @@ public final class MatchResult {
     private final Integer wonByAmount;
     private final boolean duckworthLewisApplied;
 
-    private MatchResult(@NotNull MatchResult.ResultType resultType, LineUp winningTeam, Measure wonBy, Integer wonByAmount, boolean duckworthLewisApplied) {
+    private MatchResult(MatchResult.ResultType resultType, LineUp winningTeam, Measure wonBy, Integer wonByAmount, boolean duckworthLewisApplied) {
         this.resultType = requireNonNull(resultType);
         boolean hasWinner = resultType == ResultType.AWARDED || resultType == ResultType.CONCEDED || resultType == ResultType.WON;
         if (hasWinner) {
@@ -138,7 +137,7 @@ public final class MatchResult {
 
     public static final MatchResult NoResult = MatchResult.matchResult().withResultType(ResultType.NO_RESULT).build();
 
-    public static class Builder {
+    public static final class Builder {
         private ResultType resultType;
         private LineUp winningTeam;
         private Measure wonBy;

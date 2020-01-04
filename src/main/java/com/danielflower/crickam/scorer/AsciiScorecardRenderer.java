@@ -13,7 +13,7 @@ import static com.danielflower.crickam.scorer.Crictils.pluralize;
 
 public final class AsciiScorecardRenderer {
 
-    public static final String NEWLINE = "\n";
+    private static final char NEWLINE = '\n';
 
     public static String toString(MatchControl control) {
         StringBuilder writer = new StringBuilder();

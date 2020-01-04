@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.events.MatchEvents;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -119,7 +118,6 @@ class MatchControlTest {
         System.out.println(curInnings().batterInningsList());
     }
 
-    @NotNull
     private Innings curInnings() {
         return control.match().currentInnings().get();
     }

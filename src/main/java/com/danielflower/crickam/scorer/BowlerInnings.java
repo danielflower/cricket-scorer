@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -101,7 +100,6 @@ public final class BowlerInnings {
         return new BowlerInnings(bowler, balls.add(ball), spells, newOvers, wickets);
     }
 
-    @NotNull
     static ImmutableList<Over> addOverWithPreviousRemovedIfSame(ImmutableList<Over> overs, Over toAddOrReplace) {
         ImmutableList<Over> newOvers = overs;
         if (overs.last().get().overNumber() == toAddOrReplace.overNumber()) {

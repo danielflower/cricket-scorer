@@ -33,7 +33,7 @@ public final class Series {
         return new Builder();
     }
 
-    public static class Builder {
+    public static final class Builder {
         public String id;
         public ImmutableList<Team> teams;
         public String name;

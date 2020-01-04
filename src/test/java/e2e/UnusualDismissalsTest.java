@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.*;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import org.hamcrest.Matcher;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -94,7 +93,6 @@ public class UnusualDismissalsTest {
 
     }
 
-    @NotNull
     private static Matcher<String> matchesRegex(String pattern) {
         return matchesPattern(Pattern.compile(".*" + pattern + ".*", Pattern.DOTALL));
     }

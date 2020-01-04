@@ -1,7 +1,5 @@
 package com.danielflower.crickam.scorer;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -115,9 +113,6 @@ public final class ImmutableList<T> implements Iterable<T> {
         return new ImmutableList<>(arrayList, newFirst, newLast);
     }
 
-
-
-    @NotNull
     @Override
     public Iterator<T> iterator() {
         return new ImmutableListIterator();
@@ -202,7 +197,6 @@ public final class ImmutableList<T> implements Iterable<T> {
         return asList().equals(that.asList());
     }
 
-    @NotNull
     private List<T> asList() {
         return List.copyOf(this.arrayList.subList(first, last + 1));
     }

@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.events.MatchEvent;
 import com.danielflower.crickam.scorer.events.MatchEventBuilder;
 import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.*;
 import java.util.Objects;
@@ -203,7 +202,6 @@ public final class MatchControl {
      * @param innings The innings (at any point of time in that innings) that you are searching for
      * @return A predicate that can be used in a stream filter
      */
-    @NotNull
     public static Predicate<MatchControl> sameInnings(Innings innings) {
         return mc -> mc.match().currentInnings().isPresent()
             && mc.match().currentInnings().get().inningsNumber() == innings.inningsNumber();

@@ -1,8 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -12,7 +10,7 @@ import static java.util.Objects.requireNonNull;
  * A cricket player
  * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
  */
-public class Player {
+public final class Player {
 
 	private final Gender gender;
 	private final String id;
@@ -23,9 +21,9 @@ public class Player {
     private final Handedness bowlingHandedness;
 	private final PlayingRole playingRole;
 
-	Player(@NotNull String id, @NotNull Gender gender, @NotNull ImmutableList<String> givenNames, @NotNull String familyName,
-                  @NotNull String fullName, @NotNull Handedness battingHandedness, @NotNull Handedness bowlingHandedness,
-                  @NotNull PlayingRole playingRole) {
+	Player(String id, Gender gender, ImmutableList<String> givenNames, String familyName,
+                  String fullName, Handedness battingHandedness, Handedness bowlingHandedness,
+                  PlayingRole playingRole) {
         this.id = requireNonNull(id);
         this.gender = requireNonNull(gender);
         this.givenNames = requireNonNull(givenNames);

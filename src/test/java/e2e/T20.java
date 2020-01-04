@@ -1,7 +1,6 @@
 package e2e;
 
 import com.danielflower.crickam.scorer.*;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import scaffolding.ScorecardLoader;
 
@@ -469,12 +468,10 @@ public class T20 {
         assertEquals(ScorecardLoader.load("nz-vs-eng-t20i-complete.txt"), actual);
     }
 
-    @NotNull
     private Player findFielder(String name) {
         return findFielder(control, name);
     }
 
-    @NotNull
     static Player findFielder(MatchControl control, String name) {
         LineUp team = control.match().currentInnings().orElseThrow().bowlingTeam();
         Optional<Player> bowler = team.findPlayer(name);

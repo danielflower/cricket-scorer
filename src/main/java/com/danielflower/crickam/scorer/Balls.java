@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -17,7 +16,8 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     Balls() {
         this(ImmutableList.emptyList(), Score.EMPTY);
     }
-    private Balls(@NotNull ImmutableList<BallCompletedEvent> balls, @NotNull Score score) {
+
+    private Balls(ImmutableList<BallCompletedEvent> balls, Score score) {
         this.balls = Objects.requireNonNull(balls);
         this.score = Objects.requireNonNull(score);
     }

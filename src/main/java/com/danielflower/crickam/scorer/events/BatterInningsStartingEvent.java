@@ -3,8 +3,6 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.Innings;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -15,7 +13,7 @@ public final class BatterInningsStartingEvent implements MatchEvent {
     private final Instant time;
     private final Player batter;
 
-    private BatterInningsStartingEvent(@Nullable Instant time, @NotNull Player batter) {
+    private BatterInningsStartingEvent(Instant time, Player batter) {
         this.time = time;
         this.batter = Objects.requireNonNull(batter);
     }

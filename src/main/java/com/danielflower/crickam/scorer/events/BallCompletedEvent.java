@@ -1,8 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -29,10 +27,10 @@ public final class BallCompletedEvent implements MatchEvent {
     private final int numberInMatch;
     private final ImmutableList<MatchEventBuilder<?>> generatedEvents;
 
-    private BallCompletedEvent(@NotNull Player bowler, @NotNull Player striker, @NotNull Player nonStriker, @NotNull Score runsScored,
-                               boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
-                               @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, int overNumber,
-                               int numberInOver, int numberInMatch, @NotNull ImmutableList<MatchEventBuilder<?>> generatedEvents) {
+    private BallCompletedEvent(Player bowler, Player striker, Player nonStriker, Score runsScored,
+                               boolean playersCrossed, Dismissal dismissal, Delivery delivery, Swing swing,
+                               Trajectory trajectoryAtImpact, Player fielder, Instant time, int overNumber,
+                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?>> generatedEvents) {
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -207,7 +205,7 @@ public final class BallCompletedEvent implements MatchEvent {
          * @param type The type of dismissal
          * @return This builder
          */
-        public Builder withDismissal(@NotNull DismissalType type) {
+        public Builder withDismissal(DismissalType type) {
             this.dismissalType = requireNonNull(type);
             if (runsScored == null) {
                 runsScored = Score.WICKET;

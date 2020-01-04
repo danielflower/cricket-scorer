@@ -4,8 +4,6 @@ import com.danielflower.crickam.scorer.BattingState;
 import com.danielflower.crickam.scorer.Dismissal;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -23,7 +21,7 @@ public final class BatterInningsCompletedEvent implements MatchEvent {
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(@Nullable Instant time, @NotNull Player batter, @NotNull BattingState reason, @Nullable Dismissal dismissal) {
+    private BatterInningsCompletedEvent(Instant time, Player batter, BattingState reason, Dismissal dismissal) {
         this.time = time;
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");

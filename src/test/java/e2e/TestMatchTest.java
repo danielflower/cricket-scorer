@@ -2,7 +2,6 @@ package e2e;
 
 import com.danielflower.crickam.scorer.*;
 import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import scaffolding.ScorecardLoader;
 
@@ -2795,7 +2794,6 @@ public class TestMatchTest {
 
     }
 
-    @NotNull
     private Player findFielder(String name) {
         return T20.findFielder(control, name);
     }

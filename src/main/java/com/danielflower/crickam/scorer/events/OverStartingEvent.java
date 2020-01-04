@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.BatterInnings;
 import com.danielflower.crickam.scorer.Innings;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
-import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -130,7 +129,6 @@ public final class OverStartingEvent implements MatchEvent {
             return new OverStartingEvent(bowler, strikerPlayer, nonStrikerPlayer, time, ballsInOver, numberInInnings, innings.inningsNumber());
         }
 
-        @Nullable
         private static Player playerOrNull(Optional<BatterInnings> batterInnings) {
             return batterInnings.isPresent() ? batterInnings.get().player() : null;
         }
