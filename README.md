@@ -107,6 +107,9 @@ gives access to much more information about the match state.
 You can also use the match control object to find a specific point in time in the match
 and access the entire model as at the time of that event.
 
+For reference, the [AsciiScorecardRenderer](https://github.com/danielflower/cricket-scorer/blob/master/src/main/java/com/danielflower/crickam/scorer/AsciiScorecardRenderer.java)
+class provides an example of looping through innings and batters, partnerships, bowlers etc.
+
 The following example finds the state of the match after the first single:
 
 ````java
@@ -130,27 +133,29 @@ Unusual events
 --------------
 
 * **Dismissals** generally occur as the result of a `BallCompletedEvent` however there are
-some circumstances where this is not the case, such as time outs, or when the bowling runs
-out the non-striker without bowling a ball. See [UnusualDismissalsTest.java](https://github.com/danielflower/cricket-scorer/blob/master/src/test/java/e2e/UnusualDismissalsTest.java)
+some circumstances where this is not the case, such as the Timed Out dismissal, or when the
+bowler runs out the non-striker before bowling the ball. See [UnusualDismissalsTest.java](https://github.com/danielflower/cricket-scorer/blob/master/src/test/java/e2e/UnusualDismissalsTest.java)
 for examples on how to perform these.
-* **Retirement** can be specified with `batterInningsCompleted(BattingState.RETIRED).withBatter(MARTIN_GUPTILL)`
+* **Retirement** can be specified with `batterInningsCompleted(BattingState.RETIRED).withBatter(theBatter)`
 * Non-standard overs with fewer than or more than 6 balls can be represented by raising
-an `overCompleted()` event sooner or later than it should be.
+an `overCompleted()` event sooner or later than expected.
 * In most cases, the library tries to guess values for the event builders based on the
 context of the match, for example, a `BatterInningsStartingEvent` will use the batting order
 of the batting team to guess who the next batter in is if it is not explicitly set. In
 any case where the library guesses incorrectly (e.g. if a night-watchman comes in to bat)
 then you should set an explicit value on the builder.
 * Most straight-forward balls can be represented with`ballCompleted(String scoreText)` which
-guesses whether the batters crossed or not, etc. However, in some cases the predefined
-states do not cover it, in which case a [score builder](https://www.javadoc.io/doc/com.danielflower.crickam/cricket-scorer/latest/com/danielflower/crickam/scorer/Score.Builder.html)
-may need to be used. In the following example, the non-striker is run out on the second
+guesses batting runs, extras, wickets, whether the batters crossed or not, etc. However, in some
+cases the predefined states do not cover it, in which case a 
+[score builder](https://www.javadoc.io/doc/com.danielflower.crickam/cricket-scorer/latest/com/danielflower/crickam/scorer/Score.Builder.html)
+can be used. In the following example, the non-striker is run out on the second
 run and the batters crossed:
 ````java
 ballCompleted()
     .withRunsScored(Score.score().withWickets(1).withValidDeliveries(1).withBatterRuns(1).withSingles(1).build())
     .withDismissal(DismissalType.RUN_OUT)
-    .withDismissedBatter(KANE_WILLIAMSON)
+    .withDismissedBatter(theNonStriker)
+    .withFielder(theFielder)
     .withPlayersCrossed(true);
 ````
 
@@ -160,6 +165,6 @@ Design decisions
 * ***The model is immutable*** so that things like the full state of the match can be
 looked at, and matches can be forked easily.
 * The only way to change the model is with events
-* Any objects created are with builder classes, which are inner classes of the model object they create
+* Object creation is with builder classes, which are inner classes of the model object they create
 * The model will not return `null` from any methods. Any methods that may not have return
 values in some cases return `Optional<T>` instead.
