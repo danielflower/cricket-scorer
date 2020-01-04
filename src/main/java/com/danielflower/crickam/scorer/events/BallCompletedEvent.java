@@ -266,7 +266,7 @@ public final class BallCompletedEvent implements MatchEvent {
             BatterInnings strikerInnings = innings.currentStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter on strike"));
             BatterInnings nonStrikerInnings = innings.currentNonStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end"));
 
-            Over over = innings.currentOver().orElseThrow();
+            Over over = innings.currentOver().orElseThrow(() -> new IllegalStateException("There is no current over. Raise an OverStartingEvent event before the ball completion event"));
             Player bowler = requireNonNullElseGet(this.bowler, over::bowler);
             Player striker = requireNonNullElseGet(this.striker, strikerInnings::player);
             Player nonStriker = requireNonNullElseGet(this.nonStriker, nonStrikerInnings::player);

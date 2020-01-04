@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.events.MatchEvents;
 
 import static com.danielflower.crickam.scorer.data.England.*;
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 
 public class ReadMeExample {
 
@@ -40,16 +41,16 @@ public class ReadMeExample {
             MatchEvents.matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, eng))
         );
 
-        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
-            .onEvent(MatchEvents.overStarting(eng.battingOrder().get(10)))
-            .onEvent(MatchEvents.ballCompleted("0"))
-            .onEvent(MatchEvents.ballCompleted("0"))
-            .onEvent(MatchEvents.ballCompleted("4"))
-            .onEvent(MatchEvents.ballCompleted("W").withDismissal(DismissalType.BOWLED))
-            .onEvent(MatchEvents.batterInningsStarting())
-            .onEvent(MatchEvents.ballCompleted("1"))
-            .onEvent(MatchEvents.ballCompleted("2"))
-            .onEvent(MatchEvents.overCompleted());
+        control = control.onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(overStarting(eng.battingOrder().get(10)))
+            .onEvent(ballCompleted("0"))
+            .onEvent(ballCompleted("0"))
+            .onEvent(ballCompleted("4"))
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("1"))
+            .onEvent(ballCompleted("2"))
+            .onEvent(overCompleted());
 
         System.out.println(AsciiScorecardRenderer.toString(control));
 
@@ -62,6 +63,20 @@ public class ReadMeExample {
         Score scoreAfterFirstSingle = matchAfterFirstSingle.currentInnings().score();
         System.out.println("The team score after the first single was " +
             scoreAfterFirstSingle.teamRuns() + " runs for " + scoreAfterFirstSingle.wickets());
+
+        control = control
+            .onEvent(overStarting().withBowler(eng.battingOrder().get(9)))
+            .onEvent(ballCompleted()
+                .withRunsScored(Score.score().withWickets(1).withValidDeliveries(1).withBatterRuns(1).withSingles(1).build())
+                .withDismissal(DismissalType.RUN_OUT)
+                .withDismissedBatter(MARTIN_GUPTILL)
+                .withFielder(ROOT)
+                .withPlayersCrossed(true))
+            .onEvent(batterInningsStarting());
+
+        System.out.println();
+        System.out.println("Scorecard after running out the batter");
+        System.out.println(AsciiScorecardRenderer.toString(control));
 
     }
 }
