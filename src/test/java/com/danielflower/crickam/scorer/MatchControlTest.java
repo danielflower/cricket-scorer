@@ -111,11 +111,6 @@ class MatchControlTest {
         control = control.onEvent(ballCompleted("1w"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
-
-
-        System.out.println("innings.currentStriker() = " + curInnings().currentStriker());
-        System.out.println("innings.currentNonStriker() = " + curInnings().currentNonStriker());
-        System.out.println(curInnings().batterInningsList());
     }
 
     private Innings curInnings() {
