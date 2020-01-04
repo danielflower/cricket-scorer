@@ -20,7 +20,7 @@ public class TestMatchTest {
     private MatchControl control;
 
     @Test
-    public void canScoreTestMatch() throws InterruptedException {
+    public void canScoreTestMatch() {
 
         // A recreation of https://www.espncricinfo.com/series/19286/scorecard/1185304/south-africa-vs-england-1st-test-england-in-sa-2019-20
 
@@ -2789,9 +2789,8 @@ public class TestMatchTest {
             .orElseThrow();
         assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"), AsciiScorecardRenderer.toString(controlAtEndOfInnings2));
 
+        // Now check the scoreboard at the end of the innings
         String actual = AsciiScorecardRenderer.toString(control);
-        System.out.println(actual);
-//        Thread.sleep(Long.MAX_VALUE);
         assertEquals(ScorecardLoader.load("sa-vs-eng-test-complete.txt"), actual);
 
     }

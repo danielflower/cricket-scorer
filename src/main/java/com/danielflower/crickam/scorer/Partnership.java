@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A batting partnership
  */
-public final class Partnership implements MatchEventListener<Partnership> {
+public final class Partnership {
     private final BattingState state;
     private final Balls balls;
 	private final Balls firstBatterContribution;

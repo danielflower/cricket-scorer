@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An innings in a match
  */
-public final class Innings implements MatchEventListener<Innings> {
+public final class Innings {
 
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;

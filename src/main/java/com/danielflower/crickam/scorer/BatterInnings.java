@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * The innings of a batter at a specific point in time.
  */
-public final class BatterInnings implements MatchEventListener<BatterInnings> {
+public final class BatterInnings {
 
     private final BattingState state;
     private final Player player;
