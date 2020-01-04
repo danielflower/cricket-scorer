@@ -100,13 +100,13 @@ public class AsciiScorecardRenderer {
 
             // Fall of wickets
             writer.append("Fall of wickets: ");
-            List<EventOutput> dismissals = control.history().stream()
-                .filter(EventOutput.sameInnings(innings))
+            List<MatchControl> dismissals = control.history().stream()
+                .filter(MatchControl.sameInnings(innings))
                 .filter(me -> me.event() instanceof BatterInningsCompletedEvent)
                 .collect(Collectors.toList());
 
             int num = 0;
-            for (EventOutput state : dismissals) {
+            for (MatchControl state : dismissals) {
                 if (num != 0) {
                     if (num % 3 == 0) {
                         writer.append(",").append(NEWLINE);

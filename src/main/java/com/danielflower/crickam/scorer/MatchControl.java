@@ -4,9 +4,11 @@ import com.danielflower.crickam.scorer.events.MatchEvent;
 import com.danielflower.crickam.scorer.events.MatchEventBuilder;
 import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.*;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
@@ -30,10 +32,14 @@ import static com.danielflower.crickam.scorer.Crictils.requireInRange;
  */
 public final class MatchControl {
 
-    private final ImmutableList<EventOutput> events;
+    private final ImmutableList<MatchControl> ancestors;
+    private final MatchEvent event;
+    private final Match match;
 
-    private MatchControl(ImmutableList<EventOutput> events) {
-        this.events = events;
+    private MatchControl(ImmutableList<MatchControl> ancestors, MatchEvent event, Match match) {
+        this.ancestors = ancestors;
+        this.event = event;
+        this.match = match;
     }
 
     /**
@@ -44,7 +50,8 @@ public final class MatchControl {
      */
     public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
         MatchStartingEvent event = builder.build();
-        return new MatchControl(ImmutableList.of(new EventOutput(event, Match.newMatch(event))));
+        Match match = Match.newMatch(event);
+        return new MatchControl(ImmutableList.emptyList(), event, match);
     }
 
     /**
@@ -55,27 +62,50 @@ public final class MatchControl {
      * @see MatchEvents MatchEvents class for a number of handy builder objects
      */
     public MatchControl onEvent(MatchEventBuilder<?> builder) {
-        return onEvent(builder.build(match()));
-    }
+        MatchEvent event1 = builder.build(match());
+        Match newMatch = match().onEvent(event1);
+        ImmutableList<MatchControl> newHistory = this.ancestors.add(this);
+        MatchControl newMatchControl = new MatchControl(newHistory, event1, newMatch);
 
-    MatchControl onEvent(MatchEvent event) {
-        Match match = match().onEvent(event);
-        ImmutableList<EventOutput> newEvents = events.add(new EventOutput(event, match));
-
-        for (MatchEventBuilder<?> builder : event.generatedEvents()) {
-            MatchEvent generatedEvent = builder.build(match);
-            match = match.onEvent(generatedEvent);
-            newEvents = newEvents.add(new EventOutput(generatedEvent, match));
+        for (MatchEventBuilder<?> builder1 : event1.generatedEvents()) {
+            newMatchControl = newMatchControl.onEvent(builder1);
         }
 
-        return new MatchControl(newEvents);
+        return newMatchControl;
     }
 
     /**
      * @return The match at the current point in time
      */
     public Match match() {
-        return events.get(events.size() - 1).match();
+        return match;
+    }
+
+    /**
+     * @return The last event that was applied
+     */
+    public MatchEvent event() {
+        return event;
+    }
+
+    /**
+     * @return true if {@link #parent()} has a parent match control; false if this is the control created by {@link #newMatch(MatchStartingEvent.Builder)}
+     * @see #parent()
+     */
+    public boolean hasParent() {
+        return !history().isEmpty();
+    }
+
+    /**
+     * Returns the match control that is the parent of this one.
+     * <p>This can be used to undo applied events by calling this method on a match control, and then calling
+     * {@link #onEvent(MatchEventBuilder)} with a new event on the parent control.</p>
+     * @return the parent of this control
+     * @see #hasParent()
+     * @throws IllegalStateException if this has no parent
+     */
+    public MatchControl parent() {
+        return history().last().orElseThrow(() -> new IllegalStateException("Cannot get the parent of the first event"));
     }
 
     /**
@@ -92,8 +122,8 @@ public final class MatchControl {
      * @see #eventStream(Class)
      * @return All the events and corresponding states in the order they occurred
      */
-    public ImmutableList<EventOutput> history() {
-        return events;
+    public ImmutableList<MatchControl> history() {
+        return ancestors.add(this);
     }
 
     /**
@@ -112,8 +142,9 @@ public final class MatchControl {
         ZoneId zoneId = match().timeZone()
             .orElseThrow(() -> new UnsupportedOperationException("No time zone was set on the match (or on the venue) so local times cannot be calculated"))
             .toZoneId();
-        for (int i = events.size() - 1; i >= 0; i--) {
-            EventOutput er = events.get(i);
+        ImmutableList<MatchControl> history = history();
+        for (int i = history.size() - 1; i >= 0; i--) {
+            MatchControl er = history.get(i);
             if (er.event().time().isPresent()) {
                 Instant lastKnownTime = er.event().time().get();
                 LocalDate date = LocalDate.ofInstant(lastKnownTime, zoneId);
@@ -140,14 +171,13 @@ public final class MatchControl {
      * @return The {@code MatchControl} as at the time that the event was added
      */
     public MatchControl asAt(MatchEvent event) {
-        int index = 0;
-        for (EventOutput eo : events) {
-            if (eo.event() == event) {
-                return new MatchControl(events.subList(0, index));
+        Objects.requireNonNull(event, "event");
+        for (MatchControl matchControl : this.history()) {
+            if (matchControl.event().equals(event)) {
+                return matchControl;
             }
-            index++;
         }
-        throw new IllegalArgumentException("No event found on this match");
+        throw new IllegalArgumentException("No matching event found on this match");
     }
 
     /**
@@ -159,10 +189,23 @@ public final class MatchControl {
      * @return A stream
      */
     public <T extends MatchEvent> Stream<T> eventStream(Class<T> eventClass) {
-        Class<? extends MatchEvent> clazz = Objects.requireNonNullElse(eventClass, MatchEvent.class);
-        return events.stream()
-            .map(EventOutput::event)
-            .filter(event -> event.getClass().equals(clazz))
+        Class<? extends MatchEvent> clazz = Objects.requireNonNull(eventClass, "eventClass");
+        return history().stream()
+            .filter(c -> c.event().getClass().equals(clazz))
+            .map(MatchControl::event)
             .map(eventClass::cast);
+    }
+
+    /**
+     * A predicate that returns true if the innings number of the match after applying the event is the same as the
+     * given innings number.
+     * <p>This is designed to be used to filter the result of {@link MatchControl#history()}</p>
+     * @param innings The innings (at any point of time in that innings) that you are searching for
+     * @return A predicate that can be used in a stream filter
+     */
+    @NotNull
+    public static Predicate<MatchControl> sameInnings(Innings innings) {
+        return mc -> mc.match().currentInnings().isPresent()
+            && mc.match().currentInnings().get().inningsNumber() == innings.inningsNumber();
     }
 }
