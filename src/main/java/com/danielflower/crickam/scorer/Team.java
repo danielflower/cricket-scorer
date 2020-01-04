@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNullElseGet;
  * <p>Note that when a team plays in a match, the actual batting order is specified with the {@link LineUp} class.</p>
  * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
  */
-public final class Team {
+public class Team {
     private final String id;
     private final String shortName;
     private final TeamLevel level;

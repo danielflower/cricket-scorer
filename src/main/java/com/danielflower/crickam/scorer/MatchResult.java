@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * The result of a match
  */
-public class MatchResult {
+public final class MatchResult {
 
     /**
      * Describes how a match was won, drawn, tied or otherwise concluded

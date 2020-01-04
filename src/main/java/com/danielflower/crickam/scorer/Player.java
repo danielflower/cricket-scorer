@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  * A cricket player
  * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
  */
-public final class Player {
+public class Player {
 
 	private final Gender gender;
 	private final String id;

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import static com.danielflower.crickam.scorer.Crictils.pluralize;
 
-public class AsciiScorecardRenderer {
+public final class AsciiScorecardRenderer {
 
     public static final String NEWLINE = "\n";
 

@@ -6,7 +6,7 @@ import java.util.OptionalInt;
 import java.util.TimeZone;
 import java.util.function.Supplier;
 
-public class Crictils {
+public final class Crictils {
 
     public static OptionalInt toOptional(Integer value) {
         return value == null ? OptionalInt.empty() : OptionalInt.of(value);
