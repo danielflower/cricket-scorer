@@ -58,12 +58,13 @@ public final class AsciiScorecardRenderer {
 
         // Batting scorecard
         for (Innings innings : match.inningsList()) {
-            String inningsNumber = match.numberOfInningsPerTeam() > 1 ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
+            boolean multipleInningsPerTeam = match.numberOfInningsPerTeam() > 1;
+            String inningsNumber = multipleInningsPerTeam ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
             String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
             if (innings.originalMaxOvers().isPresent()) {
                 inningsHeader += " (" + pluralize(innings.originalMaxOvers().getAsInt(), "over") + " maximum)";
             }
-            if (innings.target().isPresent()) {
+            if (multipleInningsPerTeam && innings.target().isPresent()) {
                 inningsHeader += " (target: " + pluralize(innings.target().getAsInt(), "run") + ")";
             }
 
