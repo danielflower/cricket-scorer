@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -10,10 +9,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A cricket player
  * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
+ * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
  */
 public class Player {
 
-	private final String id;
     private final String familyName;
     private final String givenName;
     private final ImmutableList<String> formalGivenNames;
@@ -21,7 +20,6 @@ public class Player {
     private final String initials;
 
 	protected Player(Builder builder) {
-        this.id = builder.id != null ? builder.id : UUID.randomUUID().toString();
         Objects.requireNonNullElse(builder.givenName, builder.formalGivenNames);
         this.formalGivenNames = builder.formalGivenNames != null ? builder.formalGivenNames : ImmutableList.of(builder.givenName);
         this.givenName = builder.givenName != null ? builder.givenName : builder.formalGivenNames.get(0);
@@ -31,25 +29,8 @@ public class Player {
     }
 
 	public String toString() {
-		return familyName();
+		return initialsWithSurname();
 	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Player player = (Player) o;
-		return id().equals(player.id());
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id());
-	}
-
-    public String id() {
-        return id;
-    }
 
     public String givenName() {
         return givenName;
@@ -120,7 +101,6 @@ public class Player {
      * A builder of {@link Player} objects.
      */
     public static final class Builder {
-        private String id;
         private ImmutableList<String> formalGivenNames;
         private String givenName;
         private String familyName;
@@ -152,16 +132,6 @@ public class Player {
          */
         public Builder withFullName(String fullName) {
             this.fullName = fullName;
-            return this;
-        }
-
-        /**
-         * Associates a unique ID for this player
-         * @param id A unique ID that identifies this player
-         * @return This builder
-         */
-        public Builder withId(String id) {
-            this.id = id;
             return this;
         }
 

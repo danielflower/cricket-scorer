@@ -2,8 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -17,7 +15,6 @@ class TeamTest {
 
     public static Team.Builder aTeam() {
         return new Team.Builder()
-            .withId(UUID.randomUUID().toString())
             .withName("New Zealand")
             .withShortName("NZL");
     }

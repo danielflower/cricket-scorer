@@ -3,8 +3,6 @@ package com.danielflower.crickam.scorer.data;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 
-import java.util.UUID;
-
 public class England {
     public static final Player ALI = Player.player("Moeen Ali").build();
     public static final Player ANDERSON = Player.player("James Anderson").build();
@@ -39,7 +37,6 @@ public class England {
 
     public static Team.Builder team() {
         return Team.team()
-            .withId(UUID.randomUUID().toString())
             .withShortName("ENG")
             .withName("England");
     }

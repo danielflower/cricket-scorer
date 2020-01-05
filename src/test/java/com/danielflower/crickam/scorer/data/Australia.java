@@ -5,8 +5,6 @@ import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 
-import java.util.UUID;
-
 public class Australia {
 
     public static final Player SEAN_ABBOT = Player.player("Sean Abbot").build();
@@ -42,7 +40,6 @@ public class Australia {
 
     public static Team.Builder team() {
         return Team.team()
-            .withId(UUID.randomUUID().toString())
             .withShortName("AUS")
             .withName("Australia");
     }

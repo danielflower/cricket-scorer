@@ -5,8 +5,6 @@ import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 
-import java.util.UUID;
-
 import static com.danielflower.crickam.scorer.Player.player;
 
 public class NewZealand {
@@ -45,7 +43,6 @@ public class NewZealand {
 
     public static Team.Builder team() {
         return Team.team()
-            .withId(UUID.randomUUID().toString())
             .withShortName("NZL")
             .withName("New Zealand");
     }

@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -11,18 +10,19 @@ import static java.util.Objects.requireNonNull;
 /**
  * The selected players from a team for match.
  * <p>Use {@link #lineUp()} to create a builder.</p>
+ * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
  */
-public final class LineUp {
+public class LineUp {
 	private final ImmutableList<Player> players;
 	private final Team team;
 	private final Player captain;
 	private final Player wicketKeeper;
 
-    private LineUp(ImmutableList<Player> players, Team team, Player captain, Player wicketKeeper) {
-        this.players = requireNonNull(players, "players");
-        this.team = requireNonNull(team, "team");
-        this.captain = requireNonNull(captain, "captain");
-        this.wicketKeeper = requireNonNull(wicketKeeper, "wicketKeeper");
+    protected LineUp(Builder builder) {
+        this.players = requireNonNull(builder.players, "players");
+        this.team = requireNonNull(builder.team, "team");
+        this.captain = requireNonNull(builder.captain, "captain");
+        this.wicketKeeper = requireNonNull(builder.wicketKeeper, "wicketKeeper");
     }
 
     /**
@@ -51,22 +51,6 @@ public final class LineUp {
      */
     public Player wicketKeeper() {
         return wicketKeeper;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LineUp lineUp = (LineUp) o;
-        return Objects.equals(players, lineUp.players) &&
-            Objects.equals(team, lineUp.team) &&
-            Objects.equals(captain, lineUp.captain) &&
-            Objects.equals(wicketKeeper, lineUp.wicketKeeper);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(players, team, captain, wicketKeeper);
     }
 
     @Override
@@ -148,7 +132,7 @@ public final class LineUp {
          * @return A newly created {@code LineUp}
          */
         public LineUp build() {
-            return new LineUp(players, team, captain, wicketKeeper);
+            return new LineUp(this);
         }
     }
 }
