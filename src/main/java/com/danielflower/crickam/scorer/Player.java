@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer;
 
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -12,33 +11,24 @@ import static java.util.Objects.requireNonNull;
  * A cricket player
  * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
  */
-public final class Player {
+public class Player {
 
-	private final Gender gender;
 	private final String id;
-	private final String familyName;
+    private final String familyName;
     private final String givenName;
     private final ImmutableList<String> formalGivenNames;
     private final String fullName;
-	private final Handedness battingHandedness;
-    private final Handedness bowlingHandedness;
-	private final PlayingRole playingRole;
     private final String initials;
 
-    Player(String id, Gender gender, String givenName, ImmutableList<String> formalGivenNames, String familyName,
-           String fullName, Handedness battingHandedness, Handedness bowlingHandedness,
-           PlayingRole playingRole, String initials) {
-        this.id = requireNonNull(id);
-        this.gender = gender;
-        this.givenName = givenName;
-        this.formalGivenNames = requireNonNull(formalGivenNames);
-        this.fullName = requireNonNull(fullName);
-        this.battingHandedness = battingHandedness;
-        this.familyName = requireNonNull(familyName);
-        this.bowlingHandedness = bowlingHandedness;
-        this.playingRole = playingRole;
-        this.initials = initials;
-	}
+	protected Player(Builder builder) {
+        this.id = builder.id != null ? builder.id : UUID.randomUUID().toString();
+        Objects.requireNonNullElse(builder.givenName, builder.formalGivenNames);
+        this.formalGivenNames = builder.formalGivenNames != null ? builder.formalGivenNames : ImmutableList.of(builder.givenName);
+        this.givenName = builder.givenName != null ? builder.givenName : builder.formalGivenNames.get(0);
+        this.fullName = builder.fullName != null ? builder.fullName : givenName + " " + builder.familyName;
+        this.initials = builder.initials != null ? builder.initials : builder.formalGivenNames.stream().map(s -> String.valueOf(s.charAt(0))).collect(Collectors.joining());
+        this.familyName = requireNonNull(builder.familyName);
+    }
 
 	public String toString() {
 		return familyName();
@@ -56,10 +46,6 @@ public final class Player {
 	public int hashCode() {
 		return Objects.hash(id());
 	}
-
-    public Optional<Gender> gender() {
-        return Optional.ofNullable(gender);
-    }
 
     public String id() {
         return id;
@@ -83,18 +69,6 @@ public final class Player {
 
     public String fullName() {
         return fullName;
-    }
-
-    public Optional<Handedness> battingHandedness() {
-        return Optional.ofNullable(battingHandedness);
-    }
-
-    public Optional<Handedness> bowlingHandedness() {
-        return Optional.ofNullable(bowlingHandedness);
-    }
-
-    public Optional<PlayingRole> playingRole() {
-        return Optional.ofNullable(playingRole);
     }
 
     public String initialsWithSurname() {
@@ -151,10 +125,6 @@ public final class Player {
         private String givenName;
         private String familyName;
         private String fullName;
-        private Handedness battingHandedness;
-        private Handedness bowlingHandedness;
-        private PlayingRole playingRole;
-        private Gender gender;
         private String initials;
 
         /**
@@ -163,11 +133,6 @@ public final class Player {
          */
         public Builder withFormalGivenNames(ImmutableList<String> formalGivenNames) {
             this.formalGivenNames = formalGivenNames;
-            return this;
-        }
-
-        public Builder withGender(Gender gender) {
-            this.gender = gender;
             return this;
         }
 
@@ -187,30 +152,6 @@ public final class Player {
          */
         public Builder withFullName(String fullName) {
             this.fullName = fullName;
-            return this;
-        }
-
-        /**
-         * @param handedness the hand that this person predominantly bats and bowls with.
-         * @return This builder
-         */
-        public Builder withHandedness(Handedness handedness) {
-            return withBattingHandedness(handedness)
-                .withBowlingHandedness(handedness);
-        }
-
-        public Builder withBattingHandedness(Handedness battingHandedness) {
-            this.battingHandedness = battingHandedness;
-            return this;
-        }
-
-        public Builder withPlayingRole(PlayingRole playingRole) {
-            this.playingRole = playingRole;
-            return this;
-        }
-
-        public Builder withBowlingHandedness(Handedness bowlingHandedness) {
-            this.bowlingHandedness = bowlingHandedness;
             return this;
         }
 
@@ -243,13 +184,7 @@ public final class Player {
         }
 
         public Player build() {
-            String id = this.id != null ? this.id : UUID.randomUUID().toString();
-            Objects.requireNonNullElse(this.givenName, this.formalGivenNames);
-            ImmutableList<String> givenNames = this.formalGivenNames != null ? this.formalGivenNames : ImmutableList.of(this.givenName);
-            String givenName = this.givenName != null ? this.givenName : givenNames.get(0);
-            String fullName = this.fullName != null ? this.fullName : givenName + " " + familyName;
-            String initials = this.initials != null ? this.initials : formalGivenNames.stream().map(s -> String.valueOf(s.charAt(0))).collect(Collectors.joining());
-            return new Player(id, gender, givenName, givenNames, familyName, fullName, battingHandedness, bowlingHandedness, playingRole, initials);
+            return new Player(this);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.danielflower.crickam.scorer;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -11,34 +10,22 @@ import static java.util.Objects.requireNonNullElseGet;
  * <p>Note that when a team plays in a match, the actual batting order is specified with the {@link LineUp} class.</p>
  * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
  */
-public final class Team {
+public class Team {
     private final String id;
     private final String shortName;
-    private final TeamLevel level;
     private final String name;
-    private final String teamColour;
 
-    public TeamLevel level() {
-        return level;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    private Team(String id, String name, String shortName, TeamLevel level, String teamColour) {
-        this.id = requireNonNull(id);
-        this.name = requireNonNull(name);
-        this.shortName = requireNonNull(shortName);
-        this.level = requireNonNull(level);
-        this.teamColour = teamColour;
+    protected Team(Builder builder) {
+        this.id = requireNonNullElseGet(builder.id, () -> UUID.randomUUID().toString());
+        this.name = requireNonNull(builder.name);
+        this.shortName = requireNonNull(builder.shortName);
     }
 
     public String id() {
         return id;
     }
 
-    public String toString() {
+    public String name() {
         return name;
     }
 
@@ -49,21 +36,22 @@ public final class Team {
         return shortName;
     }
 
-    public Optional<String> teamColour() {
-        return Optional.ofNullable(teamColour);
+    public String toString() {
+        return name;
     }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
-        return name.equals(team.name);
+        return id.equals(team.id);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return id.hashCode();
     }
 
     public static Builder team() {
@@ -74,8 +62,6 @@ public final class Team {
         private String id;
         private String name;
         private String shortName;
-        private TeamLevel level;
-        private String teamColour;
 
         public Builder withId(String id) {
             this.id = id;
@@ -96,19 +82,8 @@ public final class Team {
             return this;
         }
 
-        public Builder withLevel(TeamLevel level) {
-            this.level = level;
-            return this;
-        }
-
-        public Builder withTeamColour(String teamColour) {
-            this.teamColour = teamColour;
-            return this;
-        }
-
         public Team build() {
-            String id = requireNonNullElseGet(this.id, () -> UUID.randomUUID().toString());
-            return new Team(id, name, shortName, level, teamColour);
+            return new Team(this);
         }
     }
 }

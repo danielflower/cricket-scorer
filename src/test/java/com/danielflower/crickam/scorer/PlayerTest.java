@@ -2,8 +2,6 @@ package com.danielflower.crickam.scorer;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
@@ -13,8 +11,7 @@ class PlayerTest {
 
     @Test
     public void kaneWilliamson() {
-        Player kane = Player.player("Kane Stuart Williamson").withGender(Gender.MALE).build();
-        assertThat(kane.gender(), is(Optional.of(Gender.MALE)));
+        Player kane = Player.player("Kane Stuart Williamson").build();
         assertThat(kane.familyName(), is("Williamson"));
         assertThat(kane.givenName(), is("Kane"));
         assertThat(kane.fullName(), is("Kane Williamson"));

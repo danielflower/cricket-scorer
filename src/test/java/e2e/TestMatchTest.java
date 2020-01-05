@@ -27,7 +27,6 @@ public class TestMatchTest {
             .withTeam(Team.team()
                 .withShortName("SA")
                 .withName("South Africa")
-                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(
                 ELGAR, MARKRAM, HAMZA, DU_PLESSIS, VAN_DER_DUSSEN, DE_KOCK, PRETORIUS, PHILANDER, MAHARAJ, RABADA, NORTJE
@@ -40,7 +39,6 @@ public class TestMatchTest {
             .withTeam(Team.team()
                 .withShortName("ENG")
                 .withName("England")
-                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(
                 BURNS, SIBLEY, DENLY, ROOT, STOKES, BAIRSTOW, BUTTLER, SAM_CURRAN, ARCHER, BROAD, ANDERSON

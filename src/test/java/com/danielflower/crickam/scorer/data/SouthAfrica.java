@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
-import com.danielflower.crickam.scorer.TeamLevel;
 
 public class SouthAfrica {
 
@@ -41,7 +40,6 @@ public class SouthAfrica {
         return Team.team()
             .withShortName("SA")
             .withName("South Africa")
-            .withLevel(TeamLevel.INTERNATIONAL)
             .build();
     }
 

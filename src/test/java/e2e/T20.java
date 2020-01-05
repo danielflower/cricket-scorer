@@ -27,7 +27,6 @@ public class T20 {
             .withTeam(Team.team()
                 .withShortName("NZL")
                 .withName("New Zealand")
-                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
@@ -39,7 +38,6 @@ public class T20 {
             .withTeam(Team.team()
                 .withShortName("ENG")
                 .withName("England")
-                .withLevel(TeamLevel.INTERNATIONAL)
                 .build())
             .withBattingOrder(ImmutableList.of(
                 BANTON, MALAN, VINCE, MORGAN, BILLINGS, SAM_CURRAN, GREGORY, TOM_CURRAN, MAHMOOD, BROWN, PARKINSON

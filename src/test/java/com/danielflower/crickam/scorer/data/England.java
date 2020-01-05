@@ -2,7 +2,6 @@ package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
-import com.danielflower.crickam.scorer.TeamLevel;
 
 import java.util.UUID;
 
@@ -41,9 +40,7 @@ public class England {
     public static Team.Builder team() {
         return Team.team()
             .withId(UUID.randomUUID().toString())
-            .withTeamColour("#FFFFFF")
             .withShortName("ENG")
-            .withName("England")
-            .withLevel(TeamLevel.INTERNATIONAL);
+            .withName("England");
     }
 }

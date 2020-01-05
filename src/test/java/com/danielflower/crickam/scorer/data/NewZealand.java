@@ -1,6 +1,9 @@
 package com.danielflower.crickam.scorer.data;
 
-import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.ImmutableList;
+import com.danielflower.crickam.scorer.LineUp;
+import com.danielflower.crickam.scorer.Player;
+import com.danielflower.crickam.scorer.Team;
 
 import java.util.UUID;
 
@@ -43,10 +46,8 @@ public class NewZealand {
     public static Team.Builder team() {
         return Team.team()
             .withId(UUID.randomUUID().toString())
-            .withTeamColour("#000000")
             .withShortName("NZL")
-            .withName("New Zealand")
-            .withLevel(TeamLevel.INTERNATIONAL);
+            .withName("New Zealand");
     }
 
     public static LineUp.Builder t20LineUp() {
