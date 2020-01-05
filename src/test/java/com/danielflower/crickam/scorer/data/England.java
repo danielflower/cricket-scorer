@@ -6,41 +6,37 @@ import com.danielflower.crickam.scorer.TeamLevel;
 
 import java.util.UUID;
 
-import static com.danielflower.crickam.scorer.Handedness.LEFT_HANDED;
-import static com.danielflower.crickam.scorer.PlayingRole.*;
-import static com.danielflower.crickam.scorer.data.DataUtil.player;
-
 public class England {
-    public static final Player ALI = player("Moeen Ali").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player ANDERSON = player("James Anderson").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player ARCHER = player("Jofra Archer").withPlayingRole(BOWLER).build();
-    public static final Player BAIRSTOW = player("Jonny Bairstow").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player BANTON = player("Tom Banton").withPlayingRole(BATTER).build();
-    public static final Player BILLINGS = player("Sam Billings").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player BROAD = player("Stuart Broad").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player BROWN = player("Pat Brown").withPlayingRole(BOWLER).build();
-    public static final Player BURNS = player("Rory Burns").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player BUTTLER = player("Jos Buttler").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player CRAWLEY = player("Zak Crawley").withPlayingRole(BATTER).build();
-    public static final Player SAM_CURRAN = player("Sam Curran").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player TOM_CURRAN = player("Tom Curran").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player DENLY = player("Joe Denly").withPlayingRole(BATTER).build();
-    public static final Player GREGORY = player("Lewis Gregory").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player JORDAN = player("Chris Jordan").withPlayingRole(BOWLER).build();
-    public static final Player LEACH = player("Jack Leach").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player MAHMOOD = player("Saqib Mahmood").withPlayingRole(BOWLER).build();
-    public static final Player MALAN = player("Dawid Malan").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player MORGAN = player("Eoin Morgan").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player OVERTON = player("Craig Overton").withPlayingRole(BOWLER).build();
-    public static final Player PARKINSON = player("Matt Parkinson").withPlayingRole(BOWLER).build();
-    public static final Player POPE = player("Ollie Pope").withPlayingRole(BATTER).build();
-    public static final Player RASHID = player("Adil Rashid").withPlayingRole(BOWLER).build();
-    public static final Player ROOT = player("Joe Root").withPlayingRole(BATTER).build();
-    public static final Player ROY = player("Jason Roy").withPlayingRole(BATTER).build();
-    public static final Player SIBLEY = player("Dom Sibley").withPlayingRole(BATTER).build();
-    public static final Player STOKES = player("Ben Stokes").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player VINCE = player("James Vince").withPlayingRole(BATTER).build();
-    public static final Player WOAKES = player("Chris Woakes").withPlayingRole(ALL_ROUNDER).build();
+    public static final Player ALI = Player.player("Moeen Ali").build();
+    public static final Player ANDERSON = Player.player("James Anderson").build();
+    public static final Player ARCHER = Player.player("Jofra Archer").build();
+    public static final Player BAIRSTOW = Player.player("Jonny Bairstow").build();
+    public static final Player BANTON = Player.player("Tom Banton").build();
+    public static final Player BILLINGS = Player.player("Sam Billings").build();
+    public static final Player BROAD = Player.player("Stuart Broad").build();
+    public static final Player BROWN = Player.player("Pat Brown").build();
+    public static final Player BURNS = Player.player("Rory Burns").build();
+    public static final Player BUTTLER = Player.player("Jos Buttler").build();
+    public static final Player CRAWLEY = Player.player("Zak Crawley").build();
+    public static final Player SAM_CURRAN = Player.player("Sam Curran").build();
+    public static final Player TOM_CURRAN = Player.player("Tom Curran").build();
+    public static final Player DENLY = Player.player("Joe Denly").build();
+    public static final Player GREGORY = Player.player("Lewis Gregory").build();
+    public static final Player JORDAN = Player.player("Chris Jordan").build();
+    public static final Player LEACH = Player.player("Jack Leach").build();
+    public static final Player MAHMOOD = Player.player("Saqib Mahmood").build();
+    public static final Player MALAN = Player.player("Dawid Malan").build();
+    public static final Player MORGAN = Player.player("Eoin Morgan").build();
+    public static final Player OVERTON = Player.player("Craig Overton").build();
+    public static final Player PARKINSON = Player.player("Matt Parkinson").build();
+    public static final Player POPE = Player.player("Ollie Pope").build();
+    public static final Player RASHID = Player.player("Adil Rashid").build();
+    public static final Player ROOT = Player.player("Joe Root").build();
+    public static final Player ROY = Player.player("Jason Roy").build();
+    public static final Player SIBLEY = Player.player("Dom Sibley").build();
+    public static final Player STOKES = Player.player("Ben Stokes").build();
+    public static final Player VINCE = Player.player("James Vince").build();
+    public static final Player WOAKES = Player.player("Chris Woakes").build();
 
     public static Team.Builder team() {
         return Team.team()

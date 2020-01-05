@@ -2,7 +2,9 @@ package com.danielflower.crickam.scorer;
 
 
 import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,23 +17,27 @@ public final class Player {
 	private final Gender gender;
 	private final String id;
 	private final String familyName;
-    private final ImmutableList<String> givenNames;
+    private final String givenName;
+    private final ImmutableList<String> formalGivenNames;
     private final String fullName;
 	private final Handedness battingHandedness;
     private final Handedness bowlingHandedness;
 	private final PlayingRole playingRole;
+    private final String initials;
 
-	Player(String id, Gender gender, ImmutableList<String> givenNames, String familyName,
-                  String fullName, Handedness battingHandedness, Handedness bowlingHandedness,
-                  PlayingRole playingRole) {
+    Player(String id, Gender gender, String givenName, ImmutableList<String> formalGivenNames, String familyName,
+           String fullName, Handedness battingHandedness, Handedness bowlingHandedness,
+           PlayingRole playingRole, String initials) {
         this.id = requireNonNull(id);
-        this.gender = requireNonNull(gender);
-        this.givenNames = requireNonNull(givenNames);
+        this.gender = gender;
+        this.givenName = givenName;
+        this.formalGivenNames = requireNonNull(formalGivenNames);
         this.fullName = requireNonNull(fullName);
-        this.battingHandedness = requireNonNull(battingHandedness);
+        this.battingHandedness = battingHandedness;
         this.familyName = requireNonNull(familyName);
-        this.bowlingHandedness = requireNonNull(bowlingHandedness);
-        this.playingRole = requireNonNull(playingRole);
+        this.bowlingHandedness = bowlingHandedness;
+        this.playingRole = playingRole;
+        this.initials = initials;
 	}
 
 	public String toString() {
@@ -51,8 +57,8 @@ public final class Player {
 		return Objects.hash(id());
 	}
 
-    public Gender gender() {
-        return gender;
+    public Optional<Gender> gender() {
+        return Optional.ofNullable(gender);
     }
 
     public String id() {
@@ -60,11 +66,15 @@ public final class Player {
     }
 
     public String givenName() {
-        return givenNames.get(0);
+        return givenName;
     }
 
-    public ImmutableList<String> givenNames() {
-	    return givenNames;
+    public ImmutableList<String> formalGivenNames() {
+	    return formalGivenNames;
+    }
+
+    public String formalName() {
+        return formalGivenNames.stream().collect(Collectors.joining(" ")) + " " + familyName();
     }
 
     public String familyName() {
@@ -75,24 +85,61 @@ public final class Player {
         return fullName;
     }
 
-    public Handedness battingHandedness() {
-        return battingHandedness;
+    public Optional<Handedness> battingHandedness() {
+        return Optional.ofNullable(battingHandedness);
     }
 
-    public Handedness bowlingHandedness() {
-        return bowlingHandedness;
+    public Optional<Handedness> bowlingHandedness() {
+        return Optional.ofNullable(bowlingHandedness);
     }
 
-    public PlayingRole playingRole() {
-        return playingRole;
+    public Optional<PlayingRole> playingRole() {
+        return Optional.ofNullable(playingRole);
     }
 
-    public String firstInitialWithSurname() {
-	    return givenName().charAt(0) + " " + familyName;
+    public String initialsWithSurname() {
+	    return initials + " " + familyName;
     }
 
+    public String initials() {
+        return initials;
+    }
+
+    /**
+     * Creates a player builder. Consider using {@link #player(String)} instead.
+     * @return A player builder.
+     */
     public static Builder player() {
 	    return new Builder();
+    }
+
+    /**
+     * @param name The full name of the player, such as &quot;Luteru Ross Poutoa Lote Taylor&quot;
+     * @return A player builder formal given names and family name set.
+     */
+    public static Builder player(String name) {
+	    return player(name.split("\\s+"));
+    }
+
+    /**
+     * @param names The full name of the player, such as <code>&quot;Luteru&quot;, &quot;Ross&quot;, &quot;Poutoa&quot;, &quot;Lote&quot;, &quot;Taylor&quot;</code>
+     * @return A player builder formal given names and family name set.
+     */
+    public static Builder player(String... names) {
+	    if (names.length < 2) {
+            throw new IllegalArgumentException("Names should have at least two items");
+        }
+        ImmutableList<String> list = ImmutableList.of(names);
+        Builder builder = player();
+        int size = list.size();
+        if (size >= 4 && list.get(size - 3).equals("van") && list.get(size - 2).equals("der")) {
+            list = list.subList(0, size - 4).add(list.get(size - 3) + " " + list.get(size - 2) + " " + list.get(size - 1));
+        } else if (size >= 3 && list.get(size - 2).matches("d[aeiou]")) {
+            list = list.subList(0, size - 3).add(list.get(size - 2) + " " + list.get(size - 1));
+        }
+        return builder
+            .withFormalGivenNames(list.removeLast())
+            .withFamilyName(list.last().orElseThrow());
     }
 
     /**
@@ -100,16 +147,22 @@ public final class Player {
      */
     public static final class Builder {
         private String id;
-        private ImmutableList<String> givenNames;
+        private ImmutableList<String> formalGivenNames;
+        private String givenName;
         private String familyName;
         private String fullName;
-        private Handedness battingHandedness = Handedness.RIGHT_HANDED;
-        private Handedness bowlingHandedness = Handedness.RIGHT_HANDED;
-        private PlayingRole playingRole = PlayingRole.ALL_ROUNDER;
+        private Handedness battingHandedness;
+        private Handedness bowlingHandedness;
+        private PlayingRole playingRole;
         private Gender gender;
+        private String initials;
 
-        public Builder withGivenNames(ImmutableList<String> givenNames) {
-            this.givenNames = givenNames;
+        /**
+         * @param formalGivenNames The formal given names of the player, such as <code>&quot;Luteru&quot;, &quot;Ross&quot;, &quot;Poutoa&quot;, &quot;Lote&quot;</code> for Ross Taylor.
+         * @return This builder
+         */
+        public Builder withFormalGivenNames(ImmutableList<String> formalGivenNames) {
+            this.formalGivenNames = formalGivenNames;
             return this;
         }
 
@@ -118,11 +171,20 @@ public final class Player {
             return this;
         }
 
+        /**
+         * @param familyName The family name of the player, for example &quot;Taylor&quot; for Ross Taylor.
+         * @return This builder
+         */
         public Builder withFamilyName(String familyName) {
             this.familyName = familyName;
             return this;
         }
 
+        /**
+         * Leave unset to infer this from the given name and full name.
+         * @param fullName The name this player is known as, for example &quot;Ross Taylor&quot;
+         * @return This builder
+         */
         public Builder withFullName(String fullName) {
             this.fullName = fullName;
             return this;
@@ -152,10 +214,9 @@ public final class Player {
             return this;
         }
 
-
         /**
          * Associates a unique ID for this player
-         * @param id A unique ID
+         * @param id A unique ID that identifies this player
          * @return This builder
          */
         public Builder withId(String id) {
@@ -163,16 +224,32 @@ public final class Player {
             return this;
         }
 
-        public Builder withName(String name) {
-            String[] bits = name.split(" ");
-            return withFullName(name)
-                .withFamilyName(bits[bits.length - 1])
-                .withGivenNames(Stream.of(bits).skip(1).collect(ImmutableList.toImmutableList()));
+        /**
+         * @param givenName The given name that this person is generally known as, for example &quot;Ross&quot; for Luteru Ross Poutoa Lote Taylor
+         * @return This builder
+         */
+        public Builder withGivenName(String givenName) {
+            this.givenName = givenName;
+            return this;
+        }
+
+        /**
+         * @param initials The initials of the player's formal given names. This is inferred if unset.
+         * @return This builder
+         */
+        public Builder withInitials(String initials) {
+            this.initials = initials;
+            return this;
         }
 
         public Player build() {
-            fullName = (fullName == null) ? String.join(" ", givenNames) + " " + familyName : fullName;
-            return new Player(id, gender, givenNames, familyName, fullName, battingHandedness, bowlingHandedness, playingRole);
+            String id = this.id != null ? this.id : UUID.randomUUID().toString();
+            Objects.requireNonNullElse(this.givenName, this.formalGivenNames);
+            ImmutableList<String> givenNames = this.formalGivenNames != null ? this.formalGivenNames : ImmutableList.of(this.givenName);
+            String givenName = this.givenName != null ? this.givenName : givenNames.get(0);
+            String fullName = this.fullName != null ? this.fullName : givenName + " " + familyName;
+            String initials = this.initials != null ? this.initials : formalGivenNames.stream().map(s -> String.valueOf(s.charAt(0))).collect(Collectors.joining());
+            return new Player(id, gender, givenName, givenNames, familyName, fullName, battingHandedness, bowlingHandedness, playingRole, initials);
         }
     }
 }

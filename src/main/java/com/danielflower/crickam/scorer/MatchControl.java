@@ -6,11 +6,11 @@ import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 
 import java.time.*;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
+import static java.util.Objects.requireNonNull;
 
 /**
  * This class is the main entry point of the API.
@@ -48,6 +48,7 @@ public final class MatchControl {
      * @see MatchEvents#matchStarting(MatchType)
      */
     public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
+        requireNonNull(builder, "builder");
         MatchStartingEvent event = builder.build();
         Match match = Match.newMatch(event);
         return new MatchControl(ImmutableList.emptyList(), event, match);
@@ -61,6 +62,7 @@ public final class MatchControl {
      * @see MatchEvents MatchEvents class for a number of handy builder objects
      */
     public MatchControl onEvent(MatchEventBuilder<?> builder) {
+        requireNonNull(builder, "builder");
         MatchEvent event1 = builder.build(match());
         Match newMatch = match().onEvent(event1);
         ImmutableList<MatchControl> newHistory = this.ancestors.add(this);
@@ -170,7 +172,7 @@ public final class MatchControl {
      * @return The {@code MatchControl} as at the time that the event was added
      */
     public MatchControl asAt(MatchEvent event) {
-        Objects.requireNonNull(event, "event");
+        requireNonNull(event, "event");
         for (MatchControl matchControl : this.history()) {
             if (matchControl.event().equals(event)) {
                 return matchControl;
@@ -188,7 +190,7 @@ public final class MatchControl {
      * @return A stream
      */
     public <T extends MatchEvent> Stream<T> eventStream(Class<T> eventClass) {
-        Class<? extends MatchEvent> clazz = Objects.requireNonNull(eventClass, "eventClass");
+        Class<? extends MatchEvent> clazz = requireNonNull(eventClass, "eventClass");
         return history().stream()
             .filter(c -> c.event().getClass().equals(clazz))
             .map(MatchControl::event)

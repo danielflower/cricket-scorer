@@ -27,6 +27,8 @@ Dependency
 </dependency>
 ````
 
+Note: this requires JDK 11 or later.
+
 Using the API
 -------------
 

@@ -4,42 +4,40 @@ import com.danielflower.crickam.scorer.*;
 
 import java.util.UUID;
 
-import static com.danielflower.crickam.scorer.Handedness.LEFT_HANDED;
-import static com.danielflower.crickam.scorer.PlayingRole.*;
-import static com.danielflower.crickam.scorer.data.DataUtil.player;
+import static com.danielflower.crickam.scorer.Player.player;
 
 public class NewZealand {
 
-    public static final Player GEORGE_WORKER = player("George Worker").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player NEIL_WAGNER = player("Neil Wagner").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player TIM_SOUTHEE = player("Tim Southee").withPlayingRole(BOWLER).build();
-    public static final Player TIM_SEIFERT = player("Tim Seifert").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player JEET_RAVAL = player("Jeet Raval").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player HENRY_NICHOLLS = player("Henry Nicholls").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player DARYL_MITCHELL = player("Daryl Mitchell").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player MATT_HENRY = player("Matt Henry").withPlayingRole(BOWLER).build();
-    public static final Player COLIN_DE_GRANDHOMME = player("Colin de Grandhomme").withFamilyName("de Grandhomme").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player DOUG_BRACEWELL = player("Doug Bracewell").withPlayingRole(BOWLER).build();
-    public static final Player KANE_WILLIAMSON = player("Kane Williamson").withPlayingRole(BATTER).build();
-    public static final Player BLAIR_TICKNER = player("Blair Tickner").withPlayingRole(BOWLER).build();
-    public static final Player WILLIAM_SOMERVILLE = player("William Somerville").withPlayingRole(BOWLER).build();
-    public static final Player MITCHELL_SANTNER = player("Mitchell Santner").withPlayingRole(ALL_ROUNDER).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player SETH_RANCE = player("Seth Rance").withPlayingRole(BOWLER).build();
-    public static final Player JAMES_NEESHAM = player("James Neesham").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player TOM_LATHAM = player("Tom Latham").withPlayingRole(WICKET_KEEPER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player MARTIN_GUPTILL = player("Martin Guptill").withPlayingRole(BATTER).build();
-    public static final Player MARK_CHAPMAN = player("Mark Chapman").withPlayingRole(ALL_ROUNDER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player TRENT_BOULT = player("Trent Boult").withPlayingRole(BOWLER).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player BJ_WATLING = player("BJ Watling").withPlayingRole(WICKET_KEEPER).build();
-    public static final Player ROSS_TAYLOR = player("Ross Taylor").withPlayingRole(BATTER).build();
-    public static final Player ISH_SODHI = player("Ish Sodhi").withPlayingRole(BOWLER).build();
-    public static final Player HAMISH_RUTHERFORD = player("Hamish Rutherford").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player AJAZ_PATEL = player("Ajaz Patel").withPlayingRole(BOWLER).withBattingHandedness(LEFT_HANDED).withBowlingHandedness(LEFT_HANDED).build();
-    public static final Player COLIN_MUNRO = player("Colin Munro").withPlayingRole(BATTER).withBattingHandedness(LEFT_HANDED).build();
-    public static final Player SCOTT_KUGGELEIJN = player("Scott Kuggeleijn").withPlayingRole(ALL_ROUNDER).build();
-    public static final Player LOCKIE_FERGUSON = player("Lockie Ferguson").withPlayingRole(BOWLER).build();
-    public static final Player TOM_BRUCE = player("Tom Bruce").withPlayingRole(BATTER).build();
-    public static final Player TODD_ASTLE = player("Todd Astle").withPlayingRole(BOWLER).build();
+    public static final Player GEORGE_WORKER = player("George Worker").build();
+    public static final Player NEIL_WAGNER = player("Neil Wagner").build();
+    public static final Player TIM_SOUTHEE = player("Timothy Grant Southee").withGivenName("Tim").build();
+    public static final Player TIM_SEIFERT = player("Tim Louis Seifert").build();
+    public static final Player JEET_RAVAL = player("Jeet Raval").build();
+    public static final Player HENRY_NICHOLLS = player("Henry Nicholls").build();
+    public static final Player DARYL_MITCHELL = player("Daryl Mitchell").build();
+    public static final Player MATT_HENRY = player("Matt Henry").build();
+    public static final Player COLIN_DE_GRANDHOMME = player("Colin de Grandhomme").build();
+    public static final Player DOUG_BRACEWELL = player("Doug Bracewell").build();
+    public static final Player KANE_WILLIAMSON = player("Kane Williamson").build();
+    public static final Player BLAIR_TICKNER = player("Blair Marshall Tickner").build();
+    public static final Player WILLIAM_SOMERVILLE = player("William Somerville").build();
+    public static final Player MITCHELL_SANTNER = player("Mitchell Josef Santner").build();
+    public static final Player SETH_RANCE = player("Seth Rance").build();
+    public static final Player JAMES_NEESHAM = player("James Douglas Sheahan Neesham").build();
+    public static final Player TOM_LATHAM = player("Tom Latham").build();
+    public static final Player MARTIN_GUPTILL = player("Martin James Guptill").build();
+    public static final Player MARK_CHAPMAN = player("Mark Chapman").build();
+    public static final Player TRENT_BOULT = player("Trent Boult").build();
+    public static final Player BJ_WATLING = player("Bradley-John Watling").withGivenName("BJ").withInitials("BJ").build();
+    public static final Player ROSS_TAYLOR = player("Luteru Ross Poutoa Lote Taylor").withGivenName("Ross").build();
+    public static final Player ISH_SODHI = player("Inderbir Singh Sodhi").withGivenName("Ish").build();
+    public static final Player HAMISH_RUTHERFORD = player("Hamish Rutherford").build();
+    public static final Player AJAZ_PATEL = player("Ajaz Patel").build();
+    public static final Player COLIN_MUNRO = player("Colin Munro").build();
+    public static final Player SCOTT_KUGGELEIJN = player("Scott Kuggeleijn").build();
+    public static final Player LOCKIE_FERGUSON = player("Lachlan Hammond Ferguson").withGivenName("Lockie").build();
+    public static final Player TOM_BRUCE = player("Tom Bruce").build();
+    public static final Player TODD_ASTLE = player("Todd Astle").build();
 
 
     public static Team.Builder team() {

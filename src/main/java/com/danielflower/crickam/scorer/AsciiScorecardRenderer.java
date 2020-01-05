@@ -78,7 +78,7 @@ public final class AsciiScorecardRenderer {
                 String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam())
                     : bi.state() == BattingState.RETIRED || bi.state() == BattingState.RETIRED_OUT
                     ? "retired" : "not out";
-                String batterName = bi.player().firstInitialWithSurname();
+                String batterName = bi.player().initialsWithSurname();
                 if (bi.player().equals(innings.battingTeam().wicketKeeper())) {
                     batterName += " †";
                 }
@@ -95,7 +95,7 @@ public final class AsciiScorecardRenderer {
             // Yet to bat
             if (!innings.yetToBat().isEmpty()) {
                 writer.append(innings.state() == Innings.State.COMPLETED ? "Did not bat: " : "Yet to bat: ");
-                writer.append(innings.yetToBat().stream().map(Player::firstInitialWithSurname).collect(Collectors.joining(", ")))
+                writer.append(innings.yetToBat().stream().map(Player::initialsWithSurname).collect(Collectors.joining(", ")))
                     .append(NEWLINE).append(NEWLINE);
             }
 
@@ -140,7 +140,7 @@ public final class AsciiScorecardRenderer {
             for (BowlerInnings bi : innings.bowlerInningsList()) {
                 Score s = bi.score();
                 String dots = showDots ? String.valueOf(s.dots()) : "";
-                renderLine(writer, bowlColWidths, bi.bowler().firstInitialWithSurname(), bi.overDotBallString(), bi.maidens(),
+                renderLine(writer, bowlColWidths, bi.bowler().initialsWithSurname(), bi.overDotBallString(), bi.maidens(),
                     s.bowlerRuns(), bi.wickets(), s.bowlerEconomyRate(), dots, s.fours(), s.sixes(), s.wideDeliveries(), s.noBalls());
             }
 

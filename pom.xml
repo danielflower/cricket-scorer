@@ -6,7 +6,7 @@
 
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
 
     <name>cricket-scorer</name>
     <description>An immutable java library for keeping score of cricket matches</description>
