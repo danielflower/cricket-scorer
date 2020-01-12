@@ -100,7 +100,7 @@ public class Player {
     /**
      * A builder of {@link Player} objects.
      */
-    public static final class Builder {
+    public static class Builder {
         private ImmutableList<String> formalGivenNames;
         private String givenName;
         private String familyName;

@@ -86,7 +86,7 @@ public class LineUp {
             .findFirst();
     }
 
-    public static final class Builder {
+    public static class Builder {
         private ImmutableList<Player> players;
         private Team team;
         private Player captain;

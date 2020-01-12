@@ -7,7 +7,7 @@ import java.util.TimeZone;
  * A stadium or ground where a match is played.
  * <p>Use {@link #venue()} to create a builder.</p>
  */
-public final class Venue {
+public class Venue {
 
 	private final String name;
 	private final String city;
@@ -56,7 +56,7 @@ public final class Venue {
         return new Builder();
     }
 
-    public static final class Builder {
+    public static class Builder {
         private String name;
         private String city;
         private String territory;

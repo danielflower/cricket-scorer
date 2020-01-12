@@ -36,7 +36,7 @@ public class Team {
         return new Builder();
     }
 
-    public static final class Builder {
+    public static class Builder {
         private String name;
         private String shortName;
 
