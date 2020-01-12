@@ -17,7 +17,7 @@ public final class MatchStartingEvent implements MatchEvent {
     private final Series series;
     private final Instant time;
     private final Instant scheduledStartTime;
-    private final ImmutableList<LineUp> teams;
+    private final ImmutableList<LineUp> lineUps;
     private final MatchType matchType;
     private final int inningsPerTeam;
     private final Integer oversPerInnings;
@@ -26,12 +26,12 @@ public final class MatchStartingEvent implements MatchEvent {
     private final Integer ballsPerInnings;
     private final TimeZone timeZone;
 
-    private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+    private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
         this.time = time;
         this.scheduledStartTime = scheduledStartTime;
-        this.teams = requireNonNull(teams, "teams");
+        this.lineUps = requireNonNull(lineUps, "lineUps");
         this.matchType = requireNonNull(matchType, "matchType");
         this.inningsPerTeam = inningsPerTeam;
         this.oversPerInnings = oversPerInnings;
@@ -61,8 +61,8 @@ public final class MatchStartingEvent implements MatchEvent {
         return Optional.ofNullable(scheduledStartTime);
     }
 
-    public ImmutableList<LineUp> teams() {
-        return teams;
+    public ImmutableList<LineUp> teamLineUps() {
+        return lineUps;
     }
 
     public MatchType matchType() {
@@ -98,9 +98,9 @@ public final class MatchStartingEvent implements MatchEvent {
         private Series series;
         private Instant time;
         private Instant startTime;
-        private ImmutableList<LineUp> teams;
+        private ImmutableList<LineUp> lineUps;
         private MatchType matchType;
-        private int numberOfInningsPerTeam;
+        private int inningsPerTeam;
         private Integer oversPerInnings;
         private int numberOfScheduledDays;
         private Venue venue;
@@ -138,8 +138,8 @@ public final class MatchStartingEvent implements MatchEvent {
             return this;
         }
 
-        public Builder withTeams(ImmutableList<LineUp> teams) {
-            this.teams = teams;
+        public Builder withTeamLineUps(ImmutableList<LineUp> lineUps) {
+            this.lineUps = lineUps;
             return this;
         }
 
@@ -148,8 +148,8 @@ public final class MatchStartingEvent implements MatchEvent {
             return this;
         }
 
-        public Builder withNumberOfInningsPerTeam(int numberOfInningsPerTeam) {
-            this.numberOfInningsPerTeam = numberOfInningsPerTeam;
+        public Builder withInningsPerTeam(int inningsPerTeam) {
+            this.inningsPerTeam = inningsPerTeam;
             return this;
         }
 
@@ -195,7 +195,7 @@ public final class MatchStartingEvent implements MatchEvent {
                 timeZone = venue.timeZone();
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
-            return new MatchStartingEvent(matchID, series, time, startTime, teams, matchType, numberOfInningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
+            return new MatchStartingEvent(matchID, series, time, startTime, lineUps, matchType, inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
         }
     }
 }

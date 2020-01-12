@@ -16,13 +16,13 @@ public final class MatchEvents {
         switch (matchType) {
             case TEST:
             case FIRST_CLASS:
-                return builder.withNumberOfInningsPerTeam(2).withNumberOfScheduledDays(5);
+                return builder.withInningsPerTeam(2).withNumberOfScheduledDays(5);
             case ODI:
             case ONE_DAY:
-                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(50);
+                return builder.withInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(50);
             case T20I:
             case T20:
-                return builder.withNumberOfInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(20);
+                return builder.withInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(20);
         }
         return builder;
     }

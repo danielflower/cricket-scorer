@@ -13,7 +13,7 @@ import static com.danielflower.crickam.scorer.data.NewZealand.*;
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class T20 {
+public class T20Test {
 
     public static final TimeZone NZ_TIME = TimeZone.getTimeZone("Pacific/Auckland");
     private MatchControl control;
@@ -48,7 +48,7 @@ public class T20 {
 
         control = MatchControl.newMatch(
             matchStarting(MatchType.T20I)
-                .withTeams(ImmutableList.of(nz, eng))
+                .withTeamLineUps(ImmutableList.of(nz, eng))
                 .withTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 13, 0))
                 .withScheduledStartTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 14, 0))
                 .withVenue(venue()

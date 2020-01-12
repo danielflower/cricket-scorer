@@ -33,9 +33,9 @@ class MatchControlTest {
     public void setup() {
         control = MatchControl.newMatch(
             MatchTest.aMatch()
-                .withNumberOfInningsPerTeam(1)
+                .withInningsPerTeam(1)
                 .withOversPerInnings(50)
-                .withTeams(ImmutableList.of(nz, aus))
+                .withTeamLineUps(ImmutableList.of(nz, aus))
         );
         control = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
@@ -122,7 +122,7 @@ class MatchControlTest {
         TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
         MatchControl control = MatchControl.newMatch(
             MatchEvents.matchStarting(MatchType.TEST)
-                .withTeams(ImmutableList.of(this.nz, aus))
+                .withTeamLineUps(ImmutableList.of(this.nz, aus))
                 .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
                 .withTimeZone(nz)
         );

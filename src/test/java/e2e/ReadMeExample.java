@@ -36,7 +36,7 @@ public class ReadMeExample {
             .build();
 
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, eng))
+            MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, eng))
         );
 
         control = control.onEvent(inningsStarting().withBattingTeam(nz))

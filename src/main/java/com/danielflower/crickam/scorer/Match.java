@@ -41,7 +41,7 @@ public final class Match {
         Venue venue = e.venue().orElse(null);
         TimeZone timeZone = e.timeZone().orElse(null);
         FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
-            e.teams(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
+            e.teamLineUps(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
             e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
     }

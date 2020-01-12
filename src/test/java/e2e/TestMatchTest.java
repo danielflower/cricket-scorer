@@ -49,7 +49,7 @@ public class TestMatchTest {
 
         control = MatchControl.newMatch(
             matchStarting(MatchType.TEST)
-                .withTeams(ImmutableList.of(sa, eng))
+                .withTeamLineUps(ImmutableList.of(sa, eng))
                 .withTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))
                 .withScheduledStartTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))
                 .withVenue(venue()
@@ -2793,7 +2793,7 @@ public class TestMatchTest {
     }
 
     private Player findFielder(String name) {
-        return T20.findFielder(control, name);
+        return T20Test.findFielder(control, name);
     }
 
 }

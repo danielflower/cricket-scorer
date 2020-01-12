@@ -24,11 +24,11 @@ class MatchTest {
     public static MatchStartingEvent.Builder aMatch() {
         return MatchEvents.matchStarting()
             .withMatchID(UUID.randomUUID().toString())
-            .withNumberOfInningsPerTeam(1)
+            .withInningsPerTeam(1)
             .withMatchType(MatchType.ODI)
             .withOversPerInnings(50)
             .withScheduledStartTime(Instant.now())
-            .withTeams(ImmutableList.of(NewZealand.oneDayLineUp().build(), Australia.oneDayLineUp().build()))
+            .withTeamLineUps(ImmutableList.of(NewZealand.oneDayLineUp().build(), Australia.oneDayLineUp().build()))
             .withVenue(VenueTest.aVenue().build())
             ;
     }
