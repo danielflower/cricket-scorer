@@ -93,7 +93,7 @@ public final class MatchStartingEvent implements MatchEvent {
         return Optional.ofNullable(timeZone);
     }
 
-    public static final class Builder {
+    public static final class Builder implements MatchEventBuilder<MatchStartingEvent> {
         private String matchID;
         private Series series;
         private Instant time;
@@ -185,7 +185,7 @@ public final class MatchStartingEvent implements MatchEvent {
             return this;
         }
 
-        public MatchStartingEvent build() {
+        public MatchStartingEvent build(Match match /* null for only this event type */) {
             Integer bpi = this.ballsPerInnings;
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;

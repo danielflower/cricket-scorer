@@ -49,7 +49,7 @@ public final class MatchControl {
      */
     public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
         requireNonNull(builder, "builder");
-        MatchStartingEvent event = builder.build();
+        MatchStartingEvent event = builder.build(null);
         Match match = Match.newMatch(event);
         return new MatchControl(ImmutableList.emptyList(), event, match);
     }
