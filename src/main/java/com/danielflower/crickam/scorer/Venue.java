@@ -14,11 +14,11 @@ public class Venue {
 	private final String territory;
 	private final TimeZone timeZone;
 
-	Venue(String name, String city, String territory, TimeZone timeZone) {
-        this.name = Objects.requireNonNull(name);
-		this.city = city;
-        this.territory = territory;
-        this.timeZone = Objects.requireNonNull(timeZone);
+    protected Venue(Builder builder) {
+        this.name = Objects.requireNonNull(builder.name);
+        this.city = builder.city;
+        this.territory = builder.territory;
+        this.timeZone = Objects.requireNonNull(builder.timeZone);
     }
 
     /**
@@ -103,7 +103,7 @@ public class Venue {
          * @return A venue
          */
         public Venue build() {
-            return new Venue(name, city, territory, timeZone);
+            return new Venue(this);
         }
     }
 }
