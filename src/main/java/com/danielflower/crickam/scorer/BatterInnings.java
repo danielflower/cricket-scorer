@@ -29,13 +29,13 @@ public final class BatterInnings {
         this.player = requireNonNull(player);
         this.balls = requireNonNull(balls);
         this.numberCameIn = numberCameIn;
-        this.inningsStartTime = requireNonNull(inningsStartTime);
+        this.inningsStartTime = inningsStartTime;
         this.inningsEndTime = inningsEndTime;
         this.dismissal = dismissal;
     }
 
-    static BatterInnings newInnings(Player player, int numberCameIn) {
-        return new BatterInnings(BattingState.IN_PROGRESS, player, new Balls(), numberCameIn, Instant.now(), null, null);
+    static BatterInnings newInnings(Player player, int numberCameIn, Instant startTime) {
+        return new BatterInnings(BattingState.IN_PROGRESS, player, new Balls(), numberCameIn, startTime, null, null);
     }
 
     public static boolean sameBatter(BatterInnings one, BatterInnings two) {
@@ -98,8 +98,8 @@ public final class BatterInnings {
     /**
      * @return The time the innings started
      */
-    public Instant inningsStartTime() {
-        return inningsStartTime;
+    public Optional<Instant> inningsStartTime() {
+        return Optional.ofNullable(inningsStartTime);
     }
 
     /**

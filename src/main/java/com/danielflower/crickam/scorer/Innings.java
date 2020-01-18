@@ -145,7 +145,7 @@ public final class Innings {
         } else if (event instanceof BatterInningsStartingEvent) {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
             yetToBat = yetToBat.stream().filter(p -> !p.equals(e.batter())).collect(toImmutableList());
-            BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1);
+            BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1, e.time().orElse(null));
             batters = batters.add(newBatterInnings);
             if (striker != null || nonStriker != null) {
                 Partnership newPartnership = Partnership.newPartnership(partnerships.size() + 1, striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player());
@@ -284,6 +284,20 @@ public final class Innings {
      */
     public ImmutableList<Over> completedOvers() {
         return completedOvers;
+    }
+
+    /**
+     * @return True if this innings was followed on from the previous innings
+     */
+    public boolean followingOn() {
+        return data.followingOn();
+    }
+
+    /**
+     * @return True if this is expected to be the last innings of the match
+     */
+    public boolean finalInnings() {
+        return data.finalInnings();
     }
 
     /**
