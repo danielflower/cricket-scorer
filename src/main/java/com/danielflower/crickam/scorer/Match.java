@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.toInteger;
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
@@ -17,16 +18,19 @@ import static java.util.Objects.requireNonNull;
  */
 public final class Match {
 
+
     public enum State {
-        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED
+        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED;
     }
+
     private final FixedData data;
     private final State state;
-
     private final MatchResult result;
+
     private final ImmutableList<Innings> completedInningsList;
     private final Innings currentInnings;
     private final Balls balls;
+    private final String versionId = UUID.randomUUID().toString();
 
     private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> completedInningsList, Innings currentInnings, Balls balls) {
         this.data = requireNonNull(data);
@@ -44,6 +48,14 @@ public final class Match {
             e.teamLineUps(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
             e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
+    }
+
+    /**
+     * @return An ID that uniquely represents the match in its current state (i.e. unlike {@link #matchID()}, this
+     * value changes every time a new event is applied.
+     */
+    public String versionID() {
+        return versionId;
     }
 
     /**
@@ -169,6 +181,7 @@ public final class Match {
      * Guesses the result of a match.
      * <p>Note that on the conclusion of the match, an actual result is determined and accessed by {@link #result()}
      * (and this may return a different value than this method).</p>
+     *
      * @return Calculates what the current result may be at the current point in time.
      */
     public MatchResult calculateResult() {
@@ -211,6 +224,7 @@ public final class Match {
 
     /**
      * Gets the score for the given team line-up for the entire match
+     *
      * @param team The team to find the score for
      * @return The score for all innings the team has played in this match
      */
@@ -247,6 +261,7 @@ public final class Match {
         private final int numberOfScheduledDays;
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
+
         public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
             this.matchID = matchID;
             this.series = series;
