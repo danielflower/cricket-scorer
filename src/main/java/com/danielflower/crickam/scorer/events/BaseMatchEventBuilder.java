@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer.events;
 import java.time.Instant;
 import java.util.UUID;
 
-abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends MatchEvent> implements MatchEventBuilder<B, T> {
+public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends MatchEvent> implements MatchEventBuilder<B, T> {
 
     private String id = UUID.randomUUID().toString();
     private MatchEvent generatedBy;

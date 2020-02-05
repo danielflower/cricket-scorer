@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class BaseMatchEvent implements MatchEvent {
+public abstract class BaseMatchEvent implements MatchEvent {
     private final String id;
     private final Instant time;
     private final MatchEvent generatedBy;
