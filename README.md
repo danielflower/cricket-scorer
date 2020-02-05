@@ -23,7 +23,7 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 </dependency>
 ````
 
@@ -130,6 +130,16 @@ This prints the string `The team score after the first single was 5 runs for 1`.
 Note that every match control object is immutable, so you can call `onEvent` on an historical
 control instance which essentially forks the match at the given point of time. This allows you
 to construct "what if" scenarios, or undo operations that were applied in error. 
+
+Undoing events
+--------------
+
+To undo an operation, you need to get the previous state of the match when an event was added
+by you:
+
+```java
+MatchControl control = control.atPreviousUserGeneratedEvent();
+```
 
 Unusual events
 --------------

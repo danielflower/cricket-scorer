@@ -46,16 +46,16 @@ class InningsStartingEventTest {
 
     @Test
     public void lastUserGeneratedEventIsInningsStartingEvent() {
-        assertThat(control.lastUserGeneratedEvent().event(), is(instanceOf(MatchStartingEvent.class)));
+        assertThat(control.atLastUserGeneratedEvent().event(), is(instanceOf(MatchStartingEvent.class)));
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.parent().lastUserGeneratedEvent();
+        MatchControl lastUserEvent = control.parent().atLastUserGeneratedEvent();
         assertThat(lastUserEvent.event(), is(instanceOf(InningsStartingEvent.class)));
     }
 
     @Test
     public void previousUserGeneratedEventIsMatchStartingEvent() {
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.parent().previousUserGeneratedEvent();
+        MatchControl lastUserEvent = control.parent().atPreviousUserGeneratedEvent();
         assertThat(lastUserEvent.event(), is(instanceOf(MatchStartingEvent.class)));
     }
 
