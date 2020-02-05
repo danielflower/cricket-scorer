@@ -23,7 +23,7 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.4.2</version>
+    <version>0.5.0</version>
 </dependency>
 ````
 
@@ -134,11 +134,11 @@ to construct "what if" scenarios, or undo operations that were applied in error.
 Undoing events
 --------------
 
-To undo an operation, you need to get the previous state of the match when an event was added
-by you:
+To undo an operation, you need to remove the last event you added plus any generated events. This can
+be done with the undo method:
 
 ```java
-MatchControl control = control.atPreviousUserGeneratedEvent();
+MatchControl control = control.undo();
 ```
 
 Unusual events

@@ -48,15 +48,25 @@ class InningsStartingEventTest {
     public void lastUserGeneratedEventIsInningsStartingEvent() {
         assertThat(control.atLastUserGeneratedEvent().event(), is(instanceOf(MatchStartingEvent.class)));
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.parent().atLastUserGeneratedEvent();
+        MatchControl lastUserEvent = control.atLastUserGeneratedEvent();
         assertThat(lastUserEvent.event(), is(instanceOf(InningsStartingEvent.class)));
     }
 
     @Test
-    public void previousUserGeneratedEventIsMatchStartingEvent() {
+    public void undoAfterNewInningsEventIsMatchStartingEvent() {
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.parent().atPreviousUserGeneratedEvent();
+        MatchControl lastUserEvent = control.undo();
         assertThat(lastUserEvent.event(), is(instanceOf(MatchStartingEvent.class)));
     }
+
+    @Test
+    public void undoCanEndOnGeneratedEvent() {
+        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
+            .onEvent(MatchEvents.overStarting(aus.battingOrder().get(10)));
+        MatchControl lastUserEvent = control.undo();
+        assertThat(lastUserEvent.event(), is(instanceOf(BatterInningsStartingEvent.class)));
+        assertThat(((BatterInningsStartingEvent)lastUserEvent.event()).batter(), is(nz.battingOrder().get(1)));
+    }
+
 
 }
