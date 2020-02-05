@@ -3,24 +3,18 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.Match;
 
 import java.time.Instant;
-import java.util.Optional;
 
-public final class InningsCompletedEvent implements MatchEvent {
+public final class InningsCompletedEvent extends BaseMatchEvent {
 
-    private final Instant time;
     private final boolean declared;
     private final int inningsNumber;
 
-    private InningsCompletedEvent(Instant time, boolean declared, int inningsNumber) {
-        this.time = time;
+    private InningsCompletedEvent(Instant time, String id, MatchEvent generatedBy, boolean declared, int inningsNumber) {
+        super(id, time, generatedBy);
         this.declared = declared;
         this.inningsNumber = inningsNumber;
     }
 
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
-    }
 
     public int inningsNumber() {
         return inningsNumber;
@@ -33,14 +27,8 @@ public final class InningsCompletedEvent implements MatchEvent {
         return declared;
     }
 
-    public final static class Builder implements MatchEventBuilder<InningsCompletedEvent> {
-        private Instant time;
+    public final static class Builder extends BaseMatchEventBuilder<Builder, InningsCompletedEvent> {
         private boolean declared;
-
-        public Builder withTime(Instant time) {
-            this.time = time;
-            return this;
-        }
 
         public Builder withDeclared(boolean declared) {
             this.declared = declared;
@@ -49,7 +37,7 @@ public final class InningsCompletedEvent implements MatchEvent {
 
         public InningsCompletedEvent build(Match match) {
             int inningsNumber = match.inningsList().size();
-            return new InningsCompletedEvent(time, declared, inningsNumber);
+            return new InningsCompletedEvent(time(), id(), generatedBy(), declared, inningsNumber);
         }
     }
 

@@ -133,11 +133,11 @@ class MatchControlTest {
         assertThat(control.localTime(14, 30, 0).toString(), is("2019-09-27T02:30:00Z"));
 
         // go to the next day
-        control = control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 28, 10, 0)));
+        control = control.onEvent(ballCompleted("0").withTime(Crictils.localTime(nz, 2019, 9, 28, 10, 0)));
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-27T22:30:00Z"));
 
         // go to the next day, which happens to be the day after daylight savings ended
-        control = control.onEvent(ballCompleted("0").withDateCompleted(Crictils.localTime(nz, 2019, 9, 29, 10, 0)));
+        control = control.onEvent(ballCompleted("0").withTime(Crictils.localTime(nz, 2019, 9, 29, 10, 0)));
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-28T21:30:00Z"));
     }
 

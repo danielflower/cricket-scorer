@@ -6,35 +6,22 @@ import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
-public final class BatterInningsStartingEvent implements MatchEvent {
+public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
-    private final Instant time;
     private final Player batter;
 
-    private BatterInningsStartingEvent(Instant time, Player batter) {
-        this.time = time;
+    private BatterInningsStartingEvent(String id, MatchEvent generatedBy, Instant time, Player batter) {
+        super(id, time, generatedBy);
         this.batter = Objects.requireNonNull(batter);
-    }
-
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
     }
 
     public Player batter() {
         return batter;
     }
 
-    public static final class Builder implements MatchEventBuilder<BatterInningsStartingEvent> {
-        private Instant time;
+    public static final class Builder extends BaseMatchEventBuilder<Builder, BatterInningsStartingEvent> {
         private Player batter;
-
-        public Builder withTime(Instant startTime) {
-            this.time = startTime;
-            return this;
-        }
 
         /**
          * Specifies the next batter. Leave null to go with the next batter in the line up.
@@ -61,7 +48,7 @@ public final class BatterInningsStartingEvent implements MatchEvent {
                 throw new IllegalStateException("The player " + batter + " is not in the batting team " + innings.battingTeam());
             }
 
-            return new BatterInningsStartingEvent(time, batter);
+            return new BatterInningsStartingEvent(id(), generatedBy(), time(), batter);
         }
     }
 }

@@ -6,38 +6,26 @@ import com.danielflower.crickam.scorer.MatchResult;
 import java.time.Instant;
 import java.util.Optional;
 
-public final class MatchCompletedEvent implements MatchEvent {
+/**
+ * An event that signifies a match is completed. No more events should occur after this.
+ */
+public final class MatchCompletedEvent extends BaseMatchEvent {
 
-    private final Instant time;
     private final MatchResult result;
 
-    private MatchCompletedEvent(Instant time, MatchResult result) {
-        this.time = time;
+    private MatchCompletedEvent(String id, Instant time, MatchEvent generatedBy, MatchResult result) {
+        super(id, time, generatedBy);
         this.result = result;
     }
 
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
-    }
 
     public Optional<MatchResult> result() {
         return Optional.ofNullable(result);
     }
 
-    public final static class Builder implements MatchEventBuilder<MatchCompletedEvent> {
+    public final static class Builder extends BaseMatchEventBuilder<Builder, MatchCompletedEvent> {
 
-        private Instant time;
         private MatchResult result;
-
-        /**
-         * @param time The time the match was declared completed
-         * @return This builder
-         */
-        public Builder withTime(Instant time) {
-            this.time = time;
-            return this;
-        }
 
         /**
          * @param result The result of the match, or null to have the library infer the winner
@@ -49,7 +37,7 @@ public final class MatchCompletedEvent implements MatchEvent {
         }
 
         public MatchCompletedEvent build(Match match) {
-            return new MatchCompletedEvent(time, result);
+            return new MatchCompletedEvent(id(), time(), generatedBy(), result);
         }
 
     }

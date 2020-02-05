@@ -14,15 +14,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * Indicates that a batter's innings has ended due to dismissal, retirement, or that the team innings ended.
  */
-public final class BatterInningsCompletedEvent implements MatchEvent {
+public final class BatterInningsCompletedEvent extends BaseMatchEvent {
 
-    private final Instant time;
     private final Player batter;
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(Instant time, Player batter, BattingState reason, Dismissal dismissal) {
-        this.time = time;
+    private BatterInningsCompletedEvent(String id, Instant time, MatchEvent generatedBy, Player batter, BattingState reason, Dismissal dismissal) {
+        super(id, time, generatedBy);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
         if (reason == BattingState.IN_PROGRESS) {
@@ -35,11 +34,6 @@ public final class BatterInningsCompletedEvent implements MatchEvent {
             throw new NullPointerException("A dismissal must be provided when the reason is " + reason);
         }
         this.dismissal = dismissal;
-    }
-
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
     }
 
     public Player batter() {
@@ -60,20 +54,10 @@ public final class BatterInningsCompletedEvent implements MatchEvent {
         return Optional.ofNullable(dismissal);
     }
 
-    public static final class Builder implements MatchEventBuilder<BatterInningsCompletedEvent> {
-        private Instant time;
+    public static final class Builder extends BaseMatchEventBuilder<Builder, BatterInningsCompletedEvent> {
         private Player batter;
         private BattingState reason;
         private Dismissal dismissal;
-
-        /**
-         * @param time The time the innings ended
-         * @return This builder
-         */
-        public Builder withTime(Instant time) {
-            this.time = time;
-            return this;
-        }
 
         /**
          * @param batter the batter who's innings has ended. Can be left unset if dismissal is set with a batter set.
@@ -107,7 +91,7 @@ public final class BatterInningsCompletedEvent implements MatchEvent {
             if (batter == null && dismissal != null && dismissal.batter() != null) {
                 batter = dismissal.batter();
             }
-            return new BatterInningsCompletedEvent(time, batter, reason, dismissal);
+            return new BatterInningsCompletedEvent(id(), time(), generatedBy(), batter, reason, dismissal);
         }
     }
 }

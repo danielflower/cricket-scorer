@@ -11,11 +11,10 @@ import java.util.UUID;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
-public final class MatchStartingEvent implements MatchEvent {
+public final class MatchStartingEvent extends BaseMatchEvent {
 
     private final String matchID;
     private final Series series;
-    private final Instant time;
     private final Instant scheduledStartTime;
     private final ImmutableList<LineUp> lineUps;
     private final MatchType matchType;
@@ -26,10 +25,10 @@ public final class MatchStartingEvent implements MatchEvent {
     private final Integer ballsPerInnings;
     private final TimeZone timeZone;
 
-    private MatchStartingEvent(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+    private MatchStartingEvent(String id, MatchEvent generatedBy, String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+        super(id, time, generatedBy);
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
-        this.time = time;
         this.scheduledStartTime = scheduledStartTime;
         this.lineUps = requireNonNull(lineUps, "lineUps");
         this.matchType = requireNonNull(matchType, "matchType");
@@ -41,13 +40,6 @@ public final class MatchStartingEvent implements MatchEvent {
         this.timeZone = timeZone;
     }
 
-    /**
-     * @return The time this event was announced. Note this is separate from {@link #scheduledStartTime}
-     */
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
-    }
 
     public String matchID() {
         return matchID;
@@ -93,10 +85,9 @@ public final class MatchStartingEvent implements MatchEvent {
         return Optional.ofNullable(timeZone);
     }
 
-    public static final class Builder implements MatchEventBuilder<MatchStartingEvent> {
+    public static final class Builder extends BaseMatchEventBuilder<Builder, MatchStartingEvent> {
         private String matchID;
         private Series series;
-        private Instant time;
         private Instant startTime;
         private ImmutableList<LineUp> lineUps;
         private MatchType matchType;
@@ -114,18 +105,6 @@ public final class MatchStartingEvent implements MatchEvent {
 
         public Builder withSeries(Series series) {
             this.series = series;
-            return this;
-        }
-
-        /**
-         * Sets the time of the event. Note this is separate from {@link #withScheduledStartTime(Instant)} which is
-         * the expected time of the first ball.
-         *
-         * @param time The time match is starting.
-         * @return This builder
-         */
-        public Builder withTime(Instant time) {
-            this.time = time;
             return this;
         }
 
@@ -195,7 +174,8 @@ public final class MatchStartingEvent implements MatchEvent {
                 timeZone = venue.timeZone();
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
-            return new MatchStartingEvent(matchID, series, time, startTime, lineUps, matchType, inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
+            return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps, matchType,
+                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
         }
     }
 }

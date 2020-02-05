@@ -9,7 +9,7 @@ import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
-public final class BallCompletedEvent implements MatchEvent {
+public final class BallCompletedEvent extends BaseMatchEvent {
 
     private final Player bowler;
     private final Player striker;
@@ -21,16 +21,15 @@ public final class BallCompletedEvent implements MatchEvent {
     private final Swing swing;
     private final Trajectory trajectoryAtImpact;
     private final Player fielder;
-    private final Instant time;
     private final int overNumber;
     private final int numberInOver;
     private final int numberInMatch;
-    private final ImmutableList<MatchEventBuilder<?>> generatedEvents;
 
-    private BallCompletedEvent(Player bowler, Player striker, Player nonStriker, Score runsScored,
+    private BallCompletedEvent(String id, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, Dismissal dismissal, Delivery delivery, Swing swing,
                                Trajectory trajectoryAtImpact, Player fielder, Instant time, int overNumber,
-                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?>> generatedEvents) {
+                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+        super(id, time, null, generatedEvents);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -38,7 +37,6 @@ public final class BallCompletedEvent implements MatchEvent {
         this.overNumber = requireInRange("overNumber", overNumber, 0);
         this.numberInOver = requireInRange("numberInOver", numberInOver, 0);
         this.numberInMatch = requireInRange("numberInMatch", numberInMatch, 0);
-        this.generatedEvents = requireNonNull(generatedEvents, "generatedEvents");
         if (striker.equals(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
@@ -48,7 +46,6 @@ public final class BallCompletedEvent implements MatchEvent {
         this.swing = swing;
         this.trajectoryAtImpact = trajectoryAtImpact;
         this.fielder = fielder;
-        this.time = time;
     }
 
     public Player bowler() {
@@ -91,11 +88,6 @@ public final class BallCompletedEvent implements MatchEvent {
         return Optional.ofNullable(fielder);
     }
 
-    @Override
-    public Optional<Instant> time() {
-        return Optional.ofNullable(time);
-    }
-
     public int overNumber() {
         return overNumber;
     }
@@ -119,11 +111,6 @@ public final class BallCompletedEvent implements MatchEvent {
         return score().validDeliveries() > 0;
     }
 
-    @Override
-    public ImmutableList<MatchEventBuilder<?>> generatedEvents() {
-        return generatedEvents;
-    }
-
     /**
      * Gets the number of the this ball as a string in the format <em>over.ball</em>, for example &quot;0.1&quot;
      *
@@ -139,7 +126,7 @@ public final class BallCompletedEvent implements MatchEvent {
             + runsScored().teamRuns() + " runs " + out;
     }
 
-    public final static class Builder implements MatchEventBuilder<BallCompletedEvent> {
+    public final static class Builder extends BaseMatchEventBuilder<Builder, BallCompletedEvent> {
 
         private Player bowler;
         private Player striker;
@@ -150,7 +137,6 @@ public final class BallCompletedEvent implements MatchEvent {
         private Swing swing;
         private Trajectory trajectoryAtImpact;
         private Player fielder;
-        private Instant dateCompleted;
         private DismissalType dismissalType;
         private Player dismissedBatter;
 
@@ -250,10 +236,6 @@ public final class BallCompletedEvent implements MatchEvent {
             return this;
         }
 
-        public Builder withDateCompleted(Instant dateCompleted) {
-            this.dateCompleted = dateCompleted;
-            return this;
-        }
 
         public BallCompletedEvent build(Match match) {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
@@ -278,16 +260,16 @@ public final class BallCompletedEvent implements MatchEvent {
             int overNumber = over.overNumber();
             int numberInOver = over.validDeliveries() + 1;
             int numberInMatch = match.balls().size();
-            ImmutableList<MatchEventBuilder<?>> generatedEvents = ImmutableList.emptyList();
+            ImmutableList<MatchEventBuilder<?,?>> generatedEvents = ImmutableList.emptyList();
             if (dismissal != null) {
                 generatedEvents = generatedEvents.add(MatchEvents.batterInningsCompleted(BattingState.DISMISSED)
-                    .withTime(dateCompleted)
+                    .withTime(time())
                     .withBatter(dismissal.batter())
                     .withDismissal(dismissal)
                 );
             }
-            return new BallCompletedEvent(bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
-                delivery, swing, trajectoryAtImpact, fielder, dateCompleted, overNumber, numberInOver, numberInMatch, generatedEvents);
+            return new BallCompletedEvent(id(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
+                delivery, swing, trajectoryAtImpact, fielder, time(), overNumber, numberInOver, numberInMatch, generatedEvents);
         }
 
         private static boolean guessIfCrossed(Score score) {

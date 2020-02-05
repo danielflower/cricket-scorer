@@ -149,7 +149,7 @@ class InningsTest {
 
         control = control.onEvent(ballCompleted()
                 .withDismissal(DismissalType.BOWLED)
-                .withDateCompleted(Instant.now()));
+                .withTime(Instant.now()));
         Over over = innings().currentOver().get();
         assertThat(over.isComplete(), is(true));
         assertThat(over.remainingBalls(), is(0));

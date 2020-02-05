@@ -15,9 +15,19 @@ import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 public interface MatchEvent {
 
     /**
+     * @return A unique ID for this event
+     */
+    String id();
+
+    /**
      * @return The time that the event took place, or empty if unknown
      */
     Optional<Instant> time();
+
+    /**
+     * @return The event that auto-generated this event, or empty if the API user created the event
+     */
+    Optional<MatchEvent> generatedBy();
 
     /**
      * Certain events generate more events, for example a {@link InningsStartingEvent} causes a {@link BatterInningsStartingEvent}
@@ -26,8 +36,7 @@ public interface MatchEvent {
      * <p>These events are applied automatically when using the {@link MatchControl} class</p>
      * @return The list of events generated as a result of applying the current event, or an empty list if none were generated
      */
-    default ImmutableList<MatchEventBuilder<?>> generatedEvents() {
+    default ImmutableList<MatchEventBuilder<?,?>> generatedEvents() {
         return emptyList();
     }
-
 }
