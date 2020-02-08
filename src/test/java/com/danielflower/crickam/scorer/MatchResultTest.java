@@ -45,40 +45,43 @@ class MatchResultTest {
 
         assertThat(control.match().currentInnings().get().target(), is(OptionalInt.of(4)));
 
-        MatchControl twoToWin = control;
-        assertThat(MatchResult.fromMatch(twoToWin.match()).toString(), is("No result"));
+        MatchControl threeToWin = control;
+        assertThat(MatchResult.fromMatch(threeToWin.match()).toString(), is("No result"));
 
 
-        assertThat(MatchResult.fromMatch(twoToWin
+        assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("0"))
                 .onEvent(ballCompleted("0"))
-                .onEvent(overCompleted())
-                .onEvent(inningsCompleted())
                 .match()
             ).toString(),
             is("Australia won by 2 runs"));
-        assertThat(MatchResult.fromMatch(twoToWin
+        assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("0"))
                 .onEvent(ballCompleted("1"))
-                .onEvent(overCompleted())
-                .onEvent(inningsCompleted())
                 .match()
             ).toString(),
             is("Australia won by 1 run"));
-        assertThat(MatchResult.fromMatch(twoToWin
+
+        // match tied with no balls remaining
+        assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("0"))
                 .onEvent(ballCompleted("2"))
-                .onEvent(overCompleted())
-                .onEvent(inningsCompleted())
                 .match()
             ).toString(),
             is("Match tied"));
 
-        assertThat(MatchResult.fromMatch(twoToWin
+        // match tied with 1 ball remaining
+        assertThat(MatchResult.fromMatch(threeToWin
+                .onEvent(ballCompleted("2"))
+                .match()
+            ).toString(),
+            is("No result"));
+
+        assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("3")).match()
             ).toString(),
             is("New Zealand won by 10 wickets"));
-        assertThat(MatchResult.fromMatch(twoToWin
+        assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("4")).match()
             ).toString(),
             is("New Zealand won by 10 wickets"));
@@ -130,7 +133,6 @@ class MatchResultTest {
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
-                .onEvent(inningsCompleted())
                 .match()
             ).toString(),
             is("Australia won by 2 runs"));
@@ -156,7 +158,6 @@ class MatchResultTest {
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
-                .onEvent(inningsCompleted())
                 .match()
             ).toString(),
             is("Match tied"));
@@ -206,7 +207,49 @@ class MatchResultTest {
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
-            .onEvent(inningsCompleted());
+            ;
+
+        assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
+    }
+
+    @Test
+    void knowsAboutBeingBeatenByAnInningsAfterFollowOn() {
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
+            .withTeamLineUps(ImmutableList.of(aus, nz)))
+
+            .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(overStarting().withBowler(ausBowler))
+            .onEvent(ballCompleted("6"))
+            .onEvent(inningsCompleted().withDeclared(true))
+
+            .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler))
+            .onEvent(ballCompleted("0"))
+            .onEvent(inningsCompleted().withDeclared(true))
+
+            .onEvent(inningsStarting().withFollowingOn(true).withBattingTeam(aus))
+            .onEvent(overStarting().withBowler(nzBowler).withBallsInOver(20))
+            .onEvent(ballCompleted("2"))
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsStarting())
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            ;
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
     }

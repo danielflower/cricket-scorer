@@ -209,7 +209,7 @@ public final class MatchResult {
             Innings innings = match.inningsList().last().get();
             boolean isLastInnings = innings.target().isPresent();
             if (!isLastInnings) {
-                if (match.inningsList().stream().filter(i -> i.battingTeam().equals(innings.battingTeam()) && i.state() == Innings.State.COMPLETED).count() >= match.numberOfInningsPerTeam()) {
+                if (match.inningsList().stream().filter(i -> i.battingTeam().equals(innings.battingTeam()) && i.shouldBeComplete()).count() >= match.numberOfInningsPerTeam()) {
                     // the team that just completed their innings will bat no more. But have they exceeded the other team's score?
                     int justFinishedBattingTotalScore = match.scoredByTeam(innings.battingTeam()).teamRuns();
                     int otherTeamScore = match.scoredByTeam(innings.bowlingTeam()).teamRuns();
@@ -233,7 +233,7 @@ public final class MatchResult {
                         .withWonBy(Measure.WICKETS)
                         .withWonByAmount(innings.yetToBat().size() + 1)
                         .build();
-                } else if (innings.state() == Innings.State.COMPLETED) {
+                } else if (innings.shouldBeComplete()) {
                     if (remaining > 1) {
                         return matchResult()
                             .withResultType(ResultType.WON)

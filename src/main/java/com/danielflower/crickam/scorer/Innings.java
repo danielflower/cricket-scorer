@@ -19,6 +19,7 @@ public final class Innings {
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
     }
+
     private final Score score;
 
     private final ImmutableList<Partnership> partnerships;
@@ -36,6 +37,7 @@ public final class Innings {
     private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
+
     private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> completedOvers, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
         this.score = score;
         this.maxOvers = maxOvers;
@@ -331,10 +333,12 @@ public final class Innings {
     }
 
     /**
-     * @return True if all of the batters (except one) have been dismissed.
+     * @return True if all of the batters (except one) have been dismissed, and there are no retired batters
+     * that could bat again.
      */
     public boolean allOut() {
-        return yetToBat.size() == 0 && (currentStriker().isEmpty() || currentNonStriker().isEmpty());
+        return yetToBat.size() == 0 && (currentStriker().isEmpty() || currentNonStriker().isEmpty())
+            && batterInningsList().stream().noneMatch(bi -> bi.state() == BattingState.RETIRED);
     }
 
     /**
@@ -361,13 +365,6 @@ public final class Innings {
             return scheduled;
         }
         return OptionalInt.of(scheduled.getAsInt() - balls().score().validDeliveries());
-    }
-
-    /**
-     * @return Returns true if the batting team is {@link #allOut()} or if this is a limited overs match and {@link #numberOfBallsRemaining()} is 0
-     */
-    public boolean isFinished() {
-        return allOut() || numberOfBallsRemaining().orElse(-1) == 0;
     }
 
     private BatterInnings findBatterInnings(Player target) {
@@ -490,6 +487,21 @@ public final class Innings {
      */
     public int maidens() {
         return (int) completedOvers.stream().filter(Over::isMaiden).count();
+    }
+
+    /**
+     * An innings isn't officially complete until an {@link InningsCompletedEvent} is created, however this method can
+     * be used to guess if an innings should be ended based on things like remaining wickets or runs or overs to bowl.
+     *
+     * @return true if the innings is marked as complete, or there are no balls left (in a limited overs match), or the
+     * target has been reached, or there are no more batters.
+     */
+    public boolean shouldBeComplete() {
+        return (state() == Innings.State.COMPLETED) // marked complete
+            || (numberOfBallsRemaining().orElse(Integer.MAX_VALUE) < 1) // no more balls
+            || (target != null && score.teamRuns() >= target) // target reached
+            || (allOut()) // no more batters
+            ;
     }
 
     @Override

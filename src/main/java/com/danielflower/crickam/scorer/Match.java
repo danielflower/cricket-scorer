@@ -19,7 +19,7 @@ public final class Match {
 
 
     public enum State {
-        NOT_STARTED, ABANDONED, IN_PROGRESS, COMPLETED
+        NOT_STARTED, IN_PROGRESS, COMPLETED
     }
 
     private final FixedData data;
@@ -172,7 +172,7 @@ public final class Match {
      * <p>Note that on the conclusion of the match, an actual result is determined and accessed by {@link #result()}
      * (and this may return a different value than this method).</p>
      *
-     * @return Calculates what the current result may be at the current point in time.
+     * @return Calculates what the current result should be at the current point in time.
      */
     public MatchResult calculateResult() {
         return MatchResult.fromMatch(this);
@@ -195,7 +195,7 @@ public final class Match {
         } else if (event instanceof MatchCompletedEvent) {
             // don't pass to the innings
             newState = State.COMPLETED;
-            newResult = ((MatchCompletedEvent) event).result().orElseGet(this::calculateResult);
+            newResult = ((MatchCompletedEvent) event).result();
         } else {
             if (newCurrentInnings != null) {
                 if (event instanceof BallCompletedEvent) {
@@ -220,7 +220,11 @@ public final class Match {
      */
     public Score scoredByTeam(LineUp team) {
         Score total = Score.EMPTY;
-        for (Innings innings : completedInningsList) {
+        ImmutableList<Innings> list = this.completedInningsList;
+        if (currentInnings != null) {
+            list = list.add(currentInnings);
+        }
+        for (Innings innings : list) {
             if (innings.battingTeam().equals(team)) {
                 total = total.add(innings.score());
             }

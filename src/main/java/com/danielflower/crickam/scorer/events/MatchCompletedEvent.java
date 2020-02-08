@@ -4,7 +4,7 @@ import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.MatchResult;
 
 import java.time.Instant;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * An event that signifies a match is completed. No more events should occur after this.
@@ -15,12 +15,11 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private MatchCompletedEvent(String id, Instant time, MatchEvent generatedBy, MatchResult result) {
         super(id, time, generatedBy);
-        this.result = result;
+        this.result = Objects.requireNonNull(result, "result");
     }
 
-
-    public Optional<MatchResult> result() {
-        return Optional.ofNullable(result);
+    public MatchResult result() {
+        return result;
     }
 
     public final static class Builder extends BaseMatchEventBuilder<Builder, MatchCompletedEvent> {
@@ -28,7 +27,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
         private MatchResult result;
 
         /**
-         * @param result The result of the match, or null to have the library infer the winner
+         * @param result The result of the match, or leave unset to have the library infer the winner
          * @return This builder
          */
         public Builder withResult(MatchResult result) {
@@ -37,7 +36,11 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
         }
 
         public MatchCompletedEvent build(Match match) {
-            return new MatchCompletedEvent(id(), time(), generatedBy(), result);
+            MatchResult toUse = this.result;
+            if (toUse == null) {
+                toUse = match.calculateResult();
+            }
+            return new MatchCompletedEvent(id(), time(), generatedBy(), toUse);
         }
 
     }

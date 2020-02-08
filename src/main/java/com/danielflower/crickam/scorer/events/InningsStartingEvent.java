@@ -263,10 +263,12 @@ public final class InningsStartingEvent extends BaseMatchEvent {
             match.ballsPerInnings().ifPresent(builder::withMaxBalls);
             if (last.isPresent()) {
                 Innings prev = last.get();
-                LineUp battingTeam = prev.bowlingTeam();
-                LineUp bowlingTeam = prev.battingTeam();
-                builder.withBattingTeam(battingTeam)
-                    .withBowlingTeam(bowlingTeam);
+
+                if (battingTeam == null || bowlingTeam == null) {
+                    builder.withBattingTeam(prev.bowlingTeam())
+                        .withBowlingTeam(prev.battingTeam());
+                }
+
                 battingInningsNumber = (int) match.inningsList().stream().filter(i -> i.battingTeam().team().equals(battingTeam.team())).count() + 1;
                 finalInnings = inningsNumber == (2 * match.numberOfInningsPerTeam());
                 if (finalInnings) {
