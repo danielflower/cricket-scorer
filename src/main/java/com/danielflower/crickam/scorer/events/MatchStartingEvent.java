@@ -24,8 +24,11 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final int numberOfScheduledDays;
     private final Integer ballsPerInnings;
     private final TimeZone timeZone;
+    private final ImmutableList<MatchEventListener> eventListeners;
 
-    private MatchStartingEvent(String id, MatchEvent generatedBy, String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+    private MatchStartingEvent(String id, MatchEvent generatedBy, String matchID, Series series, Instant time, Instant scheduledStartTime,
+                               ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue,
+                               int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone, ImmutableList<MatchEventListener> eventListeners) {
         super(id, time, generatedBy);
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
@@ -38,8 +41,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         this.numberOfScheduledDays = numberOfScheduledDays;
         this.ballsPerInnings = ballsPerInnings;
         this.timeZone = timeZone;
+        this.eventListeners = eventListeners;
     }
 
+    public ImmutableList<MatchEventListener> eventListeners() {
+        return eventListeners;
+    }
 
     public String matchID() {
         return matchID;
@@ -97,6 +104,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private Venue venue;
         private Integer ballsPerInnings;
         private TimeZone timeZone;
+        private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
 
         public Builder withMatchID(String matchID) {
             this.matchID = matchID;
@@ -164,6 +172,27 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return this;
         }
 
+        /**
+         * Event listeners allow you to listen to all events (including generated events) and add your own
+         * events to the match.
+         * @param eventListeners The list of listeners
+         * @return This builder
+         */
+        public Builder withEventListeners(ImmutableList<MatchEventListener> eventListeners) {
+            this.eventListeners = eventListeners;
+            return this;
+        }
+
+        /**
+         * Event listeners allow you to listen to all events (including generated events) and add your own
+         * events to the match.
+         * @param eventListeners The list of listeners
+         * @return This builder
+         */
+        public Builder withEventListeners(MatchEventListener... eventListeners) {
+            return withEventListeners(ImmutableList.of(eventListeners));
+        }
+
         public MatchStartingEvent build(Match match /* null for only this event type */) {
             Integer bpi = this.ballsPerInnings;
             if (bpi == null && oversPerInnings != null) {
@@ -175,7 +204,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
             return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps, matchType,
-                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone);
+                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone, eventListeners);
         }
     }
 }

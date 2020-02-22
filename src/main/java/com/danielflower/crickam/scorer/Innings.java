@@ -18,11 +18,12 @@ public final class Innings {
 
     public enum State {
         NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
-    }
 
+    }
     private final Score score;
 
     private final ImmutableList<Partnership> partnerships;
+
     private final BatterInnings currentStriker;
     private final BatterInnings currentNonStriker;
     private final ImmutableList<BatterInnings> batters;
@@ -37,7 +38,6 @@ public final class Innings {
     private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
-
     private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> completedOvers, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
         this.score = score;
         this.maxOvers = maxOvers;
@@ -502,6 +502,21 @@ public final class Innings {
             || (target != null && score.teamRuns() >= target) // target reached
             || (allOut()) // no more batters
             ;
+    }
+
+    /**
+     * Finds the batter innings of the given player
+     * @param player The player to find
+     * @return The innings of the given player
+     * @throws IllegalArgumentException The given player has not started batting
+     */
+    public BatterInnings batterInnings(Player player) throws IllegalArgumentException {
+        for (BatterInnings batter : batters) {
+            if (batter.player().equals(player)) {
+                return batter;
+            }
+        }
+        throw new IllegalArgumentException("That player has not batted");
     }
 
     @Override

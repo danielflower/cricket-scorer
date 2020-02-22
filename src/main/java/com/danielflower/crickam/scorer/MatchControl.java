@@ -6,7 +6,9 @@ import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 
 import java.time.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -35,11 +37,13 @@ public final class MatchControl {
     private final ImmutableList<MatchControl> ancestors;
     private final MatchEvent event;
     private final Match match;
+    private final ImmutableList<MatchEventListener> eventListeners;
 
-    private MatchControl(ImmutableList<MatchControl> ancestors, MatchEvent event, Match match) {
+    private MatchControl(ImmutableList<MatchControl> ancestors, MatchEvent event, Match match, ImmutableList<MatchEventListener> eventListeners) {
         this.ancestors = ancestors;
         this.event = event;
         this.match = match;
+        this.eventListeners = eventListeners;
     }
 
     /**
@@ -52,7 +56,7 @@ public final class MatchControl {
         requireNonNull(builder, "builder");
         MatchStartingEvent event = builder.build(null);
         Match match = Match.newMatch(event);
-        return new MatchControl(ImmutableList.emptyList(), event, match);
+        return new MatchControl(ImmutableList.emptyList(), event, match, event.eventListeners()).callEventListeners(event);
     }
 
     /**
@@ -67,7 +71,9 @@ public final class MatchControl {
         MatchEvent event = builder.build(match());
         Match newMatch = match().onEvent(event);
         ImmutableList<MatchControl> newHistory = this.ancestors.add(this);
-        MatchControl newMatchControl = new MatchControl(newHistory, event, newMatch);
+        MatchControl newMatchControl = new MatchControl(newHistory, event, newMatch, eventListeners);
+
+        newMatchControl = newMatchControl.callEventListeners(event);
 
         for (MatchEventBuilder<?,?> childBuilder : event.generatedEvents()) {
             childBuilder.withGeneratedBy(event);
@@ -75,6 +81,28 @@ public final class MatchControl {
         }
 
         return newMatchControl;
+    }
+
+    private MatchControl callEventListeners(MatchEvent event) {
+        MatchControl control = this;
+        MatchEventData data = new MatchEventDataImpl(event, control);
+        List<MatchEventBuilder<?,?>> allGenerated = new ArrayList<>();
+        for (MatchEventListener eventListener : this.eventListeners) {
+            try {
+                ImmutableList<MatchEventBuilder<?, ?>> generated = eventListener.onEvent(data);
+                if (generated != null) {
+                    for (MatchEventBuilder<?, ?> matchEventBuilder : generated) {
+                        allGenerated.add(matchEventBuilder);
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Unhandled exception from event listener " + eventListener, e);
+            }
+        }
+        for (MatchEventBuilder<?, ?> matchEventBuilder : allGenerated) {
+            control = control.onEvent(matchEventBuilder);
+        }
+        return control;
     }
 
     /**
