@@ -11,7 +11,7 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(String id, MatchEvent generatedBy, Instant time, Player batter) {
+    private BatterInningsStartingEvent(String id, String generatedBy, Instant time, Player batter) {
         super(id, time, generatedBy);
         this.batter = Objects.requireNonNull(batter);
     }
@@ -20,8 +20,22 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
         return batter;
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withBatter(batter)
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public static final class Builder extends BaseMatchEventBuilder<Builder, BatterInningsStartingEvent> {
         private Player batter;
+
+        public Player batter() {
+            return batter;
+        }
 
         /**
          * Specifies the next batter. Leave null to go with the next batter in the line up.
@@ -49,6 +63,27 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
             }
 
             return new BatterInningsStartingEvent(id(), generatedBy(), time(), batter);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return Objects.equals(batter, builder.batter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), batter);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "batter=" + batter +
+                "} " + super.toString();
         }
     }
 }

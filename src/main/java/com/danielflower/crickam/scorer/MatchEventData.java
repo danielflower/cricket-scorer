@@ -37,6 +37,11 @@ public interface MatchEventData {
      * @return The event, or empty if the event is not of the desired type
      */
     <T extends MatchEvent> Optional<T> eventAs(Class<T> eventClass);
+
+    /**
+     * @return True is this is the first event in the match (and so {@link #event()} will be a {@link com.danielflower.crickam.scorer.events.MatchStartingEvent}
+     */
+    boolean firstEventInMatch();
 }
 
 class MatchEventDataImpl implements MatchEventData {
@@ -53,6 +58,7 @@ class MatchEventDataImpl implements MatchEventData {
     public MatchEvent event() {
         return event;
     }
+
 
     @Override
     public Optional<MatchControl> matchBeforeEvent() {
@@ -75,5 +81,10 @@ class MatchEventDataImpl implements MatchEventData {
             return Optional.of((T)event);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean firstEventInMatch() {
+        return !control.hasParent();
     }
 }

@@ -10,13 +10,13 @@ import static java.util.Objects.requireNonNull;
 public abstract class BaseMatchEvent implements MatchEvent {
     private final String id;
     private final Instant time;
-    private final MatchEvent generatedBy;
+    private final String generatedBy;
     private final ImmutableList<MatchEventBuilder<?, ?>> generatedEvents;
 
-    protected BaseMatchEvent(String id, Instant time, MatchEvent generatedBy) {
+    protected BaseMatchEvent(String id, Instant time, String generatedBy) {
         this(id, time, generatedBy, ImmutableList.emptyList());
     }
-    protected BaseMatchEvent(String id, Instant time, MatchEvent generatedBy, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+    protected BaseMatchEvent(String id, Instant time, String generatedBy, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
         this.id = requireNonNull(id, "id");
         this.time = time;
         this.generatedBy = generatedBy;
@@ -39,7 +39,7 @@ public abstract class BaseMatchEvent implements MatchEvent {
     }
 
     @Override
-    public final Optional<MatchEvent> generatedBy() {
+    public final Optional<String> generatedBy() {
         return Optional.ofNullable(generatedBy);
     }
 }

@@ -88,9 +88,18 @@ class MatchEventListenerTest {
 
         final Player player;
 
-        protected OffTheMarkEvent(String id, Instant time, MatchEvent generatedBy, Player player) {
+        protected OffTheMarkEvent(String id, Instant time, String generatedBy, Player player) {
             super(id, time, generatedBy);
             this.player = player;
+        }
+
+        @Override
+        public Builder newBuilder() {
+            return new Builder()
+                .withPlayer(player)
+                .withID(id())
+                .withTime(time().orElse(null))
+                .withGeneratedBy(generatedBy().orElse(null));
         }
 
         static class Builder extends BaseMatchEventBuilder<OffTheMarkEvent.Builder, OffTheMarkEvent> {

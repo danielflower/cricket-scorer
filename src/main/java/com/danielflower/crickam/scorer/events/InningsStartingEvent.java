@@ -3,6 +3,7 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.*;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -24,7 +25,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final boolean isFollowingOn;
     private final Integer maxOvers;
 
-    private InningsStartingEvent(String id, MatchEvent generatedBy, Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
+    private InningsStartingEvent(String id, String generatedBy, Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, Integer maxBalls, Integer maxOvers, Integer target, boolean isFollowingOn, int inningsNumberForMatch, int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
         super(id, time, generatedBy, generatedEvents);
         this.startingScore = startingScore;
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
@@ -110,6 +111,23 @@ public final class InningsStartingEvent extends BaseMatchEvent {
         return isFollowingOn;
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withBattingTeam(battingTeam)
+            .withBowlingTeam(bowlingTeam)
+            .withOpeners(openers)
+            .withMaxBalls(maxBalls)
+            .withTarget(target)
+            .withFollowingOn(isFollowingOn)
+            .withMaxOvers(maxOvers)
+            .withStartingScore(startingScore)
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public static final class Builder extends BaseMatchEventBuilder<Builder, InningsStartingEvent> {
 
         private LineUp battingTeam;
@@ -121,10 +139,43 @@ public final class InningsStartingEvent extends BaseMatchEvent {
         private Integer maxOvers;
         private Score startingScore;
 
+        public LineUp battingTeam() {
+            return battingTeam;
+        }
+
+        public LineUp bowlingTeam() {
+            return bowlingTeam;
+        }
+
+        public ImmutableList<Player> openers() {
+            return openers;
+        }
+
+        public Integer maxBalls() {
+            return maxBalls;
+        }
+
+        public Integer target() {
+            return target;
+        }
+
+        public Boolean followingOn() {
+            return isFollowingOn;
+        }
+
+        public Integer maxOvers() {
+            return maxOvers;
+        }
+
+        public Score startingScore() {
+            return startingScore;
+        }
+
         /**
          * This sets the starting score of the batting team in this innings. This is almost also {@link Score#EMPTY}
          * except on the rare occasions where the team was awarded penalties in the previous innings while they were
          * bowling.
+         *
          * @param startingScore The score the innings starts at, which defaults to {@link Score#EMPTY}
          * @return This builder
          */
@@ -279,12 +330,47 @@ public final class InningsStartingEvent extends BaseMatchEvent {
                 }
             }
 
-            ImmutableList<MatchEventBuilder<?,?>> generatedEvents = openers.stream()
+            ImmutableList<MatchEventBuilder<?, ?>> generatedEvents = openers.stream()
                 .map(player -> MatchEvents.batterInningsStarting().withBatter(player).withTime(time()))
                 .collect(ImmutableList.toImmutableList());
             Score startingScore = this.startingScore == null ? Score.EMPTY : this.startingScore;
             return new InningsStartingEvent(id(), generatedBy(), time(), startingScore, battingTeam, bowlingTeam, openers, maxBalls, maxOvers, target, followOn,
                 inningsNumber, battingInningsNumber, finalInnings, generatedEvents);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return Objects.equals(battingTeam, builder.battingTeam) &&
+                Objects.equals(bowlingTeam, builder.bowlingTeam) &&
+                Objects.equals(openers, builder.openers) &&
+                Objects.equals(maxBalls, builder.maxBalls) &&
+                Objects.equals(target, builder.target) &&
+                Objects.equals(isFollowingOn, builder.isFollowingOn) &&
+                Objects.equals(maxOvers, builder.maxOvers) &&
+                Objects.equals(startingScore, builder.startingScore);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), battingTeam, bowlingTeam, openers, maxBalls, target, isFollowingOn, maxOvers, startingScore);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "battingTeam=" + battingTeam +
+                ", bowlingTeam=" + bowlingTeam +
+                ", openers=" + openers +
+                ", maxBalls=" + maxBalls +
+                ", target=" + target +
+                ", isFollowingOn=" + isFollowingOn +
+                ", maxOvers=" + maxOvers +
+                ", startingScore=" + startingScore +
+                "} " + super.toString();
         }
     }
 }

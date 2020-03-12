@@ -21,7 +21,7 @@ public final class OverStartingEvent extends BaseMatchEvent {
     private final int overNumber;
     private final int inningsNumber;
 
-    private OverStartingEvent(String id, Instant time, MatchEvent generatedBy, Player bowler, Player striker, Player nonStriker, int ballsInOver, int overNumber, int inningsNumber) {
+    private OverStartingEvent(String id, Instant time, String generatedBy, Player bowler, Player striker, Player nonStriker, int ballsInOver, int overNumber, int inningsNumber) {
         super(id, time, generatedBy);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
@@ -58,12 +58,41 @@ public final class OverStartingEvent extends BaseMatchEvent {
         return inningsNumber;
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withBowler(bowler)
+            .withStriker(striker)
+            .withNonStriker(nonStriker)
+            .withBallsInOver(ballsInOver)
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public static final class Builder extends BaseMatchEventBuilder<Builder, OverStartingEvent> {
 
         private Player bowler;
         private Player striker;
         private Player nonStriker;
         private int ballsInOver = 6;
+
+        public Player bowler() {
+            return bowler;
+        }
+
+        public Player striker() {
+            return striker;
+        }
+
+        public Player nonStriker() {
+            return nonStriker;
+        }
+
+        public int ballsInOver() {
+            return ballsInOver;
+        }
 
         /**
          * @param bowler Specifies the bowler of this over. This must be set.
@@ -115,6 +144,33 @@ public final class OverStartingEvent extends BaseMatchEvent {
 
         private static Player playerOrNull(Optional<BatterInnings> batterInnings) {
             return batterInnings.isPresent() ? batterInnings.get().player() : null;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return ballsInOver == builder.ballsInOver &&
+                Objects.equals(bowler, builder.bowler) &&
+                Objects.equals(striker, builder.striker) &&
+                Objects.equals(nonStriker, builder.nonStriker);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, ballsInOver);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "bowler=" + bowler +
+                ", striker=" + striker +
+                ", nonStriker=" + nonStriker +
+                ", ballsInOver=" + ballsInOver +
+                "} " + super.toString();
         }
     }
 }

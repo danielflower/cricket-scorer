@@ -76,7 +76,7 @@ public final class MatchControl {
         newMatchControl = newMatchControl.callEventListeners(event);
 
         for (MatchEventBuilder<?,?> childBuilder : event.generatedEvents()) {
-            childBuilder.withGeneratedBy(event);
+            childBuilder.withGeneratedBy(event.id());
             newMatchControl = newMatchControl.onEvent(childBuilder);
         }
 

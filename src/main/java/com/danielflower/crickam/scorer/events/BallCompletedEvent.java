@@ -3,6 +3,7 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.*;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
@@ -28,7 +29,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private BallCompletedEvent(String id, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, Dismissal dismissal, Delivery delivery, Swing swing,
                                Trajectory trajectoryAtImpact, Player fielder, Instant time, int overNumber,
-                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
         super(id, time, null, generatedEvents);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
@@ -126,6 +127,26 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             + runsScored().teamRuns() + " runs " + out;
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withBowler(bowler)
+            .withStriker(striker)
+            .withNonStriker(nonStriker)
+            .withRunsScored(runsScored)
+            .withPlayersCrossed(playersCrossed)
+            .withDelivery(delivery)
+            .withSwing(swing)
+            .withTrajectoryAtImpact(trajectoryAtImpact)
+            .withFielder(fielder)
+            .withDismissal(dismissal.type())
+            .withDismissedBatter(dismissal.batter())
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public final static class Builder extends BaseMatchEventBuilder<Builder, BallCompletedEvent> {
 
         private Player bowler;
@@ -139,6 +160,50 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         private Player fielder;
         private DismissalType dismissalType;
         private Player dismissedBatter;
+
+        public Player bowler() {
+            return bowler;
+        }
+
+        public Player striker() {
+            return striker;
+        }
+
+        public Player nonStriker() {
+            return nonStriker;
+        }
+
+        public Score runsScored() {
+            return runsScored;
+        }
+
+        public Boolean playersCrossed() {
+            return playersCrossed;
+        }
+
+        public Delivery delivery() {
+            return delivery;
+        }
+
+        public Swing swing() {
+            return swing;
+        }
+
+        public Trajectory trajectoryAtImpact() {
+            return trajectoryAtImpact;
+        }
+
+        public Player fielder() {
+            return fielder;
+        }
+
+        public DismissalType dismissal() {
+            return dismissalType;
+        }
+
+        public Player dismissedBatter() {
+            return dismissedBatter;
+        }
 
         /**
          * @param bowler The bowler bowling the ball. If null, then the bowler will be the bowler of the over.
@@ -175,6 +240,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         /**
          * Specifies whether or not the players crossed. If not set, then it is inferred from the
          * score (which is sometimes not possible to know, so may be a guess).
+         *
          * @param playersCrossed true if they crossed; false if not; or null infer from the score
          * @return This builder
          */
@@ -228,6 +294,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
         /**
          * Specifies the fielder
+         *
          * @param fielder The main fielder who picked up the ball, or the fielder who effected a run out, or who caught the ball
          * @return This builder
          */
@@ -260,7 +327,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             int overNumber = over.overNumber();
             int numberInOver = over.validDeliveries() + 1;
             int numberInMatch = match.balls().size();
-            ImmutableList<MatchEventBuilder<?,?>> generatedEvents = ImmutableList.emptyList();
+            ImmutableList<MatchEventBuilder<?, ?>> generatedEvents = ImmutableList.emptyList();
             if (dismissal != null) {
                 generatedEvents = generatedEvents.add(MatchEvents.batterInningsCompleted(BattingState.DISMISSED)
                     .withTime(time())
@@ -277,6 +344,48 @@ public final class BallCompletedEvent extends BaseMatchEvent {
                 return score.wides() % 2 == 0;
             }
             return (score.batterRuns() + score.legByes() + score.byes()) % 2 == 1;
+        }
+
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return Objects.equals(bowler, builder.bowler) &&
+                Objects.equals(striker, builder.striker) &&
+                Objects.equals(nonStriker, builder.nonStriker) &&
+                Objects.equals(runsScored, builder.runsScored) &&
+                Objects.equals(playersCrossed, builder.playersCrossed) &&
+                Objects.equals(delivery, builder.delivery) &&
+                Objects.equals(swing, builder.swing) &&
+                Objects.equals(trajectoryAtImpact, builder.trajectoryAtImpact) &&
+                Objects.equals(fielder, builder.fielder) &&
+                dismissalType == builder.dismissalType &&
+                Objects.equals(dismissedBatter, builder.dismissedBatter);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, runsScored, playersCrossed, delivery, swing, trajectoryAtImpact, fielder, dismissalType, dismissedBatter);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "bowler=" + bowler +
+                ", striker=" + striker +
+                ", nonStriker=" + nonStriker +
+                ", runsScored=" + runsScored +
+                ", playersCrossed=" + playersCrossed +
+                ", delivery=" + delivery +
+                ", swing=" + swing +
+                ", trajectoryAtImpact=" + trajectoryAtImpact +
+                ", fielder=" + fielder +
+                ", dismissalType=" + dismissalType +
+                ", dismissedBatter=" + dismissedBatter +
+                "} " + super.toString();
         }
     }
 

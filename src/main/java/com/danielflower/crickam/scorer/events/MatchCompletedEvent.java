@@ -13,7 +13,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(String id, Instant time, MatchEvent generatedBy, MatchResult result) {
+    private MatchCompletedEvent(String id, Instant time, String generatedBy, MatchResult result) {
         super(id, time, generatedBy);
         this.result = Objects.requireNonNull(result, "result");
     }
@@ -22,9 +22,23 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
         return result;
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withResult(result)
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public final static class Builder extends BaseMatchEventBuilder<Builder, MatchCompletedEvent> {
 
         private MatchResult result;
+
+        public MatchResult result() {
+            return result;
+        }
 
         /**
          * @param result The result of the match, or leave unset to have the library infer the winner
@@ -43,5 +57,25 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
             return new MatchCompletedEvent(id(), time(), generatedBy(), toUse);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return Objects.equals(result, builder.result);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), result);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "result=" + result +
+                "} " + super.toString();
+        }
     }
 }

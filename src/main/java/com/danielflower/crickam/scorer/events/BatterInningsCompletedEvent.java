@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.BattingState.DISMISSED;
@@ -20,7 +21,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(String id, Instant time, MatchEvent generatedBy, Player batter, BattingState reason, Dismissal dismissal) {
+    private BatterInningsCompletedEvent(String id, Instant time, String generatedBy, Player batter, BattingState reason, Dismissal dismissal) {
         super(id, time, generatedBy);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
@@ -54,10 +55,34 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
         return Optional.ofNullable(dismissal);
     }
 
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withBatter(batter)
+            .withReason(reason)
+            .withDismissal(dismissal)
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
+    }
+
     public static final class Builder extends BaseMatchEventBuilder<Builder, BatterInningsCompletedEvent> {
         private Player batter;
         private BattingState reason;
         private Dismissal dismissal;
+
+        public Player batter() {
+            return batter;
+        }
+
+        public BattingState reason() {
+            return reason;
+        }
+
+        public Dismissal dismissal() {
+            return dismissal;
+        }
 
         /**
          * @param batter the batter who's innings has ended. Can be left unset if dismissal is set with a batter set.
@@ -92,6 +117,31 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
                 batter = dismissal.batter();
             }
             return new BatterInningsCompletedEvent(id(), time(), generatedBy(), batter, reason, dismissal);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+            Builder builder = (Builder) o;
+            return Objects.equals(batter, builder.batter) &&
+                reason == builder.reason &&
+                Objects.equals(dismissal, builder.dismissal);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(super.hashCode(), batter, reason, dismissal);
+        }
+
+        @Override
+        public String toString() {
+            return "Builder{" +
+                "batter=" + batter +
+                ", reason=" + reason +
+                ", dismissal=" + dismissal +
+                "} " + super.toString();
         }
     }
 }

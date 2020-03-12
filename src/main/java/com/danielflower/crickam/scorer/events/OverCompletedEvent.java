@@ -11,7 +11,7 @@ public final class OverCompletedEvent extends BaseMatchEvent {
 
     private final Over over;
 
-    private OverCompletedEvent(String id, Instant time, MatchEvent generatedBy, Over over) {
+    private OverCompletedEvent(String id, Instant time, String generatedBy, Over over) {
         super(id, time, generatedBy);
         this.over = requireNonNull(over, "over");
     }
@@ -21,6 +21,15 @@ public final class OverCompletedEvent extends BaseMatchEvent {
      */
     public Over over() {
         return over;
+    }
+
+    @Override
+    public Builder newBuilder() {
+        return new Builder()
+            .withID(id())
+            .withTime(time().orElse(null))
+            .withGeneratedBy(generatedBy().orElse(null))
+            ;
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, OverCompletedEvent> {

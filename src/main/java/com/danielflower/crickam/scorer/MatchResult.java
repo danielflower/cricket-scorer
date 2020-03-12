@@ -2,6 +2,7 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.MatchCompletedEvent;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -59,7 +60,7 @@ public final class MatchResult {
     private final boolean duckworthLewisApplied;
 
     private MatchResult(MatchResult.ResultType resultType, LineUp winningTeam, Measure wonBy, Integer wonByAmount, boolean duckworthLewisApplied) {
-        this.resultType = requireNonNull(resultType);
+        this.resultType = requireNonNull(resultType, "resultType");
         boolean hasWinner = resultType == ResultType.AWARDED || resultType == ResultType.CONCEDED || resultType == ResultType.WON;
         if (hasWinner) {
             requireNonNull(winningTeam, "winningTeam must be set for a result of type " + resultType);
@@ -116,6 +117,23 @@ public final class MatchResult {
      */
     public static Builder matchResult() {
         return new Builder();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchResult that = (MatchResult) o;
+        return duckworthLewisApplied == that.duckworthLewisApplied &&
+            resultType == that.resultType &&
+            Objects.equals(winningTeam, that.winningTeam) &&
+            wonBy == that.wonBy &&
+            Objects.equals(wonByAmount, that.wonByAmount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(resultType, winningTeam, wonBy, wonByAmount, duckworthLewisApplied);
     }
 
     @Override

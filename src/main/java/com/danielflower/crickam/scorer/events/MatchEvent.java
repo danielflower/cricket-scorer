@@ -25,9 +25,14 @@ public interface MatchEvent {
     Optional<Instant> time();
 
     /**
-     * @return The event that auto-generated this event, or empty if the API user created the event
+     * @return The ID of the event that auto-generated this event, or empty if the API user created the event
      */
-    Optional<MatchEvent> generatedBy();
+    Optional<String> generatedBy();
+
+    /**
+     * @return A new builder based on the current values of the event
+     */
+    MatchEventBuilder<?,?> newBuilder();
 
     /**
      * Certain events generate more events, for example a {@link InningsStartingEvent} causes a {@link BatterInningsStartingEvent}

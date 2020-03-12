@@ -16,6 +16,18 @@ public final class Trajectory {
     private final Double distanceInMeters;
 
     private Trajectory(Integer speedInKms, Double directionInDegreesRelativeToBatter, Double launchAngle, Double distanceInMeters) {
+        if (speedInKms != null && (speedInKms < 0 || speedInKms > 300)) {
+            throw new IllegalArgumentException("speedInKms must be between 0 and 300, or null, but was " + speedInKms);
+        }
+        if (directionInDegreesRelativeToBatter != null && (directionInDegreesRelativeToBatter < 0 || directionInDegreesRelativeToBatter > 360)) {
+            throw new IllegalArgumentException("directionInDegreesRelativeToBatter must be between 0 and 360, or null, but was " + directionInDegreesRelativeToBatter);
+        }
+        if (launchAngle != null && (launchAngle < -180 || launchAngle > 180)) {
+            throw new IllegalArgumentException("launchAngle must be between -180 and 180, or null, but was " + launchAngle);
+        }
+        if (distanceInMeters != null && (distanceInMeters < 0 || distanceInMeters > 200)) {
+            throw new IllegalArgumentException("distanceInMeters must be between 0 and 200, or null, but was " + distanceInMeters);
+        }
         this.speedInKms = speedInKms;
         this.directionInDegreesRelativeToBatter = directionInDegreesRelativeToBatter;
         this.launchAngle = launchAngle;
@@ -38,7 +50,7 @@ public final class Trajectory {
      * 270 = point (for right hander)
      * </li>
      * <li>
-     * empty = unknown
+     * null = unknown
      * </li>
      * </ul>
      * @return The direction that the ball was hit in
@@ -55,10 +67,16 @@ public final class Trajectory {
         return Optional.ofNullable(launchAngle);
     }
 
+    /**
+     * @return The speed of the ball off the bat, or empty if unknown
+     */
     public OptionalInt speedInKms() {
         return toOptional(speedInKms);
     }
 
+    /**
+     * @return The distance the ball traveled to until a fielder picked it up, or it crossed the boundary, or (for a six) when it landed. Empty if unknown.
+     */
     public Optional<Double> distanceInMeters() {
         return Optional.ofNullable(distanceInMeters);
     }
@@ -99,6 +117,10 @@ public final class Trajectory {
         private Double launchAngle;
         private Double distanceInMeters;
 
+        /**
+         * @param speedInKms The speed of the ball off the bat, or null if unknown
+         * @return This builder
+         */
         public Builder withSpeedInKms(Integer speedInKms) {
             this.speedInKms = speedInKms;
             return this;
@@ -141,6 +163,10 @@ public final class Trajectory {
             return this;
         }
 
+        /**
+         * @param distanceInMeters The distance the ball traveled to until a fielder picked it up, or it crossed the boundary, or (for a six) when it landed. null if unknown.
+         * @return This builder
+         */
         public Builder withDistanceInMeters(Double distanceInMeters) {
             this.distanceInMeters = distanceInMeters;
             return this;

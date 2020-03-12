@@ -27,10 +27,10 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     B withID(String id);
 
     /**
-     * @param generatedBy The event that auto-generated this event, or null if it was created by the API user.
+     * @param generatedById The ID of the event that auto-generated this event, or null if it was created by the API user.
      * @return this builder
      */
-    B withGeneratedBy(MatchEvent generatedBy);
+    B withGeneratedBy(String generatedById);
 
     /**
      * @param time The time the event occured
@@ -38,5 +38,19 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
      */
     B withTime(Instant time);
 
+    /**
+     * @return The ID of the event, or null if unset
+     */
+    String id();
+
+    /**
+     * @return The ID of the event that generated this event, or null if unset or if it wasn't generated
+     */
+    String generatedBy();
+
+    /**
+     * @return The time of the event, or null if unset
+     */
+    Instant time();
 
 }

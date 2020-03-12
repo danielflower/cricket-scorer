@@ -2,6 +2,9 @@ package com.danielflower.crickam.scorer;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
+
+import static com.danielflower.crickam.scorer.Crictils.toOptional;
 
 /**
  * Describes the manner in which the bowler bowled the ball.
@@ -17,6 +20,18 @@ public final class Delivery {
     private final WicketSide bowledFrom;
 
     private Delivery(DeliveryType deliveryType, Integer speedInKilometers, Double positionOfBounce, Double horizontalPitchInMeters, Double changeInLineAfterBounceInDegrees, WicketSide bowledFrom) {
+        if (horizontalPitchInMeters != null && (horizontalPitchInMeters < -1.5 || horizontalPitchInMeters > 1.5)) {
+            throw new IllegalArgumentException("horizontalPitchInMeters must be between -1.5 and 1.5, or null, but was " + horizontalPitchInMeters);
+        }
+        if (positionOfBounce != null && (positionOfBounce < 0 || positionOfBounce > 40)) {
+            throw new IllegalArgumentException("positionOfBounce must be between 0 and 40, or null, but was " + positionOfBounce);
+        }
+        if (speedInKilometers != null && (speedInKilometers < 1 || speedInKilometers > 200)) {
+            throw new IllegalArgumentException("speedInKilometers must be between 1 and 200, or null, but was " + speedInKilometers);
+        }
+        if (changeInLineAfterBounceInDegrees != null && (changeInLineAfterBounceInDegrees < -90 || changeInLineAfterBounceInDegrees > 90)) {
+            throw new IllegalArgumentException("changeInLineAfterBounceInDegrees must be between -90 and 90, or null, but was " + changeInLineAfterBounceInDegrees);
+        }
         this.deliveryType = deliveryType;
         this.speedInKilometers = speedInKilometers;
         this.positionOfBounce = positionOfBounce;
@@ -29,15 +44,15 @@ public final class Delivery {
         return Optional.ofNullable(deliveryType);
     }
 
-    public Integer speedInKilometers() {
-        return speedInKilometers;
+    public OptionalInt speedInKilometers() {
+        return toOptional(speedInKilometers);
     }
 
     /**
-     * @return The number of meters from the bowling crease where the ball bounced, or null if unknown
+     * @return The number of meters from the bowling crease where the ball bounced, or empty if unknown
      */
-    public Double positionOfBounce() {
-        return positionOfBounce;
+    public Optional<Double> positionOfBounce() {
+        return Optional.ofNullable(positionOfBounce);
     }
 
     /**
@@ -56,15 +71,18 @@ public final class Delivery {
 
     /**
      * @return The distance in meters from the horizontal middle of the pitch where the ball pitched, where -1.5 is
-     * to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Returns null
+     * to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Returns empty
      * if unknown.
      */
-    public Double horizontalPitchInMeters() {
-        return horizontalPitchInMeters;
+    public Optional<Double> horizontalPitchInMeters() {
+        return Optional.ofNullable(horizontalPitchInMeters);
     }
 
-    public Double changeInLineAfterBounceInDegrees() {
-        return changeInLineAfterBounceInDegrees;
+    /**
+     * @return 0 to indicate the ball when straight on; -90 if it made a total left turn; +90 for a total right turn. Empty if unknown.
+     */
+    public Optional<Double> changeInLineAfterBounceInDegrees() {
+        return Optional.ofNullable(changeInLineAfterBounceInDegrees);
     }
 
     /**
@@ -124,21 +142,38 @@ public final class Delivery {
             return this;
         }
 
+        /**
+         * @param speedInKilometers The speed the ball was bowled at, or null if unknown
+         * @return This builder
+         */
         public Builder withSpeedInKilometers(Integer speedInKilometers) {
             this.speedInKilometers = speedInKilometers;
             return this;
         }
 
+        /**
+         * @param positionOfBounce The number of meters from the bowling crease where the ball bounced, or null if unknown
+         * @return This builder
+         */
         public Builder withPositionOfBounce(Double positionOfBounce) {
             this.positionOfBounce = positionOfBounce;
             return this;
         }
 
+        /**
+         * @param horizontalPitchInMeters The distance in meters from the horizontal middle of the pitch where the ball pitched, where -1.5 is
+         *                                to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Use null if unknown.
+         * @return This builder
+         */
         public Builder withHorizontalPitchInMeters(Double horizontalPitchInMeters) {
             this.horizontalPitchInMeters = horizontalPitchInMeters;
             return this;
         }
 
+        /**
+         * @param changeInLineAfterBounceInDegrees 0 to indicate the ball when straight on; -90 if it made a total left turn; +90 for a total right turn.
+         * @return This builder
+         */
         public Builder withChangeInLineAfterBounceInDegrees(Double changeInLineAfterBounceInDegrees) {
             this.changeInLineAfterBounceInDegrees = changeInLineAfterBounceInDegrees;
             return this;
