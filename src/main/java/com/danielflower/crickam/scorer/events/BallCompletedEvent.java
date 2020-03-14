@@ -129,7 +129,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
     @Override
     public Builder newBuilder() {
-        return new Builder()
+        Builder builder = new Builder()
             .withBowler(bowler)
             .withStriker(striker)
             .withNonStriker(nonStriker)
@@ -139,12 +139,14 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             .withSwing(swing)
             .withTrajectoryAtImpact(trajectoryAtImpact)
             .withFielder(fielder)
-            .withDismissal(dismissal.type())
-            .withDismissedBatter(dismissal.batter())
             .withID(id())
             .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
-            ;
+            .withGeneratedBy(generatedBy().orElse(null));
+        if (dismissal != null) {
+            builder.withDismissal(dismissal.type())
+                .withDismissedBatter(dismissal.batter());
+        }
+        return builder;
     }
 
     public final static class Builder extends BaseMatchEventBuilder<Builder, BallCompletedEvent> {

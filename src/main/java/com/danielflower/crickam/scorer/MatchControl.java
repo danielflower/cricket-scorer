@@ -161,6 +161,13 @@ public final class MatchControl {
     }
 
     /**
+     * @return The number of events that have taken place
+     */
+    public int eventCount() {
+        return ancestors.size() + 1;
+    }
+
+    /**
      * A convenient way to convert a local time (such as &quot;17:30&quot;) into a {@code Instant} object. This
      * method uses the match's {@link Match#timeZone()} as the time zone and the last {@link MatchEvent#time()} to find
      * the date

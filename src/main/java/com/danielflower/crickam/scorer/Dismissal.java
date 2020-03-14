@@ -60,16 +60,26 @@ public final class Dismissal {
      */
     public String toScorecardString(LineUp team) {
         String bowlerName = this.bowler == null ? null : this.bowler.familyName();
-        String fielderName = this.fielder == null ? null : this.fielder.familyName();
+        String fielderName;
+        if (this.fielder == null) {
+            fielderName = null;
+        } else {
+            fielderName = this.fielder.familyName();
+            if (team != null) {
+                if (team.wicketKeeper().equals(this.fielder)) {
+                    fielderName = "†" + fielderName;
+                } else if (!team.battingOrder().contains(this.fielder)) {
+                    fielderName = "sub (" + fielderName + ")";
+                }
+            }
+        }
+
         switch (type) {
             case BOWLED:
                 return "b " + bowlerName;
             case CAUGHT:
-                String catcher = (this.fielder == this.bowler) ? "&"
-                    : team.battingOrder().contains(this.fielder) ? fielderName
-                    : "sub (" + fielderName + ")";
-                String prefix = this.fielder == team.wicketKeeper() ? "†" : "";
-                return "c " + prefix + catcher + " b " + bowlerName;
+                boolean cab = this.fielder == this.bowler;
+                return cab ? "c & b " + fielderName : "c " + fielderName + " b " + bowlerName;
             case HIT_WICKET:
                 return "hw " + bowlerName;
             case LEG_BEFORE_WICKET:
