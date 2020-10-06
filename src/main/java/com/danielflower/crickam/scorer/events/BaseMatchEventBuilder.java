@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer.events;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
@@ -11,40 +13,43 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     private Instant time;
 
     @Override
-    public String generatedBy() {
+    public @Nullable String generatedBy() {
         return generatedBy;
     }
 
     @Override
-    public Instant time() {
+    public @Nullable Instant time() {
         return time;
     }
 
     @Override
-    public String id() {
+    public @Nonnull String id() {
         return id;
     }
 
+    @Nonnull
     @Override
     public final B withID(String id) {
         this.id = id;
         return (B)this;
     }
 
+    @Nonnull
     @Override
-    public final B withGeneratedBy(String generatedBy) {
+    public final B withGeneratedBy(@Nullable String generatedBy) {
         this.generatedBy = generatedBy;
         return (B) this;
     }
 
+    @Nonnull
     @Override
-    public final B withTime(Instant time) {
+    public final B withTime(@Nullable Instant time) {
         this.time = time;
         return (B) this;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseMatchEventBuilder<?, ?> that = (BaseMatchEventBuilder<?, ?>) o;

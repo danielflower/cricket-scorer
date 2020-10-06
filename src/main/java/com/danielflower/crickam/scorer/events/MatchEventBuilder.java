@@ -2,6 +2,8 @@ package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.Match;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 
 /**
@@ -18,39 +20,39 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
      * @throws NullPointerException thrown when a required field is not set
      * @throws IllegalArgumentException thrown when a specified value is invalid
      */
-    T build(Match match);
+    @Nonnull T build(Match match);
 
     /**
      * @param id A unique ID for this event. If unset, a UUID will be assigned.
      * @return this builder
      */
-    B withID(String id);
+    @Nonnull B withID(String id);
 
     /**
      * @param generatedById The ID of the event that auto-generated this event, or null if it was created by the API user.
      * @return this builder
      */
-    B withGeneratedBy(String generatedById);
+    @Nonnull B withGeneratedBy(@Nullable String generatedById);
 
     /**
-     * @param time The time the event occured
+     * @param time The time the event occurred
      * @return This builder
      */
-    B withTime(Instant time);
+    @Nonnull B withTime(@Nullable Instant time);
 
     /**
      * @return The ID of the event, or null if unset
      */
-    String id();
+    @Nonnull String id();
 
     /**
      * @return The ID of the event that generated this event, or null if unset or if it wasn't generated
      */
-    String generatedBy();
+    @Nullable String generatedBy();
 
     /**
      * @return The time of the event, or null if unset
      */
-    Instant time();
+    @Nullable Instant time();
 
 }

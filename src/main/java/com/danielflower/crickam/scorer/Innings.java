@@ -2,9 +2,11 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.OptionalInt;
 
 import static com.danielflower.crickam.scorer.Crictils.*;
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
@@ -14,11 +16,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * An innings in a match
  */
+@Immutable
 public final class Innings {
 
     public enum State {
-        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED;
-
+        NOT_STARTED, IN_PROGRESS, BETWEEN_OVERS, DRINKS, LUNCH, TEA, RAIN_DELAY, COMPLETED
     }
     private final Score score;
 
@@ -38,7 +40,7 @@ public final class Innings {
     private final Integer maxOvers;
     private final Integer maxBalls;
     private final Integer target;
-    private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, BatterInnings currentStriker, BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> completedOvers, Over currentOver, Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, Integer maxOvers, Integer maxBalls, Integer target) {
+    private Innings(InningsStartingEvent data, Score score, ImmutableList<Partnership> partnerships, @Nullable BatterInnings currentStriker, @Nullable BatterInnings currentNonStriker, ImmutableList<BatterInnings> batters, ImmutableList<Player> yetToBat, ImmutableList<Over> completedOvers, @Nullable Over currentOver, @Nullable Instant endTime, Balls balls, ImmutableList<BowlerInnings> bowlerInningses, State state, @Nullable Integer maxOvers, @Nullable Integer maxBalls, @Nullable Integer target) {
         this.score = score;
         this.maxOvers = maxOvers;
         this.maxBalls = maxBalls;
@@ -55,18 +57,18 @@ public final class Innings {
         this.currentOver = currentOver;
         this.endTime = endTime;
         this.balls = requireNonNull(balls);
-        this.bowlerInningses = bowlerInningses;
+        this.bowlerInningses = requireNonNull(bowlerInningses, "bowlerInningses");
         this.yetToBat = requireNonNull(yetToBat);
         this.state = requireNonNull(state);
     }
 
-    static Innings newInnings(InningsStartingEvent event) {
+    static @Nonnull Innings newInnings(InningsStartingEvent event) {
         return new Innings(event, event.startingScore(), emptyList(), null, null, emptyList(), event.battingTeam().battingOrder(),
             emptyList(), null, null, new Balls(), emptyList(), State.NOT_STARTED,
-            toInteger(event.maxOvers()), toInteger(event.maxBalls()), toInteger(event.target()));
+            event.maxOvers(), event.maxBalls(), event.target());
     }
 
-    public Innings onEvent(MatchEvent event) {
+    public @Nonnull Innings onEvent(MatchEvent event) {
         if (state == State.COMPLETED) {
             throw new IllegalStateException("No events can be added after innings completion");
         }
@@ -89,7 +91,7 @@ public final class Innings {
             if (state != State.IN_PROGRESS) {
                 throw new IllegalStateException("Cannot process a ball when the innings state is " + state);
             }
-            if (currentStriker().isEmpty() || currentNonStriker().isEmpty())
+            if (currentStriker() ==null || currentNonStriker()==null)
                 throw new IllegalStateException("There is only one batter in. Make sure an "
                     + OverStartingEvent.class.getSimpleName() + " has been raised at the beginning of the over and that a "
                     + BatterInningsStartingEvent.class.getSimpleName() + " is called after a wicket");
@@ -141,16 +143,16 @@ public final class Innings {
         } else if (event instanceof InningsCompletedEvent) {
             stateGuard(currentOver == null || !currentOver.isComplete(), () -> "Because the last ball of the innings completed an over, an overCompleted event should be sent before ending the innings");
             newState = State.COMPLETED;
-            endTime = event.time().orElse(null);
+            endTime = event.time();
             striker = null;
             nonStriker = null;
         } else if (event instanceof BatterInningsStartingEvent) {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
             yetToBat = yetToBat.stream().filter(p -> !p.equals(e.batter())).collect(toImmutableList());
-            BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1, e.time().orElse(null));
+            BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1, e.time());
             batters = batters.add(newBatterInnings);
             if (striker != null || nonStriker != null) {
-                Partnership newPartnership = Partnership.newPartnership(partnerships.size() + 1, striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player());
+                Partnership newPartnership = Partnership.newPartnership(partnerships.size() + 1, striker == null ? nonStriker.player() : striker.player(), newBatterInnings.player(), e.time());
                 partnerships = partnerships.add(newPartnership);
             }
             if (striker == null) {
@@ -171,7 +173,7 @@ public final class Innings {
             batters = replaceBatterInnings(batters, nonStriker);
         }
 
-        Partnership currentValue = currentPartnership().orElse(null);
+        Partnership currentValue = currentPartnership();
         if (currentValue != null) {
             partnerships = partnerships.replace(currentValue, currentValue.onEvent(event));
         }
@@ -179,15 +181,15 @@ public final class Innings {
         if (event instanceof BatterInningsCompletedEvent) {
             BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
             Player dismissalBatter = e.batter();
-            if (dismissalBatter.equals(striker.player())) {
+            if (striker != null && dismissalBatter.equals(striker.player())) {
                 striker = null;
-            } else if (dismissalBatter.equals(nonStriker.player())) {
+            } else if (nonStriker != null && dismissalBatter.equals(nonStriker.player())) {
                 nonStriker = null;
             } else {
                 throw new IllegalStateException(dismissalBatter + " cannot be out as they are not currently batting");
             }
 
-            boolean specialDismissal = e.dismissal().isPresent() && e.dismissal().get().type() == DismissalType.TIMED_OUT;
+            boolean specialDismissal = e.dismissal() !=null && e.dismissal().type() == DismissalType.TIMED_OUT;
             if (specialDismissal) {
                 newScore = newScore.add(Score.score().withWickets(1).build());
             }
@@ -220,39 +222,39 @@ public final class Innings {
     }
 
     /**
-     * @return The over being bowled, or empty if between overs or before/after the innings has started
+     * @return The over being bowled, or null if between overs or before/after the innings has started
      * @see #completedOvers()
      * @see #overs()
      */
-    public Optional<Over> currentOver() {
-        return Optional.ofNullable(currentOver);
+    public @Nullable Over currentOver() {
+        return currentOver;
     }
 
     /**
-     * @return The batter currently facing. This may be empty before the innings starts or directly after a dismissal.
+     * @return The batter currently facing. This may be null before the innings starts or directly after a dismissal.
      */
-    public Optional<BatterInnings> currentStriker() {
-        return Optional.ofNullable(currentStriker);
+    public @Nullable BatterInnings currentStriker() {
+        return currentStriker;
     }
 
     /**
-     * @return The batter at the non-facing end. This may be empty before the innings starts or directly after a dismissal.
+     * @return The batter at the non-facing end. This may be null before the innings starts or directly after a dismissal.
      */
-    public Optional<BatterInnings> currentNonStriker() {
-        return Optional.ofNullable(currentNonStriker);
+    public @Nullable BatterInnings currentNonStriker() {
+        return currentNonStriker;
     }
 
     /**
      * @return The current batting partnership
      */
-    public Optional<Partnership> currentPartnership() {
-        return (currentStriker == null || currentNonStriker == null) ? Optional.empty() : partnerships.last();
+    public @Nullable Partnership currentPartnership() {
+        return (currentStriker == null || currentNonStriker == null) ? null : partnerships.last();
     }
 
     /**
      * @return All the batting partnerships in the innings so far
      */
-    public ImmutableList<Partnership> partnerships() {
+    public @Nonnull ImmutableList<Partnership> partnerships() {
         return partnerships;
     }
 
@@ -260,14 +262,14 @@ public final class Innings {
      * @return All the batters who have batted so far (including batters who are out and not-out) in the order they
      * came in.
      */
-    public ImmutableList<BatterInnings> batterInningsList() {
+    public @Nonnull ImmutableList<BatterInnings> batterInningsList() {
         return batters;
     }
 
     /**
      * @return The players who have not yet batted, in the order they are expected to bat.
      */
-    public ImmutableList<Player> yetToBat() {
+    public @Nonnull ImmutableList<Player> yetToBat() {
         return yetToBat;
     }
 
@@ -275,7 +277,7 @@ public final class Innings {
      * @return The score the innings started at, which is {@link Score#EMPTY} unless penalties were conceded by
      * the team batting in the previous innings
      */
-    public Score startingScore() {
+    public @Nonnull Score startingScore() {
         return data.startingScore();
     }
 
@@ -284,7 +286,7 @@ public final class Innings {
      * @see #overs()
      * @see #currentOver()
      */
-    public ImmutableList<Over> completedOvers() {
+    public @Nonnull ImmutableList<Over> completedOvers() {
         return completedOvers;
     }
 
@@ -307,28 +309,28 @@ public final class Innings {
      * @see #completedOvers()
      * @see #currentOver()
      */
-    public ImmutableList<Over> overs() {
+    public @Nonnull ImmutableList<Over> overs() {
         return currentOver == null ? completedOvers : completedOvers.add(currentOver);
     }
 
     /**
      * @return The balls bowled so far in the innings.
      */
-    public Balls balls() {
+    public @Nonnull Balls balls() {
         return balls;
     }
 
     /**
      * @return Gets the info on the bowlers who have bowled so far (in the order they first bowled in)
      */
-    public ImmutableList<BowlerInnings> bowlerInningsList() {
+    public @Nonnull ImmutableList<BowlerInnings> bowlerInningsList() {
         return bowlerInningses;
     }
 
     /**
      * @return The score in the innings so far. Access {@link Score#teamRuns()} for the total number of runs in this innings.
      */
-    public Score score() {
+    public @Nonnull Score score() {
         return score;
     }
 
@@ -337,37 +339,37 @@ public final class Innings {
      * that could bat again.
      */
     public boolean allOut() {
-        return yetToBat.size() == 0 && (currentStriker().isEmpty() || currentNonStriker().isEmpty())
+        return yetToBat.size() == 0 && (currentStriker() == null || currentNonStriker() == null)
             && batterInningsList().stream().noneMatch(bi -> bi.state() == BattingState.RETIRED);
     }
 
     /**
      * @return The number of dismissals left before {@link #allOut()} returns true.
      */
-    public int wicketsRemaining() {
+    public @Nonnegative int wicketsRemaining() {
         return yetToBat.size() + 1;
     }
 
     /**
      * @return The state of the innings
      */
-    public State state() {
+    public @Nonnull State state() {
         return state;
     }
 
 
     /**
-     * @return The number of scheduled balls remaining in the innings, or empty if this innings does not have a limit.
+     * @return The number of scheduled balls remaining in the innings, or null if this innings does not have a limit.
      */
-    public OptionalInt numberOfBallsRemaining() {
-        OptionalInt scheduled = maxBalls();
-        if (scheduled.isEmpty()) {
+    public @Nullable Integer numberOfBallsRemaining() {
+        Integer scheduled = maxBalls();
+        if (scheduled == null) {
             return scheduled;
         }
-        return OptionalInt.of(scheduled.getAsInt() - balls().score().validDeliveries());
+        return scheduled - balls().score().validDeliveries();
     }
 
-    private BatterInnings findBatterInnings(Player target) {
+    private @Nonnull BatterInnings findBatterInnings(Player target) {
         requireNonNull(target, "target");
         for (BatterInnings batter : batters) {
             if (target.equals(batter.player())) {
@@ -377,7 +379,7 @@ public final class Innings {
         throw new IllegalStateException(target + " does not have a batter innings");
     }
 
-    private BowlerInnings getBowlerInnings(Player target) {
+    private @Nullable BowlerInnings getBowlerInnings(Player target) {
         requireNonNull(target, "target");
         for (BowlerInnings bowlerInnings : bowlerInningses) {
             if (bowlerInnings.bowler().equals(target)) {
@@ -394,98 +396,98 @@ public final class Innings {
      *
      * @return The number of the last ball
      */
-    public String overDotBallString() {
+    public @Nonnull String overDotBallString() {
         int b = (currentOver != null) ? currentOver.validDeliveries() : 0;
         return completedOvers.size() + "." + b;
     }
 
     /**
-     * @return The target the batting team is aiming for in order to win, or empty if this is not the last innings
+     * @return The target the batting team is aiming for in order to win, or null if this is not the last innings
      * in the match
      */
-    public OptionalInt target() {
-        return toOptional(target);
+    public @Nullable Integer target() {
+        return target;
     }
 
     /**
      * @return The team that is currently batting
      */
-    public LineUp battingTeam() {
+    public @Nonnull LineUp battingTeam() {
         return data.battingTeam();
     }
 
     /**
      * @return The team that is currently bowling
      */
-    public LineUp bowlingTeam() {
+    public @Nonnull LineUp bowlingTeam() {
         return data.bowlingTeam();
     }
 
     /**
      * @return 1 for the first innings in a match; 2 for the second etc
      */
-    public int inningsNumber() {
+    public @Nonnegative int inningsNumber() {
         return data.inningsNumberForMatch();
     }
 
     /**
      * @return 1 for the first innings that the current batting team is batting for in a match; 2 for the second etc
      */
-    public int inningsNumberForBattingTeam() {
+    public @Nonnegative int inningsNumberForBattingTeam() {
         return data.inningsNumberForBattingTeam();
     }
 
     /**
      * @return The time the innings started
      */
-    public Optional<Instant> startTime() {
+    public @Nullable Instant startTime() {
         return data.time();
     }
 
     /**
      * @return The time the innings ended, if {@link #state()} is {@link State#COMPLETED}
      */
-    public Optional<Instant> endTime() {
-        return Optional.ofNullable(endTime);
+    public @Nullable Instant endTime() {
+        return endTime;
     }
 
     /**
      * @return The current total number of scheduled balls in the innings, after adjustments such as reductions due
-     * to bad weather. (Returns empty if there is no limit)
+     * to bad weather. (Returns null if there is no limit)
      * @see #originalMaxBalls()
      */
-    public OptionalInt maxBalls() {
-        return toOptional(maxBalls);
+    public @Nullable Integer maxBalls() {
+        return maxBalls;
     }
 
     /**
      * @return The current total number of scheduled overs in the innings, after adjustments such as reductions due
-     * to bad weather. (Returns empty if there is no limit)
+     * to bad weather. (Returns null if there is no limit)
      * @see #originalMaxOvers()
      */
-    public OptionalInt maxOvers() {
-        return toOptional(maxOvers);
+    public @Nullable Integer maxOvers() {
+        return maxOvers;
     }
 
     /**
-     * @return The number of scheduled balls at the beginning of the innings, or empty if there is no limit.
+     * @return The number of scheduled balls at the beginning of the innings, or null if there is no limit.
      * @see #maxBalls()
      */
-    public OptionalInt originalMaxBalls() {
+    public @Nullable Integer originalMaxBalls() {
         return data.maxBalls();
     }
 
     /**
-     * @return The number of scheduled overs in this match, or empty if there is no limit
+     * @return The number of scheduled overs in this match, or null if there is no limit
      */
-    public OptionalInt originalMaxOvers() {
+    public @Nullable Integer originalMaxOvers() {
         return data.maxOvers();
     }
 
     /**
      * @return The number of maidens in this innings
      */
-    public int maidens() {
+    public @Nonnegative int maidens() {
         return (int) completedOvers.stream().filter(Over::isMaiden).count();
     }
 
@@ -498,7 +500,7 @@ public final class Innings {
      */
     public boolean shouldBeComplete() {
         return (state() == Innings.State.COMPLETED) // marked complete
-            || (numberOfBallsRemaining().orElse(Integer.MAX_VALUE) < 1) // no more balls
+            || (numberOfBallsRemaining() != null && numberOfBallsRemaining() < 1) // no more balls
             || (target != null && score.teamRuns() >= target) // target reached
             || (allOut()) // no more batters
             ;
@@ -510,7 +512,7 @@ public final class Innings {
      * @return The innings of the given player
      * @throws IllegalArgumentException The given player has not started batting
      */
-    public BatterInnings batterInnings(Player player) throws IllegalArgumentException {
+    public @Nonnull BatterInnings batterInnings(Player player) throws IllegalArgumentException {
         for (BatterInnings batter : batters) {
             if (batter.player().equals(player)) {
                 return batter;

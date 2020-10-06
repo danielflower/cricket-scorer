@@ -4,6 +4,10 @@ import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -13,6 +17,7 @@ import java.util.Objects;
  * there will be multiple over objects generated for a single over in a match- one for each ball in the over plus
  * one before the over starts and one after it finishes.</p>
  */
+@Immutable
 public final class Over {
 	private final int inningsNumber;
 	private final int overNumber;
@@ -23,7 +28,7 @@ public final class Over {
 	private final int ballsInOver;
 	private final Instant startTime;
 
-    private Over(int inningsNumber, int overNumber, Player striker, Player nonStriker, Balls balls, Player bowler, int ballsInOver, Instant startTime) {
+    private Over(@Nonnegative int inningsNumber, @Nonnegative int overNumber, Player striker, Player nonStriker, Balls balls, Player bowler, @Nonnegative int ballsInOver, @Nullable Instant startTime) {
         this.inningsNumber = inningsNumber;
         this.overNumber = overNumber;
         this.striker = Objects.requireNonNull(striker);
@@ -37,11 +42,11 @@ public final class Over {
         this.startTime = startTime;
     }
 
-    static Over newOver(OverStartingEvent e) {
-        return new Over(e.inningsNumber(), e.overNumber(), e.striker(), e.nonStriker(), new Balls(), e.bowler(), e.ballsInOver(), e.time().orElse(null));
+    static @Nonnull Over newOver(OverStartingEvent e) {
+        return new Over(e.inningsNumber(), e.overNumber(), e.striker(), e.nonStriker(), new Balls(), e.bowler(), e.ballsInOver(), e.time());
     }
 
-    public Over onEvent(MatchEvent event) {
+    public @Nonnull Over onEvent(MatchEvent event) {
         if (event instanceof BallCompletedEvent) {
             BallCompletedEvent ball = (BallCompletedEvent) event;
             Player striker = ball.playersCrossed() ? this.nonStriker : this.striker;
@@ -55,63 +60,63 @@ public final class Over {
     /**
      * @return The current batter that is going to face the next ball
      */
-    public Player striker() {
+    public @Nonnull Player striker() {
 		return striker;
 	}
 
     /**
      * @return The batter that is currently at the non-facing end
      */
-	public Player nonStriker() {
+	public @Nonnull Player nonStriker() {
 		return nonStriker;
 	}
 
     /**
      * @return The current bowler of this over.
      */
-	public Player bowler() {
+	public @Nonnull Player bowler() {
 		return bowler;
 	}
 
     /**
      * @return The zero-indexed number of this over (e.g. the first over in an innings returns 0)
      */
-	public int overNumber() {
+	public @Nonnegative int overNumber() {
 		return overNumber;
 	}
 
     /**
      * @return The 1-indexed innings number that this over is in
      */
-    public int inningsNumber() {
+    public @Nonnegative int inningsNumber() {
         return inningsNumber;
     }
 
     /**
      * @return The max number of valid deliveries allowed in the over
      */
-    public int ballsInOver() {
+    public @Nonnegative int ballsInOver() {
         return ballsInOver;
     }
 
     /**
      * @return The balls bowled in this over
      */
-	public Balls balls() {
+	public @Nonnull Balls balls() {
 		return balls;
 	}
 
     /**
      * @return The runs scored in this over
      */
-	public Score score() {
+	public @Nonnull Score score() {
 	    return balls.score();
     }
 
     /**
      * @return The number of runs gained by the team in this over (including extras).
      */
-	public int teamRuns() {
+	public @Nonnegative int teamRuns() {
 		return balls.score().teamRuns();
 	}
 
@@ -126,14 +131,14 @@ public final class Over {
     /**
      * @return The number of valid balls remaining to be bowled in this over.
      */
-	public int remainingBalls() {
+	public @Nonnegative int remainingBalls() {
 	    return ballsInOver - validDeliveries();
     }
 
     /**
      * @return The number of valid (or legal) balls bowled so far in this over.
      */
-	public int validDeliveries() {
+	public @Nonnegative int validDeliveries() {
 		return (int) balls.list().stream().filter(BallCompletedEvent::isValid).count();
 	}
 

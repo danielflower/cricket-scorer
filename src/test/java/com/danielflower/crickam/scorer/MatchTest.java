@@ -7,7 +7,6 @@ import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.OptionalInt;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +17,7 @@ class MatchTest {
     @Test
     public void canBuildThem() {
         MatchStartingEvent match = aMatch().build(null);
-        assertThat(match.oversPerInnings(), is(OptionalInt.of(50)));
+        assertThat(match.oversPerInnings(), is(Integer.valueOf(50)));
     }
 
     public static MatchStartingEvent.Builder aMatch() {

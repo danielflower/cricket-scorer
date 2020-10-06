@@ -59,8 +59,8 @@ class ImmutableListTest {
     @Test
     public void lastReturnsOptional() {
         ImmutableList<String> list = new ImmutableList<>();
-        assertThat(list.last(), is(Optional.empty()));
-        assertThat(list.add("one").last(), is(Optional.of("one")));
+        assertThat(list.last(), is(nullValue()));
+        assertThat(list.add("one").last(), is("one"));
     }
 
     @Test

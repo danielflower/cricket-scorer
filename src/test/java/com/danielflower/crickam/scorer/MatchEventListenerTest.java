@@ -5,6 +5,7 @@ import com.danielflower.crickam.scorer.data.NewZealand;
 import com.danielflower.crickam.scorer.events.*;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,20 +49,19 @@ class MatchEventListenerTest {
 
             @Override
             public ImmutableList<MatchEventBuilder<?, ?>> onEvent(MatchEventData data) {
-                OffTheMarkEvent.Builder offTheMarkEvent = data.eventAs(BallCompletedEvent.class).map(ball -> {
+                OffTheMarkEvent.Builder builder = null;
+                BallCompletedEvent ball = data.eventAs(BallCompletedEvent.class);
+                if (ball != null) {
                     int runs = ball.score().batterRuns();
                     if (runs > 0) {
                         Player batter = ball.striker();
-                        Innings innings = data.match().currentInnings().orElseThrow();
+                        Innings innings = data.match().currentInnings();
                         if (innings.batterInnings(batter).score().batterRuns() == runs) {
-                            return new OffTheMarkEvent.Builder().withPlayer(batter);
+                            builder = new OffTheMarkEvent.Builder().withPlayer(batter);
                         }
                     }
-
-                    return null;
-                }).orElse(null);
-
-                return offTheMarkEvent == null ? null : ImmutableList.of(offTheMarkEvent);
+                }
+                return builder == null ? null : ImmutableList.of(builder);
             }
         }
 
@@ -79,7 +79,7 @@ class MatchEventListenerTest {
         control.onEvent(ballCompleted("4"));
 
         assertThat(collectingListener.last().event(), instanceOf(OffTheMarkEvent.class));
-        assertThat(collectingListener.last().eventAs(OffTheMarkEvent.class).orElseThrow().player, is(opener1));
+        assertThat(collectingListener.last().eventAs(OffTheMarkEvent.class).player, is(opener1));
 
         assertThat(collectingListener.events(), equalTo(afterListener.events()));
     }
@@ -94,24 +94,27 @@ class MatchEventListenerTest {
         }
 
         @Override
-        public Builder newBuilder() {
+        public @Nonnull
+        Builder newBuilder() {
             return new Builder()
                 .withPlayer(player)
                 .withID(id())
-                .withTime(time().orElse(null))
-                .withGeneratedBy(generatedBy().orElse(null));
+                .withTime(time())
+                .withGeneratedBy(generatedBy());
         }
 
         static class Builder extends BaseMatchEventBuilder<OffTheMarkEvent.Builder, OffTheMarkEvent> {
 
             private Player player;
 
+            @Nonnull
             @Override
             public OffTheMarkEvent build(Match match) {
                 return new OffTheMarkEvent(id(), time(), generatedBy(), player);
             }
 
-            public Builder withPlayer(Player striker) {
+            public @Nonnull
+            Builder withPlayer(Player striker) {
                 this.player = striker;
                 return this;
             }

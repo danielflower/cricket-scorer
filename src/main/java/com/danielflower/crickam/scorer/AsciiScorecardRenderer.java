@@ -2,15 +2,19 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.danielflower.crickam.scorer.Crictils.pluralize;
 
+@Immutable
 public final class AsciiScorecardRenderer {
 
     private static final char NEWLINE = '\n';
@@ -33,11 +37,11 @@ public final class AsciiScorecardRenderer {
             .append(NEWLINE).append(NEWLINE)
             .append(match.matchType().name());
 
-        if (match.venue().isPresent()) {
-            Venue venue = match.venue().get();
+        if (match.venue()!=null) {
+            Venue venue = match.venue();
             writer.append(" at ").append(venue.name()).append(", ").append(venue.city());
-            if (match.scheduledStartTime().isPresent()) {
-                LocalDateTime startTime = LocalDateTime.ofInstant(match.scheduledStartTime().get(), venue.timeZone().toZoneId());
+            if (match.scheduledStartTime()!=null) {
+                LocalDateTime startTime = LocalDateTime.ofInstant(match.scheduledStartTime(), venue.timeZone().toZoneId());
                 writer.append(", ");
                 if (match.numberOfScheduledDays() == 1) {
                     writer.append(startTime.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
@@ -52,8 +56,8 @@ public final class AsciiScorecardRenderer {
 
         // Match summary
         writer.append(NEWLINE);
-        if (match.result().isPresent()) {
-            writer.append(NEWLINE).append(match.result().get().toString()).append(NEWLINE);
+        if (match.result()!=null) {
+            writer.append(NEWLINE).append(match.result().toString()).append(NEWLINE);
         }
 
         // Batting scorecard
@@ -61,11 +65,11 @@ public final class AsciiScorecardRenderer {
             boolean multipleInningsPerTeam = match.numberOfInningsPerTeam() > 1;
             String inningsNumber = multipleInningsPerTeam ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
             String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
-            if (innings.originalMaxOvers().isPresent()) {
-                inningsHeader += " (" + pluralize(innings.originalMaxOvers().getAsInt(), "over") + " maximum)";
+            if (innings.originalMaxOvers()!=null) {
+                inningsHeader += " (" + pluralize(innings.originalMaxOvers(), "over") + " maximum)";
             }
-            if (multipleInningsPerTeam && innings.target().isPresent()) {
-                inningsHeader += " (target: " + pluralize(innings.target().getAsInt(), "run") + ")";
+            if (multipleInningsPerTeam && innings.target()!=null) {
+                inningsHeader += " (target: " + pluralize(innings.target(), "run") + ")";
             }
 
             writer.append(NEWLINE).append(inningsHeader).append(NEWLINE).append(repeat('-', inningsHeader.length())).append(NEWLINE).append(NEWLINE);
@@ -74,8 +78,8 @@ public final class AsciiScorecardRenderer {
             renderLine(writer, batColWidths, "BATTER", "", "R", "M", "B", "4s", "6s", "SR");
             for (BatterInnings bi : innings.batterInningsList()) {
                 Score s = bi.score();
-                String sr = s.battingStrikeRate().isPresent() ? String.format("%.1f", s.battingStrikeRate().get()) : "-";
-                String dismissal = bi.dismissal().isPresent() ? bi.dismissal().get().toScorecardString(innings.bowlingTeam())
+                String sr = s.battingStrikeRate()!=null ? String.format("%.1f", s.battingStrikeRate()) : "-";
+                String dismissal = bi.dismissal()!=null ? bi.dismissal().toScorecardString(innings.bowlingTeam())
                     : bi.state() == BattingState.RETIRED || bi.state() == BattingState.RETIRED_OUT
                     ? "retired" : "not out";
                 String batterName = bi.player().initialsWithSurname();
@@ -115,7 +119,7 @@ public final class AsciiScorecardRenderer {
                         writer.append(", ");
                     }
                 }
-                Innings innings1 = state.match().currentInnings().orElseThrow();
+                Innings innings1 = Objects.requireNonNull(state.match().currentInnings());
                 Score score = innings1.score();
                 BatterInningsCompletedEvent event = (BatterInningsCompletedEvent) state.event();
                 String scoreText = score.wickets() + "-" + score.teamRuns();
@@ -135,7 +139,7 @@ public final class AsciiScorecardRenderer {
 
 
             int[] bowlColWidths = {-20, 5, 4, 4, 4, 7, 3, 3, 3, 3, 3};
-            boolean showDots = match.oversPerInnings().isPresent();
+            boolean showDots = match.oversPerInnings()!=null;
             renderLine(writer, bowlColWidths, "BOWLING", "O", "M", "R", "W", "Econ", showDots ? "0s" : "", "4s", "6s", "WD", "NB");
             for (BowlerInnings bi : innings.bowlerInningsList()) {
                 Score s = bi.score();

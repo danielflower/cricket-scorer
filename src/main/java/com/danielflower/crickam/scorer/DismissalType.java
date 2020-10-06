@@ -1,5 +1,7 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+
 public enum DismissalType {
 	BOWLED(true, "b"),
 	TIMED_OUT(false, "to"),
@@ -23,7 +25,7 @@ public enum DismissalType {
     /**
      * @return The abbreviation commonly used on scorecards, for example &quot;b&quot; for bowled.
      */
-    public String abbreviation() {
+    public @Nonnull String abbreviation() {
         return abbreviation;
     }
 
@@ -33,7 +35,7 @@ public enum DismissalType {
      * @return The matching dismissal type
      * @throws IllegalArgumentException No type with that abbreviation exists
      */
-    public static DismissalType fromAbbreviation(String abbreviation) {
+    public static @Nonnull DismissalType fromAbbreviation(String abbreviation) {
         for (DismissalType di : DismissalType.values()) {
             if (di.abbreviation().equalsIgnoreCase(abbreviation)) {
                 return di;
@@ -45,7 +47,7 @@ public enum DismissalType {
     /**
      * @return The name of this dismissal in lowercase english, such as &quot;leg before wicket&quot;
      */
-    public String fullName() {
+    public @Nonnull String fullName() {
         return this.name().toLowerCase().replace('_', ' ');
     }
 
@@ -57,4 +59,3 @@ public enum DismissalType {
         return this == STUMPED;
     }
 }
-

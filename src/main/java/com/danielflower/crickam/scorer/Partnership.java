@@ -5,14 +5,18 @@ import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * A batting partnership
  */
+@Immutable
 public final class Partnership {
     private final BattingState state;
     private final Balls balls;
@@ -27,51 +31,51 @@ public final class Partnership {
         private final Player secondBatter;
         private final int wicketNumber;
         private final Instant startTime;
-        private FixedData(Player firstBatter, Player secondBatter, int wicketNumber, Instant startTime) {
+        private FixedData(Player firstBatter, Player secondBatter, @Nonnegative int wicketNumber, @Nullable Instant startTime) {
             this.firstBatter = requireNonNull(firstBatter);
             this.secondBatter = requireNonNull(secondBatter);
             this.wicketNumber = wicketNumber;
-            this.startTime = requireNonNull(startTime);
+            this.startTime = startTime;
         }
     }
 
-    static Partnership newPartnership(int numberInInnings, Player first, Player second) {
-        FixedData data = new FixedData(first, second, numberInInnings, Instant.now());
+    static Partnership newPartnership(@Nonnegative int numberInInnings, Player first, Player second, @Nullable Instant startTime) {
+        FixedData data = new FixedData(first, second, numberInInnings, startTime);
         return new Partnership(BattingState.IN_PROGRESS, data, new Balls(), new Balls(), new Balls(), null);
     }
 
     /**
-     * @return The time the partnership was ended (due to a wicket or the end of the innings), or empty if it is ongoing
+     * @return The time the partnership was ended (due to a wicket or the end of the innings), or null if it is ongoing
      */
-    public Optional<Instant> endTime() {
-        return Optional.ofNullable(endTime);
+    public @Nullable Instant endTime() {
+        return endTime;
     }
 
     /**
      * @return The partner in the partnership who is higher in the batting order
      */
-    public final Player firstBatter() {
+    public final @Nonnull Player firstBatter() {
         return data.firstBatter;
     }
 
     /**
      * @return The partner in the partnership who is lower in the batting order
      */
-    public final Player secondBatter() {
+    public final @Nonnull Player secondBatter() {
         return data.secondBatter;
     }
 
     /**
      * @return All deliveries faced during this partnership
      */
-    public Balls balls() {
+    public @Nonnull Balls balls() {
         return balls;
     }
 
     /**
      * @return The score of this partnership
      */
-    public Score score() {
+    public @Nonnull Score score() {
         return balls.score();
     }
 
@@ -79,24 +83,25 @@ public final class Partnership {
      * @return True if this partnership was ended by one of the batters getting out
      */
     public boolean brokenByWicket() {
-        return balls.size() > 0 && balls.list().last().get().dismissal().isPresent();
+        BallCompletedEvent b = balls.list().last();
+        return b != null && b.dismissal() != null;
     }
 
     /**
      * @return The index of this partnership: 1 for the first partnership, 2 for the second, etc.
      */
-    public int wicketNumber() {
+    public @Nonnegative int wicketNumber() {
 	    return data.wicketNumber;
     }
 
     /**
      * @return The time that the partnership started
      */
-    public Instant startTime() {
+    public @Nullable Instant startTime() {
 	    return data.startTime;
     }
 
-    private Partnership(BattingState state, FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, Instant endTime) {
+    private Partnership(BattingState state, FixedData data, Balls balls, Balls firstBatterContribution, Balls secondBatterContribution, @Nullable Instant endTime) {
         this.state = state;
         this.data = requireNonNull(data);
         this.balls = requireNonNull(balls);
@@ -108,18 +113,18 @@ public final class Partnership {
     /**
      * @return The balls faced by {@link #firstBatter()} during this partnership
      */
-    public Balls firstBatterContribution() {
+    public @Nonnull Balls firstBatterContribution() {
         return firstBatterContribution;
     }
 
     /**
      * @return The balls faced by {@link #secondBatter()} during this partnership
      */
-    public Balls secondBatterContribution() {
+    public @Nonnull Balls secondBatterContribution() {
         return secondBatterContribution;
     }
 
-    public Partnership onEvent(MatchEvent event) {
+    public @Nonnull Partnership onEvent(MatchEvent event) {
         if (event instanceof BallCompletedEvent) {
             BallCompletedEvent ball = (BallCompletedEvent) event;
             Balls balls = this.balls.add(ball);
@@ -128,10 +133,10 @@ public final class Partnership {
             return new Partnership(state, data, balls, firstBatterContribution, secondBatterContribution, endTime);
         } else if (event instanceof BatterInningsCompletedEvent) {
             BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
-            return new Partnership(e.reason(), data, balls, firstBatterContribution, secondBatterContribution, e.time().orElse(null));
+            return new Partnership(e.reason(), data, balls, firstBatterContribution, secondBatterContribution, e.time());
         } else if (event instanceof InningsCompletedEvent) {
             if (state == BattingState.IN_PROGRESS) {
-                return new Partnership(BattingState.INNINGS_ENDED, data, balls, firstBatterContribution, secondBatterContribution, event.time().orElse(null));
+                return new Partnership(BattingState.INNINGS_ENDED, data, balls, firstBatterContribution, secondBatterContribution, event.time());
             }
         }
         return this;

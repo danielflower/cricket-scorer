@@ -5,9 +5,11 @@ import com.danielflower.crickam.scorer.Dismissal;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.BattingState.DISMISSED;
 import static java.util.Objects.requireNonNull;
@@ -15,13 +17,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * Indicates that a batter's innings has ended due to dismissal, retirement, or that the team innings ended.
  */
+@Immutable
 public final class BatterInningsCompletedEvent extends BaseMatchEvent {
 
     private final Player batter;
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(String id, Instant time, String generatedBy, Player batter, BattingState reason, Dismissal dismissal) {
+    private BatterInningsCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player batter, BattingState reason, @Nullable Dismissal dismissal) {
         super(id, time, generatedBy);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
@@ -37,33 +40,33 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
         this.dismissal = dismissal;
     }
 
-    public Player batter() {
+    public @Nonnull Player batter() {
         return batter;
     }
 
     /**
      * @return The reason the innings is ended
      */
-    public BattingState reason() {
+    public @Nonnull BattingState reason() {
         return reason;
     }
 
     /**
-     * @return The dismissal information, or empty if {@link #reason()} is not {@link BattingState#DISMISSED}
+     * @return The dismissal information, or null if {@link #reason()} is not {@link BattingState#DISMISSED}
      */
-    public Optional<Dismissal> dismissal() {
-        return Optional.ofNullable(dismissal);
+    public @Nullable Dismissal dismissal() {
+        return dismissal;
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withBatter(batter)
             .withReason(reason)
             .withDismissal(dismissal)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
@@ -72,15 +75,15 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
         private BattingState reason;
         private Dismissal dismissal;
 
-        public Player batter() {
+        public @Nullable Player batter() {
             return batter;
         }
 
-        public BattingState reason() {
+        public @Nullable BattingState reason() {
             return reason;
         }
 
-        public Dismissal dismissal() {
+        public @Nullable Dismissal dismissal() {
             return dismissal;
         }
 
@@ -88,7 +91,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
          * @param batter the batter who's innings has ended. Can be left unset if dismissal is set with a batter set.
          * @return This builder
          */
-        public Builder withBatter(Player batter) {
+        public @Nonnull Builder withBatter(@Nullable Player batter) {
             this.batter = batter;
             return this;
         }
@@ -97,7 +100,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
          * @param reason The reason that the innings ended
          * @return This builder
          */
-        public Builder withReason(BattingState reason) {
+        public @Nonnull Builder withReason(@Nonnull BattingState reason) {
             this.reason = reason;
             return this;
         }
@@ -106,15 +109,18 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
          * @param dismissal The description of the dismissal, if the reason is {@link BattingState#DISMISSED}
          * @return This builder
          */
-        public Builder withDismissal(Dismissal dismissal) {
+        public @Nonnull Builder withDismissal(@Nullable Dismissal dismissal) {
             this.dismissal = dismissal;
             return this;
         }
 
-        public BatterInningsCompletedEvent build(Match match) {
+        public @Nonnull BatterInningsCompletedEvent build(Match match) {
             Player batter = this.batter;
-            if (batter == null && dismissal != null && dismissal.batter() != null) {
+            if (batter == null && dismissal != null) {
                 batter = dismissal.batter();
+            }
+            if (batter == null) {
+                throw new NullPointerException("Batter was null");
             }
             return new BatterInningsCompletedEvent(id(), time(), generatedBy(), batter, reason, dismissal);
         }

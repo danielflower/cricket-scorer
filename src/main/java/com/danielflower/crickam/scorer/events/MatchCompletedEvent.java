@@ -3,32 +3,36 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.MatchResult;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
 
 /**
  * An event that signifies a match is completed. No more events should occur after this.
  */
+@Immutable
 public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(String id, Instant time, String generatedBy, MatchResult result) {
+    private MatchCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, MatchResult result) {
         super(id, time, generatedBy);
         this.result = Objects.requireNonNull(result, "result");
     }
 
-    public MatchResult result() {
+    public @Nonnull MatchResult result() {
         return result;
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withResult(result)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
@@ -36,7 +40,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
         private MatchResult result;
 
-        public MatchResult result() {
+        public @Nullable MatchResult result() {
             return result;
         }
 
@@ -44,11 +48,12 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
          * @param result The result of the match, or leave unset to have the library infer the winner
          * @return This builder
          */
-        public Builder withResult(MatchResult result) {
+        public @Nonnull Builder withResult(MatchResult result) {
             this.result = result;
             return this;
         }
 
+        @Nonnull
         public MatchCompletedEvent build(Match match) {
             MatchResult toUse = this.result;
             if (toUse == null) {
@@ -58,7 +63,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;

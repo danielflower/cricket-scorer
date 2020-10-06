@@ -1,24 +1,12 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.OptionalInt;
 import java.util.TimeZone;
 import java.util.function.Supplier;
 
 public final class Crictils {
-
-    public static OptionalInt toOptional(Integer value) {
-        return value == null ? OptionalInt.empty() : OptionalInt.of(value);
-    }
-
-    public static Integer toInteger(OptionalInt value) {
-        if (value.isEmpty()) {
-            return null;
-        } else {
-            return value.getAsInt();
-        }
-    }
 
     public static void stateGuard(boolean assertion, Supplier<String> message) {
         if (!assertion) {
@@ -63,7 +51,7 @@ public final class Crictils {
         return num + " " + (num == 1 ? singular : plural);
     }
 
-    public static Integer requireInRange(String name, Integer value, int min, int max) {
+    public static Integer requireInRange(String name, @Nullable Integer value, int min, int max) {
         return value == null ? null : requireInRange(name, value.intValue(), min, max);
     }
 

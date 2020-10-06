@@ -5,11 +5,10 @@ import com.danielflower.crickam.scorer.data.NewZealand;
 import com.danielflower.crickam.scorer.events.MatchEvents;
 import org.junit.jupiter.api.Test;
 
-import java.util.OptionalInt;
-
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 class MatchResultTest {
     private static final LineUp aus = Australia.oneDayLineUp().build();
@@ -31,7 +30,7 @@ class MatchResultTest {
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus));
 
-        assertThat(control.match().currentInnings().get().target(), is(OptionalInt.empty()));
+        assertThat(control.match().currentInnings().target(), is(nullValue()));
 
         control = control.onEvent(overStarting(nzBowler).withBallsInOver(3))
             .onEvent(ballCompleted("3"))
@@ -43,7 +42,7 @@ class MatchResultTest {
             .onEvent(overStarting(ausBowler).withBallsInOver(2))
             .onEvent(ballCompleted("1"));
 
-        assertThat(control.match().currentInnings().get().target(), is(OptionalInt.of(4)));
+        assertThat(control.match().currentInnings().target(), is(Integer.valueOf(4)));
 
         MatchControl threeToWin = control;
         assertThat(MatchResult.fromMatch(threeToWin.match()).toString(), is("No result"));
@@ -100,7 +99,7 @@ class MatchResultTest {
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"));
 
-        assertThat(control.match().currentInnings().get().target(), is(OptionalInt.empty()));
+        assertThat(control.match().currentInnings().target(), is(nullValue()));
 
         MatchControl threeToWin = control.onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(aus))
@@ -110,7 +109,7 @@ class MatchResultTest {
             .onEvent(inningsStarting().withBattingTeam(nz))
             .onEvent(overStarting().withBowler(ausBowler).withBallsInOver(12));
 
-        assertThat(threeToWin.currentInnings().target(), is(OptionalInt.of(3)));
+        assertThat(threeToWin.currentInnings().target(), is(Integer.valueOf(3)));
         assertThat(MatchResult.fromMatch(threeToWin.match()).toString(), is("No result"));
 
         assertThat(MatchResult.fromMatch(threeToWin

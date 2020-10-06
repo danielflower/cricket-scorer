@@ -1,16 +1,16 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
-
-import static com.danielflower.crickam.scorer.Crictils.toOptional;
 
 /**
  * Describes the manner in which the bowler bowled the ball.
  * <p>An instance can be created by getting a builder with {@link #delivery()} and it is associated with a ball
  * via the {@link com.danielflower.crickam.scorer.events.BallCompletedEvent.Builder#withDelivery(Delivery)} method.</p>
  */
+@Immutable
 public final class Delivery {
     private final DeliveryType deliveryType;
     private final Integer speedInKilometers;
@@ -19,7 +19,7 @@ public final class Delivery {
     private final Double changeInLineAfterBounceInDegrees;
     private final WicketSide bowledFrom;
 
-    private Delivery(DeliveryType deliveryType, Integer speedInKilometers, Double positionOfBounce, Double horizontalPitchInMeters, Double changeInLineAfterBounceInDegrees, WicketSide bowledFrom) {
+    private Delivery(@Nullable DeliveryType deliveryType, @Nullable Integer speedInKilometers, @Nullable Double positionOfBounce, @Nullable Double horizontalPitchInMeters, @Nullable Double changeInLineAfterBounceInDegrees, @Nullable WicketSide bowledFrom) {
         if (horizontalPitchInMeters != null && (horizontalPitchInMeters < -1.5 || horizontalPitchInMeters > 1.5)) {
             throw new IllegalArgumentException("horizontalPitchInMeters must be between -1.5 and 1.5, or null, but was " + horizontalPitchInMeters);
         }
@@ -40,56 +40,56 @@ public final class Delivery {
         this.bowledFrom = bowledFrom;
     }
 
-    public Optional<DeliveryType> deliveryType() {
-        return Optional.ofNullable(deliveryType);
+    public @Nullable DeliveryType deliveryType() {
+        return deliveryType;
     }
 
-    public OptionalInt speedInKilometers() {
-        return toOptional(speedInKilometers);
+    public @Nullable Integer speedInKilometers() {
+        return speedInKilometers;
     }
 
     /**
-     * @return The number of meters from the bowling crease where the ball bounced, or empty if unknown
+     * @return The number of meters from the bowling crease where the ball bounced, or null if unknown
      */
-    public Optional<Double> positionOfBounce() {
-        return Optional.ofNullable(positionOfBounce);
+    public @Nullable Double positionOfBounce() {
+        return positionOfBounce;
     }
 
     /**
      * @return If {@link #positionOfBounce()} is known, then specifies a "length" such as {@link DeliveryLength#FULL}
      * that best describes the length of the ball.
      */
-    public Optional<DeliveryLength> deliveryLength() {
-        if (positionOfBounce == null) return Optional.empty();
+    public @Nullable DeliveryLength deliveryLength() {
+        if (positionOfBounce == null) return null;
         double pos = positionOfBounce;
-        if (pos > 20.5) return Optional.of(DeliveryLength.FULL_TOSS);
-        if (pos > 19.5) return Optional.of(DeliveryLength.YORKER);
-        if (pos > 17.5) return Optional.of(DeliveryLength.FULL);
-        if (pos > 14.5) return Optional.of(DeliveryLength.GOOD);
-        return Optional.of(DeliveryLength.SHORT);
+        if (pos > 20.5) return DeliveryLength.FULL_TOSS;
+        if (pos > 19.5) return DeliveryLength.YORKER;
+        if (pos > 17.5) return DeliveryLength.FULL;
+        if (pos > 14.5) return DeliveryLength.GOOD;
+        return DeliveryLength.SHORT;
     }
 
     /**
      * @return The distance in meters from the horizontal middle of the pitch where the ball pitched, where -1.5 is
-     * to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Returns empty
+     * to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Returns null
      * if unknown.
      */
-    public Optional<Double> horizontalPitchInMeters() {
-        return Optional.ofNullable(horizontalPitchInMeters);
+    public @Nullable Double horizontalPitchInMeters() {
+        return horizontalPitchInMeters;
     }
 
     /**
-     * @return 0 to indicate the ball when straight on; -90 if it made a total left turn; +90 for a total right turn. Empty if unknown.
+     * @return 0 to indicate the ball when straight on; -90 if it made a total left turn; +90 for a total right turn. Null if unknown.
      */
-    public Optional<Double> changeInLineAfterBounceInDegrees() {
-        return Optional.ofNullable(changeInLineAfterBounceInDegrees);
+    public @Nullable Double changeInLineAfterBounceInDegrees() {
+        return changeInLineAfterBounceInDegrees;
     }
 
     /**
      * @return Whether it was bowled over or around the wicket, or null if unknown
      */
-    public Optional<WicketSide> bowledFrom() {
-        return Optional.ofNullable(bowledFrom);
+    public @Nullable WicketSide bowledFrom() {
+        return bowledFrom;
     }
 
     @Override
@@ -105,7 +105,7 @@ public final class Delivery {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Delivery delivery = (Delivery) o;
@@ -137,7 +137,7 @@ public final class Delivery {
         private Double changeInLineAfterBounceInDegrees;
         private WicketSide bowledFrom;
 
-        public Builder withDeliveryType(DeliveryType deliveryType) {
+        public @Nonnull Builder withDeliveryType(@Nullable DeliveryType deliveryType) {
             this.deliveryType = deliveryType;
             return this;
         }
@@ -146,7 +146,7 @@ public final class Delivery {
          * @param speedInKilometers The speed the ball was bowled at, or null if unknown
          * @return This builder
          */
-        public Builder withSpeedInKilometers(Integer speedInKilometers) {
+        public @Nonnull Builder withSpeedInKilometers(@Nullable Integer speedInKilometers) {
             this.speedInKilometers = speedInKilometers;
             return this;
         }
@@ -155,7 +155,7 @@ public final class Delivery {
          * @param positionOfBounce The number of meters from the bowling crease where the ball bounced, or null if unknown
          * @return This builder
          */
-        public Builder withPositionOfBounce(Double positionOfBounce) {
+        public @Nonnull Builder withPositionOfBounce(@Nullable Double positionOfBounce) {
             this.positionOfBounce = positionOfBounce;
             return this;
         }
@@ -165,7 +165,7 @@ public final class Delivery {
          *                                to the far left (off side for a right hander; leg side for a lefty) and 1.5 is to the far-right. Use null if unknown.
          * @return This builder
          */
-        public Builder withHorizontalPitchInMeters(Double horizontalPitchInMeters) {
+        public @Nonnull Builder withHorizontalPitchInMeters(@Nullable Double horizontalPitchInMeters) {
             this.horizontalPitchInMeters = horizontalPitchInMeters;
             return this;
         }
@@ -174,17 +174,17 @@ public final class Delivery {
          * @param changeInLineAfterBounceInDegrees 0 to indicate the ball when straight on; -90 if it made a total left turn; +90 for a total right turn.
          * @return This builder
          */
-        public Builder withChangeInLineAfterBounceInDegrees(Double changeInLineAfterBounceInDegrees) {
+        public @Nonnull Builder withChangeInLineAfterBounceInDegrees(@Nullable Double changeInLineAfterBounceInDegrees) {
             this.changeInLineAfterBounceInDegrees = changeInLineAfterBounceInDegrees;
             return this;
         }
 
-        public Builder withBowledFrom(WicketSide bowledFrom) {
+        public @Nonnull Builder withBowledFrom(@Nullable WicketSide bowledFrom) {
             this.bowledFrom = bowledFrom;
             return this;
         }
 
-        public Delivery build() {
+        public @Nonnull Delivery build() {
             return new Delivery(deliveryType, speedInKilometers, positionOfBounce, horizontalPitchInMeters, changeInLineAfterBounceInDegrees, bowledFrom);
         }
 

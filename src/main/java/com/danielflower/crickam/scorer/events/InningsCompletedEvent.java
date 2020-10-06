@@ -2,22 +2,27 @@ package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.Match;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
 
+@Immutable
 public final class InningsCompletedEvent extends BaseMatchEvent {
 
     private final boolean declared;
     private final int inningsNumber;
 
-    private InningsCompletedEvent(Instant time, String id, String generatedBy, boolean declared, int inningsNumber) {
+    private InningsCompletedEvent(@Nullable Instant time, String id, @Nullable String generatedBy, boolean declared, @Nonnegative int inningsNumber) {
         super(id, time, generatedBy);
         this.declared = declared;
         this.inningsNumber = inningsNumber;
     }
 
 
-    public int inningsNumber() {
+    public @Nonnegative int inningsNumber() {
         return inningsNumber;
     }
 
@@ -29,12 +34,12 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withDeclared(declared)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
@@ -45,18 +50,19 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
             return declared;
         }
 
-        public Builder withDeclared(boolean declared) {
+        public @Nonnull Builder withDeclared(boolean declared) {
             this.declared = declared;
             return this;
         }
 
+        @Nonnull
         public InningsCompletedEvent build(Match match) {
             int inningsNumber = match.inningsList().size();
             return new InningsCompletedEvent(time(), id(), generatedBy(), declared, inningsNumber);
         }
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;

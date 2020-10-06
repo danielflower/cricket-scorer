@@ -4,7 +4,6 @@ import com.danielflower.crickam.scorer.*;
 import org.junit.jupiter.api.Test;
 import scaffolding.ScorecardLoader;
 
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.Venue.venue;
@@ -471,12 +470,12 @@ public class T20Test {
     }
 
     static Player findFielder(MatchControl control, String name) {
-        LineUp team = control.match().currentInnings().orElseThrow().bowlingTeam();
-        Optional<Player> bowler = team.findPlayer(name);
-        if (bowler.isEmpty()) {
+        LineUp team = control.match().currentInnings().bowlingTeam();
+        Player bowler = team.findPlayer(name);
+        if (bowler == null) {
             throw new RuntimeException("Not sure who " + name + " is");
         }
-        return bowler.get();
+        return bowler;
     }
 
 

@@ -3,15 +3,19 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Over;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
+@Immutable
 public final class OverCompletedEvent extends BaseMatchEvent {
 
     private final Over over;
 
-    private OverCompletedEvent(String id, Instant time, String generatedBy, Over over) {
+    private OverCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Over over) {
         super(id, time, generatedBy);
         this.over = requireNonNull(over, "over");
     }
@@ -24,21 +28,21 @@ public final class OverCompletedEvent extends BaseMatchEvent {
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, OverCompletedEvent> {
 
+        @Nonnull
         public OverCompletedEvent build(Match match) {
-            Over over = match.currentInnings()
-                .orElseThrow(() -> new IllegalStateException("Cannot complete an over when there is no innings in progress"))
-                .currentOver()
-                .orElseThrow(() -> new IllegalStateException("Cannot complete an over when there is no over in progress"));
+            if (match.currentInnings() == null) throw new IllegalStateException("Cannot complete an over when there is no innings in progress");
+            Over over = match.currentInnings().currentOver();
+            if (over == null) throw new IllegalStateException("Cannot complete an over when there is no over in progress");
             return new OverCompletedEvent(id(), time(), generatedBy(), over);
         }
 

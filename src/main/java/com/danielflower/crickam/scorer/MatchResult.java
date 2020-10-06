@@ -2,16 +2,17 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.MatchCompletedEvent;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
 
-import static com.danielflower.crickam.scorer.Crictils.toOptional;
 import static java.util.Objects.requireNonNull;
 
 /**
  * The result of a match
  */
+@Immutable
 public final class MatchResult {
 
     /**
@@ -34,7 +35,7 @@ public final class MatchResult {
         private final String singular;
         private final String plural;
 
-        Measure(boolean isTieBreaker, String singular, String plural) {
+        Measure(boolean isTieBreaker, String singular, @Nullable String plural) {
             this.isTieBreaker = isTieBreaker;
             this.singular = singular;
             this.plural = plural;
@@ -59,7 +60,7 @@ public final class MatchResult {
     private final Integer wonByAmount;
     private final boolean duckworthLewisApplied;
 
-    private MatchResult(MatchResult.ResultType resultType, LineUp winningTeam, Measure wonBy, Integer wonByAmount, boolean duckworthLewisApplied) {
+    private MatchResult(MatchResult.ResultType resultType, @Nullable LineUp winningTeam, @Nullable Measure wonBy, @Nullable Integer wonByAmount, boolean duckworthLewisApplied) {
         this.resultType = requireNonNull(resultType, "resultType");
         boolean hasWinner = resultType == ResultType.AWARDED || resultType == ResultType.CONCEDED || resultType == ResultType.WON;
         if (hasWinner) {
@@ -78,7 +79,7 @@ public final class MatchResult {
     /**
      * @return The type of result
      */
-    public ResultType resultType() {
+    public @Nonnull ResultType resultType() {
         return resultType;
     }
 
@@ -87,22 +88,22 @@ public final class MatchResult {
      *
      * @return The winning team, if there is one
      */
-    public Optional<LineUp> winningTeam() {
-        return Optional.ofNullable(winningTeam);
+    public @Nullable LineUp winningTeam() {
+        return winningTeam;
     }
 
     /**
      * @return The measure used to determine the winner
      */
-    public Optional<Measure> wonBy() {
-        return Optional.ofNullable(wonBy);
+    public @Nullable Measure wonBy() {
+        return wonBy;
     }
 
     /**
      * @return The size of the win, where the unit is specified by {@link #wonBy()}
      */
-    public OptionalInt wonByAmount() {
-        return toOptional(wonByAmount);
+    public @Nullable Integer wonByAmount() {
+        return wonByAmount;
     }
 
     /**
@@ -115,12 +116,12 @@ public final class MatchResult {
     /**
      * @return A new builder
      */
-    public static Builder matchResult() {
+    public static @Nonnull Builder matchResult() {
         return new Builder();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MatchResult that = (MatchResult) o;
@@ -166,7 +167,7 @@ public final class MatchResult {
          * @param resultType How the match was won
          * @return This builder
          */
-        public Builder withResultType(ResultType resultType) {
+        public @Nonnull Builder withResultType(ResultType resultType) {
             this.resultType = resultType;
             return this;
         }
@@ -175,7 +176,7 @@ public final class MatchResult {
          * @param winningTeam If one of the teams won, then this specifies the winner
          * @return This builder
          */
-        public Builder withWinningTeam(LineUp winningTeam) {
+        public @Nonnull Builder withWinningTeam(@Nullable LineUp winningTeam) {
             this.winningTeam = winningTeam;
             return this;
         }
@@ -184,7 +185,7 @@ public final class MatchResult {
          * @param wonBy The measure of way the win is declared, e.g. by wickets if the batting team reaches their target
          * @return This builder
          */
-        public Builder withWonBy(Measure wonBy) {
+        public @Nonnull Builder withWonBy(@Nullable Measure wonBy) {
             this.wonBy = wonBy;
             return this;
         }
@@ -193,7 +194,7 @@ public final class MatchResult {
          * @param wonByAmount The number of runs or wickets etc that the winning team won by
          * @return This builder
          */
-        public Builder withWonByAmount(Integer wonByAmount) {
+        public @Nonnull Builder withWonByAmount(@Nullable Integer wonByAmount) {
             this.wonByAmount = wonByAmount;
             return this;
         }
@@ -202,12 +203,12 @@ public final class MatchResult {
          * @param duckworthLewisApplied true if Duckworth-Lewis was used when determining the winner
          * @return This builder
          */
-        public Builder withDuckworthLewisApplied(boolean duckworthLewisApplied) {
+        public @Nonnull Builder withDuckworthLewisApplied(boolean duckworthLewisApplied) {
             this.duckworthLewisApplied = duckworthLewisApplied;
             return this;
         }
 
-        public MatchResult build() {
+        public @Nonnull MatchResult build() {
             return new MatchResult(resultType, winningTeam, wonBy, wonByAmount, duckworthLewisApplied);
         }
     }
@@ -222,10 +223,10 @@ public final class MatchResult {
      * @param match The match to check
      * @return The calculated result of the given match
      */
-    public static MatchResult fromMatch(Match match) {
-        if (match.inningsList().last().isPresent()) {
-            Innings innings = match.inningsList().last().get();
-            boolean isLastInnings = innings.target().isPresent();
+    public static @Nonnull MatchResult fromMatch(Match match) {
+        if (match.inningsList().last() != null) {
+            Innings innings = match.inningsList().last();
+            boolean isLastInnings = innings.target() != null;
             if (!isLastInnings) {
                 if (match.inningsList().stream().filter(i -> i.battingTeam().equals(innings.battingTeam()) && i.shouldBeComplete()).count() >= match.numberOfInningsPerTeam()) {
                     // the team that just completed their innings will bat no more. But have they exceeded the other team's score?
@@ -243,7 +244,7 @@ public final class MatchResult {
                 }
             }
             if (isLastInnings) {
-                int remaining = innings.target().getAsInt() - innings.score().teamRuns();
+                int remaining = innings.target() - innings.score().teamRuns();
                 if (remaining <= 0) {
                     return matchResult()
                         .withResultType(ResultType.WON)
@@ -259,7 +260,7 @@ public final class MatchResult {
                             .withWonBy(Measure.RUNS)
                             .withWonByAmount(remaining - 1)
                             .build();
-                    } else if (remaining == 1) {
+                    } else {
                         return MatchResult.matchResult().withResultType(ResultType.TIED).build();
                     }
                 }

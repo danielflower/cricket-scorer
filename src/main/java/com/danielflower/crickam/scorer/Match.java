@@ -2,12 +2,13 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.*;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.TimeZone;
 
-import static com.danielflower.crickam.scorer.Crictils.toInteger;
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -15,6 +16,7 @@ import static java.util.Objects.requireNonNull;
  * A lovely game of cricket between two teams.
  * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(MatchType)} to {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
  */
+@Immutable
 public final class Match {
 
 
@@ -30,7 +32,7 @@ public final class Match {
     private final Innings currentInnings;
     private final Balls balls;
 
-    private Match(FixedData data, State state, MatchResult result, ImmutableList<Innings> completedInningsList, Innings currentInnings, Balls balls) {
+    private Match(FixedData data, State state, @Nullable MatchResult result, ImmutableList<Innings> completedInningsList, @Nullable Innings currentInnings, Balls balls) {
         this.data = requireNonNull(data);
         this.state = requireNonNull(state);
         this.result = result;
@@ -39,26 +41,24 @@ public final class Match {
         this.balls = requireNonNull(balls);
     }
 
-    static Match newMatch(MatchStartingEvent e) {
-        Venue venue = e.venue().orElse(null);
-        TimeZone timeZone = e.timeZone().orElse(null);
-        FixedData fd = new FixedData(e.matchID(), e.series().orElse(null), e.time().orElse(null), e.scheduledStartTime().orElse(null),
-            e.teamLineUps(), e.matchType(), e.inningsPerTeam(), toInteger(e.oversPerInnings()), venue,
-            e.numberOfScheduledDays(), toInteger(e.ballsPerInnings()), timeZone);
+    static @Nonnull Match newMatch(MatchStartingEvent e) {
+        FixedData fd = new FixedData(e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
+            e.teamLineUps(), e.matchType(), e.inningsPerTeam(), e.oversPerInnings(), e.venue(),
+            e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
     }
 
     /**
      * @return A list of every ball bowled in the match
      */
-    public Balls balls() {
+    public @Nonnull Balls balls() {
         return balls;
     }
 
     /**
      * @return The current match state
      */
-    public State state() {
+    public @Nonnull State state() {
         return state;
     }
 
@@ -67,104 +67,104 @@ public final class Match {
      * @see #inningsList()
      * @see #currentInnings()
      */
-    public Optional<Innings> currentInnings() {
-        return Optional.ofNullable(currentInnings);
+    public @Nullable Innings currentInnings() {
+        return currentInnings;
     }
 
     /**
      * @return The innings played in the match that have been completed
      */
-    public ImmutableList<Innings> completedInningsList() {
+    public @Nonnull ImmutableList<Innings> completedInningsList() {
         return completedInningsList;
     }
 
     /**
      * @return All innings in the match, including any in-progress innings
      */
-    public ImmutableList<Innings> inningsList() {
+    public @Nonnull ImmutableList<Innings> inningsList() {
         return currentInnings == null ? completedInningsList : completedInningsList.add(currentInnings);
     }
 
     /**
      * @return A unique ID for this match
      */
-    public String matchID() {
+    public @Nonnull String matchID() {
         return data.matchID;
     }
 
-    public Optional<Series> series() {
-        return Optional.ofNullable(data.series);
+    public @Nullable Series series() {
+        return data.series;
     }
 
     /**
      * @return The time when the match event was created
      */
-    public Optional<Instant> time() {
-        return Optional.ofNullable(data.time);
+    public @Nullable Instant time() {
+        return data.time;
     }
 
     /**
      * @return The timezone that the match is played in
      */
-    public Optional<TimeZone> timeZone() {
-        return Optional.ofNullable(data.timeZone);
+    public @Nullable TimeZone timeZone() {
+        return data.timeZone;
     }
 
     /**
      * @return The scheduled start time of the match, if known.
      */
-    public Optional<Instant> scheduledStartTime() {
-        return Optional.ofNullable(data.scheduledStartTime);
+    public @Nullable Instant scheduledStartTime() {
+        return data.scheduledStartTime;
     }
 
     /**
      * @return The teams playing in this match, in no particular order.
      */
-    public ImmutableList<LineUp> teams() {
+    public @Nonnull ImmutableList<LineUp> teams() {
         return data.teams;
     }
 
     /**
-     * @return The number of scheduled balls per innings, or empty if there is no limit.
+     * @return The number of scheduled balls per innings, or null if there is no limit.
      */
-    public OptionalInt ballsPerInnings() {
-        return Crictils.toOptional(data.ballsPerInnings);
+    public @Nullable Integer ballsPerInnings() {
+        return data.ballsPerInnings;
     }
 
     /**
      * @return The number of scheduled balls per innings, or -1 if there is no limit.
      */
-    public OptionalInt oversPerInnings() {
-        return Crictils.toOptional(data.oversPerInnings);
+    public @Nullable Integer oversPerInnings() {
+        return data.oversPerInnings;
     }
 
-    public MatchType matchType() {
+    public @Nonnull MatchType matchType() {
         return data.matchType;
     }
 
     /**
      * @return The number of innings per team. Generally 1 for limited overs matches and 2 for first class / test matches.
      */
-    public int numberOfInningsPerTeam() {
+    public @Nonnegative int numberOfInningsPerTeam() {
         return data.inningsPerTeam;
     }
 
-    public Optional<Venue> venue() {
-        return Optional.ofNullable(data.venue);
+    public @Nullable Venue venue() {
+        return data.venue;
     }
 
     /**
      * @return The number of days this match goes for. Generally 1 for limited overs matches, and 5 for test matches.
      */
-    public int numberOfScheduledDays() {
+    public @Nonnegative int numberOfScheduledDays() {
         return data.numberOfScheduledDays;
     }
 
     /**
-     * @return The final result of the match, or empty if {@link #state()} is not {@link State#COMPLETED}
+     * @return The final result of the match, or null if {@link #state()} is not {@link State#COMPLETED}
      */
-    public Optional<MatchResult> result() {
-        return Optional.ofNullable(result);
+    public @Nullable MatchResult result() {
+        return result;
     }
 
     /**
@@ -174,13 +174,12 @@ public final class Match {
      *
      * @return Calculates what the current result should be at the current point in time.
      */
-    public MatchResult calculateResult() {
+    public @Nonnull MatchResult calculateResult() {
         return MatchResult.fromMatch(this);
     }
 
-    Match onEvent(MatchEvent event) {
-
-        if (event instanceof BallCompletedEvent && currentInnings().isEmpty()) {
+    @Nonnull Match onEvent(MatchEvent event) {
+        if (event instanceof BallCompletedEvent && currentInnings() == null) {
             throw new IllegalStateException("Cannot process a ball when there is no active innings");
         }
         State newState = this.state;
@@ -256,7 +255,7 @@ public final class Match {
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(String matchID, Series series, Instant time, Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue, int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone) {
+        public FixedData(String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
             this.matchID = matchID;
             this.series = series;
             this.time = time;

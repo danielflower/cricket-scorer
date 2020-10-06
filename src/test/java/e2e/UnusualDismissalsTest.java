@@ -51,7 +51,7 @@ public class UnusualDismissalsTest {
         control = control.onEvent(batterInningsCompleted(BattingState.DISMISSED).withDismissal(
             Dismissal.dismissal()
                 .withType(DismissalType.TIMED_OUT)
-                .withBatter(control.match().currentInnings().get().currentStriker().get().player())
+                .withBatter(control.match().currentInnings().currentStriker().player())
                 .build()));
 
         control = control.onEvent(batterInningsStarting());
@@ -66,8 +66,8 @@ public class UnusualDismissalsTest {
         // before the next batter comes in, Neesham retires
         control = control.onEvent(batterInningsCompleted(BattingState.RETIRED_OUT).withBatter(JAMES_NEESHAM));
 
-        assertThat(control.match().currentInnings().get().currentStriker(), is(Optional.empty()));
-        assertThat(control.match().currentInnings().get().currentNonStriker(), is(Optional.empty()));
+        assertThat(control.match().currentInnings().currentStriker(), is(nullValue()));
+        assertThat(control.match().currentInnings().currentNonStriker(), is(nullValue()));
 
         control = control.onEvent(batterInningsStarting())
             .onEvent(batterInningsStarting());
@@ -77,7 +77,7 @@ public class UnusualDismissalsTest {
             ballCompleted().withRunsScored(Score.score().withWickets(1).build())
                 .withDismissal(DismissalType.RUN_OUT)
                 .withFielder(bowler1)
-                .withDismissedBatter(control.match().currentInnings().get().currentNonStriker().get().player()));
+                .withDismissedBatter(control.match().currentInnings().currentNonStriker().player()));
 
 
         AsciiScorecardRenderer.render(control, System.out);

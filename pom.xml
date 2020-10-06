@@ -6,7 +6,7 @@
 
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.7-SNAPSHOT</version>
 
     <name>cricket-scorer</name>
     <description>An immutable java library for keeping score of cricket matches</description>
@@ -17,6 +17,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -101,18 +108,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <failOnWarnings>true</failOnWarnings>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+                    <failOnWarnings>true</failOnWarnings>
+                    <source>11</source>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -144,10 +153,13 @@
                                         <exclude>*:*:*:*:runtime</exclude>
                                         <exclude>*:*:*:*:compile</exclude>
                                     </excludes>
+                                    <includes>
+                                        <include>com.google.code.findbugs:jsr305:*:provided</include>
+                                    </includes>
                                 </bannedDependencies>
                                 <dependencyConvergence/>
                                 <requireMavenVersion>
-                                    <version>3.0.4</version>
+                                    <version>3.0.5</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>

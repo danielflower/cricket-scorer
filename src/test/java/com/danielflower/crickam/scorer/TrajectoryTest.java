@@ -12,7 +12,7 @@ class TrajectoryTest {
     @Test
     public void canCreate() {
         Trajectory trajectory = aTrajectory().withDirectionInDegreesRelativeToBatter(91.2).build();
-        assertThat(trajectory.directionInDegreesRelativeToBatter(), is(Optional.of(91.2)));
+        assertThat(trajectory.directionInDegreesRelativeToBatter(), is(91.2));
     }
 
     public static Trajectory.Builder aTrajectory() {

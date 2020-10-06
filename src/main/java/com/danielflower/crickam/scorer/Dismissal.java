@@ -1,20 +1,23 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * A dismissal of a batter
  */
+@Immutable
 public final class Dismissal {
     private final DismissalType type;
     private final Player batter;
     private final Player bowler;
     private final Player fielder;
 
-    private Dismissal(DismissalType type, Player batter, Player bowler, Player fielder) {
+    private Dismissal(DismissalType type, Player batter, @Nullable Player bowler, @Nullable Player fielder) {
         this.type = requireNonNull(type);
         this.batter = requireNonNull(batter);
         if (type.creditedToBowler()) {
@@ -28,37 +31,37 @@ public final class Dismissal {
     /**
      * @return The batter who was dismissed
      */
-    public Player batter() {
+    public @Nonnull Player batter() {
         return batter;
     }
 
     /**
      * @return The mode of dismissal
      */
-    public DismissalType type() {
+    public @Nonnull DismissalType type() {
         return type;
     }
 
     /**
-     * @return The bowler credited with the dismissal, or empty if {@link DismissalType#creditedToBowler()} is false
+     * @return The bowler credited with the dismissal, or null if {@link DismissalType#creditedToBowler()} is false
      */
-    public Optional<Player> bowler() {
-        return Optional.ofNullable(bowler);
+    public @Nullable Player bowler() {
+        return bowler;
     }
 
     /**
      * @return The player that caught the ball if the {@link #type()} is {@link DismissalType#CAUGHT}, or the fielder
-     * the enacted the runout or stumping. It will be an empty value for dismissal types such as {@link DismissalType#BOWLED} etc
+     * the enacted the runout or stumping. It will be null for dismissal types such as {@link DismissalType#BOWLED} etc
      */
-    public Optional<Player> fielder() {
-        return Optional.ofNullable(fielder);
+    public @Nullable Player fielder() {
+        return fielder;
     }
 
     /**
      * @param team If specified, the wicket keeper will be marked with a &quot;†&quot; symbol if this is caught
      * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
      */
-    public String toScorecardString(LineUp team) {
+    public @Nonnull String toScorecardString(@Nullable LineUp team) {
         String bowlerName = this.bowler == null ? null : this.bowler.familyName();
         String fielderName;
         if (this.fielder == null) {
@@ -98,7 +101,7 @@ public final class Dismissal {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dismissal dismissal = (Dismissal) o;
@@ -124,12 +127,12 @@ public final class Dismissal {
         private Player bowler;
         private Player fielder;
 
-        public Builder withType(DismissalType type) {
+        public @Nonnull Builder withType(@Nullable DismissalType type) {
             this.type = type;
             return this;
         }
 
-        public Builder withBatter(Player batter) {
+        public @Nonnull Builder withBatter(@Nullable Player batter) {
             this.batter = batter;
             return this;
         }
@@ -140,7 +143,7 @@ public final class Dismissal {
          * @param bowler The bowler credited with the dismissal.
          * @return This builder
          */
-        public Builder withBowler(Player bowler) {
+        public @Nonnull Builder withBowler(@Nullable Player bowler) {
             this.bowler = bowler;
             return this;
         }
@@ -149,12 +152,12 @@ public final class Dismissal {
          * @param fielder The fielder who caught the ball, or ran out the batter, or stumped the batter. Leave unset if no fielder for this dismissal.
          * @return This builder
          */
-        public Builder withFielder(Player fielder) {
+        public @Nonnull Builder withFielder(@Nullable Player fielder) {
             this.fielder = fielder;
             return this;
         }
 
-        public Dismissal build() {
+        public @Nonnull Dismissal build() {
             return new Dismissal(type, batter, bowler, fielder);
         }
     }

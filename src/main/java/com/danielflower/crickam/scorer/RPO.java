@@ -1,11 +1,17 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+
 /**
  * Runs per over
  * <p>These can be created by calling {@link #fromDouble(double)} or from {@link Score#runsPerOver()} or {@link Score#bowlerEconomyRate()}.</p>
  * <p>RPO is just a double value (accessed via {@link #value()} however this class also provides accessors to values
  * such as the first decimal place (as an integer, via {@link #firstDecimal()} and a toString() method that rounds to 1dp.</p>
  */
+@Immutable
 public final class RPO {
 
 	private final int intValue;
@@ -13,7 +19,7 @@ public final class RPO {
 	private final int firstDecimal;
 	private final double doubleValue;
 
-	private RPO(double doubleValue, int intValue, int nearestIntValue, int firstDecimal) {
+	private RPO(@Nonnegative double doubleValue, @Nonnegative int intValue, @Nonnegative int nearestIntValue, @Nonnegative int firstDecimal) {
 		this.intValue = intValue;
 		this.nearestIntValue = nearestIntValue;
 		this.firstDecimal = firstDecimal;
@@ -25,7 +31,7 @@ public final class RPO {
      * @param value Runs per over as a double
      * @return A new RPO
      */
-	public static RPO fromDouble(double value) {
+	public static @Nonnull RPO fromDouble(@Nonnegative double value) {
 		int intVal = (int) value;
 		int dp = (int) Math.floor(10 * (value - intVal));
 		int nearest = (dp >= 5) ? intVal + 1 : intVal;
@@ -35,33 +41,33 @@ public final class RPO {
     /**
      * @return The number of runs per over, rounded down to the nearest integer. e.g. a RPO of 4.8 would return 4 from this method
      */
-    public int intValue() {
+    public @Nonnegative int intValue() {
         return intValue;
     }
 
     /**
      * @return The number of runs per over, rounded to the nearest integer. e.g. a RPO of 4.8 would return 5 from this method
      */
-    public int nearestIntValue() {
+    public @Nonnegative int nearestIntValue() {
         return nearestIntValue;
     }
 
     /**
      * @return The first value after the decimal place, e.g. a RPO of 4.8 would return 8 from this method
      */
-    public int firstDecimal() {
+    public @Nonnegative int firstDecimal() {
         return firstDecimal;
     }
 
     /**
      * @return The runs per over
      */
-    public double value() {
+    public @Nonnegative double value() {
         return doubleValue;
     }
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(@Nullable Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		RPO rpo = (RPO) o;

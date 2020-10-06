@@ -1,5 +1,8 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -8,6 +11,7 @@ import static java.util.Objects.requireNonNull;
  * <p>Use {@link #team()} to get a {@link Builder} to create a team.</p>
  * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
  */
+@Immutable
 public class Team {
     private final String shortName;
     private final String name;
@@ -17,22 +21,22 @@ public class Team {
         this.shortName = requireNonNull(builder.shortName);
     }
 
-    public String name() {
+    public @Nonnull String name() {
         return name;
     }
 
     /**
      * @return An abbreviation of the team, such as &quot;NZL&quot;
      */
-    public String shortName() {
+    public @Nonnull String shortName() {
         return shortName;
     }
 
-    public String toString() {
+    public @Nonnull String toString() {
         return name;
     }
 
-    public static Builder team() {
+    public static @Nonnull Builder team() {
         return new Builder();
     }
 
@@ -40,7 +44,7 @@ public class Team {
         private String name;
         private String shortName;
 
-        public Builder withName(String name) {
+        public @Nonnull Builder withName(@Nonnull String name) {
             this.name = name;
             return this;
         }
@@ -49,7 +53,7 @@ public class Team {
          * @param shortName An abbreviation of the team, such as &quot;NZL&quot;
          * @return This builder
          */
-        public Builder withShortName(String shortName) {
+        public @Nonnull Builder withShortName(@Nonnull String shortName) {
             this.shortName = shortName;
             return this;
         }

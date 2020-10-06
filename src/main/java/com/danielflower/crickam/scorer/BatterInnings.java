@@ -5,15 +5,19 @@ import com.danielflower.crickam.scorer.events.BatterInningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.InningsCompletedEvent;
 import com.danielflower.crickam.scorer.events.MatchEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * The innings of a batter at a specific point in time.
  */
+@Immutable
 public final class BatterInnings {
 
     private final BattingState state;
@@ -24,28 +28,29 @@ public final class BatterInnings {
     private final Instant inningsEndTime;
     private final Dismissal dismissal;
 
-    private BatterInnings(BattingState state, Player player, Balls balls, int numberCameIn, Instant inningsStartTime, Instant inningsEndTime, Dismissal dismissal) {
-        this.state = state;
-        this.player = requireNonNull(player);
-        this.balls = requireNonNull(balls);
+    private BatterInnings(BattingState state, Player player, Balls balls, @Nonnegative int numberCameIn, @Nullable Instant inningsStartTime, @Nullable Instant inningsEndTime, @Nullable Dismissal dismissal) {
+        this.state = requireNonNull(state, "state");
+        this.player = requireNonNull(player, "player");
+        this.balls = requireNonNull(balls, "balls");
         this.numberCameIn = numberCameIn;
         this.inningsStartTime = inningsStartTime;
         this.inningsEndTime = inningsEndTime;
         this.dismissal = dismissal;
     }
 
-    static BatterInnings newInnings(Player player, int numberCameIn, Instant startTime) {
+    @Nonnull
+    static BatterInnings newInnings(Player player, int numberCameIn, @Nullable Instant startTime) {
         return new BatterInnings(BattingState.IN_PROGRESS, player, new Balls(), numberCameIn, startTime, null, null);
     }
 
-    public static boolean sameBatter(BatterInnings one, BatterInnings two) {
+    public static boolean sameBatter(@Nullable BatterInnings one, @Nullable BatterInnings two) {
         if (one == null || two == null) {
             return false;
         }
         return one.player().equals(two.player());
     }
 
-    boolean sameInnings(BatterInnings other) {
+    boolean sameInnings(@Nonnull BatterInnings other) {
         return player().equals(other.player());
     }
 
@@ -56,63 +61,63 @@ public final class BatterInnings {
     /**
      * @return The state that this innings is in
      */
-    public BattingState state() {
+    public @Nonnull BattingState state() {
         return state;
     }
 
     /**
      * @return The 1-based index of this batter (e.g. the first opener returns 1)
      */
-    public int numberCameIn() {
+    public @Nonnegative int numberCameIn() {
         return numberCameIn;
     }
 
     /**
      * @return A shortcut for <code>this.balls().score().batterRuns()</code>
      */
-    public int runs() {
+    public @Nonnegative int runs() {
         return balls.score().batterRuns();
     }
 
     /**
      * @return How this innings was ended, if it was ended in dismissal
      */
-    public Optional<Dismissal> dismissal() {
-        return Optional.ofNullable(dismissal);
+    public @Nullable Dismissal dismissal() {
+        return dismissal;
     }
 
     /**
      * @return The balls faced in this innings. Use this to access the current score of the innings with {@link Balls#score()}
      */
-    public Balls balls() {
+    public @Nonnull Balls balls() {
         return balls;
     }
 
     /**
      * @return The batter
      */
-    public Player player() {
+    public @Nonnull Player player() {
         return player;
     }
 
     /**
      * @return The time the innings started
      */
-    public Optional<Instant> inningsStartTime() {
-        return Optional.ofNullable(inningsStartTime);
+    public @Nullable Instant inningsStartTime() {
+        return inningsStartTime;
     }
 
     /**
      * @return The time the innings ended, if it has ended
      */
-    public Optional<Instant> inningsEndTime() {
-        return Optional.ofNullable(inningsEndTime);
+    public @Nullable Instant inningsEndTime() {
+        return inningsEndTime;
     }
 
     /**
      * @return The batter's score.
      */
-    public Score score() {
+    public @Nonnull Score score() {
         return balls.score();
     }
 
@@ -123,7 +128,7 @@ public final class BatterInnings {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BatterInnings that = (BatterInnings) o;
@@ -141,7 +146,7 @@ public final class BatterInnings {
         return Objects.hash(state, player, balls, numberCameIn, inningsStartTime, inningsEndTime, dismissal);
     }
 
-    public BatterInnings onEvent(MatchEvent event) {
+    public @Nonnull BatterInnings onEvent(MatchEvent event) {
         boolean somethingChanged = false;
         Instant endTime = this.inningsEndTime;
         Dismissal dismissal = null;
@@ -162,14 +167,14 @@ public final class BatterInnings {
             if (sameInnings(e.batter())) {
                 somethingChanged = true;
                 newState = e.reason();
-                endTime = e.time().orElse(null);
-                dismissal = e.dismissal().orElse(null);
+                endTime = e.time();
+                dismissal = e.dismissal();
             }
         } else if (event instanceof InningsCompletedEvent) {
             if (newState == BattingState.IN_PROGRESS) {
                 somethingChanged = true;
                 newState = BattingState.INNINGS_ENDED;
-                endTime = event.time().orElse(null);
+                endTime = event.time();
             }
         }
         return somethingChanged ? new BatterInnings(newState, player, newBalls, numberCameIn, inningsStartTime, endTime, dismissal) : this;

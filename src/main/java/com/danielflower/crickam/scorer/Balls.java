@@ -2,13 +2,17 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * An immutable list of {@link BallCompletedEvent} objects and their total score.
  */
+@Immutable
 public final class Balls implements Iterable<BallCompletedEvent> {
     private final ImmutableList<BallCompletedEvent> balls;
     private final Score score;
@@ -25,14 +29,14 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     /**
      * @return The total score of all the balls in this list
      */
-    public Score score() {
+    public @Nonnull Score score() {
 		return score;
 	}
 
     /**
      * @return The balls as an immutable list
      */
-    public ImmutableList<BallCompletedEvent> list() {
+    public @Nonnull ImmutableList<BallCompletedEvent> list() {
         return balls;
     }
 
@@ -43,7 +47,7 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     /**
      * @return The number of balls bowled (including invalid balls such as wides)
      */
-    public int size() {
+    public @Nonnegative int size() {
         return balls.size();
     }
 
@@ -58,7 +62,7 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Balls balls1 = (Balls) o;
@@ -71,16 +75,16 @@ public final class Balls implements Iterable<BallCompletedEvent> {
     }
 
     /**
-     * @return The last valid ball in this list, or empty if there are none
+     * @return The last valid ball in this list, or null if there are none
      */
-    public Optional<BallCompletedEvent> lastValid() {
+    public @Nullable BallCompletedEvent lastValid() {
         Iterator<BallCompletedEvent> ballIterator = list().reverseIterator();
         while (ballIterator.hasNext()) {
             BallCompletedEvent next = ballIterator.next();
             if (next.isValid()) {
-                return Optional.of(next);
+                return next;
             }
         }
-        return Optional.empty();
+        return null;
     }
 }

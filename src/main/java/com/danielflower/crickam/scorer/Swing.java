@@ -1,11 +1,14 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * A swing of the bat
  */
+@Immutable
 public final class Swing {
 
     private final ShotType shotType;
@@ -14,7 +17,7 @@ public final class Swing {
     private final Double footDirection;
     private final Double power;
 
-    private Swing(ShotType shotType, ImpactOnBat impactOnBat, Double timing, Double footDirection, Double power) {
+    private Swing(@Nullable ShotType shotType, @Nullable ImpactOnBat impactOnBat, @Nullable Double timing, @Nullable Double footDirection, @Nullable Double power) {
         this.shotType = shotType;
         this.impactOnBat = impactOnBat;
         this.timing = checkVal(timing, "timing");
@@ -22,46 +25,46 @@ public final class Swing {
         this.power = checkVal(power, "power");
     }
 
-    private static Double checkVal(Double value, String message) {
+    private static Double checkVal(@Nullable Double value, String message) {
         if (value != null && (value < -1 || value > 1)) {
             throw new IllegalArgumentException("The value " + message + " must be between -1 and 1 (or null), but it was " + value);
         }
         return value;
     }
 
-    public Optional<ShotType> shotType() {
-        return Optional.ofNullable(shotType);
+    public @Nullable ShotType shotType() {
+        return shotType;
     }
 
-    public Optional<ImpactOnBat> impactOnBat() {
-        return Optional.ofNullable(impactOnBat);
+    public @Nullable ImpactOnBat impactOnBat() {
+        return impactOnBat;
     }
 
     /**
      * @return A number between -1 and 1 where -1 means the shot was much to early; 0 is perfectly timed; 1 is very late.
      */
-    public Optional<Double> timing() {
-        return Optional.ofNullable(timing);
+    public @Nullable Double timing() {
+        return timing;
     }
 
     /**
      * @return A number between -1 and 1 where -1 indicates the foot went back to the wicket; 0 is at the crease; 1 is a
      * long way stretched forward;
      */
-    public Optional<Double> footDirection() {
-        return Optional.ofNullable(footDirection);
+    public @Nullable Double footDirection() {
+        return footDirection;
     }
 
     /**
      * @return A number between 0 and 1, where 0 is no movement of the bat; 0.5 is a normal shot; and 1 is the batter's
      * maximum power.
      */
-    public Optional<Double> power() {
-        return Optional.ofNullable(power);
+    public @Nullable Double power() {
+        return power;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Swing swing = (Swing) o;
@@ -88,7 +91,7 @@ public final class Swing {
             '}';
     }
 
-    public static Builder swing() {
+    public static @Nonnull Builder swing() {
         return new Builder();
     }
 
@@ -100,12 +103,12 @@ public final class Swing {
         private Double footDirection;
         private Double power;
 
-        public Builder withShotType(ShotType shotType) {
+        public @Nonnull Builder withShotType(@Nullable ShotType shotType) {
             this.shotType = shotType;
             return this;
         }
 
-        public Builder withImpact(ImpactOnBat impact) {
+        public @Nonnull Builder withImpact(@Nullable ImpactOnBat impact) {
             this.impact = impact;
             return this;
         }
@@ -114,7 +117,7 @@ public final class Swing {
          * @param timing A number between -1 and 1 where -1 means the shot was much to early; 0 is perfectly timed; 1 is very late.
          * @return This builder
          */
-        public Builder withTiming(Double timing) {
+        public @Nonnull Builder withTiming(@Nullable Double timing) {
             this.timing = timing;
             return this;
         }
@@ -124,7 +127,7 @@ public final class Swing {
          *                      long way stretched forward;
          * @return This builder
          */
-        public Builder withFootDirection(Double footDirection) {
+        public @Nonnull Builder withFootDirection(@Nullable Double footDirection) {
             this.footDirection = footDirection;
             return this;
         }
@@ -134,12 +137,12 @@ public final class Swing {
          *              maximum power.
          * @return This builder
          */
-        public Builder withPower(Double power) {
+        public @Nonnull Builder withPower(@Nullable Double power) {
             this.power = power;
             return this;
         }
 
-        public Swing build() {
+        public @Nonnull Swing build() {
             return new Swing(shotType, impact, timing, footDirection, power);
         }
 

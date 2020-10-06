@@ -94,21 +94,21 @@ class ScoreTest {
 
     @Test
     void strikeRateIsBasedOnBatterRunsAndBatterFaces() {
-        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).withSingles(5).withBatterRuns(5).build().battingStrikeRate(), is(Optional.of(50.0)));
-        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).build().battingStrikeRate(), is(Optional.of(0.0)));
-        assertThat(score().withWides(10).build().battingStrikeRate(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).withSingles(5).withBatterRuns(5).build().battingStrikeRate(), is(50.0));
+        assertThat(score().withWides(10).withNoBalls(2).withValidDeliveries(8).build().battingStrikeRate(), is(0.0));
+        assertThat(score().withWides(10).build().battingStrikeRate(), is(nullValue()));
     }
 
     @Test
     void averageIsBasedOnBatterRunsAndWickets() {
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(2).build().battingAverage(), is(Optional.of(2.5)));
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().battingAverage(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(2).build().battingAverage(), is(2.5));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().battingAverage(), is(nullValue()));
     }
 
     @Test
     public void bowlerStrikeRateIsBasedOnValidDeliveriesBowled() {
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(1).withBatterRuns(1).withWickets(2).build().bowlingStrikeRate(), is(Optional.of(5.0)));
-        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().bowlingStrikeRate(), is(Optional.empty()));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(1).withBatterRuns(1).withWickets(2).build().bowlingStrikeRate(), is(5.0));
+        assertThat(score().withWides(10).withNoBalls(3).withValidDeliveries(10).withSingles(5).withBatterRuns(5).withWickets(0).build().bowlingStrikeRate(), is(nullValue()));
     }
 
     @Test
@@ -170,23 +170,23 @@ class ScoreTest {
 
     @Test
     public void scorecardBallsCanBeParsed() {
-        assertThat(Score.parse(".").get(), is(sameInstance(DOT_BALL)));
-        assertThat(Score.parse("0").get(), is(sameInstance(DOT_BALL)));
-        assertThat(Score.parse("1").get(), is(sameInstance(SINGLE)));
-        assertThat(Score.parse("2").get(), is(sameInstance(TWO)));
-        assertThat(Score.parse("3").get(), is(sameInstance(THREE)));
-        assertThat(Score.parse("4").get(), is(sameInstance(FOUR)));
-        assertThat(Score.parse("6").get(), is(sameInstance(SIX)));
-        assertThat(Score.parse("1b").get(), is(sameInstance(BYE)));
-        assertThat(Score.parse("1lb").get(), is(sameInstance(LEG_BYE)));
-        assertThat(Score.parse("4lb").get(), is(score().withValidDeliveries(1).withLegByes(4).withDots(1).build()));
-        assertThat(Score.parse("1nb").get(), is(sameInstance(NO_BALL)));
-        assertThat(Score.parse("1w").get(), is(sameInstance(WIDE)));
-        assertThat(Score.parse("2w").get(), is(score().withWides(2).withWideDeliveries(1).build()));
-        assertThat(Score.parse("W").get(), is(sameInstance(WICKET)));
-        assertThat(Score.parse("5w").get(), is(score().withWides(5).withWideDeliveries(1).build()));
-        assertThat(Score.parse("5nb").get(), is(score().withNoBalls(1).withBatterRuns(4).withFours(1).build()));
-        assertThat(Score.parse("7nb").get(), is(score().withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
+        assertThat(Score.parse("."), is(sameInstance(DOT_BALL)));
+        assertThat(Score.parse("0"), is(sameInstance(DOT_BALL)));
+        assertThat(Score.parse("1"), is(sameInstance(SINGLE)));
+        assertThat(Score.parse("2"), is(sameInstance(TWO)));
+        assertThat(Score.parse("3"), is(sameInstance(THREE)));
+        assertThat(Score.parse("4"), is(sameInstance(FOUR)));
+        assertThat(Score.parse("6"), is(sameInstance(SIX)));
+        assertThat(Score.parse("1b"), is(sameInstance(BYE)));
+        assertThat(Score.parse("1lb"), is(sameInstance(LEG_BYE)));
+        assertThat(Score.parse("4lb"), is(score().withValidDeliveries(1).withLegByes(4).withDots(1).build()));
+        assertThat(Score.parse("1nb"), is(sameInstance(NO_BALL)));
+        assertThat(Score.parse("1w"), is(sameInstance(WIDE)));
+        assertThat(Score.parse("2w"), is(score().withWides(2).withWideDeliveries(1).build()));
+        assertThat(Score.parse("W"), is(sameInstance(WICKET)));
+        assertThat(Score.parse("5w"), is(score().withWides(5).withWideDeliveries(1).build()));
+        assertThat(Score.parse("5nb"), is(score().withNoBalls(1).withBatterRuns(4).withFours(1).build()));
+        assertThat(Score.parse("7nb"), is(score().withNoBalls(1).withBatterRuns(6).withSixes(1).build()));
     }
 
     @Test

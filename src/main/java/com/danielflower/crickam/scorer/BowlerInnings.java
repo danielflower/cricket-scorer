@@ -2,12 +2,15 @@ package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.events.BallCompletedEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * A record of the overs bowled by a bowler in a single innings.
  */
+@Immutable
 public final class BowlerInnings {
     private final Player bowler;
     private final Balls balls;
@@ -18,21 +21,21 @@ public final class BowlerInnings {
     /**
      * @return The bowler
      */
-    public Player bowler() {
+    public @Nonnull Player bowler() {
         return bowler;
     }
 
     /**
      * @return All the balls in this innings
      */
-    public Balls balls() {
+    public @Nonnull Balls balls() {
         return balls;
     }
 
     /**
      * @return All the overs in this innings
      */
-    public ImmutableList<Over> overs() {
+    public @Nonnull ImmutableList<Over> overs() {
         return overs;
     }
 
@@ -40,7 +43,7 @@ public final class BowlerInnings {
      * @return The spells this bowler has bowled. Any overs bowled consecutively by a bowler (i.e. where there is a
      * gap of just one over between two overs) are considered part of a single spell.
      */
-    public ImmutableList<BowlingSpell> spells() {
+    public @Nonnull ImmutableList<BowlingSpell> spells() {
         return spells;
     }
 
@@ -50,14 +53,14 @@ public final class BowlerInnings {
      *
      * @return The number of wickets credited to the bowler
      */
-    public int wickets() {
+    public @Nonnegative int wickets() {
         return wickets;
     }
 
     /**
      * @return The total score in this bowler's innings.
      */
-    public Score score() {
+    public @Nonnull Score score() {
         return balls.score();
     }
 
@@ -65,11 +68,11 @@ public final class BowlerInnings {
     /**
      * @return The number of maidens bowled in this innings.
      */
-    public int maidens() {
+    public @Nonnegative int maidens() {
         return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().equals(bowler)).count();
     }
 
-    private BowlerInnings(Player bowler, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs, int wickets) {
+    private BowlerInnings(Player bowler, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs, @Nonnegative int wickets) {
         this.bowler = bowler;
         this.balls = balls;
         this.spells = spells;
@@ -84,16 +87,17 @@ public final class BowlerInnings {
     }
 
     BowlerInnings onBall(Over over, BallCompletedEvent ball) {
-        BowlingSpell bowlingSpell = this.spells.last().get();
-        Optional<Over> previousOver = bowlingSpell.overs().last();
+        BowlingSpell bowlingSpell = this.spells.last();
+        if (bowlingSpell == null) throw new IllegalStateException("An innings must have at least one spell");
+        Over previousOver = bowlingSpell.overs().last();
         ImmutableList<BowlingSpell> spells;
-        if (previousOver.isPresent() && (over.overNumber() - previousOver.get().overNumber()) > 2) {
+        if (previousOver != null && (over.overNumber() - previousOver.overNumber()) > 2) {
             spells = this.spells.add(new BowlingSpell(bowler, bowlingSpell.spellNumber() + 1, ImmutableList.of(over), new Balls(), wickets).onBall(over, ball));
         } else {
             spells = this.spells.removeLast().add(bowlingSpell.onBall(over, ball));
         }
         int wickets = this.wickets;
-        if (ball.dismissal().isPresent() && ball.dismissal().get().type().creditedToBowler()) {
+        if (ball.dismissal() != null && ball.dismissal().type().creditedToBowler()) {
             wickets++;
         }
         ImmutableList<Over> newOvers = addOverWithPreviousRemovedIfSame(overs, over);
@@ -102,7 +106,9 @@ public final class BowlerInnings {
 
     static ImmutableList<Over> addOverWithPreviousRemovedIfSame(ImmutableList<Over> overs, Over toAddOrReplace) {
         ImmutableList<Over> newOvers = overs;
-        if (overs.last().get().overNumber() == toAddOrReplace.overNumber()) {
+        Over lastOver = overs.last();
+        if (lastOver == null) throw new IllegalStateException("Expected a last over");
+        if (lastOver.overNumber() == toAddOrReplace.overNumber()) {
             newOvers = newOvers.subList(0, overs.size() - 2);
         }
         newOvers = newOvers.add(toAddOrReplace);
@@ -114,7 +120,8 @@ public final class BowlerInnings {
      * or &quot;2.3&quot; if 2 overs and 3 balls have been bowled.
      */
     public String overDotBallString() {
-        Over over = overs.last().get();
+        Over over = overs.last();
+        if (over == null) throw new IllegalStateException("Expected an Over");
         int count = overs.size();
         if (over.isComplete()) {
             return String.valueOf(count);

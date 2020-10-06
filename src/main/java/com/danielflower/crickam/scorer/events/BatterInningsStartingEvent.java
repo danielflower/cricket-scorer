@@ -4,14 +4,18 @@ import com.danielflower.crickam.scorer.Innings;
 import com.danielflower.crickam.scorer.Match;
 import com.danielflower.crickam.scorer.Player;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
 
+@Immutable
 public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(String id, String generatedBy, Instant time, Player batter) {
+    private BatterInningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Player batter) {
         super(id, time, generatedBy);
         this.batter = Objects.requireNonNull(batter);
     }
@@ -21,12 +25,12 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withBatter(batter)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
@@ -43,19 +47,20 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
          * @param batter The batter to go in next, or null to continue with the next batter in the line up.
          * @return This builder
          */
-        public Builder withBatter(Player batter) {
+        public @Nonnull Builder withBatter(@Nullable Player batter) {
             this.batter = batter;
             return this;
         }
 
+        @Nonnull
         public BatterInningsStartingEvent build(Match match) {
             Player batter = this.batter;
-            Innings innings = match.currentInnings()
-                .orElseThrow(() -> new IllegalStateException("A batter innings cannot be started if there is no team innings in progress"));
+            Innings innings = match.currentInnings();
+            if (innings == null) throw new IllegalStateException("A batter innings cannot be started if there is no team innings in progress");
             if (batter == null) {
                 batter = innings
-                    .yetToBat().first()
-                    .orElseThrow(() -> new IllegalStateException("There are no batters left to send in next"));
+                    .yetToBat().first();
+                if (batter == null) throw new IllegalStateException("There are no batters left to send in next");
             }
 
             if (!innings.battingTeam().battingOrder().contains(batter)){

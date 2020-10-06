@@ -1,5 +1,9 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -9,6 +13,7 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@Immutable
 public final class ImmutableList<T> implements Iterable<T> {
 
     public static final ImmutableList<?> EMPTY = new ImmutableList<>();
@@ -24,7 +29,7 @@ public final class ImmutableList<T> implements Iterable<T> {
      */
     private final int last;
 
-    protected ImmutableList(List<T> arrayList, int first, int last) {
+    protected ImmutableList(@Nonnull List<T> arrayList, @Nonnegative int first, int last) {
         this.arrayList = arrayList;
         this.first = first;
         this.last = last;
@@ -39,23 +44,23 @@ public final class ImmutableList<T> implements Iterable<T> {
     }
 
     @SafeVarargs
-    public static <V> ImmutableList<V> of(V... values) {
+    public static @Nonnull <V> ImmutableList<V> of(V... values) {
         ArrayList<V> objects = new ArrayList<>(Arrays.asList(values));
         return new ImmutableList<>(objects, 0, objects.size() - 1);
     }
 
-    public int size() {
+    public @Nonnegative int size() {
         return last - first + 1;
     }
 
-    public ImmutableList<T> replace(T oldValue, T newValue) {
+    public @Nonnull ImmutableList<T> replace(T oldValue, T newValue) {
         if (Objects.equals(oldValue, newValue)) {
             return this;
         }
         if (!contains(oldValue)) {
             return this;
         }
-        if (this.last().orElseThrow().equals(oldValue) && indexOf(oldValue) == last) {
+        if (Objects.equals(this.last(), oldValue) && indexOf(oldValue) == last) {
             return this.removeLast().add(newValue);
         }
         ImmutableList<T> copy = new ImmutableList<>();
@@ -69,7 +74,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         return copy;
     }
 
-    public ImmutableList<T> replaceOrAdd(T oldValue, T newValue) {
+    public @Nonnull ImmutableList<T> replaceOrAdd(T oldValue, T newValue) {
         if (contains(oldValue)) {
             return replace(oldValue, newValue);
         } else {
@@ -77,7 +82,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         }
     }
 
-    public int indexOf(T value) {
+    public int indexOf(@Nullable T value) {
         int index = 0;
         for (T val : this) {
             if (Objects.equals(val, value)) {
@@ -88,7 +93,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         return -1;
     }
 
-    public ImmutableList<T> add(T value) {
+    public @Nonnull ImmutableList<T> add(T value) {
         List<T> toUse = this.arrayList;
         int newFirst = this.first;
         int newLast = this.last + 1;
@@ -105,7 +110,7 @@ public final class ImmutableList<T> implements Iterable<T> {
         return first > last;
     }
 
-    public ImmutableList<T> subList(int firstIndex, int lastIndex) {
+    public @Nonnull ImmutableList<T> subList(int firstIndex, int lastIndex) {
         if (firstIndex < 0) throw new IllegalArgumentException("firstIndex must be non-negative but was " + firstIndex);
         int newFirst = this.first + firstIndex;
         int newLast = this.first + lastIndex;
@@ -114,29 +119,29 @@ public final class ImmutableList<T> implements Iterable<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public @Nonnull Iterator<T> iterator() {
         return new ImmutableListIterator();
     }
 
-    public Stream<T> stream() {
+    public @Nonnull Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }
 
     /**
-     * @return the first item in this list, or empty if the list is empty
+     * @return the first item in this list, or null if the list is empty
      */
-    public Optional<T> first() {
-        return isEmpty() ? Optional.empty() : Optional.of(arrayList.get(first));
+    public @Nullable T first() {
+        return isEmpty() ? null : arrayList.get(first);
     }
 
     /**
-     * @return the last item in this list, or empty if the list is empty
+     * @return the last item in this list, or null if the list is empty
      */
-    public Optional<T> last() {
-        return isEmpty() ? Optional.empty() : Optional.of(arrayList.get(last));
+    public @Nullable T last() {
+        return isEmpty() ? null : arrayList.get(last);
     }
 
-    public T get(int index) {
+    public @Nonnull T get(int index) {
         return arrayList.get(index);
     }
 
@@ -144,14 +149,14 @@ public final class ImmutableList<T> implements Iterable<T> {
         return indexOf(item) > -1;
     }
 
-    public ImmutableList<T> removeLast() {
+    public @Nonnull ImmutableList<T> removeLast() {
         if (size() == 0) {
             throw new IllegalStateException("The list was empty");
         }
         return subList(0, last -1);
     }
 
-    public Iterator<T> reverseIterator() {
+    public @Nonnull Iterator<T> reverseIterator() {
         return new ReversedIterator();
     }
 
@@ -190,14 +195,14 @@ public final class ImmutableList<T> implements Iterable<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableList<?> that = (ImmutableList<?>) o;
         return asList().equals(that.asList());
     }
 
-    private List<T> asList() {
+    private @Nonnull List<T> asList() {
         return List.copyOf(this.arrayList.subList(first, last + 1));
     }
 
@@ -216,11 +221,11 @@ public final class ImmutableList<T> implements Iterable<T> {
      * @param <T> the type of the input elements
      * @return a {@code Collector} which collects all the input elements into an {@link ImmutableList}, in encounter order
      */
-    public static <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
+    public static @Nonnull <T> Collector<T, List<T>, ImmutableList<T>> toImmutableList() {
         return new ImmutableListCollector<>();
     }
 
-    public static <T> ImmutableList<T> emptyList() {
+    public static @Nonnull <T> ImmutableList<T> emptyList() {
         return (ImmutableList<T>)EMPTY;
     }
 

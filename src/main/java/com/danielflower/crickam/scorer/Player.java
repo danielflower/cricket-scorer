@@ -1,6 +1,8 @@
 package com.danielflower.crickam.scorer;
 
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import static java.util.Objects.requireNonNull;
  * <p>To create players, use {@link #player()} to get a new {@link Builder}.</p>
  * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
  */
+@Immutable
 public class Player {
 
     private final String familyName;
@@ -28,35 +31,35 @@ public class Player {
         this.familyName = requireNonNull(builder.familyName);
     }
 
-	public String toString() {
+	public @Nonnull String toString() {
 		return initialsWithSurname();
 	}
 
-    public String givenName() {
+    public @Nonnull String givenName() {
         return givenName;
     }
 
-    public ImmutableList<String> formalGivenNames() {
+    public @Nonnull ImmutableList<String> formalGivenNames() {
 	    return formalGivenNames;
     }
 
-    public String formalName() {
+    public @Nonnull String formalName() {
         return formalGivenNames.stream().collect(Collectors.joining(" ")) + " " + familyName();
     }
 
-    public String familyName() {
+    public @Nonnull String familyName() {
         return familyName;
     }
 
-    public String fullName() {
+    public @Nonnull String fullName() {
         return fullName;
     }
 
-    public String initialsWithSurname() {
+    public @Nonnull String initialsWithSurname() {
 	    return initials + " " + familyName;
     }
 
-    public String initials() {
+    public @Nonnull String initials() {
         return initials;
     }
 
@@ -64,7 +67,7 @@ public class Player {
      * Creates a player builder. Consider using {@link #player(String)} instead.
      * @return A player builder.
      */
-    public static Builder player() {
+    public static @Nonnull Builder player() {
 	    return new Builder();
     }
 
@@ -72,7 +75,7 @@ public class Player {
      * @param name The full name of the player, such as &quot;Luteru Ross Poutoa Lote Taylor&quot;
      * @return A player builder formal given names and family name set.
      */
-    public static Builder player(String name) {
+    public static @Nonnull Builder player(String name) {
 	    return player(name.split("\\s+"));
     }
 
@@ -80,7 +83,7 @@ public class Player {
      * @param names The full name of the player, such as <code>&quot;Luteru&quot;, &quot;Ross&quot;, &quot;Poutoa&quot;, &quot;Lote&quot;, &quot;Taylor&quot;</code>
      * @return A player builder formal given names and family name set.
      */
-    public static Builder player(String... names) {
+    public static @Nonnull Builder player(String... names) {
 	    if (names.length < 2) {
             throw new IllegalArgumentException("Names should have at least two items");
         }
@@ -94,7 +97,7 @@ public class Player {
         }
         return builder
             .withFormalGivenNames(list.removeLast())
-            .withFamilyName(list.last().orElseThrow());
+            .withFamilyName(list.last());
     }
 
     /**
@@ -111,7 +114,7 @@ public class Player {
          * @param formalGivenNames The formal given names of the player, such as <code>&quot;Luteru&quot;, &quot;Ross&quot;, &quot;Poutoa&quot;, &quot;Lote&quot;</code> for Ross Taylor.
          * @return This builder
          */
-        public Builder withFormalGivenNames(ImmutableList<String> formalGivenNames) {
+        public @Nonnull Builder withFormalGivenNames(ImmutableList<String> formalGivenNames) {
             this.formalGivenNames = formalGivenNames;
             return this;
         }
@@ -120,7 +123,7 @@ public class Player {
          * @param familyName The family name of the player, for example &quot;Taylor&quot; for Ross Taylor.
          * @return This builder
          */
-        public Builder withFamilyName(String familyName) {
+        public @Nonnull Builder withFamilyName(String familyName) {
             this.familyName = familyName;
             return this;
         }
@@ -130,7 +133,7 @@ public class Player {
          * @param fullName The name this player is known as, for example &quot;Ross Taylor&quot;
          * @return This builder
          */
-        public Builder withFullName(String fullName) {
+        public @Nonnull Builder withFullName(String fullName) {
             this.fullName = fullName;
             return this;
         }
@@ -139,7 +142,7 @@ public class Player {
          * @param givenName The given name that this person is generally known as, for example &quot;Ross&quot; for Luteru Ross Poutoa Lote Taylor
          * @return This builder
          */
-        public Builder withGivenName(String givenName) {
+        public @Nonnull Builder withGivenName(String givenName) {
             this.givenName = givenName;
             return this;
         }
@@ -148,12 +151,12 @@ public class Player {
          * @param initials The initials of the player's formal given names. This is inferred if unset.
          * @return This builder
          */
-        public Builder withInitials(String initials) {
+        public @Nonnull Builder withInitials(String initials) {
             this.initials = initials;
             return this;
         }
 
-        public Player build() {
+        public @Nonnull Player build() {
             return new Player(this);
         }
     }

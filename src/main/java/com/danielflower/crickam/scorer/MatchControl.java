@@ -5,10 +5,13 @@ import com.danielflower.crickam.scorer.events.MatchEventBuilder;
 import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -52,7 +55,7 @@ public final class MatchControl {
      * @return A match control object you can use to build up match state
      * @see MatchEvents#matchStarting(MatchType)
      */
-    public static MatchControl newMatch(MatchStartingEvent.Builder builder) {
+    public static @Nonnull MatchControl newMatch(MatchStartingEvent.Builder builder) {
         requireNonNull(builder, "builder");
         MatchStartingEvent event = builder.build(null);
         Match match = Match.newMatch(event);
@@ -66,7 +69,7 @@ public final class MatchControl {
      * @return A new Match Control object
      * @see MatchEvents MatchEvents class for a number of handy builder objects
      */
-    public MatchControl onEvent(MatchEventBuilder<?,?> builder) {
+    public @Nonnull MatchControl onEvent(MatchEventBuilder<?,?> builder) {
         requireNonNull(builder, "builder");
         MatchEvent event = builder.build(match());
         Match newMatch = match().onEvent(event);
@@ -83,7 +86,7 @@ public final class MatchControl {
         return newMatchControl;
     }
 
-    private MatchControl callEventListeners(MatchEvent event) {
+    private @Nonnull MatchControl callEventListeners(MatchEvent event) {
         MatchControl control = this;
         MatchEventData data = new MatchEventDataImpl(event, control);
         List<MatchEventBuilder<?,?>> allGenerated = new ArrayList<>();
@@ -108,14 +111,14 @@ public final class MatchControl {
     /**
      * @return The match at the current point in time
      */
-    public Match match() {
+    public @Nonnull Match match() {
         return match;
     }
 
     /**
      * @return The last event that was applied
      */
-    public MatchEvent event() {
+    public @Nonnull MatchEvent event() {
         return event;
     }
 
@@ -138,8 +141,10 @@ public final class MatchControl {
      * @see #atLastUserGeneratedEvent()
      * @throws IllegalStateException if this has no parent
      */
-    public MatchControl parent() {
-        return ancestors.last().orElseThrow(() -> new IllegalStateException("Cannot get the parent of the first event"));
+    public @Nonnull MatchControl parent() {
+        MatchControl last = ancestors.last();
+        if (last == null) throw new IllegalStateException("Cannot get the parent of the first event");
+        return last;
     }
 
     /**
@@ -148,22 +153,24 @@ public final class MatchControl {
      * @return The current innings that's in progress
      * @throws IllegalStateException There is not an innings in progress
      */
-    public Innings currentInnings() {
-        return match().currentInnings().orElseThrow(() -> new IllegalStateException("There is no innings in progress"));
+    public @Nonnull Innings currentInnings() {
+        Innings innings = match().currentInnings();
+        if (innings == null) throw new IllegalStateException("There is no innings in progress");
+        return innings;
     }
 
     /**
      * @see #eventStream(Class)
      * @return All the events and corresponding states in the order they occurred
      */
-    public ImmutableList<MatchControl> history() {
+    public @Nonnull ImmutableList<MatchControl> history() {
         return ancestors.add(this);
     }
 
     /**
      * @return The number of events that have taken place
      */
-    public int eventCount() {
+    public @Nonnegative int eventCount() {
         return ancestors.size() + 1;
     }
 
@@ -180,14 +187,14 @@ public final class MatchControl {
         requireInRange("hour", hour, 0, 23);
         requireInRange("minute", minute, 0, 59);
         requireInRange("second", second, 0, 59);
-        ZoneId zoneId = match().timeZone()
-            .orElseThrow(() -> new UnsupportedOperationException("No time zone was set on the match (or on the venue) so local times cannot be calculated"))
-            .toZoneId();
+        TimeZone tz = match().timeZone();
+        if (tz == null) throw new UnsupportedOperationException("No time zone was set on the match (or on the venue) so local times cannot be calculated");
+        ZoneId zoneId = tz.toZoneId();
         ImmutableList<MatchControl> history = history();
         for (int i = history.size() - 1; i >= 0; i--) {
             MatchControl er = history.get(i);
-            if (er.event().time().isPresent()) {
-                Instant lastKnownTime = er.event().time().get();
+            Instant lastKnownTime = er.event().time();
+            if (lastKnownTime != null) {
                 LocalDate date = LocalDate.ofInstant(lastKnownTime, zoneId);
                 LocalTime time = LocalTime.of(hour, minute, second);
                 LocalDateTime dateTime = LocalDateTime.of(date, time);
@@ -211,7 +218,7 @@ public final class MatchControl {
      * @param event The event to look up
      * @return The {@code MatchControl} as at the time that the event was added
      */
-    public MatchControl asAt(MatchEvent event) {
+    public @Nonnull MatchControl asAt(MatchEvent event) {
         requireNonNull(event, "event");
         for (MatchControl matchControl : this.history()) {
             if (matchControl.event().equals(event)) {
@@ -229,7 +236,7 @@ public final class MatchControl {
      * @param <T> The type of stream that will be returned
      * @return A stream
      */
-    public <T extends MatchEvent> Stream<T> eventStream(Class<T> eventClass) {
+    public @Nonnull <T extends MatchEvent> Stream<T> eventStream(Class<T> eventClass) {
         Class<? extends MatchEvent> clazz = requireNonNull(eventClass, "eventClass");
         return history().stream()
             .filter(c -> c.event().getClass().equals(clazz))
@@ -244,9 +251,11 @@ public final class MatchControl {
      * @param innings The innings (at any point of time in that innings) that you are searching for
      * @return A predicate that can be used in a stream filter
      */
-    public static Predicate<MatchControl> sameInnings(Innings innings) {
-        return mc -> mc.match().currentInnings().isPresent()
-            && mc.match().currentInnings().get().inningsNumber() == innings.inningsNumber();
+    public static @Nonnull Predicate<MatchControl> sameInnings(Innings innings) {
+        return mc -> {
+            Innings i = mc.match().currentInnings();
+            return i != null && i.inningsNumber() == innings.inningsNumber();
+        };
     }
 
     /**
@@ -255,11 +264,11 @@ public final class MatchControl {
      * @return The match as at last event that was generated by the API user
      * @see #undo()
      */
-    public MatchControl atLastUserGeneratedEvent() {
+    public @Nonnull MatchControl atLastUserGeneratedEvent() {
         Iterator<MatchControl> all = history().reverseIterator();
         while (all.hasNext()) {
             MatchControl control = all.next();
-            if (control.event().generatedBy().isEmpty()) {
+            if (control.event().generatedBy() == null) {
                 return control;
             }
         }
@@ -274,7 +283,7 @@ public final class MatchControl {
      * @return The match with the last user generated event undone.
      * @see #atLastUserGeneratedEvent()
      */
-    public MatchControl undo() {
+    public @Nonnull MatchControl undo() {
         return atLastUserGeneratedEvent().parent();
     }
 }

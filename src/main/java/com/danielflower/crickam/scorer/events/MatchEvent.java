@@ -3,8 +3,10 @@ package com.danielflower.crickam.scorer.events;
 import com.danielflower.crickam.scorer.ImmutableList;
 import com.danielflower.crickam.scorer.MatchControl;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
-import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 
@@ -12,27 +14,28 @@ import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
  * A match event that the API user feeds into the {@link MatchControl#onEvent(MatchEventBuilder)} to build up a match.
  * <p>Match events are created by builders. Builders can be created by calling the static methods on the {@link MatchEvents} class.</p>
  */
+@Immutable
 public interface MatchEvent {
 
     /**
      * @return A unique ID for this event
      */
-    String id();
+    @Nonnull String id();
 
     /**
-     * @return The time that the event took place, or empty if unknown
+     * @return The time that the event took place, or null if unknown
      */
-    Optional<Instant> time();
+    @Nullable Instant time();
 
     /**
-     * @return The ID of the event that auto-generated this event, or empty if the API user created the event
+     * @return The ID of the event that auto-generated this event, or null if the API user created the event
      */
-    Optional<String> generatedBy();
+    @Nullable String generatedBy();
 
     /**
      * @return A new builder based on the current values of the event
      */
-    MatchEventBuilder<?,?> newBuilder();
+    @Nonnull MatchEventBuilder<?,?> newBuilder();
 
     /**
      * Certain events generate more events, for example a {@link InningsStartingEvent} causes a {@link BatterInningsStartingEvent}

@@ -2,14 +2,18 @@ package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.*;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
+@Immutable
 public final class BallCompletedEvent extends BaseMatchEvent {
 
     private final Player bowler;
@@ -27,9 +31,9 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private final int numberInMatch;
 
     private BallCompletedEvent(String id, Player bowler, Player striker, Player nonStriker, Score runsScored,
-                               boolean playersCrossed, Dismissal dismissal, Delivery delivery, Swing swing,
-                               Trajectory trajectoryAtImpact, Player fielder, Instant time, int overNumber,
-                               int numberInOver, int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
+                               boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
+                               @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, @Nonnegative int overNumber,
+                               @Nonnegative int numberInOver, @Nonnegative int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
         super(id, time, null, generatedEvents);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
@@ -49,19 +53,19 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         this.fielder = fielder;
     }
 
-    public Player bowler() {
+    public @Nonnull Player bowler() {
         return bowler;
     }
 
-    public Player striker() {
+    public @Nonnull Player striker() {
         return striker;
     }
 
-    public Player nonStriker() {
+    public @Nonnull Player nonStriker() {
         return nonStriker;
     }
 
-    public Score runsScored() {
+    public @Nonnull Score runsScored() {
         return runsScored;
     }
 
@@ -69,39 +73,39 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         return playersCrossed;
     }
 
-    public Optional<Dismissal> dismissal() {
-        return Optional.ofNullable(dismissal);
+    public @Nullable Dismissal dismissal() {
+        return dismissal;
     }
 
-    public Optional<Delivery> delivery() {
-        return Optional.ofNullable(delivery);
+    public @Nullable Delivery delivery() {
+        return delivery;
     }
 
-    public Optional<Swing> swing() {
-        return Optional.ofNullable(swing);
+    public @Nullable Swing swing() {
+        return swing;
     }
 
-    public Optional<Trajectory> trajectoryAtImpact() {
-        return Optional.ofNullable(trajectoryAtImpact);
+    public @Nullable Trajectory trajectoryAtImpact() {
+        return trajectoryAtImpact;
     }
 
-    public Optional<Player> fielder() {
-        return Optional.ofNullable(fielder);
+    public @Nullable Player fielder() {
+        return fielder;
     }
 
-    public int overNumber() {
+    public @Nonnegative int overNumber() {
         return overNumber;
     }
 
-    public int numberInOver() {
+    public @Nonnegative int numberInOver() {
         return numberInOver;
     }
 
-    public int numberInMatch() {
+    public @Nonnegative int numberInMatch() {
         return numberInMatch;
     }
 
-    public Score score() {
+    public @Nonnull Score score() {
         return runsScored;
     }
 
@@ -117,18 +121,18 @@ public final class BallCompletedEvent extends BaseMatchEvent {
      *
      * @return The number of the last ball
      */
-    public String overDotBallString() {
+    public @Nonnull String overDotBallString() {
         return overNumber() + "." + numberInOver();
     }
 
-    public String toString() {
+    public @Nonnull String toString() {
         String out = dismissal != null ? " OUT " + dismissal.type().fullName() : "";
         return overDotBallString() + " " + bowler().familyName() + " to " + striker().familyName() + " "
             + runsScored().teamRuns() + " runs " + out;
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         Builder builder = new Builder()
             .withBowler(bowler)
             .withStriker(striker)
@@ -140,8 +144,8 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             .withTrajectoryAtImpact(trajectoryAtImpact)
             .withFielder(fielder)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null));
+            .withTime(time())
+            .withGeneratedBy(generatedBy());
         if (dismissal != null) {
             builder.withDismissal(dismissal.type())
                 .withDismissedBatter(dismissal.batter());
@@ -163,47 +167,47 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         private DismissalType dismissalType;
         private Player dismissedBatter;
 
-        public Player bowler() {
+        public @Nullable Player bowler() {
             return bowler;
         }
 
-        public Player striker() {
+        public @Nullable Player striker() {
             return striker;
         }
 
-        public Player nonStriker() {
+        public @Nullable Player nonStriker() {
             return nonStriker;
         }
 
-        public Score runsScored() {
+        public @Nonnull Score runsScored() {
             return runsScored;
         }
 
-        public Boolean playersCrossed() {
+        public @Nullable Boolean playersCrossed() {
             return playersCrossed;
         }
 
-        public Delivery delivery() {
+        public @Nullable Delivery delivery() {
             return delivery;
         }
 
-        public Swing swing() {
+        public @Nullable Swing swing() {
             return swing;
         }
 
-        public Trajectory trajectoryAtImpact() {
+        public @Nullable Trajectory trajectoryAtImpact() {
             return trajectoryAtImpact;
         }
 
-        public Player fielder() {
+        public @Nullable Player fielder() {
             return fielder;
         }
 
-        public DismissalType dismissal() {
+        public @Nullable DismissalType dismissal() {
             return dismissalType;
         }
 
-        public Player dismissedBatter() {
+        public @Nullable Player dismissedBatter() {
             return dismissedBatter;
         }
 
@@ -211,7 +215,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param bowler The bowler bowling the ball. If null, then the bowler will be the bowler of the over.
          * @return This builder
          */
-        public Builder withBowler(Player bowler) {
+        public @Nonnull Builder withBowler(@Nullable Player bowler) {
             this.bowler = bowler;
             return this;
         }
@@ -220,7 +224,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param striker The facing batter. If null, then the batter will be based on the result of the previous ball.
          * @return This builder
          */
-        public Builder withStriker(Player striker) {
+        public @Nonnull Builder withStriker(@Nullable Player striker) {
             this.striker = striker;
             return this;
         }
@@ -229,12 +233,12 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param nonStriker The non-facing batter. If null, then the batter will be based on the result of the previous ball.
          * @return This builder
          */
-        public Builder withNonStriker(Player nonStriker) {
+        public @Nonnull Builder withNonStriker(@Nullable Player nonStriker) {
             this.nonStriker = nonStriker;
             return this;
         }
 
-        public Builder withRunsScored(Score runsScored) {
+        public @Nonnull Builder withRunsScored(@Nonnull Score runsScored) {
             this.runsScored = runsScored;
             return this;
         }
@@ -246,7 +250,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param playersCrossed true if they crossed; false if not; or null infer from the score
          * @return This builder
          */
-        public Builder withPlayersCrossed(Boolean playersCrossed) {
+        public @Nonnull Builder withPlayersCrossed(@Nullable Boolean playersCrossed) {
             this.playersCrossed = playersCrossed;
             return this;
         }
@@ -259,7 +263,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param type The type of dismissal
          * @return This builder
          */
-        public Builder withDismissal(DismissalType type) {
+        public @Nonnull Builder withDismissal(@Nonnull DismissalType type) {
             this.dismissalType = requireNonNull(type);
             if (runsScored == null) {
                 runsScored = Score.WICKET;
@@ -274,22 +278,22 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param dismissedBatter The batter who was dismissed (or null to indicate the current striker)
          * @return This builder
          */
-        public Builder withDismissedBatter(Player dismissedBatter) {
+        public @Nonnull Builder withDismissedBatter(@Nullable Player dismissedBatter) {
             this.dismissedBatter = dismissedBatter;
             return this;
         }
 
-        public Builder withDelivery(Delivery delivery) {
+        public @Nonnull Builder withDelivery(@Nullable Delivery delivery) {
             this.delivery = delivery;
             return this;
         }
 
-        public Builder withSwing(Swing swing) {
+        public @Nonnull Builder withSwing(@Nullable Swing swing) {
             this.swing = swing;
             return this;
         }
 
-        public Builder withTrajectoryAtImpact(Trajectory trajectoryAtImpact) {
+        public @Nonnull Builder withTrajectoryAtImpact(@Nullable Trajectory trajectoryAtImpact) {
             this.trajectoryAtImpact = trajectoryAtImpact;
             return this;
         }
@@ -300,24 +304,30 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param fielder The main fielder who picked up the ball, or the fielder who effected a run out, or who caught the ball
          * @return This builder
          */
-        public Builder withFielder(Player fielder) {
+        public @Nonnull Builder withFielder(@Nullable Player fielder) {
             this.fielder = fielder;
             return this;
         }
 
 
-        public BallCompletedEvent build(Match match) {
+        @Nonnull
+        public BallCompletedEvent build(@Nonnull Match match) {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
             if (runsScored.wickets() > 0 && dismissalType == null) {
                 throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");
             } else if (runsScored.wickets() == 0 && dismissalType != null) {
                 throw new IllegalStateException("A dismissal was specified, but the runsScored.wickets() was 0");
             }
-            Innings innings = match.currentInnings().orElseThrow(() -> new IllegalStateException("A ball cannot be bowled when there is no current innings"));
-            BatterInnings strikerInnings = innings.currentStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter on strike"));
-            BatterInnings nonStrikerInnings = innings.currentNonStriker().orElseThrow(() -> new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end"));
+            Innings innings = match.currentInnings();
+            if (innings == null) throw new IllegalStateException("A ball cannot be bowled when there is no current innings");
 
-            Over over = innings.currentOver().orElseThrow(() -> new IllegalStateException("There is no current over. Raise an OverStartingEvent event before the ball completion event"));
+            BatterInnings strikerInnings = innings.currentStriker();
+            if (strikerInnings == null) throw new IllegalStateException("Cannot bowl a ball without a batter on strike");
+            BatterInnings nonStrikerInnings = innings.currentNonStriker();
+            if (nonStrikerInnings == null) throw new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end");
+
+            Over over = innings.currentOver();
+            if (over == null) throw new IllegalStateException("There is no current over. Raise an OverStartingEvent event before the ball completion event");
             Player bowler = requireNonNullElseGet(this.bowler, over::bowler);
             Player striker = requireNonNullElseGet(this.striker, strikerInnings::player);
             Player nonStriker = requireNonNullElseGet(this.nonStriker, nonStrikerInnings::player);
@@ -350,7 +360,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
 
         @Override
-        public boolean equals(Object o) {
+        public boolean equals(@Nullable Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;

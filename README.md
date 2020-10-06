@@ -178,5 +178,9 @@ Design decisions
 looked at, and matches can be forked easily.
 * The only way to change the model is with events
 * Object creation is with builder classes, which are inner classes of the model object they create
-* The model will not return `null` from any methods. Any methods that may not have return
-values in some cases return `Optional<T>` instead.
+
+Migrating
+---------
+
+Versions `0.6.x` and lower returned `Optional` or `OptionalInt` in some places. These methods now return `null` and
+are annotated with `@javax.annotation.Nonnull`. 

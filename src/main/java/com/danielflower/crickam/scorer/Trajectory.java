@@ -1,21 +1,21 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
-
-import static com.danielflower.crickam.scorer.Crictils.toOptional;
 
 /**
  * The trajectory of the ball coming off the bat
  */
+@Immutable
 public final class Trajectory {
     private final Integer speedInKms;
     private final Double directionInDegreesRelativeToBatter;
     private final Double launchAngle;
     private final Double distanceInMeters;
 
-    private Trajectory(Integer speedInKms, Double directionInDegreesRelativeToBatter, Double launchAngle, Double distanceInMeters) {
+    private Trajectory(@Nullable Integer speedInKms, @Nullable Double directionInDegreesRelativeToBatter, @Nullable Double launchAngle, @Nullable Double distanceInMeters) {
         if (speedInKms != null && (speedInKms < 0 || speedInKms > 300)) {
             throw new IllegalArgumentException("speedInKms must be between 0 and 300, or null, but was " + speedInKms);
         }
@@ -55,34 +55,34 @@ public final class Trajectory {
      * </ul>
      * @return The direction that the ball was hit in
      */
-    public Optional<Double> directionInDegreesRelativeToBatter() {
-        return Optional.ofNullable(directionInDegreesRelativeToBatter);
+    public @Nullable Double directionInDegreesRelativeToBatter() {
+        return directionInDegreesRelativeToBatter;
     }
 
     /**
      * @return The angle the ball came off the bat. A negative number is hitting into the ground (with -90.0 being
      * directly downward); positive is in the air (with 90.0 being straight up).
      */
-    public Optional<Double> launchAngle() {
-        return Optional.ofNullable(launchAngle);
+    public @Nullable Double launchAngle() {
+        return launchAngle;
     }
 
     /**
-     * @return The speed of the ball off the bat, or empty if unknown
+     * @return The speed of the ball off the bat, or null if unknown
      */
-    public OptionalInt speedInKms() {
-        return toOptional(speedInKms);
+    public @Nullable Integer speedInKms() {
+        return speedInKms;
     }
 
     /**
-     * @return The distance the ball traveled to until a fielder picked it up, or it crossed the boundary, or (for a six) when it landed. Empty if unknown.
+     * @return The distance the ball traveled to until a fielder picked it up, or it crossed the boundary, or (for a six) when it landed. Null if unknown.
      */
-    public Optional<Double> distanceInMeters() {
-        return Optional.ofNullable(distanceInMeters);
+    public @Nullable Double distanceInMeters() {
+        return distanceInMeters;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trajectory that = (Trajectory) o;
@@ -107,7 +107,7 @@ public final class Trajectory {
             '}';
     }
 
-    public static Builder trajectory() {
+    public static @Nonnull Builder trajectory() {
         return new Builder();
     }
 
@@ -121,7 +121,7 @@ public final class Trajectory {
          * @param speedInKms The speed of the ball off the bat, or null if unknown
          * @return This builder
          */
-        public Builder withSpeedInKms(Integer speedInKms) {
+        public @Nonnull Builder withSpeedInKms(@Nullable Integer speedInKms) {
             this.speedInKms = speedInKms;
             return this;
         }
@@ -148,7 +148,7 @@ public final class Trajectory {
          * @param directionInDegreesRelativeToBatter The direction
          * @return This builder
          */
-        public Builder withDirectionInDegreesRelativeToBatter(Double directionInDegreesRelativeToBatter) {
+        public @Nonnull Builder withDirectionInDegreesRelativeToBatter(@Nullable Double directionInDegreesRelativeToBatter) {
             this.directionInDegreesRelativeToBatter = directionInDegreesRelativeToBatter;
             return this;
         }
@@ -158,7 +158,7 @@ public final class Trajectory {
          *                    (with -90.0 being directly downward); positive is in the air (with 90.0 being straight up).
          * @return This builder
          */
-        public Builder withLaunchAngle(Double launchAngle) {
+        public @Nonnull Builder withLaunchAngle(@Nullable Double launchAngle) {
             this.launchAngle = launchAngle;
             return this;
         }
@@ -167,12 +167,12 @@ public final class Trajectory {
          * @param distanceInMeters The distance the ball traveled to until a fielder picked it up, or it crossed the boundary, or (for a six) when it landed. null if unknown.
          * @return This builder
          */
-        public Builder withDistanceInMeters(Double distanceInMeters) {
+        public @Nonnull Builder withDistanceInMeters(@Nullable Double distanceInMeters) {
             this.distanceInMeters = distanceInMeters;
             return this;
         }
 
-        public Trajectory build() {
+        public @Nonnull Trajectory build() {
             return new Trajectory(speedInKms, directionInDegreesRelativeToBatter, launchAngle, distanceInMeters);
         }
 

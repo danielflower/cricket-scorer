@@ -12,7 +12,7 @@ class DeliveryTest {
     @Test
     public void canBuildThem() {
         Delivery delivery = aDelivery().withDeliveryType(DeliveryType.ARM_BALL).build();
-        assertThat(delivery.deliveryType(), is(Optional.of(DeliveryType.ARM_BALL)));
+        assertThat(delivery.deliveryType(), is(DeliveryType.ARM_BALL));
     }
 
     public static Delivery.Builder aDelivery() {

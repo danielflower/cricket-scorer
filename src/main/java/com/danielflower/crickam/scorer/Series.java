@@ -1,10 +1,14 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
+
 import static java.util.Objects.requireNonNull;
 
 /**
  * The series that a match is part of
  */
+@Immutable
 public final class Series {
 
 	private final String id;
@@ -17,19 +21,19 @@ public final class Series {
         this.name = requireNonNull(name);
     }
 
-    public String id() {
+    public @Nonnull String id() {
         return id;
     }
 
-    public ImmutableList<Team> teams() {
+    public @Nonnull ImmutableList<Team> teams() {
         return teams;
     }
 
-    public String name() {
+    public @Nonnull String name() {
         return name;
     }
 
-    public static Builder series() {
+    public static @Nonnull Builder series() {
         return new Builder();
     }
 
@@ -38,22 +42,22 @@ public final class Series {
         public ImmutableList<Team> teams;
         public String name;
 
-        public Builder withId(String id) {
+        public @Nonnull Builder withId(String id) {
             this.id = id;
             return this;
         }
 
-        public Builder withTeams(ImmutableList<Team> teams) {
+        public @Nonnull Builder withTeams(ImmutableList<Team> teams) {
             this.teams = teams;
             return this;
         }
 
-        public Builder withName(String name) {
+        public @Nonnull Builder withName(String name) {
             this.name = name;
             return this;
         }
 
-        public Series build() {
+        public @Nonnull Series build() {
             return new Series(id, teams, name);
         }
     }

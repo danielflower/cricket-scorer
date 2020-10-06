@@ -2,12 +2,17 @@ package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.*;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Objects.requireNonNullElseGet;
 
+@Immutable
 public final class MatchStartingEvent extends BaseMatchEvent {
 
     private final String matchID;
@@ -23,9 +28,9 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final TimeZone timeZone;
     private final transient ImmutableList<MatchEventListener> eventListeners;
 
-    private MatchStartingEvent(String id, String generatedBy, String matchID, Series series, Instant time, Instant scheduledStartTime,
-                               ImmutableList<LineUp> lineUps, MatchType matchType, int inningsPerTeam, Integer oversPerInnings, Venue venue,
-                               int numberOfScheduledDays, Integer ballsPerInnings, TimeZone timeZone, ImmutableList<MatchEventListener> eventListeners) {
+    private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime,
+                               ImmutableList<LineUp> lineUps, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue,
+                               @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone, ImmutableList<MatchEventListener> eventListeners) {
         super(id, time, generatedBy);
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
@@ -41,56 +46,56 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         this.eventListeners = eventListeners;
     }
 
-    public ImmutableList<MatchEventListener> eventListeners() {
+    public @Nonnull ImmutableList<MatchEventListener> eventListeners() {
         return eventListeners;
     }
 
-    public String matchID() {
+    public @Nonnull String matchID() {
         return matchID;
     }
 
-    public Optional<Series> series() {
-        return Optional.ofNullable(series);
+    public @Nullable Series series() {
+        return series;
     }
 
-    public Optional<Instant> scheduledStartTime() {
-        return Optional.ofNullable(scheduledStartTime);
+    public @Nullable Instant scheduledStartTime() {
+        return scheduledStartTime;
     }
 
-    public ImmutableList<LineUp> teamLineUps() {
+    public @Nonnull ImmutableList<LineUp> teamLineUps() {
         return lineUps;
     }
 
-    public MatchType matchType() {
+    public @Nonnull MatchType matchType() {
         return matchType;
     }
 
-    public int inningsPerTeam() {
+    public @Nonnegative int inningsPerTeam() {
         return inningsPerTeam;
     }
 
-    public OptionalInt oversPerInnings() {
-        return Crictils.toOptional(oversPerInnings);
+    public @Nullable Integer oversPerInnings() {
+        return oversPerInnings;
     }
 
-    public Optional<Venue> venue() {
-        return Optional.ofNullable(venue);
+    public @Nullable Venue venue() {
+        return venue;
     }
 
-    public int numberOfScheduledDays() {
+    public @Nonnegative int numberOfScheduledDays() {
         return numberOfScheduledDays;
     }
 
-    public OptionalInt ballsPerInnings() {
-        return Crictils.toOptional(ballsPerInnings);
+    public @Nullable Integer ballsPerInnings() {
+        return ballsPerInnings;
     }
 
-    public Optional<TimeZone> timeZone() {
-        return Optional.ofNullable(timeZone);
+    public @Nullable TimeZone timeZone() {
+        return timeZone;
     }
 
     @Override
-    public Builder newBuilder() {
+    public @Nonnull Builder newBuilder() {
         return new Builder()
             .withMatchID(matchID)
             .withSeries(series)
@@ -104,8 +109,8 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             .withBallsPerInnings(ballsPerInnings)
             .withTimeZone(timeZone)
             .withID(id())
-            .withTime(time().orElse(null))
-            .withGeneratedBy(generatedBy().orElse(null))
+            .withTime(time())
+            .withGeneratedBy(generatedBy())
             ;
     }
 
@@ -123,56 +128,56 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private TimeZone timeZone;
         private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
 
-        public String matchID() {
+        public @Nullable String matchID() {
             return matchID;
         }
 
-        public Series series() {
+        public @Nullable Series series() {
             return series;
         }
 
-        public Instant scheduledStartTime() {
+        public @Nullable Instant scheduledStartTime() {
             return startTime;
         }
 
-        public ImmutableList<LineUp> teamLineUps() {
+        public @Nullable ImmutableList<LineUp> teamLineUps() {
             return lineUps;
         }
 
-        public MatchType matchType() {
+        public @Nullable MatchType matchType() {
             return matchType;
         }
 
-        public int inningsPerTeam() {
+        public @Nonnegative int inningsPerTeam() {
             return inningsPerTeam;
         }
 
-        public Integer oversPerInnings() {
+        public @Nullable Integer oversPerInnings() {
             return oversPerInnings;
         }
 
-        public int numberOfScheduledDays() {
+        public @Nonnegative int numberOfScheduledDays() {
             return numberOfScheduledDays;
         }
 
-        public Venue venue() {
+        public @Nullable Venue venue() {
             return venue;
         }
 
-        public Integer ballsPerInnings() {
+        public @Nullable Integer ballsPerInnings() {
             return ballsPerInnings;
         }
 
-        public TimeZone timeZone() {
+        public @Nullable TimeZone timeZone() {
             return timeZone;
         }
 
-        public Builder withMatchID(String matchID) {
+        public @Nonnull Builder withMatchID(String matchID) {
             this.matchID = matchID;
             return this;
         }
 
-        public Builder withSeries(Series series) {
+        public @Nonnull Builder withSeries(@Nullable Series series) {
             this.series = series;
             return this;
         }
@@ -185,42 +190,42 @@ public final class MatchStartingEvent extends BaseMatchEvent {
          * @param startTime The expected time of the first ball
          * @return This builder
          */
-        public Builder withScheduledStartTime(Instant startTime) {
+        public @Nonnull Builder withScheduledStartTime(@Nullable Instant startTime) {
             this.startTime = startTime;
             return this;
         }
 
-        public Builder withTeamLineUps(ImmutableList<LineUp> lineUps) {
+        public @Nonnull Builder withTeamLineUps(ImmutableList<LineUp> lineUps) {
             this.lineUps = lineUps;
             return this;
         }
 
-        public Builder withMatchType(MatchType matchType) {
+        public @Nonnull Builder withMatchType(MatchType matchType) {
             this.matchType = matchType;
             return this;
         }
 
-        public Builder withInningsPerTeam(int inningsPerTeam) {
+        public @Nonnull Builder withInningsPerTeam(int inningsPerTeam) {
             this.inningsPerTeam = inningsPerTeam;
             return this;
         }
 
-        public Builder withOversPerInnings(Integer oversPerInnings) {
+        public @Nonnull Builder withOversPerInnings(@Nullable Integer oversPerInnings) {
             this.oversPerInnings = oversPerInnings;
             return this;
         }
 
-        public Builder withBallsPerInnings(Integer ballsPerInnings) {
+        public @Nonnull Builder withBallsPerInnings(@Nullable Integer ballsPerInnings) {
             this.ballsPerInnings = ballsPerInnings;
             return this;
         }
 
-        public Builder withNumberOfScheduledDays(int numberOfScheduledDays) {
+        public @Nonnull Builder withNumberOfScheduledDays(int numberOfScheduledDays) {
             this.numberOfScheduledDays = numberOfScheduledDays;
             return this;
         }
 
-        public Builder withVenue(Venue venue) {
+        public @Nonnull Builder withVenue(@Nullable Venue venue) {
             this.venue = venue;
             return this;
         }
@@ -232,7 +237,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
          * @param timeZone The time zone that this match was played in
          * @return This builder
          */
-        public Builder withTimeZone(TimeZone timeZone) {
+        public @Nonnull Builder withTimeZone(@Nullable TimeZone timeZone) {
             this.timeZone = timeZone;
             return this;
         }
@@ -244,7 +249,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
          * @param eventListeners The list of listeners
          * @return This builder
          */
-        public Builder withEventListeners(ImmutableList<MatchEventListener> eventListeners) {
+        public @Nonnull Builder withEventListeners(ImmutableList<MatchEventListener> eventListeners) {
             this.eventListeners = eventListeners;
             return this;
         }
@@ -256,11 +261,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
          * @param eventListeners The list of listeners
          * @return This builder
          */
-        public Builder withEventListeners(MatchEventListener... eventListeners) {
+        public @Nonnull Builder withEventListeners(MatchEventListener... eventListeners) {
             return withEventListeners(ImmutableList.of(eventListeners));
         }
 
-        public MatchStartingEvent build(Match match /* null for only this event type */) {
+        @Nonnull
+        public MatchStartingEvent build(@Nullable Match match /* null for only this event type */) {
             Integer bpi = this.ballsPerInnings;
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;

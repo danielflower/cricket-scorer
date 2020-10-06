@@ -17,7 +17,7 @@ class BallCompletedEventTest {
         MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, aus))
     )
         .onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
-        .onEvent(MatchEvents.overStarting(aus.battingOrder().last().get()))
+        .onEvent(MatchEvents.overStarting(aus.battingOrder().last()))
         .match();
 
     @Test
@@ -39,7 +39,7 @@ class BallCompletedEventTest {
         assertThat(crossedFor(Score.score().withPenaltyRuns(1).withValidDeliveries(1).build()), is(false));
         assertThat(crossedFor(Score.score().withWides(5).withWideDeliveries(1).build()), is(false));
         assertThat(crossedFor(Score.score().withNoBalls(1).withBatterRuns(4).build()), is(false));
-        assertThat(crossedFor(Score.parse("2w").get()), is(true));
+        assertThat(crossedFor(Score.parse("2w")), is(true));
     }
 
     private boolean crossedFor(Score score) {

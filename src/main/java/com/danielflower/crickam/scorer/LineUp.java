@@ -1,8 +1,10 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -12,6 +14,7 @@ import static java.util.Objects.requireNonNull;
  * <p>Use {@link #lineUp()} to create a builder.</p>
  * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
  */
+@Immutable
 public class LineUp {
 	private final ImmutableList<Player> players;
 	private final Team team;
@@ -28,28 +31,28 @@ public class LineUp {
     /**
      * @return The expected batting order
      */
-    public ImmutableList<Player> battingOrder() {
+    public @Nonnull ImmutableList<Player> battingOrder() {
         return players;
     }
 
     /**
      * @return The team this line-up is for
      */
-    public Team team() {
+    public @Nonnull Team team() {
         return team;
     }
 
     /**
      * @return The designated captain
      */
-    public Player captain() {
+    public @Nonnull Player captain() {
         return captain;
     }
 
     /**
      * @return The designated wicket keeper
      */
-    public Player wicketKeeper() {
+    public @Nonnull Player wicketKeeper() {
         return wicketKeeper;
     }
 
@@ -61,29 +64,30 @@ public class LineUp {
     /**
      * @return A new builder
      */
-    public static Builder lineUp() {
+    public static @Nonnull Builder lineUp() {
         return new Builder();
     }
 
     /**
      * Tries to find a player based on their name
      * @param name A surname, or given name plus surname, or initial plus surname
-     * @return The found player, or empty if unsure
+     * @return The found player, or null if unsure
      */
-    public Optional<Player> findPlayer(String name) {
+    public @Nullable Player findPlayer(String name) {
         String[] bits = name.trim().split("\\W+");
         String familyName = bits[bits.length - 1];
         List<Player> matchingSurnames = players.stream().filter(p ->
             Arrays.equals(p.familyName().split("\\W+"), bits) || p.familyName().equalsIgnoreCase(familyName)
         ).collect(Collectors.toList());
         if (matchingSurnames.isEmpty()) {
-            return Optional.empty();
+            return null;
         } else if (matchingSurnames.size() == 1) {
-            return Optional.of(matchingSurnames.get(0));
+            return matchingSurnames.get(0);
         }
         return matchingSurnames.stream()
             .filter(p -> p.givenName().toLowerCase().charAt(0) == bits[0].toLowerCase().charAt(0))
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
     public static class Builder {
@@ -96,7 +100,7 @@ public class LineUp {
          * @param players The players in the order they are expected to bat in
          * @return This builder
          */
-        public Builder withBattingOrder(ImmutableList<Player> players) {
+        public @Nonnull Builder withBattingOrder(ImmutableList<Player> players) {
             this.players = players;
             return this;
         }
@@ -105,7 +109,7 @@ public class LineUp {
          * @param team The team this line up is for
          * @return This builder
          */
-        public Builder withTeam(Team team) {
+        public @Nonnull Builder withTeam(Team team) {
             this.team = team;
             return this;
         }
@@ -114,7 +118,7 @@ public class LineUp {
          * @param captain The designated captain for this match
          * @return This builder
          */
-        public Builder withCaptain(Player captain) {
+        public @Nonnull Builder withCaptain(Player captain) {
             this.captain = captain;
             return this;
         }
@@ -123,7 +127,7 @@ public class LineUp {
          * @param wicketKeeper The designated wicket keeper for this match
          * @return Thie builder
          */
-        public Builder withWicketKeeper(Player wicketKeeper) {
+        public @Nonnull Builder withWicketKeeper(Player wicketKeeper) {
             this.wicketKeeper = wicketKeeper;
             return this;
         }
@@ -131,7 +135,7 @@ public class LineUp {
         /**
          * @return A newly created {@code LineUp}
          */
-        public LineUp build() {
+        public @Nonnull LineUp build() {
             return new LineUp(this);
         }
     }

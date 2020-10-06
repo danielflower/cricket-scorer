@@ -1,5 +1,8 @@
 package com.danielflower.crickam.scorer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -7,6 +10,7 @@ import java.util.TimeZone;
  * A stadium or ground where a match is played.
  * <p>Use {@link #venue()} to create a builder.</p>
  */
+@Immutable
 public class Venue {
 
 	private final String name;
@@ -24,6 +28,7 @@ public class Venue {
     /**
      * @return The name of the venue, such as &quot;Eden Park&quot;
      */
+    @Nonnull
     public String name() {
         return name;
     }
@@ -31,6 +36,7 @@ public class Venue {
     /**
      * @return The city (or town) that this venue is in.
      */
+    @Nullable
     public String city() {
         return city;
     }
@@ -38,6 +44,7 @@ public class Venue {
     /**
      * @return The country or territory that the venue is in
      */
+    @Nullable
     public String territory() {
         return territory;
     }
@@ -45,6 +52,7 @@ public class Venue {
     /**
      * @return The timezone at the venue.
      */
+    @Nonnull
     public TimeZone timeZone() {
         return timeZone;
     }
@@ -52,7 +60,7 @@ public class Venue {
     /**
      * @return A new venue builder.
      */
-    public static Builder venue() {
+    public static @Nonnull Builder venue() {
         return new Builder();
     }
 
@@ -66,7 +74,7 @@ public class Venue {
          * @param name The name of the venue, such as &quot;Eden Park&quot;
          * @return This builder
          */
-        public Builder withName(String name) {
+        public @Nonnull Builder withName(String name) {
             this.name = name;
             return this;
         }
@@ -75,7 +83,7 @@ public class Venue {
          * @param city The city (or town) that this venue is in, such as &quot;Auckland&quot;
          * @return This builder
          */
-        public Builder withCity(String city) {
+        public @Nonnull Builder withCity(@Nullable String city) {
             this.city = city;
             return this;
         }
@@ -84,8 +92,7 @@ public class Venue {
          * @param territory The country or territory that the venue is in, such as
          * @return This builder
          */
-        public Builder withTerritory(String territory) {
-
+        public @Nonnull Builder withTerritory(@Nullable String territory) {
             this.territory = territory;
             return this;
         }
@@ -94,7 +101,7 @@ public class Venue {
          * @param timeZone The timezone at the venue, for example <code>TimeZone.getTimeZone(&quot;Pacific/Auckland&quot;)</code>
          * @return This builder
          */
-        public Builder withTimeZone(TimeZone timeZone) {
+        public @Nonnull Builder withTimeZone(TimeZone timeZone) {
             this.timeZone = timeZone;
             return this;
         }
@@ -102,7 +109,7 @@ public class Venue {
         /**
          * @return A venue
          */
-        public Venue build() {
+        public @Nonnull Venue build() {
             return new Venue(this);
         }
     }

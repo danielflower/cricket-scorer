@@ -56,9 +56,9 @@ public final class MatchEvents {
      * @throws IllegalArgumentException if {@code scoreText} was not a valid score
      */
     public static BallCompletedEvent.Builder ballCompleted(String scoreText) {
-        Score score = Score.parse(scoreText).orElseThrow(() -> new IllegalArgumentException("Unknown score: " + scoreText));
-        return ballCompleted()
-            .withRunsScored(score);
+        Score score = Score.parse(scoreText);
+        if (score == null) throw new IllegalArgumentException("Unknown score: " + scoreText);
+        return ballCompleted().withRunsScored(score);
     }
 
     public static OverStartingEvent.Builder overStarting(Player bowler) {

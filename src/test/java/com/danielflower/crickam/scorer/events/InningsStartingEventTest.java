@@ -23,7 +23,7 @@ class InningsStartingEventTest {
     @Test
     public void batterInningsEventsAreGenerated() {
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        assertThat(control.match().currentInnings().get().batterInningsList().size(), is(2));
+        assertThat(control.match().currentInnings().batterInningsList().size(), is(2));
         assertThat(control.history().stream().map(MatchControl::event).collect(toList()),
             contains(instanceOf(MatchStartingEvent.class), instanceOf(InningsStartingEvent.class),
                 instanceOf(BatterInningsStartingEvent.class), instanceOf(BatterInningsStartingEvent.class)));

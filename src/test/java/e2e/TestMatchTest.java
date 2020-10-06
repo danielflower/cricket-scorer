@@ -2784,7 +2784,8 @@ public class TestMatchTest {
             .findFirst()
             .map(e -> control.asAt(e))
             .orElseThrow();
-        assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"), AsciiScorecardRenderer.toString(controlAtEndOfInnings2));
+        assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"),
+            AsciiScorecardRenderer.toString(controlAtEndOfInnings2));
 
         // Now check the scoreboard at the end of the innings
         String actual = AsciiScorecardRenderer.toString(control);
