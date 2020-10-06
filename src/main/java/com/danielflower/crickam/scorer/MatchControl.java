@@ -195,13 +195,20 @@ public final class MatchControl {
             MatchControl er = history.get(i);
             Instant lastKnownTime = er.event().time();
             if (lastKnownTime != null) {
-                LocalDate date = LocalDate.ofInstant(lastKnownTime, zoneId);
+                LocalDate date = ofInstant(lastKnownTime, zoneId);
                 LocalTime time = LocalTime.of(hour, minute, second);
                 LocalDateTime dateTime = LocalDateTime.of(date, time);
                 return dateTime.atZone(zoneId).toInstant();
             }
         }
         throw new UnsupportedOperationException("No events have a time recorded against them, so this method cannot know which date to use");
+    }
+
+    private static LocalDate ofInstant(Instant instant, ZoneId zone) {
+        ZoneOffset offset = zone.getRules().getOffset(instant);
+        long localSecond = instant.getEpochSecond() + offset.getTotalSeconds();
+        long localEpochDay = Math.floorDiv(localSecond, 86400);
+        return LocalDate.ofEpochDay(localEpochDay);
     }
 
     /**

@@ -23,11 +23,11 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
 </dependency>
 ````
 
-Note: this requires JDK 11 or later.
+Note: this requires JDK 8 or later.
 
 Using the API
 -------------

@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
+import static com.danielflower.crickam.scorer.Crictils.requireNonNullElse;
 import static java.util.Objects.requireNonNull;
 
 @Immutable
@@ -142,8 +143,8 @@ public final class OverStartingEvent extends BaseMatchEvent {
                 throw new IllegalStateException("An over can only start with two batters at the crease. Did you miss sending a " + BatterInningsStartingEvent.class.getSimpleName() + " event?");
             }
             boolean isFirst = innings.overs().last() == null;
-            Player strikerPlayer = Objects.requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
-            Player nonStrikerPlayer = Objects.requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));
+            Player strikerPlayer = requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
+            Player nonStrikerPlayer = requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));
             int numberInInnings = innings.overs().size();
             return new OverStartingEvent(id(), time(), generatedBy(), bowler, strikerPlayer, nonStrikerPlayer, ballsInOver, numberInInnings, innings.inningsNumber());
         }

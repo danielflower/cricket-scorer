@@ -67,4 +67,11 @@ public final class Crictils {
         return value;
     }
 
+    public static <T> T requireNonNullElseGet(@Nullable T value, Supplier<T> supplier) {
+        return value == null ? supplier.get() : value;
+    }
+
+    public static <T> T requireNonNullElse(@Nullable T value, T defaultValue) {
+        return value == null ? defaultValue : value;
+    }
 }

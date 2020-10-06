@@ -10,8 +10,8 @@ import java.time.Instant;
 import java.util.Objects;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
+import static com.danielflower.crickam.scorer.Crictils.requireNonNullElseGet;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElseGet;
 
 @Immutable
 public final class BallCompletedEvent extends BaseMatchEvent {

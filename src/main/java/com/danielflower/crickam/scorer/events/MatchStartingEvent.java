@@ -9,8 +9,8 @@ import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.*;
 
+import static com.danielflower.crickam.scorer.Crictils.requireNonNullElseGet;
 import static java.util.Objects.requireNonNull;
-import static java.util.Objects.requireNonNullElseGet;
 
 @Immutable
 public final class MatchStartingEvent extends BaseMatchEvent {

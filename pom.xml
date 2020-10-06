@@ -96,8 +96,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>8</source>
+                    <target>8</target>
                     <failOnWarning>true</failOnWarning>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
@@ -118,9 +118,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                     <failOnWarnings>true</failOnWarnings>
-                    <source>11</source>
+                    <source>8</source>
                 </configuration>
             </plugin>
             <plugin>

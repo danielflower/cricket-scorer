@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
@@ -237,7 +239,10 @@ public final class Match {
      * @throws java.util.NoSuchElementException An invalid line-up was given
      */
     public LineUp otherTeam(LineUp someTeam) {
-        return this.teams().stream().filter(t -> !t.equals(someTeam)).findFirst().orElseThrow();
+        return this.teams().stream()
+            .filter(t -> !t.equals(someTeam))
+            .findFirst()
+            .orElseThrow(() -> new NoSuchElementException("An invalid line-up was given: " + someTeam));
     }
 
     private static class FixedData {

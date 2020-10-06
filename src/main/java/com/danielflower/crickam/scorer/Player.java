@@ -3,9 +3,9 @@ package com.danielflower.crickam.scorer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.danielflower.crickam.scorer.Crictils.requireNonNullElse;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -23,7 +23,7 @@ public class Player {
     private final String initials;
 
 	protected Player(Builder builder) {
-        Objects.requireNonNullElse(builder.givenName, builder.formalGivenNames);
+        requireNonNullElse(builder.givenName, builder.formalGivenNames);
         this.formalGivenNames = builder.formalGivenNames != null ? builder.formalGivenNames : ImmutableList.of(builder.givenName);
         this.givenName = builder.givenName != null ? builder.givenName : builder.formalGivenNames.get(0);
         this.fullName = builder.fullName != null ? builder.fullName : givenName + " " + builder.familyName;

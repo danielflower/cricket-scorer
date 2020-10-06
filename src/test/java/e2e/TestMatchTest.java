@@ -2783,7 +2783,7 @@ public class TestMatchTest {
             .filter(ice -> ice.inningsNumber() == 2)
             .findFirst()
             .map(e -> control.asAt(e))
-            .orElseThrow();
+            .orElseThrow(() -> new AssertionError("No control"));
         assertEquals(ScorecardLoader.load("sa-vs-eng-test-in-progress.txt"),
             AsciiScorecardRenderer.toString(controlAtEndOfInnings2));
 
