@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 
-import static com.danielflower.crickam.scorer.Crictils.*;
+import static com.danielflower.crickam.scorer.Crictils.stateGuard;
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static com.danielflower.crickam.scorer.ImmutableList.toImmutableList;
 import static java.util.Objects.requireNonNull;
@@ -148,7 +148,7 @@ public final class Innings {
             nonStriker = null;
         } else if (event instanceof BatterInningsStartingEvent) {
             BatterInningsStartingEvent e = (BatterInningsStartingEvent) event;
-            yetToBat = yetToBat.stream().filter(p -> !p.equals(e.batter())).collect(toImmutableList());
+            yetToBat = yetToBat.stream().filter(p -> !p.samePlayer(e.batter())).collect(toImmutableList());
             BatterInnings newBatterInnings = BatterInnings.newInnings(e.batter(), batters.size() + 1, e.time());
             batters = batters.add(newBatterInnings);
             if (striker != null || nonStriker != null) {
@@ -181,9 +181,9 @@ public final class Innings {
         if (event instanceof BatterInningsCompletedEvent) {
             BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;
             Player dismissalBatter = e.batter();
-            if (striker != null && dismissalBatter.equals(striker.player())) {
+            if (striker != null && dismissalBatter.samePlayer(striker.player())) {
                 striker = null;
-            } else if (nonStriker != null && dismissalBatter.equals(nonStriker.player())) {
+            } else if (nonStriker != null && dismissalBatter.samePlayer(nonStriker.player())) {
                 nonStriker = null;
             } else {
                 throw new IllegalStateException(dismissalBatter + " cannot be out as they are not currently batting");
@@ -213,7 +213,7 @@ public final class Innings {
     private ImmutableList<BowlerInnings> replaceBowlerInnings(ImmutableList<BowlerInnings> list, BowlerInnings newValue) {
         BowlerInnings original = null;
         for (BowlerInnings existing : list) {
-            if (existing.bowler().equals(newValue.bowler())) {
+            if (existing.bowler().samePlayer(newValue.bowler())) {
                 original = existing;
                 break;
             }
@@ -372,7 +372,7 @@ public final class Innings {
     private @Nonnull BatterInnings findBatterInnings(Player target) {
         requireNonNull(target, "target");
         for (BatterInnings batter : batters) {
-            if (target.equals(batter.player())) {
+            if (target.samePlayer(batter.player())) {
                 return batter;
             }
         }
@@ -382,7 +382,7 @@ public final class Innings {
     private @Nullable BowlerInnings getBowlerInnings(Player target) {
         requireNonNull(target, "target");
         for (BowlerInnings bowlerInnings : bowlerInningses) {
-            if (bowlerInnings.bowler().equals(target)) {
+            if (bowlerInnings.bowler().samePlayer(target)) {
                 return bowlerInnings;
             }
         }
@@ -514,7 +514,7 @@ public final class Innings {
      */
     public @Nonnull BatterInnings batterInnings(Player player) throws IllegalArgumentException {
         for (BatterInnings batter : batters) {
-            if (batter.player().equals(player)) {
+            if (batter.player().samePlayer(player)) {
                 return batter;
             }
         }

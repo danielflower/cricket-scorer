@@ -3,38 +3,40 @@ package com.danielflower.crickam.scorer.data;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 
+import static com.danielflower.crickam.scorer.data.NewZealand.player;
+
 public class SouthAfrica {
 
-    public static final Player AMLA = Player.player("Hashim Amla").build();
-    public static final Player BAVUMA = Player.player("Temba Bavuma").build();
-    public static final Player DALA = Player.player("Junior Dala").build();
-    public static final Player DE_BRUYN = Player.player("Theunis de Bruyn").build();
-    public static final Player DE_KOCK = Player.player("Quinton de Kock").build();
-    public static final Player DUMINY = Player.player("Jean-Paul Duminy").build();
-    public static final Player DU_PLESSIS = Player.player("Faf du Plessis").build();
-    public static final Player ELGAR = Player.player("Dean Elgar").build();
-    public static final Player FORTUIN = Player.player("Bjorn Fortuin").build();
-    public static final Player BE_HENDRICKS = Player.player("Beuran Hendricks").build();
-    public static final Player RR_HENDRICKS = Player.player("Reeza Hendricks").build();
-    public static final Player TAHIR = Player.player("Imran Tahir").build();
-    public static final Player KLAASEN = Player.player("Heinrich Klaasen").build();
-    public static final Player LINDE = Player.player("George Linde").build();
-    public static final Player MAHARAJ = Player.player("Keshav Maharaj").build();
-    public static final Player MARKRAM = Player.player("Aiden Markram").build();
-    public static final Player MILLER = Player.player("David Miller").build();
-    public static final Player MORRIS = Player.player("Chris Morris").build();
-    public static final Player MUTHUSAMY = Player.player("Senuran Muthusamy").build();
-    public static final Player NGIDI = Player.player("Lungi Ngidi").build();
-    public static final Player NORTJE = Player.player("Anrich Nortje").build();
-    public static final Player PHEHLUKWAYO = Player.player("Andile Phehlukwayo").build();
-    public static final Player PHILANDER = Player.player("Vernon Philander").build();
-    public static final Player PIEDT = Player.player("Dane Piedt").build();
-    public static final Player PRETORIUS = Player.player("Dwaine Pretorius").build();
-    public static final Player RABADA = Player.player("Kagiso Rabada").build();
-    public static final Player SHAMSI = Player.player("Tabraiz Shamsi").build();
-    public static final Player SIPAMLA = Player.player("Lutho Sipamla").build();
-    public static final Player VAN_DER_DUSSEN = Player.player("Rassie van der Dussen").build();
-    public static final Player HAMZA = Player.player("Zubayr Hamza").build();
+    public static final Player AMLA = player("Hashim Amla");
+    public static final Player BAVUMA = player("Temba Bavuma");
+    public static final Player DALA = player("Junior Dala");
+    public static final Player DE_BRUYN = player("Theunis de Bruyn");
+    public static final Player DE_KOCK = player("Quinton de-Kock");
+    public static final Player DUMINY = player("Jean-Paul Duminy");
+    public static final Player DU_PLESSIS = player("Faf du-Plessis");
+    public static final Player ELGAR = player("Dean Elgar");
+    public static final Player FORTUIN = player("Bjorn Fortuin");
+    public static final Player BE_HENDRICKS = player("Beuran Hendricks");
+    public static final Player RR_HENDRICKS = player("Reeza Hendricks");
+    public static final Player TAHIR = player("Imran Tahir");
+    public static final Player KLAASEN = player("Heinrich Klaasen");
+    public static final Player LINDE = player("George Linde");
+    public static final Player MAHARAJ = player("Keshav Maharaj");
+    public static final Player MARKRAM = player("Aiden Markram");
+    public static final Player MILLER = player("David Miller");
+    public static final Player MORRIS = player("Chris Morris");
+    public static final Player MUTHUSAMY = player("Senuran Muthusamy");
+    public static final Player NGIDI = player("Lungi Ngidi");
+    public static final Player NORTJE = player("Anrich Nortje");
+    public static final Player PHEHLUKWAYO = player("Andile Phehlukwayo");
+    public static final Player PHILANDER = player("Vernon Philander");
+    public static final Player PIEDT = player("Dane Piedt");
+    public static final Player PRETORIUS = player("Dwaine Pretorius");
+    public static final Player RABADA = player("Kagiso Rabada");
+    public static final Player SHAMSI = player("Tabraiz Shamsi");
+    public static final Player SIPAMLA = player("Lutho Sipamla");
+    public static final Player VAN_DER_DUSSEN = player("Rassie van-der-Dussen");
+    public static final Player HAMZA = player("Zubayr Hamza");
 
     public static Team team() {
         return Team.team()

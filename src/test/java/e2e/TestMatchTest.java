@@ -880,7 +880,7 @@ public class TestMatchTest {
         control = control.onEvent(overCompleted());
 
         control = control.onEvent(overStarting(findFielder("Philander")));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -895,7 +895,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -1062,7 +1062,7 @@ public class TestMatchTest {
         control = control.onEvent(overCompleted());
 
         control = control.onEvent(overStarting(findFielder("Philander")));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1194,7 +1194,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -1221,7 +1221,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Nortje")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1320,7 +1320,7 @@ public class TestMatchTest {
         control = control.onEvent(overCompleted());
 
         control = control.onEvent(overStarting(findFielder("Philander")));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2717,7 +2717,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Nortje")));
         control = control.onEvent(ballCompleted("0"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2747,7 +2747,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de Kock")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("0"));
@@ -2757,7 +2757,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("van der Dussen")));
+        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("van-der-Dussen")));
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));

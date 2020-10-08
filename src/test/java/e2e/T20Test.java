@@ -64,7 +64,7 @@ public class T20Test {
             .withTime(control.localTime(14, 0, 0))
         );
 
-        control = control.onEvent(overStarting(findFielder("SM Curran")));
+        control = control.onEvent(overStarting(findFielder("Sam Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
@@ -73,7 +73,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1lb"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("TK Curran")));
+        control = control.onEvent(overStarting(findFielder("Tom Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -101,7 +101,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("TK Curran")));
+        control = control.onEvent(overStarting(findFielder("Tom Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
@@ -140,7 +140,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("SM Curran")));
+        control = control.onEvent(overStarting(findFielder("Sam Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
@@ -159,7 +159,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("SM Curran")));
+        control = control.onEvent(overStarting(findFielder("Sam Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("4"));
@@ -198,7 +198,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("TK Curran")));
+        control = control.onEvent(overStarting(findFielder("Tom Curran")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
@@ -239,7 +239,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("SM Curran")));
+        control = control.onEvent(overStarting(findFielder("Sam Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1lb"));
         control = control.onEvent(ballCompleted("4"));
@@ -250,7 +250,7 @@ public class T20Test {
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
-        control = control.onEvent(overStarting(findFielder("TK Curran")));
+        control = control.onEvent(overStarting(findFielder("Tom Curran")));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("2"));

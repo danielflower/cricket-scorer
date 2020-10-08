@@ -47,15 +47,15 @@ public final class BatterInnings {
         if (one == null || two == null) {
             return false;
         }
-        return one.player().equals(two.player());
+        return one.player().samePlayer(two.player());
     }
 
     boolean sameInnings(@Nonnull BatterInnings other) {
-        return player().equals(other.player());
+        return player().samePlayer(other.player());
     }
 
     boolean sameInnings(Player other) {
-        return player().equals(other);
+        return player().samePlayer(other);
     }
 
     /**
@@ -124,7 +124,7 @@ public final class BatterInnings {
     @Override
     public String toString() {
         String notout = state != BattingState.DISMISSED ? "*" : "";
-        return player.familyName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
+        return player.initialsWithFamilyName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
     }
 
     @Override
@@ -156,9 +156,9 @@ public final class BatterInnings {
         if (event instanceof BallCompletedEvent) {
             BallCompletedEvent ball = (BallCompletedEvent) event;
             if (newState != BattingState.IN_PROGRESS) {
-                throw new IllegalStateException("The innings of " + player.familyName() + " was " + newState + " but received ball " + ball);
+                throw new IllegalStateException("The innings of " + player + " was " + newState + " but received ball " + ball);
             }
-            if (ball.striker().equals(this.player)) {
+            if (ball.striker().samePlayer(this.player)) {
                 somethingChanged = true;
                 newBalls = newBalls.add(ball);
             }

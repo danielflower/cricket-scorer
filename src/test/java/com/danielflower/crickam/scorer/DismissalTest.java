@@ -29,7 +29,7 @@ class DismissalTest {
             .withBowler(Australia.ASHTON_TURNER)
             .withBatter(NewZealand.AJAZ_PATEL)
             .build();
-        assertThat(dismissal.toScorecardString(null), is("c Finch b Turner"));
+        assertThat(dismissal.toScorecardString(null), is("c A Finch b A Turner"));
     }
 
     @Test
@@ -40,13 +40,13 @@ class DismissalTest {
             .withBatter(NewZealand.AJAZ_PATEL)
             ;
         assertThat(dismissal.withFielder(NATHON_LYON).build().toScorecardString(aus),
-            is("c & b Lyon"));
+            is("c & b N Lyon"));
         assertThat(dismissal.withFielder(DAVID_WARNER).build().toScorecardString(aus),
-            is("c Warner b Lyon"));
+            is("c D Warner b N Lyon"));
         assertThat(dismissal.withFielder(aus.wicketKeeper()).build().toScorecardString(aus),
-            is("c †Carey b Lyon"));
+            is("c †A Carey b N Lyon"));
         assertThat(dismissal.withFielder(ASHTON_TURNER).build().toScorecardString(aus),
-            is("c sub (Turner) b Lyon"));
+            is("c sub (A Turner) b N Lyon"));
     }
 
     @Test
@@ -57,11 +57,11 @@ class DismissalTest {
             .withBatter(NewZealand.AJAZ_PATEL)
             ;
         assertThat(dismissal.withFielder(aus.wicketKeeper()).build().toScorecardString(aus),
-            is("st †Carey b Lyon"));
+            is("st †A Carey b N Lyon"));
         assertThat(dismissal.withFielder(AARON_FINCH).build().toScorecardString(aus),
-            is("st Finch b Lyon"));
+            is("st A Finch b N Lyon"));
         assertThat(dismissal.withFielder(ASHTON_TURNER).build().toScorecardString(aus),
-            is("st sub (Turner) b Lyon"));
+            is("st sub (A Turner) b N Lyon"));
     }
 
     @Test
@@ -71,7 +71,7 @@ class DismissalTest {
             .withBowler(aus.battingOrder().get(10))
             .withBatter(NewZealand.AJAZ_PATEL)
             ;
-        assertThat(dismissal.build().toScorecardString(aus), is("b Lyon"));
-        assertThat(dismissal.build().toScorecardString(null), is("b Lyon"));
+        assertThat(dismissal.build().toScorecardString(aus), is("b N Lyon"));
+        assertThat(dismissal.build().toScorecardString(null), is("b N Lyon"));
     }
 }

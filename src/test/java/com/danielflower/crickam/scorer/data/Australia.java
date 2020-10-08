@@ -5,38 +5,40 @@ import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.Team;
 
+import static com.danielflower.crickam.scorer.data.NewZealand.player;
+
 public class Australia {
 
-    public static final Player SEAN_ABBOT = Player.player("Sean Abbot").build();
-    public static final Player JASON_BEHRENDORFF = Player.player("Jason Behrendorff").build();
-    public static final Player PAT_CUMMINS = Player.player("Pat Cummins").build();
-    public static final Player MARCUS_HARRIS = Player.player("Marcus Harris").build();
-    public static final Player USMAN_KHAWAJA = Player.player("Usman Khawaja").build();
-    public static final Player BEN_MC_DERMOTT = Player.player("Ben McDermott").build();
-    public static final Player TIM_PAINE = Player.player("Tim Paine").build();
-    public static final Player PETER_SIDDLE = Player.player("Peter Siddle").build();
-    public static final Player MITCHELL_STARC = Player.player("Mitchell Starc").build();
-    public static final Player MATTHEW_WADE = Player.player("Matthew Wade").build();
-    public static final Player ASHTON_AGAR = Player.player("Ashton Agar").build();
-    public static final Player JOE_BURNS = Player.player("Joe Burns").build();
-    public static final Player AARON_FINCH = Player.player("Aaron Finch").build();
-    public static final Player JOSH_HAZLEWOOD = Player.player("Josh Hazlewood").build();
-    public static final Player MARNUS_LABUSCHAGNE = Player.player("Marnus Labuschagne").build();
-    public static final Player MITCHELL_MARSH = Player.player("Mitchell Marsh").build();
-    public static final Player JAMES_PATTINSON = Player.player("James Pattinson").build();
-    public static final Player STEVEN_SMITH = Player.player("Steven Smith").build();
-    public static final Player MARCUS_STOINIS = Player.player("Marcus Stoinis").build();
-    public static final Player DAVID_WARNER = Player.player("David Warner").build();
-    public static final Player CAMERON_BANCROFT = Player.player("Cameron Bancroft").build();
-    public static final Player ALEX_CAREY = Player.player("Alex Carey").build();
-    public static final Player PETER_HANDSCOMB = Player.player("Peter Handscomb").build();
-    public static final Player TRAVIS_HEAD = Player.player("Travis Head").build();
-    public static final Player NATHON_LYON = Player.player("Nathon Lyon").build();
-    public static final Player GLENN_MAXWELL = Player.player("Glenn Maxwell").build();
-    public static final Player KANE_RICHARDSON = Player.player("Kane Richardson").build();
-    public static final Player BILLY_STANLAKE = Player.player("Billy Stanlake").build();
-    public static final Player ASHTON_TURNER = Player.player("Ashton Turner").build();
-    public static final Player ADAM_ZAMPA = Player.player("Adam Zampa").build();
+    public static final Player SEAN_ABBOT = player("Sean Abbot");
+    public static final Player JASON_BEHRENDORFF = player("Jason Behrendorff");
+    public static final Player PAT_CUMMINS = player("Pat Cummins");
+    public static final Player MARCUS_HARRIS = player("Marcus Harris");
+    public static final Player USMAN_KHAWAJA = player("Usman Khawaja");
+    public static final Player BEN_MC_DERMOTT = player("Ben McDermott");
+    public static final Player TIM_PAINE = player("Tim Paine");
+    public static final Player PETER_SIDDLE = player("Peter Siddle");
+    public static final Player MITCHELL_STARC = player("Mitchell Starc");
+    public static final Player MATTHEW_WADE = player("Matthew Wade");
+    public static final Player ASHTON_AGAR = player("Ashton Agar");
+    public static final Player JOE_BURNS = player("Joe Burns");
+    public static final Player AARON_FINCH = player("Aaron Finch");
+    public static final Player JOSH_HAZLEWOOD = player("Josh Hazlewood");
+    public static final Player MARNUS_LABUSCHAGNE = player("Marnus Labuschagne");
+    public static final Player MITCHELL_MARSH = player("Mitchell Marsh");
+    public static final Player JAMES_PATTINSON = player("James Pattinson");
+    public static final Player STEVEN_SMITH = player("Steven Smith");
+    public static final Player MARCUS_STOINIS = player("Marcus Stoinis");
+    public static final Player DAVID_WARNER = player("David Warner");
+    public static final Player CAMERON_BANCROFT = player("Cameron Bancroft");
+    public static final Player ALEX_CAREY = player("Alex Carey");
+    public static final Player PETER_HANDSCOMB = player("Peter Handscomb");
+    public static final Player TRAVIS_HEAD = player("Travis Head");
+    public static final Player NATHON_LYON = player("Nathon Lyon");
+    public static final Player GLENN_MAXWELL = player("Glenn Maxwell");
+    public static final Player KANE_RICHARDSON = player("Kane Richardson");
+    public static final Player BILLY_STANLAKE = player("Billy Stanlake");
+    public static final Player ASHTON_TURNER = player("Ashton Turner");
+    public static final Player ADAM_ZAMPA = player("Adam Zampa");
 
     public static Team.Builder team() {
         return Team.team()

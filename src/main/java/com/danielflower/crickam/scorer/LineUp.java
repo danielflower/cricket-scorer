@@ -3,7 +3,6 @@ package com.danielflower.crickam.scorer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,24 +69,21 @@ public class LineUp {
 
     /**
      * Tries to find a player based on their name
-     * @param name A surname, or given name plus surname, or initial plus surname
+     * @param name The {@link Player#name()} value
      * @return The found player, or null if unsure
      */
     public @Nullable Player findPlayer(String name) {
-        String[] bits = name.trim().split("\\W+");
-        String familyName = bits[bits.length - 1];
-        List<Player> matchingSurnames = players.stream().filter(p ->
-            Arrays.equals(p.familyName().split("\\W+"), bits) || p.familyName().equalsIgnoreCase(familyName)
-        ).collect(Collectors.toList());
-        if (matchingSurnames.isEmpty()) {
-            return null;
-        } else if (matchingSurnames.size() == 1) {
-            return matchingSurnames.get(0);
+        Player exact = players.stream().filter(p ->
+            p.name().equalsIgnoreCase(name)
+        ).findFirst().orElse(null);
+        if (exact != null) {
+            return exact;
         }
-        return matchingSurnames.stream()
-            .filter(p -> p.givenName().toLowerCase().charAt(0) == bits[0].toLowerCase().charAt(0))
-            .findFirst()
-            .orElse(null);
+        String surname = name.split(" ")[name.split(" ").length - 1];
+        List<Player> partials = players.stream().filter(p ->
+            p.name().toLowerCase().endsWith(" " + surname.toLowerCase())
+        ).collect(Collectors.toList());
+        return partials.isEmpty() ? null : partials.get(0);
     }
 
     public static class Builder {

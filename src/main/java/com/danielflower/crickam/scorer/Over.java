@@ -33,7 +33,7 @@ public final class Over {
         this.overNumber = overNumber;
         this.striker = Objects.requireNonNull(striker);
         this.nonStriker = Objects.requireNonNull(nonStriker);
-        if (striker.equals(nonStriker)) {
+        if (striker.samePlayer(nonStriker)) {
             throw new IllegalStateException(striker + " has been set as both striker and non-striker for over " + overNumber);
         }
         this.balls = Objects.requireNonNull(balls);

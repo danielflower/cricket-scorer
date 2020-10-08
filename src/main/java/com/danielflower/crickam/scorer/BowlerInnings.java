@@ -69,7 +69,7 @@ public final class BowlerInnings {
      * @return The number of maidens bowled in this innings.
      */
     public @Nonnegative int maidens() {
-        return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().equals(bowler)).count();
+        return (int) overs.stream().filter(over -> over.isMaiden() && over.balls().list().get(0).bowler().samePlayer(bowler)).count();
     }
 
     private BowlerInnings(Player bowler, Balls balls, ImmutableList<BowlingSpell> spells, ImmutableList<Over> overs, @Nonnegative int wickets) {

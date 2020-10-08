@@ -175,7 +175,7 @@ Design decisions
 ----------------
 
 * ***The model is immutable*** so that things like the full state of the match can be
-looked at, and matches can be forked easily.
+looked at at any point in time, and matches can be forked easily.
 * The only way to change the model is with events
 * Object creation is with builder classes, which are inner classes of the model object they create
 

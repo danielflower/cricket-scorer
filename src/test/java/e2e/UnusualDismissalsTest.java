@@ -7,7 +7,6 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
@@ -84,10 +83,10 @@ public class UnusualDismissalsTest {
 
         assertThat(AsciiScorecardRenderer.toString(control), allOf(
             containsString("(5 wkts; 0.3 overs)"),
-            containsString("Yet to bat: IS Sodhi, LH Ferguson, BM Tickner"),
+            containsString("Yet to bat: I Sodhi, L Ferguson, B Tickner"),
             matchesRegex("Fall of wickets: 1-0 \\(Colin Munro, 0.1 ov\\)," + WS + "2-0 \\(Tim Seifert, 0.2 ov\\)," + WS
                 + "3-0 \\(Colin de Grandhomme, 0.3 ov\\)," + WS + "4-0 \\(Ross Taylor, 0.3 ov\\)," + WS + "4-0\\* \\(Martin Guptill, retired not out\\),"
-                + WS + "4-0\\* \\(James Neesham, retired out\\),"+ WS + "5-0 \\(Tim Southee, 0.3 ov\\)"),
+                + WS + "4-0\\* \\(Jimmy Neesham, retired out\\),"+ WS + "5-0 \\(Tim Southee, 0.3 ov\\)"),
             matchesRegex("Lyon" + WS + "0.3" + WS + "0" + WS + "0" + WS + "0" + WS + "0.0" + WS + "3" + WS + "0" + WS + "0" + WS + "0" + WS + "0")
         ));
 

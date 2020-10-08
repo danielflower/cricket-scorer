@@ -18,7 +18,7 @@ public class BatterInningsMatcher extends BaseMatcher<BatterInnings> {
 
     @Override
     public boolean matches(Object actual) {
-        return actual instanceof BatterInnings && ((BatterInnings) actual).player().equals(player);
+        return actual instanceof BatterInnings && ((BatterInnings) actual).player().samePlayer(player);
     }
 
     @Override

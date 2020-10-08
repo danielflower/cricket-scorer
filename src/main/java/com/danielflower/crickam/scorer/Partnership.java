@@ -128,8 +128,8 @@ public final class Partnership {
         if (event instanceof BallCompletedEvent) {
             BallCompletedEvent ball = (BallCompletedEvent) event;
             Balls balls = this.balls.add(ball);
-            Balls firstBatterContribution = ball.striker().equals(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
-            Balls secondBatterContribution = ball.striker().equals(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
+            Balls firstBatterContribution = ball.striker().samePlayer(firstBatter()) ? this.firstBatterContribution.add(ball) : this.firstBatterContribution;
+            Balls secondBatterContribution = ball.striker().samePlayer(secondBatter()) ? this.secondBatterContribution.add(ball) : this.secondBatterContribution;
             return new Partnership(state, data, balls, firstBatterContribution, secondBatterContribution, endTime);
         } else if (event instanceof BatterInningsCompletedEvent) {
             BatterInningsCompletedEvent e = (BatterInningsCompletedEvent) event;

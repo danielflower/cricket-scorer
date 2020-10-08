@@ -42,7 +42,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         this.overNumber = requireInRange("overNumber", overNumber, 0);
         this.numberInOver = requireInRange("numberInOver", numberInOver, 0);
         this.numberInMatch = requireInRange("numberInMatch", numberInMatch, 0);
-        if (striker.equals(nonStriker)) {
+        if (striker.samePlayer(nonStriker)) {
             throw new IllegalStateException("The striker and non striker were the same person: " + striker);
         }
         this.playersCrossed = playersCrossed;
@@ -127,7 +127,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
     public @Nonnull String toString() {
         String out = dismissal != null ? " OUT " + dismissal.type().fullName() : "";
-        return overDotBallString() + " " + bowler().familyName() + " to " + striker().familyName() + " "
+        return overDotBallString() + " " + bowler().initialsWithFamilyName() + " to " + striker().initialsWithFamilyName() + " "
             + runsScored().teamRuns() + " runs " + out;
     }
 

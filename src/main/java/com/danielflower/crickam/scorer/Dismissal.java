@@ -62,14 +62,14 @@ public final class Dismissal {
      * @return A string representation of this dismissal in the style commonly found on scorecards, for example <em>c Williamson b Boult</em>
      */
     public @Nonnull String toScorecardString(@Nullable LineUp team) {
-        String bowlerName = this.bowler == null ? null : this.bowler.familyName();
+        String bowlerName = this.bowler == null ? null : this.bowler.initialsWithFamilyName();
         String fielderName;
         if (this.fielder == null) {
             fielderName = null;
         } else {
-            fielderName = this.fielder.familyName();
+            fielderName = this.fielder.initialsWithFamilyName();
             if (team != null) {
-                if (team.wicketKeeper().equals(this.fielder)) {
+                if (team.wicketKeeper().samePlayer(this.fielder)) {
                     fielderName = "†" + fielderName;
                 } else if (!team.battingOrder().contains(this.fielder)) {
                     fielderName = "sub (" + fielderName + ")";
@@ -106,7 +106,7 @@ public final class Dismissal {
         if (o == null || getClass() != o.getClass()) return false;
         Dismissal dismissal = (Dismissal) o;
         return type == dismissal.type &&
-            batter.equals(dismissal.batter) &&
+            batter.samePlayer(dismissal.batter) &&
             Objects.equals(bowler, dismissal.bowler) &&
             Objects.equals(fielder, dismissal.fielder);
     }
