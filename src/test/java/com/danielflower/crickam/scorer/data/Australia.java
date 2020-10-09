@@ -3,7 +3,7 @@ package com.danielflower.crickam.scorer.data;
 import com.danielflower.crickam.scorer.ImmutableList;
 import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.Team;
+import com.danielflower.crickam.scorer.SimpleLineUp;
 
 import static com.danielflower.crickam.scorer.data.NewZealand.player;
 
@@ -40,39 +40,33 @@ public class Australia {
     public static final Player ASHTON_TURNER = player("Ashton Turner");
     public static final Player ADAM_ZAMPA = player("Adam Zampa");
 
-    public static Team.Builder team() {
-        return Team.team()
-            .withShortName("AUS")
-            .withName("Australia");
-    }
-
-    public static LineUp.Builder t20LineUp() {
-        return LineUp.lineUp()
+    public static SimpleLineUp.Builder t20LineUp() {
+        return new SimpleLineUp.Builder()
             .withCaptain(AARON_FINCH)
             .withWicketKeeper(ALEX_CAREY)
-            .withTeam(team().build())
+            .withTeamName("Australia")
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, BEN_MC_DERMOTT, ASHTON_TURNER, ALEX_CAREY, ASHTON_AGAR,
                 SEAN_ABBOT, MITCHELL_STARC, KANE_RICHARDSON, BILLY_STANLAKE
             ));
     }
 
-    public static LineUp.Builder oneDayLineUp() {
+    public static SimpleLineUp.Builder oneDayLineUp() {
         return LineUp.lineUp()
             .withCaptain(AARON_FINCH)
             .withWicketKeeper(ALEX_CAREY)
-            .withTeam(team().build())
+            .withTeamName("Australia")
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, PETER_HANDSCOMB, ALEX_CAREY, MARCUS_STOINIS, GLENN_MAXWELL,
                 PAT_CUMMINS, MITCHELL_STARC, JASON_BEHRENDORFF, NATHON_LYON
             ));
     }
 
-    public static LineUp.Builder testLineUp() {
+    public static SimpleLineUp.Builder testLineUp() {
         return LineUp.lineUp()
             .withCaptain(TIM_PAINE)
             .withWicketKeeper(TIM_PAINE)
-            .withTeam(team().build())
+            .withTeamName("Australia")
             .withBattingOrder(ImmutableList.of(
                 DAVID_WARNER, JOE_BURNS, MARNUS_LABUSCHAGNE, STEVEN_SMITH, MATTHEW_WADE, TRAVIS_HEAD, TIM_PAINE,
                 PAT_CUMMINS, MITCHELL_STARC, NATHON_LYON, JOSH_HAZLEWOOD

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.data.England.MAHMOOD;
@@ -22,7 +21,7 @@ class MatchControlTest {
     private final LineUp nz = LineUp.lineUp()
         .withCaptain(KANE_WILLIAMSON)
         .withWicketKeeper(TOM_LATHAM)
-        .withTeam(team().build())
+        .withTeamName("New Zealand")
         .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
             JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON)).build();
     private final LineUp aus = Australia.oneDayLineUp().build();

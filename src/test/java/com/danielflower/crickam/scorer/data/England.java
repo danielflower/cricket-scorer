@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.Team;
 
 import static com.danielflower.crickam.scorer.data.NewZealand.player;
 
@@ -37,9 +36,4 @@ public class England {
     public static final Player VINCE = player("James Vince");
     public static final Player WOAKES = player("Chris Woakes");
 
-    public static Team.Builder team() {
-        return Team.team()
-            .withShortName("ENG")
-            .withName("England");
-    }
 }

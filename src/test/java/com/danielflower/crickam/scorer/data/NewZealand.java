@@ -42,35 +42,29 @@ public class NewZealand {
     public static final Player TODD_ASTLE = player("Todd Astle");
 
 
-    public static Team.Builder team() {
-        return Team.team()
-            .withShortName("NZL")
-            .withName("New Zealand");
-    }
-
-    public static LineUp.Builder t20LineUp() {
+    public static SimpleLineUp.Builder t20LineUp() {
         return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TIM_SEIFERT)
-            .withTeam(team().build())
+            .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, COLIN_MUNRO, KANE_WILLIAMSON, ROSS_TAYLOR, TIM_SEIFERT,
                 COLIN_DE_GRANDHOMME, JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON));
     }
 
-    public static LineUp.Builder oneDayLineUp() {
+    public static SimpleLineUp.Builder oneDayLineUp() {
         return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TOM_LATHAM)
-            .withTeam(team().build())
+            .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
                 JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON));
     }
 
-    public static LineUp.Builder testLineUp() {
+    public static SimpleLineUp.Builder testLineUp() {
         return LineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(BJ_WATLING)
-            .withTeam(team().build())
+            .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(JEET_RAVAL, TOM_LATHAM, KANE_WILLIAMSON, ROSS_TAYLOR, HENRY_NICHOLLS,
                 BJ_WATLING, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, TIM_SOUTHEE, NEIL_WAGNER, LOCKIE_FERGUSON));
     }

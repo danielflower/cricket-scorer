@@ -9,8 +9,8 @@ import static org.hamcrest.Matchers.nullValue;
 
 class LineUpTest {
 
-    LineUp england = LineUp.lineUp()
-        .withTeam(England.team().build())
+    SimpleLineUp england = LineUp.lineUp()
+        .withTeamName("England")
         .withCaptain(England.STOKES)
         .withWicketKeeper(England.STOKES)
         .withBattingOrder(ImmutableList.of(

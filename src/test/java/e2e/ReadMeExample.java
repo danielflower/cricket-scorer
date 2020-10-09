@@ -13,10 +13,7 @@ public class ReadMeExample {
     public static void main(String[] args) {
 
         LineUp nz = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("NZL")
-                .withName("New Zealand")
-                .build())
+            .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
             .withCaptain(TIM_SOUTHEE)
@@ -24,10 +21,7 @@ public class ReadMeExample {
             .build();
 
         LineUp eng = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("ENG")
-                .withName("England")
-                .build())
+            .withTeamName("England")
             .withBattingOrder(ImmutableList.of(
                 BURNS, SIBLEY, DENLY, ROOT, STOKES, BAIRSTOW, BUTTLER, SAM_CURRAN, ARCHER, BROAD, ANDERSON
             ))

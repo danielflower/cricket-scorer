@@ -23,10 +23,7 @@ public class T20Test {
         // A recreation of https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
 
         LineUp nz = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("NZL")
-                .withName("New Zealand")
-                .build())
+            .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
             .withCaptain(TIM_SOUTHEE)
@@ -34,10 +31,7 @@ public class T20Test {
             .build();
 
         LineUp eng = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("ENG")
-                .withName("England")
-                .build())
+            .withTeamName("England")
             .withBattingOrder(ImmutableList.of(
                 BANTON, MALAN, VINCE, MORGAN, BILLINGS, SAM_CURRAN, GREGORY, TOM_CURRAN, MAHMOOD, BROWN, PARKINSON
             ))
@@ -470,7 +464,7 @@ public class T20Test {
     }
 
     static Player findFielder(MatchControl control, String name) {
-        LineUp team = control.match().currentInnings().bowlingTeam();
+        SimpleLineUp team = (SimpleLineUp) control.match().currentInnings().bowlingTeam();
         Player bowler = team.findPlayer(name);
         if (bowler == null) {
             throw new RuntimeException("Not sure who " + name + " is");

@@ -2,138 +2,50 @@ package com.danielflower.crickam.scorer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 /**
- * The selected players from a team for match.
- * <p>Use {@link #lineUp()} to create a builder.</p>
- * <p>This class is designed to be inherited if you wish to add custom data to the model.</p>
+ * A team line up
  */
-@Immutable
-public class LineUp {
-	private final ImmutableList<Player> players;
-	private final Team team;
-	private final Player captain;
-	private final Player wicketKeeper;
-
-    protected LineUp(Builder builder) {
-        this.players = requireNonNull(builder.players, "players");
-        this.team = requireNonNull(builder.team, "team");
-        this.captain = requireNonNull(builder.captain, "captain");
-        this.wicketKeeper = requireNonNull(builder.wicketKeeper, "wicketKeeper");
-    }
+public interface LineUp {
 
     /**
-     * @return The expected batting order
+     * @return The playing team, in their beginning batting order
      */
-    public @Nonnull ImmutableList<Player> battingOrder() {
-        return players;
-    }
+    @Nonnull
+	ImmutableList<Player> battingOrder();
 
     /**
-     * @return The team this line-up is for
+     * @return The captain of the team, if known
      */
-    public @Nonnull Team team() {
-        return team;
-    }
+    @Nullable
+	Player captain();
 
     /**
-     * @return The designated captain
+     * @return The primary wicket-keeper in this line up, if known
      */
-    public @Nonnull Player captain() {
-        return captain;
-    }
+    @Nullable
+	Player wicketKeeper();
 
     /**
-     * @return The designated wicket keeper
+     * @return The name of the team
      */
-    public @Nonnull Player wicketKeeper() {
-        return wicketKeeper;
-    }
-
-    @Override
-    public String toString() {
-        return team.name();
-    }
+    @Nonnull
+    String teamName();
 
     /**
-     * @return A new builder
+     * Checks to see if two line ups are representing the same team.
+     * <p>This may return a different result than calling {@link Object#equals(Object)} because the batting order or
+     * captain may change, however it is still the same team.</p>
+     * @param other The line up to compare again
+     * @return Returns true if the 2 line-ups are the same team
      */
-    public static @Nonnull Builder lineUp() {
-        return new Builder();
+    default boolean sameTeam(@Nullable LineUp other) {
+        return this.equals(other);
     }
 
-    /**
-     * Tries to find a player based on their name
-     * @param name The {@link Player#name()} value
-     * @return The found player, or null if unsure
-     */
-    public @Nullable Player findPlayer(String name) {
-        Player exact = players.stream().filter(p ->
-            p.name().equalsIgnoreCase(name)
-        ).findFirst().orElse(null);
-        if (exact != null) {
-            return exact;
-        }
-        String surname = name.split(" ")[name.split(" ").length - 1];
-        List<Player> partials = players.stream().filter(p ->
-            p.name().toLowerCase().endsWith(" " + surname.toLowerCase())
-        ).collect(Collectors.toList());
-        return partials.isEmpty() ? null : partials.get(0);
-    }
 
-    public static class Builder {
-        private ImmutableList<Player> players;
-        private Team team;
-        private Player captain;
-        private Player wicketKeeper;
-
-        /**
-         * @param players The players in the order they are expected to bat in
-         * @return This builder
-         */
-        public @Nonnull Builder withBattingOrder(ImmutableList<Player> players) {
-            this.players = players;
-            return this;
-        }
-
-        /**
-         * @param team The team this line up is for
-         * @return This builder
-         */
-        public @Nonnull Builder withTeam(Team team) {
-            this.team = team;
-            return this;
-        }
-
-        /**
-         * @param captain The designated captain for this match
-         * @return This builder
-         */
-        public @Nonnull Builder withCaptain(Player captain) {
-            this.captain = captain;
-            return this;
-        }
-
-        /**
-         * @param wicketKeeper The designated wicket keeper for this match
-         * @return Thie builder
-         */
-        public @Nonnull Builder withWicketKeeper(Player wicketKeeper) {
-            this.wicketKeeper = wicketKeeper;
-            return this;
-        }
-
-        /**
-         * @return A newly created {@code LineUp}
-         */
-        public @Nonnull LineUp build() {
-            return new LineUp(this);
-        }
+    static SimpleLineUp.Builder lineUp() {
+        return new SimpleLineUp.Builder();
     }
 }
 

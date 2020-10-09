@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.Player;
-import com.danielflower.crickam.scorer.Team;
 
 import static com.danielflower.crickam.scorer.data.NewZealand.player;
 
@@ -37,12 +36,5 @@ public class SouthAfrica {
     public static final Player SIPAMLA = player("Lutho Sipamla");
     public static final Player VAN_DER_DUSSEN = player("Rassie van-der-Dussen");
     public static final Player HAMZA = player("Zubayr Hamza");
-
-    public static Team team() {
-        return Team.team()
-            .withShortName("SA")
-            .withName("South Africa")
-            .build();
-    }
 
 }

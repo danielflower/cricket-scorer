@@ -13,9 +13,7 @@ class DismissalTest {
     private final LineUp aus = LineUp.lineUp()
         .withCaptain(AARON_FINCH)
         .withWicketKeeper(ALEX_CAREY)
-        .withTeam(Team.team()
-            .withShortName("AUS")
-            .withName("Australia").build())
+        .withTeamName("Australia")
         .withBattingOrder(ImmutableList.of(
             DAVID_WARNER, AARON_FINCH, STEVEN_SMITH, PETER_HANDSCOMB, ALEX_CAREY, MARCUS_STOINIS, GLENN_MAXWELL,
             PAT_CUMMINS, MITCHELL_STARC, JASON_BEHRENDORFF, NATHON_LYON

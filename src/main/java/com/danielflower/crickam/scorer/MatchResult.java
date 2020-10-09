@@ -143,11 +143,11 @@ public final class MatchResult {
             case NO_RESULT:
                 return "No result";
             case AWARDED:
-                return "Awarded to " + winningTeam.team().name();
+                return "Awarded to " + winningTeam.teamName();
             case CONCEDED:
-                return "Conceded. Won by " + winningTeam.team().name();
+                return "Conceded. Won by " + winningTeam.teamName();
             case WON:
-                return winningTeam.team().name() + " won by " + wonBy.toString(wonByAmount);
+                return winningTeam.teamName() + " won by " + wonBy.toString(wonByAmount);
             case TIED:
                 return "Match tied";
         }

@@ -24,10 +24,7 @@ public class TestMatchTest {
         // A recreation of https://www.espncricinfo.com/series/19286/scorecard/1185304/south-africa-vs-england-1st-test-england-in-sa-2019-20
 
         LineUp sa = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("SA")
-                .withName("South Africa")
-                .build())
+            .withTeamName("South Africa")
             .withBattingOrder(ImmutableList.of(
                 ELGAR, MARKRAM, HAMZA, DU_PLESSIS, VAN_DER_DUSSEN, DE_KOCK, PRETORIUS, PHILANDER, MAHARAJ, RABADA, NORTJE
             ))
@@ -36,10 +33,7 @@ public class TestMatchTest {
             .build();
 
         LineUp eng = LineUp.lineUp()
-            .withTeam(Team.team()
-                .withShortName("ENG")
-                .withName("England")
-                .build())
+            .withTeamName("England")
             .withBattingOrder(ImmutableList.of(
                 BURNS, SIBLEY, DENLY, ROOT, STOKES, BAIRSTOW, BUTTLER, SAM_CURRAN, ARCHER, BROAD, ANDERSON
             ))

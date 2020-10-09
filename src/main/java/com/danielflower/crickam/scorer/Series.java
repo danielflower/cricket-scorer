@@ -12,21 +12,15 @@ import static java.util.Objects.requireNonNull;
 public final class Series {
 
 	private final String id;
-	private final ImmutableList<Team> teams;
 	private final String name;
 
-	private Series(String id, ImmutableList<Team> teams, String name) {
+	private Series(String id, String name) {
         this.id = requireNonNull(id);
-        this.teams = requireNonNull(teams);
         this.name = requireNonNull(name);
     }
 
     public @Nonnull String id() {
         return id;
-    }
-
-    public @Nonnull ImmutableList<Team> teams() {
-        return teams;
     }
 
     public @Nonnull String name() {
@@ -39,16 +33,10 @@ public final class Series {
 
     public static final class Builder {
         public String id;
-        public ImmutableList<Team> teams;
         public String name;
 
         public @Nonnull Builder withId(String id) {
             this.id = id;
-            return this;
-        }
-
-        public @Nonnull Builder withTeams(ImmutableList<Team> teams) {
-            this.teams = teams;
             return this;
         }
 
@@ -58,7 +46,7 @@ public final class Series {
         }
 
         public @Nonnull Series build() {
-            return new Series(id, teams, name);
+            return new Series(id, name);
         }
     }
 

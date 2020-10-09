@@ -31,7 +31,7 @@ public final class AsciiScorecardRenderer {
     public static void render(MatchControl control, Appendable writer) throws IOException {
         Match match = control.match();
 
-        String header = match.teams().stream().map(l -> l.team().name().toUpperCase()).collect(Collectors.joining(" vs "));
+        String header = match.teams().stream().map(l -> l.teamName().toUpperCase()).collect(Collectors.joining(" vs "));
         writer.append(header).append(NEWLINE).append(repeat('=', header.length()))
             .append(NEWLINE).append(NEWLINE)
             .append(match.matchType().name());
@@ -63,7 +63,7 @@ public final class AsciiScorecardRenderer {
         for (Innings innings : match.inningsList()) {
             boolean multipleInningsPerTeam = match.numberOfInningsPerTeam() > 1;
             String inningsNumber = multipleInningsPerTeam ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
-            String inningsHeader = innings.battingTeam().team().name() + inningsNumber + " Innings";
+            String inningsHeader = innings.battingTeam().teamName() + inningsNumber + " Innings";
             if (innings.originalMaxOvers()!=null) {
                 inningsHeader += " (" + pluralize(innings.originalMaxOvers(), "over") + " maximum)";
             }

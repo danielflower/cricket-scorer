@@ -284,7 +284,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
             }
 
             boolean followOn;
-            if (last != null && last.battingTeam().team().equals(battingTeam.team())) {
+            if (last != null && last.battingTeam().sameTeam(battingTeam)) {
                 followOn = true;
             } else {
                 followOn = isFollowingOn != null && isFollowingOn;
@@ -319,7 +319,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
                         .withBowlingTeam(last.battingTeam());
                 }
 
-                battingInningsNumber = (int) match.inningsList().stream().filter(i -> i.battingTeam().team().equals(battingTeam.team())).count() + 1;
+                battingInningsNumber = (int) match.inningsList().stream().filter(i -> i.battingTeam().sameTeam(battingTeam)).count() + 1;
                 finalInnings = inningsNumber == (2 * match.numberOfInningsPerTeam());
                 if (finalInnings) {
                     int battingScore = match.scoredByTeam(battingTeam).teamRuns();
