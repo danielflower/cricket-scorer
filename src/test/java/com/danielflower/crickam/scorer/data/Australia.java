@@ -1,7 +1,6 @@
 package com.danielflower.crickam.scorer.data;
 
 import com.danielflower.crickam.scorer.ImmutableList;
-import com.danielflower.crickam.scorer.LineUp;
 import com.danielflower.crickam.scorer.Player;
 import com.danielflower.crickam.scorer.SimpleLineUp;
 
@@ -52,7 +51,7 @@ public class Australia {
     }
 
     public static SimpleLineUp.Builder oneDayLineUp() {
-        return LineUp.lineUp()
+        return SimpleLineUp.lineUp()
             .withCaptain(AARON_FINCH)
             .withWicketKeeper(ALEX_CAREY)
             .withTeamName("Australia")
@@ -63,7 +62,7 @@ public class Australia {
     }
 
     public static SimpleLineUp.Builder testLineUp() {
-        return LineUp.lineUp()
+        return SimpleLineUp.lineUp()
             .withCaptain(TIM_PAINE)
             .withWicketKeeper(TIM_PAINE)
             .withTeamName("Australia")

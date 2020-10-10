@@ -16,8 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 class MatchEventListenerTest {
-    private final LineUp aus = Australia.oneDayLineUp().build();
-    private final LineUp nz = NewZealand.oneDayLineUp().build();
+    private final SimpleLineUp aus = Australia.oneDayLineUp().build();
+    private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player bowler1 = aus.battingOrder().get(10);
 

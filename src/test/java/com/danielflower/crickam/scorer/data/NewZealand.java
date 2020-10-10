@@ -43,7 +43,7 @@ public class NewZealand {
 
 
     public static SimpleLineUp.Builder t20LineUp() {
-        return LineUp.lineUp()
+        return SimpleLineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TIM_SEIFERT)
             .withTeamName("New Zealand")
@@ -52,7 +52,7 @@ public class NewZealand {
     }
 
     public static SimpleLineUp.Builder oneDayLineUp() {
-        return LineUp.lineUp()
+        return SimpleLineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(TOM_LATHAM)
             .withTeamName("New Zealand")
@@ -61,7 +61,7 @@ public class NewZealand {
     }
 
     public static SimpleLineUp.Builder testLineUp() {
-        return LineUp.lineUp()
+        return SimpleLineUp.lineUp()
             .withCaptain(KANE_WILLIAMSON)
             .withWicketKeeper(BJ_WATLING)
             .withTeamName("New Zealand")

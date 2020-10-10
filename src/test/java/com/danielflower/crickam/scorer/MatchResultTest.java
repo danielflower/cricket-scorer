@@ -11,9 +11,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 class MatchResultTest {
-    private static final LineUp aus = Australia.oneDayLineUp().build();
+    private static final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private static final Player ausBowler = aus.battingOrder().get(10);
-    private static final LineUp nz = NewZealand.oneDayLineUp().build();
+    private static final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private static final Player nzBowler = nz.battingOrder().get(10);
 
     @Test

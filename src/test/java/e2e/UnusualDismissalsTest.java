@@ -21,14 +21,14 @@ public class UnusualDismissalsTest {
     @Test
     public void unusualDimissalsCanBeRecorded() throws IOException {
 
-        LineUp nz = NewZealand.oneDayLineUp()
+        SimpleLineUp nz = NewZealand.oneDayLineUp()
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
             .withCaptain(TIM_SOUTHEE)
             .withWicketKeeper(TIM_SEIFERT)
             .build();
 
-        LineUp eng = Australia.oneDayLineUp().build();
+        SimpleLineUp eng = Australia.oneDayLineUp().build();
         Player bowler1 = eng.battingOrder().get(10);
 
         MatchControl control = MatchControl.newMatch(matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, eng)));

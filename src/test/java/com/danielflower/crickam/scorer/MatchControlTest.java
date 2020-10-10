@@ -18,13 +18,13 @@ import static scaffolding.BatterInningsMatcher.withBatter;
 
 class MatchControlTest {
 
-    private final LineUp nz = LineUp.lineUp()
+    private final SimpleLineUp nz = SimpleLineUp.lineUp()
         .withCaptain(KANE_WILLIAMSON)
         .withWicketKeeper(TOM_LATHAM)
         .withTeamName("New Zealand")
         .withBattingOrder(ImmutableList.of(MARTIN_GUPTILL, HENRY_NICHOLLS, KANE_WILLIAMSON, ROSS_TAYLOR, TOM_LATHAM,
             JAMES_NEESHAM, COLIN_DE_GRANDHOMME, MITCHELL_SANTNER, MATT_HENRY, TRENT_BOULT, LOCKIE_FERGUSON)).build();
-    private final LineUp aus = Australia.oneDayLineUp().build();
+    private final SimpleLineUp aus = Australia.oneDayLineUp().build();
 
     private MatchControl control;
     @BeforeEach
@@ -48,8 +48,8 @@ class MatchControlTest {
     @Test
     public void eventsAreAdded() {
         
-        assertThat(match().oversPerInnings(), is(Integer.valueOf(50)));
-        assertThat(match().ballsPerInnings(), is(Integer.valueOf(300)));
+        assertThat(match().oversPerInnings(), is(50));
+        assertThat(match().ballsPerInnings(), is(300));
         assertThat(match().currentInnings(), not(nullValue()));
 
         Innings innings = match().currentInnings();

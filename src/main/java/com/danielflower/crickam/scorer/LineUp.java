@@ -6,25 +6,25 @@ import javax.annotation.Nullable;
 /**
  * A team line up
  */
-public interface LineUp {
+public interface LineUp<P extends Player> {
 
     /**
      * @return The playing team, in their beginning batting order
      */
     @Nonnull
-	ImmutableList<Player> battingOrder();
+	ImmutableList<P> battingOrder();
 
     /**
      * @return The captain of the team, if known
      */
     @Nullable
-	Player captain();
+	P captain();
 
     /**
      * @return The primary wicket-keeper in this line up, if known
      */
     @Nullable
-	Player wicketKeeper();
+	P wicketKeeper();
 
     /**
      * @return The name of the team
@@ -39,14 +39,11 @@ public interface LineUp {
      * @param other The line up to compare again
      * @return Returns true if the 2 line-ups are the same team
      */
-    default boolean sameTeam(@Nullable LineUp other) {
+    default boolean sameTeam(@Nullable LineUp<?> other) {
         return this.equals(other);
     }
 
 
-    static SimpleLineUp.Builder lineUp() {
-        return new SimpleLineUp.Builder();
-    }
 }
 
 

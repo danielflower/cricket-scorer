@@ -22,7 +22,7 @@ public class T20Test {
 
         // A recreation of https://www.espncricinfo.com/series/19297/scorecard/1187667/new-zealand-vs-england-3rd-t20i-england-in-new-zealand-2019-20
 
-        LineUp nz = LineUp.lineUp()
+        LineUp nz = SimpleLineUp.lineUp()
             .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
@@ -30,7 +30,7 @@ public class T20Test {
             .withWicketKeeper(TIM_SEIFERT)
             .build();
 
-        LineUp eng = LineUp.lineUp()
+        LineUp eng = SimpleLineUp.lineUp()
             .withTeamName("England")
             .withBattingOrder(ImmutableList.of(
                 BANTON, MALAN, VINCE, MORGAN, BILLINGS, SAM_CURRAN, GREGORY, TOM_CURRAN, MAHMOOD, BROWN, PARKINSON

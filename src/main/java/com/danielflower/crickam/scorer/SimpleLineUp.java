@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * A very simple implementation of a line up that can be used instead of implementing your own {@link LineUp}
  */
-public class SimpleLineUp implements LineUp {
+public class SimpleLineUp implements LineUp<Player> {
     private final ImmutableList<Player> players;
     private final Player captain;
     private final Player wicketKeeper;
@@ -19,6 +19,10 @@ public class SimpleLineUp implements LineUp {
         this.captain = captain;
         this.wicketKeeper = wicketKeeper;
         this.teamName = teamName;
+    }
+
+    public static Builder lineUp() {
+        return new Builder();
     }
 
     @Nonnull

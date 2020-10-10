@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InningsTest {
 
-    private final LineUp aus = Australia.oneDayLineUp().build();
-    private final LineUp nz = NewZealand.oneDayLineUp().build();
+    private final SimpleLineUp aus = Australia.oneDayLineUp().build();
+    private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player opener2 = nz.battingOrder().get(1);
     private final Player number3 = nz.battingOrder().get(2);

@@ -1,9 +1,6 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.ImmutableList;
-import com.danielflower.crickam.scorer.LineUp;
-import com.danielflower.crickam.scorer.MatchControl;
-import com.danielflower.crickam.scorer.MatchType;
+import com.danielflower.crickam.scorer.*;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import org.junit.jupiter.api.Test;
@@ -14,8 +11,8 @@ import static org.hamcrest.Matchers.*;
 
 class InningsStartingEventTest {
 
-    private final LineUp nz = NewZealand.oneDayLineUp().build();
-    private final LineUp aus = Australia.oneDayLineUp().build();
+    private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
+    private final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private MatchControl control = MatchControl.newMatch(
         MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, aus))
     );

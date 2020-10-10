@@ -12,7 +12,7 @@ public class ReadMeExample {
 
     public static void main(String[] args) {
 
-        LineUp nz = LineUp.lineUp()
+        SimpleLineUp nz = SimpleLineUp.lineUp()
             .withTeamName("New Zealand")
             .withBattingOrder(ImmutableList.of(COLIN_MUNRO, MARTIN_GUPTILL, TIM_SEIFERT, COLIN_DE_GRANDHOMME, ROSS_TAYLOR,
                 JAMES_NEESHAM, MITCHELL_SANTNER, TIM_SOUTHEE, ISH_SODHI, LOCKIE_FERGUSON, BLAIR_TICKNER))
@@ -20,7 +20,7 @@ public class ReadMeExample {
             .withWicketKeeper(TIM_SEIFERT)
             .build();
 
-        LineUp eng = LineUp.lineUp()
+        SimpleLineUp eng = SimpleLineUp.lineUp()
             .withTeamName("England")
             .withBattingOrder(ImmutableList.of(
                 BURNS, SIBLEY, DENLY, ROOT, STOKES, BAIRSTOW, BUTTLER, SAM_CURRAN, ARCHER, BROAD, ANDERSON

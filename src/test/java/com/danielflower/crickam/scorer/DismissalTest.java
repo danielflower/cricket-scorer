@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.is;
 
 class DismissalTest {
 
-    private final LineUp aus = LineUp.lineUp()
+    private final SimpleLineUp aus = SimpleLineUp.lineUp()
         .withCaptain(AARON_FINCH)
         .withWicketKeeper(ALEX_CAREY)
         .withTeamName("Australia")

@@ -11,8 +11,8 @@ import static org.hamcrest.Matchers.is;
 
 class BallCompletedEventTest {
 
-    private final LineUp nz = NewZealand.oneDayLineUp().build();
-    private final LineUp aus = Australia.oneDayLineUp().build();
+    private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
+    private final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private final Match match = MatchControl.newMatch(
         MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, aus))
     )
