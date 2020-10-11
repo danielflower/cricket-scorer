@@ -6,7 +6,6 @@ import scaffolding.ScorecardLoader;
 
 import java.util.TimeZone;
 
-import static com.danielflower.crickam.scorer.Venue.venue;
 import static com.danielflower.crickam.scorer.data.England.*;
 import static com.danielflower.crickam.scorer.data.NewZealand.*;
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
@@ -44,13 +43,7 @@ public class T20Test {
                 .withTeamLineUps(ImmutableList.of(nz, eng))
                 .withTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 13, 0))
                 .withScheduledStartTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 14, 0))
-                .withVenue(venue()
-                    .withName("Saxton Oval")
-                    .withCity("Nelson")
-                    .withTerritory("New Zealand")
-                    .withTimeZone(NZ_TIME)
-                    .build()
-                )
+                .withTimeZone(NZ_TIME)
         );
 
         control = control.onEvent(inningsStarting()

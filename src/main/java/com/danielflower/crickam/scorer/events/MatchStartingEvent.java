@@ -21,7 +21,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final ImmutableList<LineUp<?>> lineUps;
     private final int inningsPerTeam;
     private final Integer oversPerInnings;
-    private final Venue venue;
     private final int numberOfScheduledDays;
     private final Integer ballsPerInnings;
     private final TimeZone timeZone;
@@ -29,7 +28,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final Object customData;
 
     private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime,
-                               ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue,
+                               ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
                                ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
@@ -39,7 +38,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         this.lineUps = requireNonNull(lineUps, "lineUps");
         this.inningsPerTeam = inningsPerTeam;
         this.oversPerInnings = oversPerInnings;
-        this.venue = venue;
         this.numberOfScheduledDays = numberOfScheduledDays;
         this.ballsPerInnings = ballsPerInnings;
         this.timeZone = timeZone;
@@ -75,10 +73,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         return oversPerInnings;
     }
 
-    public @Nullable Venue venue() {
-        return venue;
-    }
-
     public @Nonnegative int numberOfScheduledDays() {
         return numberOfScheduledDays;
     }
@@ -101,7 +95,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             .withInningsPerTeam(inningsPerTeam)
             .withOversPerInnings(oversPerInnings)
             .withNumberOfScheduledDays(numberOfScheduledDays)
-            .withVenue(venue)
             .withBallsPerInnings(ballsPerInnings)
             .withTimeZone(timeZone)
             .withID(id())
@@ -141,7 +134,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private int inningsPerTeam;
         private Integer oversPerInnings;
         private int numberOfScheduledDays;
-        private Venue venue;
         private Integer ballsPerInnings;
         private TimeZone timeZone;
         private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
@@ -172,10 +164,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         public @Nonnegative int numberOfScheduledDays() {
             return numberOfScheduledDays;
-        }
-
-        public @Nullable Venue venue() {
-            return venue;
         }
 
         public @Nullable Integer ballsPerInnings() {
@@ -234,14 +222,8 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return this;
         }
 
-        public @Nonnull Builder withVenue(@Nullable Venue venue) {
-            this.venue = venue;
-            return this;
-        }
-
         /**
-         * The time zone that this match is played in. This is optional, and if left unset then then timezone
-         * of the venue will be used if that has been set with {@link #withVenue(Venue)}
+         * The time zone that this match is played in
          *
          * @param timeZone The time zone that this match was played in
          * @return This builder
@@ -281,13 +263,9 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;
             }
-            TimeZone timeZone = this.timeZone;
-            if (timeZone == null && venue != null) {
-                timeZone = venue.timeZone();
-            }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
             return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps,
-                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone, eventListeners, customData());
+                inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone, eventListeners, customData());
         }
 
         @Override
@@ -303,7 +281,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 Objects.equals(startTime, builder.startTime) &&
                 Objects.equals(lineUps, builder.lineUps) &&
                 Objects.equals(oversPerInnings, builder.oversPerInnings) &&
-                Objects.equals(venue, builder.venue) &&
                 Objects.equals(ballsPerInnings, builder.ballsPerInnings) &&
                 Objects.equals(timeZone, builder.timeZone) &&
                 Objects.equals(eventListeners, builder.eventListeners);
@@ -311,7 +288,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, ballsPerInnings, timeZone, eventListeners);
+            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone, eventListeners);
         }
 
         @Override
@@ -324,7 +301,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 ", inningsPerTeam=" + inningsPerTeam +
                 ", oversPerInnings=" + oversPerInnings +
                 ", numberOfScheduledDays=" + numberOfScheduledDays +
-                ", venue=" + venue +
                 ", ballsPerInnings=" + ballsPerInnings +
                 ", timeZone=" + timeZone +
                 ", eventListeners=" + eventListeners +

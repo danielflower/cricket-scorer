@@ -27,7 +27,6 @@ class MatchTest {
             .withOversPerInnings(50)
             .withScheduledStartTime(Instant.now())
             .withTeamLineUps(ImmutableList.of(NewZealand.oneDayLineUp().build(), Australia.oneDayLineUp().build()))
-            .withVenue(VenueTest.aVenue().build())
             ;
     }
 

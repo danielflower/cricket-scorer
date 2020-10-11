@@ -45,7 +45,7 @@ public final class Match {
 
     static @Nonnull Match newMatch(MatchStartingEvent e) {
         FixedData fd = new FixedData(e.customData(), e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
-            e.teamLineUps(), e.inningsPerTeam(), e.oversPerInnings(), e.venue(),
+            e.teamLineUps(), e.inningsPerTeam(), e.oversPerInnings(),
             e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
     }
@@ -145,10 +145,6 @@ public final class Match {
      */
     public @Nonnegative int numberOfInningsPerTeam() {
         return data.inningsPerTeam;
-    }
-
-    public @Nullable Venue venue() {
-        return data.venue;
     }
 
     /**
@@ -259,12 +255,11 @@ public final class Match {
         private final ImmutableList<LineUp<?>> teams;
         private final int inningsPerTeam;
         private final Integer oversPerInnings;
-        private final Venue venue;
         private final int numberOfScheduledDays;
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
             this.customData = customData;
             this.matchID = matchID;
             this.series = series;
@@ -273,7 +268,6 @@ public final class Match {
             this.teams = teams;
             this.inningsPerTeam = inningsPerTeam;
             this.oversPerInnings = oversPerInnings;
-            this.venue = venue;
             this.numberOfScheduledDays = numberOfScheduledDays;
             this.ballsPerInnings = ballsPerInnings;
             this.timeZone = timeZone;

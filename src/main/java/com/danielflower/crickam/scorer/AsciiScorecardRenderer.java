@@ -40,26 +40,22 @@ public final class AsciiScorecardRenderer {
             .append(NEWLINE).append(NEWLINE)
             .append(matchType);
 
-        if (match.venue()!=null) {
-            Venue venue = match.venue();
-            writer.append(" at ").append(venue.name()).append(", ").append(venue.city());
-            if (match.scheduledStartTime()!=null) {
-                LocalDateTime startTime = LocalDateTime.ofInstant(match.scheduledStartTime(), venue.timeZone().toZoneId());
-                writer.append(", ");
-                if (match.numberOfScheduledDays() == 1) {
-                    writer.append(startTime.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
-                } else {
-                    LocalDateTime endTime = startTime.plusDays(match.numberOfScheduledDays() - 1);
-                    String endFormat = startTime.getMonthValue() == endTime.getMonthValue() ? "d yyyy" : "MMM d yyyy";
-                    writer.append(startTime.format(DateTimeFormatter.ofPattern("MMM d"))).append(" to ")
-                        .append(endTime.format(DateTimeFormatter.ofPattern(endFormat)));
-                }
+        if (match.scheduledStartTime() != null && match.timeZone() != null) {
+            LocalDateTime startTime = LocalDateTime.ofInstant(match.scheduledStartTime(), match.timeZone().toZoneId());
+            writer.append(", ");
+            if (match.numberOfScheduledDays() == 1) {
+                writer.append(startTime.format(DateTimeFormatter.ofPattern("MMM d yyyy")));
+            } else {
+                LocalDateTime endTime = startTime.plusDays(match.numberOfScheduledDays() - 1);
+                String endFormat = startTime.getMonthValue() == endTime.getMonthValue() ? "d yyyy" : "MMM d yyyy";
+                writer.append(startTime.format(DateTimeFormatter.ofPattern("MMM d"))).append(" to ")
+                    .append(endTime.format(DateTimeFormatter.ofPattern(endFormat)));
             }
         }
 
         // Match summary
         writer.append(NEWLINE);
-        if (match.result()!=null) {
+        if (match.result() != null) {
             writer.append(NEWLINE).append(match.result().toString()).append(NEWLINE);
         }
 
@@ -68,10 +64,10 @@ public final class AsciiScorecardRenderer {
             boolean multipleInningsPerTeam = match.numberOfInningsPerTeam() > 1;
             String inningsNumber = multipleInningsPerTeam ? " " + Crictils.withOrdinal(innings.inningsNumberForBattingTeam()) : "";
             String inningsHeader = innings.battingTeam().teamName() + inningsNumber + " Innings";
-            if (innings.originalMaxOvers()!=null) {
+            if (innings.originalMaxOvers() != null) {
                 inningsHeader += " (" + pluralize(innings.originalMaxOvers(), "over") + " maximum)";
             }
-            if (multipleInningsPerTeam && innings.target()!=null) {
+            if (multipleInningsPerTeam && innings.target() != null) {
                 inningsHeader += " (target: " + pluralize(innings.target(), "run") + ")";
             }
 
@@ -81,8 +77,8 @@ public final class AsciiScorecardRenderer {
             renderLine(writer, batColWidths, "BATTER", "", "R", "M", "B", "4s", "6s", "SR");
             for (BatterInnings bi : innings.batterInningsList()) {
                 Score s = bi.score();
-                String sr = s.battingStrikeRate()!=null ? String.format("%.1f", s.battingStrikeRate()) : "-";
-                String dismissal = bi.dismissal()!=null ? bi.dismissal().toScorecardString(innings.bowlingTeam())
+                String sr = s.battingStrikeRate() != null ? String.format("%.1f", s.battingStrikeRate()) : "-";
+                String dismissal = bi.dismissal() != null ? bi.dismissal().toScorecardString(innings.bowlingTeam())
                     : bi.state() == BattingState.RETIRED || bi.state() == BattingState.RETIRED_OUT
                     ? "retired" : "not out";
                 String batterName = bi.player().scorecardName();
@@ -142,7 +138,7 @@ public final class AsciiScorecardRenderer {
 
 
             int[] bowlColWidths = {-20, 5, 4, 4, 4, 7, 3, 3, 3, 3, 3};
-            boolean showDots = match.oversPerInnings()!=null;
+            boolean showDots = match.oversPerInnings() != null;
             renderLine(writer, bowlColWidths, "BOWLING", "O", "M", "R", "W", "Econ", showDots ? "0s" : "", "4s", "6s", "WD", "NB");
             for (BowlerInnings bi : innings.bowlerInningsList()) {
                 Score s = bi.score();
