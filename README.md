@@ -23,7 +23,7 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.8.2</version>
+    <version>0.8.0</version>
 </dependency>
 ````
 
