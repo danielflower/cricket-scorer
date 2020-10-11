@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
@@ -16,7 +15,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A lovely game of cricket between two teams.
- * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(MatchType)} to {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
+ * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(MatchType)} to
+ * {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
  */
 @Immutable
 public final class Match {
@@ -44,7 +44,7 @@ public final class Match {
     }
 
     static @Nonnull Match newMatch(MatchStartingEvent e) {
-        FixedData fd = new FixedData(e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
+        FixedData fd = new FixedData(e.customData(), e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
             e.teamLineUps(), e.matchType(), e.inningsPerTeam(), e.oversPerInnings(), e.venue(),
             e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
@@ -122,7 +122,7 @@ public final class Match {
     /**
      * @return The teams playing in this match, in no particular order.
      */
-    public @Nonnull ImmutableList<LineUp> teams() {
+    public @Nonnull ImmutableList<LineUp<?>> teams() {
         return data.teams;
     }
 
@@ -180,6 +180,14 @@ public final class Match {
         return MatchResult.fromMatch(this);
     }
 
+    /**
+     * Returns any data associated with the match.
+     * @return Arbitrary data associated with the match.
+     */
+    public Object customData() {
+        return data.customData;
+    }
+
     @Nonnull Match onEvent(MatchEvent event) {
         if (event instanceof BallCompletedEvent && currentInnings() == null) {
             throw new IllegalStateException("Cannot process a ball when there is no active innings");
@@ -219,7 +227,7 @@ public final class Match {
      * @param team The team to find the score for
      * @return The score for all innings the team has played in this match
      */
-    public Score scoredByTeam(LineUp team) {
+    public Score scoredByTeam(LineUp<?> team) {
         Score total = Score.EMPTY;
         ImmutableList<Innings> list = this.completedInningsList;
         if (currentInnings != null) {
@@ -238,7 +246,7 @@ public final class Match {
      * @return The bowling team if the batting team is given; or the batting team if the bowling team is given
      * @throws java.util.NoSuchElementException An invalid line-up was given
      */
-    public LineUp otherTeam(LineUp someTeam) {
+    public LineUp<?> otherTeam(LineUp<?> someTeam) {
         return this.teams().stream()
             .filter(t -> !t.equals(someTeam))
             .findFirst()
@@ -247,11 +255,12 @@ public final class Match {
 
     private static class FixedData {
 
+        private final Object customData;
         private final String matchID;
         private final Series series;
         private final Instant time;
         private final Instant scheduledStartTime;
-        private final ImmutableList<LineUp> teams;
+        private final ImmutableList<LineUp<?>> teams;
         private final MatchType matchType;
         private final int inningsPerTeam;
         private final Integer oversPerInnings;
@@ -260,7 +269,8 @@ public final class Match {
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp> teams, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+            this.customData = customData;
             this.matchID = matchID;
             this.series = series;
             this.time = time;
@@ -274,5 +284,6 @@ public final class Match {
             this.ballsPerInnings = ballsPerInnings;
             this.timeZone = timeZone;
         }
+
     }
 }
