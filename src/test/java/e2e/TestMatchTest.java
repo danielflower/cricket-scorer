@@ -42,7 +42,7 @@ public class TestMatchTest {
             .build();
 
         control = MatchControl.newMatch(
-            matchStarting(MatchType.TEST)
+            matchStarting(5, null)
                 .withTeamLineUps(ImmutableList.of(sa, eng))
                 .withTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))
                 .withScheduledStartTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))

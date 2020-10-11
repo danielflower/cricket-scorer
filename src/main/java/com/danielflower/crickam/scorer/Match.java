@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A lovely game of cricket between two teams.
- * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(MatchType)} to
+ * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(int, Integer)} to
  * {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
  */
 @Immutable
@@ -45,7 +45,7 @@ public final class Match {
 
     static @Nonnull Match newMatch(MatchStartingEvent e) {
         FixedData fd = new FixedData(e.customData(), e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
-            e.teamLineUps(), e.matchType(), e.inningsPerTeam(), e.oversPerInnings(), e.venue(),
+            e.teamLineUps(), e.inningsPerTeam(), e.oversPerInnings(), e.venue(),
             e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
     }
@@ -138,10 +138,6 @@ public final class Match {
      */
     public @Nullable Integer oversPerInnings() {
         return data.oversPerInnings;
-    }
-
-    public @Nonnull MatchType matchType() {
-        return data.matchType;
     }
 
     /**
@@ -261,7 +257,6 @@ public final class Match {
         private final Instant time;
         private final Instant scheduledStartTime;
         private final ImmutableList<LineUp<?>> teams;
-        private final MatchType matchType;
         private final int inningsPerTeam;
         private final Integer oversPerInnings;
         private final Venue venue;
@@ -269,14 +264,13 @@ public final class Match {
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
             this.customData = customData;
             this.matchID = matchID;
             this.series = series;
             this.time = time;
             this.scheduledStartTime = scheduledStartTime;
             this.teams = teams;
-            this.matchType = matchType;
             this.inningsPerTeam = inningsPerTeam;
             this.oversPerInnings = oversPerInnings;
             this.venue = venue;

@@ -40,7 +40,7 @@ public class T20Test {
             .build();
 
         control = MatchControl.newMatch(
-            matchStarting(MatchType.T20I)
+            matchStarting(1, 20)
                 .withTeamLineUps(ImmutableList.of(nz, eng))
                 .withTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 13, 0))
                 .withScheduledStartTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 14, 0))

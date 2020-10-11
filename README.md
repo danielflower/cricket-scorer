@@ -38,11 +38,13 @@ object is created, and then fed a series of events.
 All the events have builders, and the [MatchEvents](https://www.javadoc.io/doc/com.danielflower.crickam/cricket-scorer/latest/com/danielflower/crickam/scorer/events/MatchEvents.html)
 class contains a convenient set of methods to get access to all the built-in builders.
 
-The following example creates a test match, starts an innings, and bowls an over:
+The following example creates a one day match, starts an innings, and bowls an over. Note that `nz` and `aus` are
+variables of type `LineUp` which describe each team.
 
 ````java
 MatchControl control = MatchControl.newMatch(
-    MatchEvents.matchStarting(MatchType.ODI).withTeams(ImmutableList.of(nz, eng))
+    MatchEvents.matchStarting(1 /* days */, 50 /* overs */)
+        .withTeams(ImmutableList.of(nz, eng))
 );
 
 control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
@@ -65,7 +67,7 @@ The output of this program is as follows:
 NEW ZEALAND vs ENGLAND
 ======================
 
-ODI
+One day match
 
 New Zealand Innings (50 overs maximum)
 --------------------------------------
@@ -182,5 +184,7 @@ looked at at any point in time, and matches can be forked easily.
 Migrating
 ---------
 
-Versions `0.6.x` and lower returned `Optional` or `OptionalInt` in some places. These methods now return `null` and
+* Versions `0.6.x` and lower returned `Optional` or `OptionalInt` in some places. These methods now return `null` and
 are annotated with `@javax.annotation.Nonnull`. 
+* From `0.7.x` to `0.8.x` many unnecessary objects were removed from the API. For example, there are no longer
+team/line-up/player builders (you can supply your own objects, or use the `SimplePlayer` etc classes)

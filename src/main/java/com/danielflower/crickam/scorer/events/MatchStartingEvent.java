@@ -19,7 +19,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final Series series;
     private final Instant scheduledStartTime;
     private final ImmutableList<LineUp<?>> lineUps;
-    private final MatchType matchType;
     private final int inningsPerTeam;
     private final Integer oversPerInnings;
     private final Venue venue;
@@ -30,7 +29,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final Object customData;
 
     private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime,
-                               ImmutableList<LineUp<?>> lineUps, MatchType matchType, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue,
+                               ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
                                ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
         super(id, time, generatedBy);
@@ -38,7 +37,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         this.series = series;
         this.scheduledStartTime = scheduledStartTime;
         this.lineUps = requireNonNull(lineUps, "lineUps");
-        this.matchType = requireNonNull(matchType, "matchType");
         this.inningsPerTeam = inningsPerTeam;
         this.oversPerInnings = oversPerInnings;
         this.venue = venue;
@@ -67,10 +65,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
     public @Nonnull ImmutableList<LineUp<?>> teamLineUps() {
         return lineUps;
-    }
-
-    public @Nonnull MatchType matchType() {
-        return matchType;
     }
 
     public @Nonnegative int inningsPerTeam() {
@@ -104,7 +98,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             .withSeries(series)
             .withScheduledStartTime(scheduledStartTime)
             .withTeamLineUps(lineUps)
-            .withMatchType(matchType)
             .withInningsPerTeam(inningsPerTeam)
             .withOversPerInnings(oversPerInnings)
             .withNumberOfScheduledDays(numberOfScheduledDays)
@@ -121,12 +114,30 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         return customData;
     }
 
+    /**
+     * Creates a builder for a 2-innings-per-side, multi-day cricket match, such as an international level test
+     * match or domestic first class game.
+     * @param days The number of scheduled days
+     * @return A new builder
+     */
+    public static Builder firstClass(int days) {
+        return new Builder().withInningsPerTeam(2).withNumberOfScheduledDays(days);
+    }
+
+    /**
+     * Creates a builder for a limited-overs match, e.g. a T20, ODI, List A etc
+     * @param overs The number of overs per innings
+     * @return A new builder
+     */
+    public static Builder limitedOvers(int overs) {
+        return new Builder().withInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(overs);
+    }
+
     public static final class Builder extends BaseMatchEventBuilder<Builder, MatchStartingEvent> {
         private String matchID;
         private Series series;
         private Instant startTime;
         private ImmutableList<LineUp<?>> lineUps;
-        private MatchType matchType;
         private int inningsPerTeam;
         private Integer oversPerInnings;
         private int numberOfScheduledDays;
@@ -150,10 +161,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         public @Nullable ImmutableList<LineUp<?>> teamLineUps() {
             return lineUps;
-        }
-
-        public @Nullable MatchType matchType() {
-            return matchType;
         }
 
         public @Nonnegative int inningsPerTeam() {
@@ -207,11 +214,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         public @Nonnull Builder withTeamLineUps(ImmutableList<LineUp<?>> lineUps) {
             this.lineUps = lineUps;
-            return this;
-        }
-
-        public @Nonnull Builder withMatchType(MatchType matchType) {
-            this.matchType = matchType;
             return this;
         }
 
@@ -298,7 +300,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 timeZone = venue.timeZone();
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
-            return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps, matchType,
+            return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps,
                 inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone, eventListeners, customData);
         }
 
@@ -314,7 +316,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 Objects.equals(series, builder.series) &&
                 Objects.equals(startTime, builder.startTime) &&
                 Objects.equals(lineUps, builder.lineUps) &&
-                matchType == builder.matchType &&
                 Objects.equals(oversPerInnings, builder.oversPerInnings) &&
                 Objects.equals(venue, builder.venue) &&
                 Objects.equals(ballsPerInnings, builder.ballsPerInnings) &&
@@ -325,7 +326,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, matchType, inningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, ballsPerInnings, timeZone, eventListeners, customData);
+            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, ballsPerInnings, timeZone, eventListeners, customData);
         }
 
         @Override
@@ -335,7 +336,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 ", series=" + series +
                 ", startTime=" + startTime +
                 ", lineUps=" + lineUps +
-                ", matchType=" + matchType +
                 ", inningsPerTeam=" + inningsPerTeam +
                 ", oversPerInnings=" + oversPerInnings +
                 ", numberOfScheduledDays=" + numberOfScheduledDays +

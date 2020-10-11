@@ -119,7 +119,7 @@ class MatchControlTest {
     public void canFigureOutInstantsBasedOnLocalTimesAndLastEventTimes() {
         TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(MatchType.TEST)
+            MatchEvents.matchStarting(5, null)
                 .withTeamLineUps(ImmutableList.of(this.nz, aus))
                 .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
                 .withTimeZone(nz)

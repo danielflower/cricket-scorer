@@ -31,7 +31,7 @@ public class UnusualDismissalsTest {
         SimpleLineUp eng = Australia.oneDayLineUp().build();
         Player bowler1 = eng.battingOrder().get(10);
 
-        MatchControl control = MatchControl.newMatch(matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, eng)));
+        MatchControl control = MatchControl.newMatch(matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng)));
 
         control = control.onEvent(inningsStarting().withBattingTeam(nz));
 

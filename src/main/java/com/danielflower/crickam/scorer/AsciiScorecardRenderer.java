@@ -31,10 +31,14 @@ public final class AsciiScorecardRenderer {
     public static void render(MatchControl control, Appendable writer) throws IOException {
         Match match = control.match();
 
+        String matchType = match.oversPerInnings() == null
+            ? match.numberOfScheduledDays() + " day match"
+            : match.oversPerInnings() == 20 ? "T20" : "One day match";
+
         String header = match.teams().stream().map(l -> l.teamName().toUpperCase()).collect(Collectors.joining(" vs "));
         writer.append(header).append(NEWLINE).append(repeat('=', header.length()))
             .append(NEWLINE).append(NEWLINE)
-            .append(match.matchType().name());
+            .append(matchType);
 
         if (match.venue()!=null) {
             Venue venue = match.venue();

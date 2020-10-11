@@ -11,24 +11,29 @@ import java.util.function.Supplier;
  */
 public final class MatchEvents {
 
+    /**
+     * Creates a builder for a new match event
+     * @return A new builder
+     * @see #matchStarting(int, Integer)
+     */
     public static MatchStartingEvent.Builder matchStarting() {
         return new MatchStartingEvent.Builder();
     }
-
-    public static MatchStartingEvent.Builder matchStarting(MatchType matchType) {
-        MatchStartingEvent.Builder builder = matchStarting().withMatchType(matchType);
-        switch (matchType) {
-            case TEST:
-            case FIRST_CLASS:
-                return builder.withInningsPerTeam(2).withNumberOfScheduledDays(5);
-            case ODI:
-            case ONE_DAY:
-                return builder.withInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(50);
-            case T20I:
-            case T20:
-                return builder.withInningsPerTeam(1).withNumberOfScheduledDays(1).withOversPerInnings(20);
-        }
-        return builder;
+    /**
+     * Creates a builder for a new match event
+     * <p>Example parameters:</p>
+     * <ul>
+     *     <li><strong>5, null</strong> for a test match</li>
+     *     <li><strong>4, null</strong> for a four day match</li>
+     *     <li><strong>1, 50</strong> for an ODI</li>
+     *     <li><strong>1, 20</strong> for a T20</li>
+     * </ul>
+     * @param scheduledDays The scheduled number of days for the match. Use <code>1</code> for limited overs cricket
+     * @param oversPerInnings The maximum number of overs per innings. Use <code>null</code> for first class cricket
+     * @return A new MatchStartingEvent builder
+     */
+    public static MatchStartingEvent.Builder matchStarting(int scheduledDays, @Nullable Integer oversPerInnings) {
+        return oversPerInnings == null ? MatchStartingEvent.firstClass(scheduledDays) : MatchStartingEvent.limitedOvers(oversPerInnings);
     }
 
     public static InningsStartingEvent.Builder inningsStarting() {

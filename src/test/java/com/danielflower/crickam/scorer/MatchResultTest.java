@@ -21,11 +21,10 @@ class MatchResultTest {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting()
             .withMatchID("1")
             .withTeamLineUps(ImmutableList.of(aus, nz))
-            .withMatchType(MatchType.ODI)
             .withInningsPerTeam(1)
             .withOversPerInnings(1)
             .withBallsPerInnings(3)
-            );
+        );
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus));
@@ -88,7 +87,7 @@ class MatchResultTest {
 
     @Test
     void firstClassMatchesCanBeWonOrTiedOrDrawn() {
-        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
             .withTeamLineUps(ImmutableList.of(aus, nz)));
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus))
@@ -174,7 +173,7 @@ class MatchResultTest {
 
     @Test
     void knowsAboutBeingBeatenByAnInnings() {
-        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
             .withTeamLineUps(ImmutableList.of(aus, nz)))
             .onEvent(inningsStarting().withBattingTeam(aus))
             .onEvent(overStarting().withBowler(nzBowler))
@@ -205,15 +204,14 @@ class MatchResultTest {
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
             .onEvent(batterInningsStarting())
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
-            ;
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
     }
 
     @Test
     void knowsAboutBeingBeatenByAnInningsAfterFollowOn() {
-        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.TEST)
+        MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
             .withTeamLineUps(ImmutableList.of(aus, nz)))
 
             .onEvent(inningsStarting().withBattingTeam(nz))
@@ -247,8 +245,7 @@ class MatchResultTest {
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
             .onEvent(batterInningsStarting())
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
-            ;
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
     }

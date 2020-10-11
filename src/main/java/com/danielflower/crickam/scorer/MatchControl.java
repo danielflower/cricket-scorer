@@ -53,7 +53,7 @@ public final class MatchControl {
      * Creates a new match control object
      * @param builder A builder for a new-match event
      * @return A match control object you can use to build up match state
-     * @see MatchEvents#matchStarting(MatchType)
+     * @see MatchEvents#matchStarting(int, Integer)
      */
     public static @Nonnull MatchControl newMatch(MatchStartingEvent.Builder builder) {
         requireNonNull(builder, "builder");

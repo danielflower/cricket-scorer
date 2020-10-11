@@ -14,7 +14,7 @@ class BallCompletedEventTest {
     private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private final Match match = MatchControl.newMatch(
-        MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, aus))
+        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, aus))
     )
         .onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
         .onEvent(MatchEvents.overStarting(aus.battingOrder().last()))

@@ -24,7 +24,6 @@ class MatchTest {
         return MatchEvents.matchStarting()
             .withMatchID(UUID.randomUUID().toString())
             .withInningsPerTeam(1)
-            .withMatchType(MatchType.ODI)
             .withOversPerInnings(50)
             .withScheduledStartTime(Instant.now())
             .withTeamLineUps(ImmutableList.of(NewZealand.oneDayLineUp().build(), Australia.oneDayLineUp().build()))

@@ -22,7 +22,7 @@ class InningsTest {
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player opener2 = nz.battingOrder().get(1);
     private final Player number3 = nz.battingOrder().get(2);
-    private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(aus, nz)))
+    private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(aus, nz)))
         .onEvent(inningsStarting().withBattingTeam(nz));
     
     private final Player bowler1 = aus.battingOrder().get(10);

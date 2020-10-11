@@ -26,7 +26,7 @@ class MatchEventListenerTest {
     @Test
     public void eventsAreRaisedToListeners() {
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(aus, nz))
+            MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(aus, nz))
                 .withEventListeners(data -> null, collectingListener)
         );
         assertThat(collectingListener.size(), is(1));
@@ -68,7 +68,7 @@ class MatchEventListenerTest {
         CollectingListener afterListener = new CollectingListener();
 
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(aus, nz))
+            MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(aus, nz))
                 .withEventListeners(collectingListener, new OffTheMarkEventRaiser(), afterListener)
         ).onEvent(inningsStarting().withBattingTeam(nz))
             .onEvent(overStarting(bowler1))

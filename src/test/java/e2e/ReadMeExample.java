@@ -30,7 +30,7 @@ public class ReadMeExample {
             .build();
 
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(MatchType.ODI).withTeamLineUps(ImmutableList.of(nz, eng))
+            MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng))
         );
 
         control = control.onEvent(inningsStarting().withBattingTeam(nz))
