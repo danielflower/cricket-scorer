@@ -16,7 +16,6 @@ import static java.util.Objects.requireNonNull;
 public final class MatchStartingEvent extends BaseMatchEvent {
 
     private final String matchID;
-    private final Series series;
     private final Instant scheduledStartTime;
     private final ImmutableList<LineUp<?>> lineUps;
     private final int inningsPerTeam;
@@ -27,13 +26,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final transient ImmutableList<MatchEventListener> eventListeners;
     private final Object customData;
 
-    private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime,
+    private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime,
                                ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
                                ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.matchID = requireNonNull(matchID, "matchID");
-        this.series = series;
         this.scheduledStartTime = scheduledStartTime;
         this.lineUps = requireNonNull(lineUps, "lineUps");
         this.inningsPerTeam = inningsPerTeam;
@@ -51,10 +49,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
     public @Nonnull String matchID() {
         return matchID;
-    }
-
-    public @Nullable Series series() {
-        return series;
     }
 
     public @Nullable Instant scheduledStartTime() {
@@ -89,7 +83,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     public @Nonnull Builder newBuilder() {
         return new Builder()
             .withMatchID(matchID)
-            .withSeries(series)
             .withScheduledStartTime(scheduledStartTime)
             .withTeamLineUps(lineUps)
             .withInningsPerTeam(inningsPerTeam)
@@ -128,7 +121,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, MatchStartingEvent> {
         private String matchID;
-        private Series series;
         private Instant startTime;
         private ImmutableList<LineUp<?>> lineUps;
         private int inningsPerTeam;
@@ -140,10 +132,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         public @Nullable String matchID() {
             return matchID;
-        }
-
-        public @Nullable Series series() {
-            return series;
         }
 
         public @Nullable Instant scheduledStartTime() {
@@ -176,11 +164,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         public @Nonnull Builder withMatchID(String matchID) {
             this.matchID = matchID;
-            return this;
-        }
-
-        public @Nonnull Builder withSeries(@Nullable Series series) {
-            this.series = series;
             return this;
         }
 
@@ -264,7 +247,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 bpi = 6 * oversPerInnings;
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
-            return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps,
+            return new MatchStartingEvent(id(), generatedBy(), matchID, time(), startTime, lineUps,
                 inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone, eventListeners, customData());
         }
 
@@ -277,7 +260,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return inningsPerTeam == builder.inningsPerTeam &&
                 numberOfScheduledDays == builder.numberOfScheduledDays &&
                 Objects.equals(matchID, builder.matchID) &&
-                Objects.equals(series, builder.series) &&
                 Objects.equals(startTime, builder.startTime) &&
                 Objects.equals(lineUps, builder.lineUps) &&
                 Objects.equals(oversPerInnings, builder.oversPerInnings) &&
@@ -288,14 +270,13 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone, eventListeners);
+            return Objects.hash(super.hashCode(), matchID, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone, eventListeners);
         }
 
         @Override
         public String toString() {
             return "Builder{" +
                 "matchID='" + matchID + '\'' +
-                ", series=" + series +
                 ", startTime=" + startTime +
                 ", lineUps=" + lineUps +
                 ", inningsPerTeam=" + inningsPerTeam +

@@ -44,7 +44,7 @@ public final class Match {
     }
 
     static @Nonnull Match newMatch(MatchStartingEvent e) {
-        FixedData fd = new FixedData(e.customData(), e.matchID(), e.series(), e.time(), e.scheduledStartTime(),
+        FixedData fd = new FixedData(e.customData(), e.matchID(), e.time(), e.scheduledStartTime(),
             e.teamLineUps(), e.inningsPerTeam(), e.oversPerInnings(),
             e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
         return new Match(fd, State.NOT_STARTED, null, emptyList(), null, new Balls());
@@ -92,10 +92,6 @@ public final class Match {
      */
     public @Nonnull String matchID() {
         return data.matchID;
-    }
-
-    public @Nullable Series series() {
-        return data.series;
     }
 
     /**
@@ -249,7 +245,6 @@ public final class Match {
 
         private final Object customData;
         private final String matchID;
-        private final Series series;
         private final Instant time;
         private final Instant scheduledStartTime;
         private final ImmutableList<LineUp<?>> teams;
@@ -259,10 +254,9 @@ public final class Match {
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(@Nullable Object customData, String matchID, @Nullable Series series, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        public FixedData(@Nullable Object customData, String matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
             this.customData = customData;
             this.matchID = matchID;
-            this.series = series;
             this.time = time;
             this.scheduledStartTime = scheduledStartTime;
             this.teams = teams;
