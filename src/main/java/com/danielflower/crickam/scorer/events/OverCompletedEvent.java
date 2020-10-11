@@ -15,8 +15,8 @@ public final class OverCompletedEvent extends BaseMatchEvent {
 
     private final Over over;
 
-    private OverCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Over over) {
-        super(id, time, generatedBy);
+    private OverCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Over over, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.over = requireNonNull(over, "over");
     }
 
@@ -43,7 +43,7 @@ public final class OverCompletedEvent extends BaseMatchEvent {
             if (match.currentInnings() == null) throw new IllegalStateException("Cannot complete an over when there is no innings in progress");
             Over over = match.currentInnings().currentOver();
             if (over == null) throw new IllegalStateException("Cannot complete an over when there is no over in progress");
-            return new OverCompletedEvent(id(), time(), generatedBy(), over);
+            return new OverCompletedEvent(id(), time(), generatedBy(), over, customData());
         }
 
     }

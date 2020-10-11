@@ -17,8 +17,8 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, MatchResult result) {
-        super(id, time, generatedBy);
+    private MatchCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, MatchResult result, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.result = Objects.requireNonNull(result, "result");
     }
 
@@ -59,7 +59,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
             if (toUse == null) {
                 toUse = match.calculateResult();
             }
-            return new MatchCompletedEvent(id(), time(), generatedBy(), toUse);
+            return new MatchCompletedEvent(id(), time(), generatedBy(), toUse, customData());
         }
 
         @Override

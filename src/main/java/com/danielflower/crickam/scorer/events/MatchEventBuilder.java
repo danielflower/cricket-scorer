@@ -41,6 +41,21 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     @Nonnull B withTime(@Nullable Instant time);
 
     /**
+     * @return API-user defined custom data associated with the event
+     */
+    @Nullable Object customData();
+
+    /**
+     * This allows the API user to associate an arbitrary object with the match to make retrieval easier
+     * (e.g. from event listeners).
+     * <p>Note that matches are immutable objects unless mutable custom data is specified</p>
+     * @param customData An arbitrary object
+     * @return This builder
+     */
+    @Nonnull
+    B withCustomData(@Nullable Object customData);
+
+    /**
      * @return The ID of the event, or null if unset
      */
     @Nonnull String id();

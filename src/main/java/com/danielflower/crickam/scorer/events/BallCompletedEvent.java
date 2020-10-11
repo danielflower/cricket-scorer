@@ -33,8 +33,8 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private BallCompletedEvent(String id, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
                                @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, @Nonnegative int overNumber,
-                               @Nonnegative int numberInOver, @Nonnegative int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
-        super(id, time, null, generatedEvents);
+                               @Nonnegative int numberInOver, @Nonnegative int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
+        super(id, time, null, customData, generatedEvents);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -348,7 +348,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
                 );
             }
             return new BallCompletedEvent(id(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
-                delivery, swing, trajectoryAtImpact, fielder, time(), overNumber, numberInOver, numberInMatch, generatedEvents);
+                delivery, swing, trajectoryAtImpact, fielder, time(), overNumber, numberInOver, numberInMatch, generatedEvents, customData());
         }
 
         private static boolean guessIfCrossed(Score score) {

@@ -15,8 +15,8 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
     private final boolean declared;
     private final int inningsNumber;
 
-    private InningsCompletedEvent(@Nullable Instant time, String id, @Nullable String generatedBy, boolean declared, @Nonnegative int inningsNumber) {
-        super(id, time, generatedBy);
+    private InningsCompletedEvent(@Nullable Instant time, String id, @Nullable String generatedBy, boolean declared, @Nonnegative int inningsNumber, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.declared = declared;
         this.inningsNumber = inningsNumber;
     }
@@ -58,7 +58,7 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
         @Nonnull
         public InningsCompletedEvent build(Match match) {
             int inningsNumber = match.inningsList().size();
-            return new InningsCompletedEvent(time(), id(), generatedBy(), declared, inningsNumber);
+            return new InningsCompletedEvent(time(), id(), generatedBy(), declared, inningsNumber, customData());
         }
 
         @Override

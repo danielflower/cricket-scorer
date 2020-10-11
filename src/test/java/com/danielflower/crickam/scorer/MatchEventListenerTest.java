@@ -6,6 +6,7 @@ import com.danielflower.crickam.scorer.events.*;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,8 +89,8 @@ class MatchEventListenerTest {
 
         final Player player;
 
-        protected OffTheMarkEvent(String id, Instant time, String generatedBy, Player player) {
-            super(id, time, generatedBy);
+        protected OffTheMarkEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player player, @Nullable Object customData) {
+            super(id, time, generatedBy, customData);
             this.player = player;
         }
 
@@ -110,7 +111,7 @@ class MatchEventListenerTest {
             @Nonnull
             @Override
             public OffTheMarkEvent build(Match match) {
-                return new OffTheMarkEvent(id(), time(), generatedBy(), player);
+                return new OffTheMarkEvent(id(), time(), generatedBy(), player, customData());
             }
 
             public @Nonnull
@@ -126,7 +127,7 @@ class MatchEventListenerTest {
         private final List<MatchEventData> received = new ArrayList<>();
 
         @Override
-        public ImmutableList<MatchEventBuilder<?, ?>> onEvent(MatchEventData data) throws Exception {
+        public ImmutableList<MatchEventBuilder<?, ?>> onEvent(MatchEventData data) {
             received.add(data);
             return null;
         }

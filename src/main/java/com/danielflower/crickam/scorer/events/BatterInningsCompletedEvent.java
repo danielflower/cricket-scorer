@@ -24,8 +24,8 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player batter, BattingState reason, @Nullable Dismissal dismissal) {
-        super(id, time, generatedBy);
+    private BatterInningsCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player batter, BattingState reason, @Nullable Dismissal dismissal, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
         if (reason == BattingState.IN_PROGRESS) {
@@ -122,7 +122,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
             if (batter == null) {
                 throw new NullPointerException("Batter was null");
             }
-            return new BatterInningsCompletedEvent(id(), time(), generatedBy(), batter, reason, dismissal);
+            return new BatterInningsCompletedEvent(id(), time(), generatedBy(), batter, reason, dismissal, customData());
         }
 
         @Override

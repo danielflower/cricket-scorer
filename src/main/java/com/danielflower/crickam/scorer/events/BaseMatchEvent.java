@@ -15,15 +15,17 @@ public abstract class BaseMatchEvent implements MatchEvent {
     private final Instant time;
     private final String generatedBy;
     private final ImmutableList<MatchEventBuilder<?, ?>> generatedEvents;
+    private final Object customData;
 
-    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy) {
-        this(id, time, generatedBy, ImmutableList.emptyList());
+    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy, @Nullable Object customData) {
+        this(id, time, generatedBy, customData, ImmutableList.emptyList());
     }
-    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy, @Nullable Object customData, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
         this.id = requireNonNull(id, "id");
         this.time = time;
         this.generatedBy = generatedBy;
         this.generatedEvents = requireNonNull(generatedEvents, "generatedEvents");
+        this.customData = customData;
     }
 
     @Override
@@ -44,5 +46,10 @@ public abstract class BaseMatchEvent implements MatchEvent {
     @Override
     public final @Nullable String generatedBy() {
         return generatedBy;
+    }
+
+    @Override
+    public @Nullable Object customData() {
+        return customData;
     }
 }

@@ -47,4 +47,9 @@ public interface MatchEvent {
     default ImmutableList<MatchEventBuilder<?,?>> generatedEvents() {
         return emptyList();
     }
+
+    /**
+     * @return data associated with the event by the API user
+     */
+    @Nullable Object customData();
 }

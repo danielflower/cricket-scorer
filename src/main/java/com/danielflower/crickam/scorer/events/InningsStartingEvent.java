@@ -27,8 +27,8 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final boolean isFollowingOn;
     private final Integer maxOvers;
 
-    private InningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents) {
-        super(id, time, generatedBy, generatedEvents);
+    private InningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
+        super(id, time, generatedBy, customData, generatedEvents);
         this.startingScore = requireNonNull(startingScore, "startingScore");
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
         this.bowlingTeam = requireNonNull(bowlingTeam, "bowlingTeam");
@@ -334,7 +334,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
                 .collect(ImmutableList.toImmutableList());
             Score startingScore = this.startingScore == null ? Score.EMPTY : this.startingScore;
             return new InningsStartingEvent(id(), generatedBy(), time(), startingScore, battingTeam, bowlingTeam, openers, maxBalls, maxOvers, target, followOn,
-                inningsNumber, battingInningsNumber, finalInnings, generatedEvents);
+                inningsNumber, battingInningsNumber, finalInnings, generatedEvents, customData());
         }
 
         @Override

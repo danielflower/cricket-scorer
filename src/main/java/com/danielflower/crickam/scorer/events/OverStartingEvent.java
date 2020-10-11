@@ -26,8 +26,8 @@ public final class OverStartingEvent extends BaseMatchEvent {
     private final int overNumber;
     private final int inningsNumber;
 
-    private OverStartingEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber) {
-        super(id, time, generatedBy);
+    private OverStartingEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -146,7 +146,7 @@ public final class OverStartingEvent extends BaseMatchEvent {
             Player strikerPlayer = requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
             Player nonStrikerPlayer = requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));
             int numberInInnings = innings.overs().size();
-            return new OverStartingEvent(id(), time(), generatedBy(), bowler, strikerPlayer, nonStrikerPlayer, ballsInOver, numberInInnings, innings.inningsNumber());
+            return new OverStartingEvent(id(), time(), generatedBy(), bowler, strikerPlayer, nonStrikerPlayer, ballsInOver, numberInInnings, innings.inningsNumber(), customData());
         }
 
         private static @Nullable Player playerOrNull(@Nullable BatterInnings batterInnings) {

@@ -15,8 +15,8 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Player batter) {
-        super(id, time, generatedBy);
+    private BatterInningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Player batter, @Nullable Object customData) {
+        super(id, time, generatedBy, customData);
         this.batter = Objects.requireNonNull(batter);
     }
 
@@ -67,7 +67,7 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
                 throw new IllegalStateException("The player " + batter + " is not in the batting team " + innings.battingTeam());
             }
 
-            return new BatterInningsStartingEvent(id(), generatedBy(), time(), batter);
+            return new BatterInningsStartingEvent(id(), generatedBy(), time(), batter, customData());
         }
 
         @Override

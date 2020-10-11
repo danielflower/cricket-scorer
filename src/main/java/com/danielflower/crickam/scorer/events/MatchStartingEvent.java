@@ -32,7 +32,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                                ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nullable Venue venue,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
                                ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
-        super(id, time, generatedBy);
+        super(id, time, generatedBy, customData);
         this.matchID = requireNonNull(matchID, "matchID");
         this.series = series;
         this.scheduledStartTime = scheduledStartTime;
@@ -145,7 +145,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private Integer ballsPerInnings;
         private TimeZone timeZone;
         private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
-        private Object customData;
 
         public @Nullable String matchID() {
             return matchID;
@@ -186,8 +185,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         public @Nullable TimeZone timeZone() {
             return timeZone;
         }
-
-        public @Nullable Object customData() { return customData; }
 
         public @Nonnull Builder withMatchID(String matchID) {
             this.matchID = matchID;
@@ -277,17 +274,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return withEventListeners(ImmutableList.of(eventListeners));
         }
 
-        /**
-         * This allows the API user to associate an arbitrary object with the match to make retrieval easier
-         * (e.g. from event listeners).
-         * <p>Note that matches are immutable objects unless mutable custom data is specified</p>
-         * @param customData An arbitrary object
-         * @return This builder
-         */
-        public @Nonnull Builder withCustomData(@Nullable Object customData) {
-            this.customData = customData;
-            return this;
-        }
 
         @Nonnull
         public MatchStartingEvent build(@Nullable Match match /* null for only this event type */) {
@@ -301,7 +287,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             }
             String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
             return new MatchStartingEvent(id(), generatedBy(), matchID, series, time(), startTime, lineUps,
-                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone, eventListeners, customData);
+                inningsPerTeam, oversPerInnings, venue, numberOfScheduledDays, bpi, timeZone, eventListeners, customData());
         }
 
         @Override
@@ -320,13 +306,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 Objects.equals(venue, builder.venue) &&
                 Objects.equals(ballsPerInnings, builder.ballsPerInnings) &&
                 Objects.equals(timeZone, builder.timeZone) &&
-                Objects.equals(eventListeners, builder.eventListeners) &&
-                Objects.equals(customData, builder.customData);
+                Objects.equals(eventListeners, builder.eventListeners);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, ballsPerInnings, timeZone, eventListeners, customData);
+            return Objects.hash(super.hashCode(), matchID, series, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, venue, ballsPerInnings, timeZone, eventListeners);
         }
 
         @Override
@@ -343,7 +328,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 ", ballsPerInnings=" + ballsPerInnings +
                 ", timeZone=" + timeZone +
                 ", eventListeners=" + eventListeners +
-                ", customData=" + customData +
                 "} " + super.toString();
         }
     }
