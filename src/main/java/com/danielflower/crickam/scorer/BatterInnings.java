@@ -124,7 +124,7 @@ public final class BatterInnings {
     @Override
     public String toString() {
         String notout = state != BattingState.DISMISSED ? "*" : "";
-        return player.initialsWithFamilyName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
+        return player.scorecardName() + " - " + score().batterRuns() + notout + " (" + score().validDeliveries() + "b)";
     }
 
     @Override

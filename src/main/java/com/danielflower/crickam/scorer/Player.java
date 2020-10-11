@@ -16,9 +16,9 @@ public interface Player {
     @Nonnull String name();
 
     /**
-     * @return The player's initials followed by family name, e.g. "R Taylor"
+     * @return The name of the player to use on the scorecard, e.g. "LRPL Taylor"
      */
-    default @Nonnull String initialsWithFamilyName() {
+    default @Nonnull String scorecardName() {
         String[] bits = name().split(" ");
         if (bits.length == 0 || bits[0].length() < 1) return name();
         return bits[0].charAt(0) + " " + bits[bits.length - 1];

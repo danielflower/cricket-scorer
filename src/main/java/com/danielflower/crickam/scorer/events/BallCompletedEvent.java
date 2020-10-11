@@ -127,7 +127,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
     public @Nonnull String toString() {
         String out = dismissal != null ? " OUT " + dismissal.type().fullName() : "";
-        return overDotBallString() + " " + bowler().initialsWithFamilyName() + " to " + striker().initialsWithFamilyName() + " "
+        return overDotBallString() + " " + bowler().scorecardName() + " to " + striker().scorecardName() + " "
             + runsScored().teamRuns() + " runs " + out;
     }
 
