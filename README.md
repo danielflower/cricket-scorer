@@ -23,7 +23,7 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.7.1</version>
+    <version>0.8.2</version>
 </dependency>
 ````
 
@@ -187,4 +187,5 @@ Migrating
 * Versions `0.6.x` and lower returned `Optional` or `OptionalInt` in some places. These methods now return `null` and
 are annotated with `@javax.annotation.Nonnull`. 
 * From `0.7.x` to `0.8.x` many unnecessary objects were removed from the API. For example, there are no longer
-team/line-up/player builders (you can supply your own objects, or use the `SimplePlayer` etc classes)
+team/line-up/player builders (you can supply your own objects, or use the `SimplePlayer` etc classes), and no more
+`Venue` and `Series` classes.
