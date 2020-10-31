@@ -91,7 +91,7 @@ public final class Match {
     /**
      * @return A unique ID for this match
      */
-    public @Nonnull UUID matchID() {
+    public @Nonnull UUID id() {
         return data.matchID;
     }
 
