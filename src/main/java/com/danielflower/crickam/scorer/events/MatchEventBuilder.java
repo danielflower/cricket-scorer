@@ -5,6 +5,7 @@ import com.danielflower.crickam.scorer.Match;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  * A builder for a match event
@@ -23,16 +24,16 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     @Nonnull T build(Match match);
 
     /**
-     * @param id A unique ID for this event. If unset, a UUID will be assigned.
+     * @param id A unique ID for this event. If unset, a random UUID will be assigned.
      * @return this builder
      */
-    @Nonnull B withID(String id);
+    @Nonnull B withID(UUID id);
 
     /**
      * @param generatedById The ID of the event that auto-generated this event, or null if it was created by the API user.
      * @return this builder
      */
-    @Nonnull B withGeneratedBy(@Nullable String generatedById);
+    @Nonnull B withGeneratedBy(@Nullable UUID generatedById);
 
     /**
      * @param time The time the event occurred
@@ -56,14 +57,14 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     B withCustomData(@Nullable Object customData);
 
     /**
-     * @return The ID of the event, or null if unset
+     * @return The ID of the event
      */
-    @Nonnull String id();
+    @Nonnull UUID id();
 
     /**
      * @return The ID of the event that generated this event, or null if unset or if it wasn't generated
      */
-    @Nullable String generatedBy();
+    @Nullable UUID generatedBy();
 
     /**
      * @return The time of the event, or null if unset

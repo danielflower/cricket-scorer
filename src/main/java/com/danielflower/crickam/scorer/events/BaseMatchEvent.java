@@ -6,21 +6,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
 @Immutable
 public abstract class BaseMatchEvent implements MatchEvent {
-    private final String id;
+    private final UUID id;
     private final Instant time;
-    private final String generatedBy;
+    private final UUID generatedBy;
     private final ImmutableList<MatchEventBuilder<?, ?>> generatedEvents;
     private final Object customData;
 
-    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy, @Nullable Object customData) {
+    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, @Nullable Object customData) {
         this(id, time, generatedBy, customData, ImmutableList.emptyList());
     }
-    protected BaseMatchEvent(String id, @Nullable Instant time, @Nullable String generatedBy, @Nullable Object customData, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, @Nullable Object customData, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
         this.id = requireNonNull(id, "id");
         this.time = time;
         this.generatedBy = generatedBy;
@@ -34,7 +35,7 @@ public abstract class BaseMatchEvent implements MatchEvent {
     }
 
     @Override
-    public final @Nonnull String id() {
+    public final @Nonnull UUID id() {
         return id;
     }
 
@@ -44,7 +45,7 @@ public abstract class BaseMatchEvent implements MatchEvent {
     }
 
     @Override
-    public final @Nullable String generatedBy() {
+    public final @Nullable UUID generatedBy() {
         return generatedBy;
     }
 

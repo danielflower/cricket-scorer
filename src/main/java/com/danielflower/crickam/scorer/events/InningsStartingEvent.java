@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static java.util.Objects.requireNonNull;
@@ -27,7 +28,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final boolean isFollowingOn;
     private final Integer maxOvers;
 
-    private InningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
+    private InningsStartingEvent(UUID id, @Nullable UUID generatedBy, @Nullable Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
         super(id, time, generatedBy, customData, generatedEvents);
         this.startingScore = requireNonNull(startingScore, "startingScore");
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");

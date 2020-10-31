@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 @Immutable
 public final class MatchStartingEvent extends BaseMatchEvent {
 
-    private final String matchID;
+    private final UUID matchID;
     private final Instant scheduledStartTime;
     private final ImmutableList<LineUp<?>> lineUps;
     private final int inningsPerTeam;
@@ -26,7 +26,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final transient ImmutableList<MatchEventListener> eventListeners;
     private final Object customData;
 
-    private MatchStartingEvent(String id, @Nullable String generatedBy, String matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime,
+    private MatchStartingEvent(UUID id, @Nullable UUID generatedBy, UUID matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime,
                                ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
                                ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
@@ -47,7 +47,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         return eventListeners;
     }
 
-    public @Nonnull String matchID() {
+    public @Nonnull UUID matchID() {
         return matchID;
     }
 
@@ -120,7 +120,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, MatchStartingEvent> {
-        private String matchID;
+        private UUID matchID;
         private Instant startTime;
         private ImmutableList<LineUp<?>> lineUps;
         private int inningsPerTeam;
@@ -130,7 +130,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private TimeZone timeZone;
         private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
 
-        public @Nullable String matchID() {
+        public @Nullable UUID matchID() {
             return matchID;
         }
 
@@ -162,7 +162,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return timeZone;
         }
 
-        public @Nonnull Builder withMatchID(String matchID) {
+        public @Nonnull Builder withMatchID(UUID matchID) {
             this.matchID = matchID;
             return this;
         }
@@ -246,7 +246,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;
             }
-            String matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID().toString());
+            UUID matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID());
             return new MatchStartingEvent(id(), generatedBy(), matchID, time(), startTime, lineUps,
                 inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone, eventListeners, customData());
         }

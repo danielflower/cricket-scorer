@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 @Immutable
 public final class InningsCompletedEvent extends BaseMatchEvent {
@@ -15,7 +16,7 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
     private final boolean declared;
     private final int inningsNumber;
 
-    private InningsCompletedEvent(@Nullable Instant time, String id, @Nullable String generatedBy, boolean declared, @Nonnegative int inningsNumber, @Nullable Object customData) {
+    private InningsCompletedEvent(@Nullable Instant time, UUID id, @Nullable UUID generatedBy, boolean declared, @Nonnegative int inningsNumber, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.declared = declared;
         this.inningsNumber = inningsNumber;

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
@@ -89,7 +90,7 @@ class MatchEventListenerTest {
 
         final Player player;
 
-        protected OffTheMarkEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player player, @Nullable Object customData) {
+        protected OffTheMarkEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, Player player, @Nullable Object customData) {
             super(id, time, generatedBy, customData);
             this.player = player;
         }

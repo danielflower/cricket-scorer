@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.BattingState.DISMISSED;
 import static java.util.Objects.requireNonNull;
@@ -24,7 +25,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
     private final BattingState reason;
     private final Dismissal dismissal;
 
-    private BatterInningsCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player batter, BattingState reason, @Nullable Dismissal dismissal, @Nullable Object customData) {
+    private BatterInningsCompletedEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, Player batter, BattingState reason, @Nullable Dismissal dismissal, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");

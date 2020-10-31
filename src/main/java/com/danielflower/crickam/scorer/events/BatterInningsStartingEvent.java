@@ -9,13 +9,14 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 @Immutable
 public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(String id, @Nullable String generatedBy, @Nullable Instant time, Player batter, @Nullable Object customData) {
+    private BatterInningsStartingEvent(UUID id, @Nullable UUID generatedBy, @Nullable Instant time, Player batter, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.batter = Objects.requireNonNull(batter);
     }

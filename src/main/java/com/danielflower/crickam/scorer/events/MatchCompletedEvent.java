@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * An event that signifies a match is completed. No more events should occur after this.
@@ -17,7 +18,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, MatchResult result, @Nullable Object customData) {
+    private MatchCompletedEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, MatchResult result, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.result = Objects.requireNonNull(result, "result");
     }

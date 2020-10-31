@@ -19,7 +19,6 @@ class MatchResultTest {
     @Test
     void limitedOversCanBeWonOrTied() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting()
-            .withMatchID("1")
             .withTeamLineUps(ImmutableList.of(aus, nz))
             .withInningsPerTeam(1)
             .withOversPerInnings(1)

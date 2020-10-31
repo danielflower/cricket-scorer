@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static com.danielflower.crickam.scorer.Crictils.requireNonNullElseGet;
@@ -30,7 +31,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private final int numberInOver;
     private final int numberInMatch;
 
-    private BallCompletedEvent(String id, Player bowler, Player striker, Player nonStriker, Score runsScored,
+    private BallCompletedEvent(UUID id, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
                                @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, @Nonnegative int overNumber,
                                @Nonnegative int numberInOver, @Nonnegative int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {

@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
 import static com.danielflower.crickam.scorer.Crictils.requireNonNullElse;
@@ -26,7 +27,7 @@ public final class OverStartingEvent extends BaseMatchEvent {
     private final int overNumber;
     private final int inningsNumber;
 
-    private OverStartingEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber, @Nullable Object customData) {
+    private OverStartingEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");

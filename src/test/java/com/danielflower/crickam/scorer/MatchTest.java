@@ -22,7 +22,6 @@ class MatchTest {
 
     public static MatchStartingEvent.Builder aMatch() {
         return MatchEvents.matchStarting()
-            .withMatchID(UUID.randomUUID().toString())
             .withInningsPerTeam(1)
             .withOversPerInnings(50)
             .withScheduledStartTime(Instant.now())

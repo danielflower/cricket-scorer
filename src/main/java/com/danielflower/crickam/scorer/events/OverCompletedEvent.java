@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
+import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,7 +16,7 @@ public final class OverCompletedEvent extends BaseMatchEvent {
 
     private final Over over;
 
-    private OverCompletedEvent(String id, @Nullable Instant time, @Nullable String generatedBy, Over over, @Nullable Object customData) {
+    private OverCompletedEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, Over over, @Nullable Object customData) {
         super(id, time, generatedBy, customData);
         this.over = requireNonNull(over, "over");
     }

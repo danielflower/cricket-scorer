@@ -8,13 +8,13 @@ import java.util.UUID;
 
 public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends MatchEvent> implements MatchEventBuilder<B, T> {
 
-    private String id = UUID.randomUUID().toString();
-    private String generatedBy;
+    private UUID id = UUID.randomUUID();
+    private UUID generatedBy;
     private Instant time;
     private Object customData;
 
     @Override
-    public @Nullable String generatedBy() {
+    public @Nullable UUID generatedBy() {
         return generatedBy;
     }
 
@@ -24,7 +24,7 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     }
 
     @Override
-    public @Nonnull String id() {
+    public @Nonnull UUID id() {
         return id;
     }
 
@@ -33,14 +33,14 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
 
     @Nonnull
     @Override
-    public final B withID(String id) {
+    public final B withID(UUID id) {
         this.id = id;
         return (B)this;
     }
 
     @Nonnull
     @Override
-    public final B withGeneratedBy(@Nullable String generatedBy) {
+    public final B withGeneratedBy(@Nullable UUID generatedBy) {
         this.generatedBy = generatedBy;
         return (B) this;
     }

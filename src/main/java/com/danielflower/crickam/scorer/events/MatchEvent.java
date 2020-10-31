@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 
@@ -20,7 +21,7 @@ public interface MatchEvent {
     /**
      * @return A unique ID for this event
      */
-    @Nonnull String id();
+    @Nonnull UUID id();
 
     /**
      * @return The time that the event took place, or null if unknown
@@ -30,7 +31,7 @@ public interface MatchEvent {
     /**
      * @return The ID of the event that auto-generated this event, or null if the API user created the event
      */
-    @Nullable String generatedBy();
+    @Nullable UUID generatedBy();
 
     /**
      * @return A new builder based on the current values of the event

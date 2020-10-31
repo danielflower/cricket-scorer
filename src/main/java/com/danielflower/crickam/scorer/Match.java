@@ -9,6 +9,7 @@ import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.ImmutableList.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -90,7 +91,7 @@ public final class Match {
     /**
      * @return A unique ID for this match
      */
-    public @Nonnull String matchID() {
+    public @Nonnull UUID matchID() {
         return data.matchID;
     }
 
@@ -244,7 +245,7 @@ public final class Match {
     private static class FixedData {
 
         private final Object customData;
-        private final String matchID;
+        private final UUID matchID;
         private final Instant time;
         private final Instant scheduledStartTime;
         private final ImmutableList<LineUp<?>> teams;
@@ -254,7 +255,7 @@ public final class Match {
         private final Integer ballsPerInnings;
         private final TimeZone timeZone;
 
-        public FixedData(@Nullable Object customData, String matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        public FixedData(@Nullable Object customData, UUID matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime, ImmutableList<LineUp<?>> teams, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings, @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
             this.customData = customData;
             this.matchID = matchID;
             this.time = time;
