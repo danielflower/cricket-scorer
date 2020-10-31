@@ -83,6 +83,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     public @Nonnull Builder newBuilder() {
         return new Builder()
             .withMatchID(matchID)
+            .withCustomData(customData)
             .withScheduledStartTime(scheduledStartTime)
             .withTeamLineUps(lineUps)
             .withInningsPerTeam(inningsPerTeam)
