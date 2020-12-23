@@ -76,6 +76,7 @@ public final class Balls implements Iterable<BallCompletedEvent> {
 
     /**
      * @return The last valid ball in this list, or null if there are none
+     * @see #last()
      */
     public @Nullable BallCompletedEvent lastValid() {
         Iterator<BallCompletedEvent> ballIterator = list().reverseIterator();
@@ -87,4 +88,13 @@ public final class Balls implements Iterable<BallCompletedEvent> {
         }
         return null;
     }
+
+    /**
+     * @return The last ball in this list, or null if there are none
+     * @see #lastValid()
+     */
+    public @Nullable BallCompletedEvent last() {
+        return list().last();
+    }
+
 }

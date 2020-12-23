@@ -1,11 +1,10 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.ImmutableList;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -14,19 +13,14 @@ import static java.util.Objects.requireNonNull;
 public abstract class BaseMatchEvent implements MatchEvent {
     private final UUID id;
     private final Instant time;
-    private final UUID generatedBy;
-    private final ImmutableList<MatchEventBuilder<?, ?>> generatedEvents;
     private final Object customData;
+    private final UUID transactionID;
 
-    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, @Nullable Object customData) {
-        this(id, time, generatedBy, customData, ImmutableList.emptyList());
-    }
-    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, @Nullable Object customData, ImmutableList<MatchEventBuilder<?,?>> generatedEvents) {
+    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID) {
         this.id = requireNonNull(id, "id");
         this.time = time;
-        this.generatedBy = generatedBy;
-        this.generatedEvents = requireNonNull(generatedEvents, "generatedEvents");
         this.customData = customData;
+        this.transactionID = transactionID;
     }
 
     @Override
@@ -40,17 +34,35 @@ public abstract class BaseMatchEvent implements MatchEvent {
     }
 
     @Override
-    public final @Nonnull ImmutableList<MatchEventBuilder<?,?>> generatedEvents() {
-        return this.generatedEvents;
-    }
-
-    @Override
-    public final @Nullable UUID generatedBy() {
-        return generatedBy;
-    }
-
-    @Override
     public @Nullable Object customData() {
         return customData;
     }
+
+    @Nullable
+    @Override
+    public UUID transactionID() {
+        return transactionID;
+    }
+
+    protected <T extends MatchEventBuilder<?,?>> T baseBuilder(T builder) {
+        return (T)builder.withID(id())
+            .withTime(time())
+            .withCustomData(customData())
+            .withTransactionID(transactionID());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BaseMatchEvent that = (BaseMatchEvent) o;
+        return Objects.equals(id, that.id) && Objects.equals(time, that.time)
+            && Objects.equals(customData, that.customData) && Objects.equals(transactionID, that.transactionID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, time, customData, transactionID);
+    }
+
 }

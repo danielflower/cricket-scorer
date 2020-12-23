@@ -9,14 +9,9 @@ import java.util.UUID;
 public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends MatchEvent> implements MatchEventBuilder<B, T> {
 
     private UUID id = UUID.randomUUID();
-    private UUID generatedBy;
     private Instant time;
     private Object customData;
-
-    @Override
-    public @Nullable UUID generatedBy() {
-        return generatedBy;
-    }
+    private UUID transactionID;
 
     @Override
     public @Nullable Instant time() {
@@ -31,6 +26,12 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     @Override
     public @Nullable Object customData() { return customData; }
 
+    @Nullable
+    @Override
+    public UUID transactionID() {
+        return transactionID;
+    }
+
     @Nonnull
     @Override
     public final B withID(UUID id) {
@@ -40,18 +41,10 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
 
     @Nonnull
     @Override
-    public final B withGeneratedBy(@Nullable UUID generatedBy) {
-        this.generatedBy = generatedBy;
-        return (B) this;
-    }
-
-    @Nonnull
-    @Override
     public final B withTime(@Nullable Instant time) {
         this.time = time;
         return (B) this;
     }
-
 
     @Override
     public @Nonnull B withCustomData(@Nullable Object customData) {
@@ -59,6 +52,11 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
         return (B) this;
     }
 
+    @Override
+    public B withTransactionID(@Nullable UUID transactionID) {
+        this.transactionID = transactionID;
+        return (B)this;
+    }
 
     @Override
     public boolean equals(@Nullable Object o) {
@@ -66,23 +64,23 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
         if (o == null || getClass() != o.getClass()) return false;
         BaseMatchEventBuilder<?, ?> that = (BaseMatchEventBuilder<?, ?>) o;
         return Objects.equals(id, that.id) &&
-            Objects.equals(generatedBy, that.generatedBy) &&
             Objects.equals(customData, that.customData) &&
-            Objects.equals(time, that.time);
+            Objects.equals(time, that.time) &&
+            Objects.equals(transactionID, that.transactionID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, generatedBy, customData, time);
+        return Objects.hash(id, customData, time, transactionID);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "{" +
             "id='" + id + '\'' +
-            ", generatedBy=" + generatedBy +
             ", customData=" + customData +
             ", time=" + time +
+            ", transactionID=" + transactionID +
             '}';
     }
 }

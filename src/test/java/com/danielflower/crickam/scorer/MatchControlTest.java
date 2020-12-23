@@ -1,12 +1,16 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
+import com.danielflower.crickam.scorer.events.BatterInningsStartingEvent;
 import com.danielflower.crickam.scorer.events.MatchEvents;
+import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.data.England.MAHMOOD;
 import static com.danielflower.crickam.scorer.data.England.TOM_CURRAN;
@@ -27,6 +31,7 @@ class MatchControlTest {
     private final SimpleLineUp aus = Australia.oneDayLineUp().build();
 
     private MatchControl control;
+
     @BeforeEach
     public void setup() {
         control = MatchControl.newMatch(
@@ -34,11 +39,12 @@ class MatchControlTest {
                 .withInningsPerTeam(1)
                 .withOversPerInnings(50)
                 .withTeamLineUps(ImmutableList.of(nz, aus))
+                .build()
         );
         control = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
             .withTime(Instant.now())
-        );
+        ).onEvent(batterInningsStarting()).onEvent(batterInningsStarting());
     }
 
     private Match match() {
@@ -47,7 +53,7 @@ class MatchControlTest {
 
     @Test
     public void eventsAreAdded() {
-        
+
         assertThat(match().oversPerInnings(), is(50));
         assertThat(match().ballsPerInnings(), is(300));
         assertThat(match().currentInnings(), not(nullValue()));
@@ -77,12 +83,13 @@ class MatchControlTest {
         Player bowler1 = aus.battingOrder().get(10);
         Player bowler2 = aus.battingOrder().get(9);
 
-        control = control.onEvent(overStarting().withBowler(bowler1));
-        control = control.onEvent(ballCompleted("1lb"));
-        control = control.onEvent(ballCompleted("1"));
-        control = control.onEvent(ballCompleted("0"));
-        control = control.onEvent(ballCompleted("4"));
-        control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
+        control = control.onEvent(overStarting().withBowler(bowler1))
+            .onEvent(ballCompleted("1lb"))
+            .onEvent(ballCompleted("1"))
+            .onEvent(ballCompleted("0"))
+            .onEvent(ballCompleted("4"))
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN))
+            .onEvent(batterInningsCompleted());
 
         assertThat(curInnings().currentStriker(), is(nullValue()));
         assertThat(curInnings().currentNonStriker(), is(withBatter(HENRY_NICHOLLS)));
@@ -103,6 +110,7 @@ class MatchControlTest {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
@@ -123,9 +131,12 @@ class MatchControlTest {
                 .withTeamLineUps(ImmutableList.of(this.nz, aus))
                 .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
                 .withTimeZone(nz)
+                .build()
         );
-        control = control.onEvent(inningsStarting().withBattingTeam(this.nz));
-        control = control.onEvent(overStarting().withBowler(aus.battingOrder().last()).withBallsInOver(100));
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
+            .onEvent(overStarting().withBowler(aus.battingOrder().last()).withBallsInOver(100));
 
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-26T22:30:00Z"));
         assertThat(control.localTime(14, 30, 0).toString(), is("2019-09-27T02:30:00Z"));
@@ -138,5 +149,27 @@ class MatchControlTest {
         control = control.onEvent(ballCompleted("0").withTime(Crictils.localTime(nz, 2019, 9, 29, 10, 0)));
         assertThat(control.localTime(10, 30, 0).toString(), is("2019-09-28T21:30:00Z"));
     }
+
+    @Test
+    public void canUndoTransactions() {
+        TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
+        MatchControl control = MatchControl.newMatch(
+            MatchEvents.matchStarting(5, null)
+                .withTeamLineUps(ImmutableList.of(this.nz, aus))
+                .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
+                .withTimeZone(nz)
+                .build()
+        );
+        UUID transactionID = UUID.randomUUID();
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz).withTransactionID(transactionID))
+            .onEvent(batterInningsStarting().withTransactionID(transactionID))
+            .onEvent(batterInningsStarting().withTransactionID(transactionID))
+            .onEvent(overStarting().withBowler(aus.battingOrder().last()).withBallsInOver(100));
+
+        assertThat(control.event(), instanceOf(OverStartingEvent.class));
+        assertThat(control.undo().event(), instanceOf(BatterInningsStartingEvent.class));
+        assertThat(control.undo().undo().event(), instanceOf(MatchStartingEvent.class));
+    }
+
 
 }

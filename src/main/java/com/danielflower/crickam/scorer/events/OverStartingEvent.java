@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
-import static com.danielflower.crickam.scorer.Crictils.requireNonNullElse;
 import static java.util.Objects.requireNonNull;
 
 @Immutable
@@ -27,8 +26,8 @@ public final class OverStartingEvent extends BaseMatchEvent {
     private final int overNumber;
     private final int inningsNumber;
 
-    private OverStartingEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber, @Nullable Object customData) {
-        super(id, time, generatedBy, customData);
+    private OverStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber) {
+        super(id, time, customData, transactionID);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -65,16 +64,42 @@ public final class OverStartingEvent extends BaseMatchEvent {
     }
 
     @Override
-    public @Nonnull Builder newBuilder() {
-        return new Builder()
-            .withBowler(bowler)
-            .withStriker(striker)
-            .withNonStriker(nonStriker)
-            .withBallsInOver(ballsInOver)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy())
+    public @Nonnull
+    Builder newBuilder() {
+        return baseBuilder(new Builder())
+            .withBowler(bowler())
+            .withStriker(striker())
+            .withNonStriker(nonStriker())
+            .withBallsInOver(ballsInOver())
+            .withNumberInInnings(overNumber())
+            .withInningsNumber(inningsNumber())
             ;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        OverStartingEvent that = (OverStartingEvent) o;
+        return ballsInOver == that.ballsInOver && overNumber == that.overNumber && inningsNumber == that.inningsNumber && Objects.equals(bowler, that.bowler) && Objects.equals(striker, that.striker) && Objects.equals(nonStriker, that.nonStriker);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), bowler, striker, nonStriker, ballsInOver, overNumber, inningsNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "OverStartingEvent{" +
+            "bowler=" + bowler +
+            ", striker=" + striker +
+            ", nonStriker=" + nonStriker +
+            ", ballsInOver=" + ballsInOver +
+            ", overNumber=" + overNumber +
+            ", inningsNumber=" + inningsNumber +
+            '}';
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, OverStartingEvent> {
@@ -82,7 +107,9 @@ public final class OverStartingEvent extends BaseMatchEvent {
         private Player bowler;
         private Player striker;
         private Player nonStriker;
-        private int ballsInOver = 6;
+        private Integer ballsInOver;
+        private Integer numberInInnings;
+        private Integer inningsNumber;
 
         public @Nullable Player bowler() {
             return bowler;
@@ -96,15 +123,23 @@ public final class OverStartingEvent extends BaseMatchEvent {
             return nonStriker;
         }
 
-        public int ballsInOver() {
+        public Integer ballsInOver() {
             return ballsInOver;
+        }
+
+        public @Nullable Integer numberInInnings() {
+            return numberInInnings;
+        }
+
+        public @Nullable Integer inningsNumber() {
+            return inningsNumber;
         }
 
         /**
          * @param bowler Specifies the bowler of this over. This must be set.
          * @return This builder
          */
-        public @Nonnull Builder withBowler(Player bowler) {
+        public @Nonnull Builder withBowler(@Nullable Player bowler) {
             this.bowler = bowler;
             return this;
         }
@@ -113,8 +148,27 @@ public final class OverStartingEvent extends BaseMatchEvent {
          * @param ballsInOver The default number of balls per over. Defaults to 6 if unset.
          * @return This builder
          */
-        public @Nonnull Builder withBallsInOver(@Nonnegative int ballsInOver) {
+        public @Nonnull Builder withBallsInOver(@Nullable @Nonnegative Integer ballsInOver) {
             this.ballsInOver = ballsInOver;
+            return this;
+        }
+
+        /**
+         * @param inningsNumber The current innings number.
+         * @return This builder
+         */
+        public @Nonnull Builder withInningsNumber(@Nonnegative @Nullable Integer inningsNumber) {
+            this.inningsNumber = inningsNumber;
+            return this;
+        }
+
+        /**
+         * @param numberInInnings The number in the innings of this ball.
+         * @return This builder
+         */
+        public @Nonnull
+        Builder withNumberInInnings(@Nonnegative @Nullable Integer numberInInnings) {
+            this.numberInInnings = numberInInnings;
             return this;
         }
 
@@ -122,7 +176,8 @@ public final class OverStartingEvent extends BaseMatchEvent {
          * @param striker The player who is on strike for this over, or null to guess based on the current state of the game.
          * @return This builder
          */
-        public @Nonnull Builder withStriker(@Nullable Player striker) {
+        public @Nonnull
+        Builder withStriker(@Nullable Player striker) {
             this.striker = striker;
             return this;
         }
@@ -131,26 +186,37 @@ public final class OverStartingEvent extends BaseMatchEvent {
          * @param nonStriker The player who is off strike for this over, or null to guess based on the current state of the game.
          * @return This builder
          */
-        public @Nonnull Builder withNonStriker(@Nullable Player nonStriker) {
+        public @Nonnull
+        Builder withNonStriker(@Nullable Player nonStriker) {
             this.nonStriker = nonStriker;
             return this;
         }
 
         @Nonnull
-        public OverStartingEvent build(Match match) {
+        @Override
+        public Builder apply(@Nonnull Match match) {
             Innings innings = match.currentInnings();
-            if (innings == null) throw new IllegalStateException("An over cannot start when there is no current innings");
+            if (innings == null)
+                throw new IllegalStateException("An over cannot start when there is no current innings");
             if (innings.currentStriker() == null || innings.currentNonStriker() == null) {
                 throw new IllegalStateException("An over can only start with two batters at the crease. Did you miss sending a " + BatterInningsStartingEvent.class.getSimpleName() + " event?");
             }
+            if (ballsInOver == null) ballsInOver = 6;
             boolean isFirst = innings.overs().last() == null;
-            Player strikerPlayer = requireNonNullElse(striker, playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker()));
-            Player nonStrikerPlayer = requireNonNullElse(nonStriker, playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker()));
-            int numberInInnings = innings.overs().size();
-            return new OverStartingEvent(id(), time(), generatedBy(), bowler, strikerPlayer, nonStrikerPlayer, ballsInOver, numberInInnings, innings.inningsNumber(), customData());
+            if (striker == null) striker = playerOrNull(isFirst ? innings.currentStriker() : innings.currentNonStriker());
+            if (nonStriker == null) nonStriker = playerOrNull(isFirst ? innings.currentNonStriker() : innings.currentStriker());
+            if (inningsNumber == null) inningsNumber = innings.inningsNumber();
+            if (numberInInnings == null) numberInInnings = innings.overs().size();
+            return this;
         }
 
-        private static @Nullable Player playerOrNull(@Nullable BatterInnings batterInnings) {
+        @Nonnull
+        public OverStartingEvent build() {
+            return new OverStartingEvent(id(), time(), customData(), transactionID(), bowler, striker, nonStriker, ballsInOver, numberInInnings, inningsNumber);
+        }
+
+        private static @Nullable
+        Player playerOrNull(@Nullable BatterInnings batterInnings) {
             return batterInnings != null ? batterInnings.player() : null;
         }
 
@@ -160,15 +226,12 @@ public final class OverStartingEvent extends BaseMatchEvent {
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             Builder builder = (Builder) o;
-            return ballsInOver == builder.ballsInOver &&
-                Objects.equals(bowler, builder.bowler) &&
-                Objects.equals(striker, builder.striker) &&
-                Objects.equals(nonStriker, builder.nonStriker);
+            return ballsInOver == builder.ballsInOver && Objects.equals(bowler, builder.bowler) && Objects.equals(striker, builder.striker) && Objects.equals(nonStriker, builder.nonStriker) && Objects.equals(numberInInnings, builder.numberInInnings) && Objects.equals(inningsNumber, builder.inningsNumber);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, ballsInOver);
+            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, ballsInOver, numberInInnings, inningsNumber);
         }
 
         @Override
@@ -178,7 +241,9 @@ public final class OverStartingEvent extends BaseMatchEvent {
                 ", striker=" + striker +
                 ", nonStriker=" + nonStriker +
                 ", ballsInOver=" + ballsInOver +
-                "} " + super.toString();
+                ", numberInInnings=" + numberInInnings +
+                ", inningsNumber=" + inningsNumber +
+                '}';
         }
     }
 }

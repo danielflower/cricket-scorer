@@ -16,8 +16,8 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(UUID id, @Nullable UUID generatedBy, @Nullable Instant time, Player batter, @Nullable Object customData) {
-        super(id, time, generatedBy, customData);
+    private BatterInningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player batter) {
+        super(id, time, customData, transactionID);
         this.batter = Objects.requireNonNull(batter);
     }
 
@@ -27,12 +27,30 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     @Override
     public @Nonnull Builder newBuilder() {
-        return new Builder()
+        return baseBuilder(new Builder())
             .withBatter(batter)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy())
             ;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BatterInningsStartingEvent that = (BatterInningsStartingEvent) o;
+        return Objects.equals(batter, that.batter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(batter);
+    }
+
+    @Override
+    public String toString() {
+        return "BatterInningsStartingEvent{" +
+            "batter=" + batter +
+            '}';
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, BatterInningsStartingEvent> {
@@ -54,21 +72,26 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
         }
 
         @Nonnull
-        public BatterInningsStartingEvent build(Match match) {
-            Player batter = this.batter;
+        @Override
+        public Builder apply(@Nonnull Match match) {
             Innings innings = match.currentInnings();
-            if (innings == null) throw new IllegalStateException("A batter innings cannot be started if there is no team innings in progress");
+            if (innings == null)
+                throw new IllegalStateException("A batter innings cannot be started if there is no team innings in progress");
             if (batter == null) {
-                batter = innings
-                    .yetToBat().first();
+                batter = innings.yetToBat().first();
                 if (batter == null) throw new IllegalStateException("There are no batters left to send in next");
             }
 
-            if (!innings.battingTeam().battingOrder().contains(batter)){
+            if (!innings.battingTeam().battingOrder().contains(batter)) {
                 throw new IllegalStateException("The player " + batter + " is not in the batting team " + innings.battingTeam());
             }
 
-            return new BatterInningsStartingEvent(id(), generatedBy(), time(), batter, customData());
+            return this;
+        }
+
+        @Nonnull
+        public BatterInningsStartingEvent build() {
+            return new BatterInningsStartingEvent(id(), time(), customData(), transactionID(), this.batter);
         }
 
         @Override

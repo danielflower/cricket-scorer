@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireInRange;
-import static com.danielflower.crickam.scorer.Crictils.requireNonNullElseGet;
 import static java.util.Objects.requireNonNull;
 
 @Immutable
@@ -31,11 +30,11 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private final int numberInOver;
     private final int numberInMatch;
 
-    private BallCompletedEvent(UUID id, Player bowler, Player striker, Player nonStriker, Score runsScored,
+    private BallCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
-                               @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nullable Instant time, @Nonnegative int overNumber,
-                               @Nonnegative int numberInOver, @Nonnegative int numberInMatch, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
-        super(id, time, null, customData, generatedEvents);
+                               @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nonnegative int overNumber,
+                               @Nonnegative int numberInOver, @Nonnegative int numberInMatch) {
+        super(id, time, customData, transactionID);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -134,24 +133,38 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
     @Override
     public @Nonnull Builder newBuilder() {
-        Builder builder = new Builder()
-            .withBowler(bowler)
-            .withStriker(striker)
-            .withNonStriker(nonStriker)
-            .withRunsScored(runsScored)
-            .withPlayersCrossed(playersCrossed)
-            .withDelivery(delivery)
-            .withSwing(swing)
-            .withTrajectoryAtImpact(trajectoryAtImpact)
-            .withFielder(fielder)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy());
-        if (dismissal != null) {
-            builder.withDismissal(dismissal.type())
-                .withDismissedBatter(dismissal.batter());
+        Builder builder = baseBuilder(new Builder())
+            .withBowler(bowler())
+            .withStriker(striker())
+            .withNonStriker(nonStriker())
+            .withRunsScored(runsScored())
+            .withPlayersCrossed(playersCrossed())
+            .withDelivery(delivery())
+            .withSwing(swing())
+            .withTrajectoryAtImpact(trajectoryAtImpact())
+            .withFielder(fielder())
+            .withNumberInMatch(numberInMatch())
+            .withNumberInOver(numberInOver())
+            .withOverNumber(overNumber());
+        if (dismissal() != null) {
+            builder.withDismissal(dismissal().type())
+                .withDismissedBatter(dismissal().batter());
         }
         return builder;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BallCompletedEvent that = (BallCompletedEvent) o;
+        return playersCrossed == that.playersCrossed && overNumber == that.overNumber && numberInOver == that.numberInOver && numberInMatch == that.numberInMatch && Objects.equals(bowler, that.bowler) && Objects.equals(striker, that.striker) && Objects.equals(nonStriker, that.nonStriker) && Objects.equals(runsScored, that.runsScored) && Objects.equals(dismissal, that.dismissal) && Objects.equals(delivery, that.delivery) && Objects.equals(swing, that.swing) && Objects.equals(trajectoryAtImpact, that.trajectoryAtImpact) && Objects.equals(fielder, that.fielder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bowler, striker, nonStriker, runsScored, playersCrossed, dismissal, delivery, swing, trajectoryAtImpact, fielder, overNumber, numberInOver, numberInMatch);
     }
 
     public final static class Builder extends BaseMatchEventBuilder<Builder, BallCompletedEvent> {
@@ -167,6 +180,9 @@ public final class BallCompletedEvent extends BaseMatchEvent {
         private Player fielder;
         private DismissalType dismissalType;
         private Player dismissedBatter;
+        private Integer overNumber;
+        private Integer numberInOver;
+        private Integer numberInMatch;
 
         public @Nullable Player bowler() {
             return bowler;
@@ -210,6 +226,18 @@ public final class BallCompletedEvent extends BaseMatchEvent {
 
         public @Nullable Player dismissedBatter() {
             return dismissedBatter;
+        }
+
+        public @Nullable Integer overNumber() {
+            return overNumber;
+        }
+
+        public @Nullable Integer numberInOver() {
+            return numberInOver;
+        }
+
+        public @Nullable Integer numberInMatch() {
+            return numberInMatch;
         }
 
         /**
@@ -264,9 +292,9 @@ public final class BallCompletedEvent extends BaseMatchEvent {
          * @param type The type of dismissal
          * @return This builder
          */
-        public @Nonnull Builder withDismissal(@Nonnull DismissalType type) {
-            this.dismissalType = requireNonNull(type);
-            if (runsScored == null) {
+        public @Nonnull Builder withDismissal(@Nullable DismissalType type) {
+            this.dismissalType = type;
+            if (runsScored == null && dismissalType != null) {
                 runsScored = Score.WICKET;
             }
             return this;
@@ -310,46 +338,61 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             return this;
         }
 
+        public Builder withOverNumber(@Nullable Integer overNumber) {
+            this.overNumber = overNumber;
+            return this;
+        }
+
+        public Builder withNumberInOver(@Nullable Integer numberInOver) {
+            this.numberInOver = numberInOver;
+            return this;
+        }
+
+        public Builder withNumberInMatch(@Nullable Integer numberInMatch) {
+            this.numberInMatch = numberInMatch;
+            return this;
+        }
 
         @Nonnull
-        public BallCompletedEvent build(@Nonnull Match match) {
+        @Override
+        public Builder apply(@Nonnull Match match) {
+            Innings innings = match.currentInnings();
+            if (innings == null)
+                throw new IllegalStateException("A ball cannot be bowled when there is no current innings");
+            BatterInnings strikerInnings = innings.currentStriker();
+            if (strikerInnings == null)
+                throw new IllegalStateException("Cannot bowl a ball without a batter on strike");
+            BatterInnings nonStrikerInnings = innings.currentNonStriker();
+            if (nonStrikerInnings == null)
+                throw new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end");
+            Over over = innings.currentOver();
+            if (over == null)
+                throw new IllegalStateException("There is no current over. Raise an OverStartingEvent event before the ball completion event");
+
+            if (bowler == null) bowler = over.bowler();
+            if (striker == null) striker = strikerInnings.player();
+            if (nonStriker == null) nonStriker = nonStrikerInnings.player();
+
+            playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed;
+            if (overNumber == null) overNumber = over.overNumber();
+            if (numberInOver == null) numberInOver = over.validDeliveries() + 1;
+            if (numberInMatch == null) numberInMatch = match.balls().size();
+            return this;
+        }
+
+        @Nonnull
+        public BallCompletedEvent build() {
             requireNonNull(runsScored, "A score must be set with the withRunsScored(Score) method");
             if (runsScored.wickets() > 0 && dismissalType == null) {
                 throw new IllegalStateException("A wicket was taken but the method of dismissal was not set with the withDismissal(DismissalType, Player) method");
             } else if (runsScored.wickets() == 0 && dismissalType != null) {
                 throw new IllegalStateException("A dismissal was specified, but the runsScored.wickets() was 0");
             }
-            Innings innings = match.currentInnings();
-            if (innings == null) throw new IllegalStateException("A ball cannot be bowled when there is no current innings");
-
-            BatterInnings strikerInnings = innings.currentStriker();
-            if (strikerInnings == null) throw new IllegalStateException("Cannot bowl a ball without a batter on strike");
-            BatterInnings nonStrikerInnings = innings.currentNonStriker();
-            if (nonStrikerInnings == null) throw new IllegalStateException("Cannot bowl a ball without a batter at the non-striker's end");
-
-            Over over = innings.currentOver();
-            if (over == null) throw new IllegalStateException("There is no current over. Raise an OverStartingEvent event before the ball completion event");
-            Player bowler = requireNonNullElseGet(this.bowler, over::bowler);
-            Player striker = requireNonNullElseGet(this.striker, strikerInnings::player);
-            Player nonStriker = requireNonNullElseGet(this.nonStriker, nonStrikerInnings::player);
-
             Dismissal dismissal = dismissalType == null ? null :
                 new Dismissal.Builder().withType(dismissalType).withBatter(dismissedBatter != null ? dismissedBatter : striker).withBowler(dismissalType.creditedToBowler() ? bowler : null).withFielder(fielder).build();
 
-            boolean playersCrossed = this.playersCrossed == null ? guessIfCrossed(runsScored) : this.playersCrossed;
-            int overNumber = over.overNumber();
-            int numberInOver = over.validDeliveries() + 1;
-            int numberInMatch = match.balls().size();
-            ImmutableList<MatchEventBuilder<?, ?>> generatedEvents = ImmutableList.emptyList();
-            if (dismissal != null) {
-                generatedEvents = generatedEvents.add(MatchEvents.batterInningsCompleted(BattingState.DISMISSED)
-                    .withTime(time())
-                    .withBatter(dismissal.batter())
-                    .withDismissal(dismissal)
-                );
-            }
-            return new BallCompletedEvent(id(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
-                delivery, swing, trajectoryAtImpact, fielder, time(), overNumber, numberInOver, numberInMatch, generatedEvents, customData());
+            return new BallCompletedEvent(id(), time(), customData(), transactionID(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
+                delivery, swing, trajectoryAtImpact, fielder, overNumber, numberInOver, numberInMatch);
         }
 
         private static boolean guessIfCrossed(Score score) {
@@ -359,29 +402,18 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             return (score.batterRuns() + score.legByes() + score.byes()) % 2 == 1;
         }
 
-
         @Override
-        public boolean equals(@Nullable Object o) {
+        public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             Builder builder = (Builder) o;
-            return Objects.equals(bowler, builder.bowler) &&
-                Objects.equals(striker, builder.striker) &&
-                Objects.equals(nonStriker, builder.nonStriker) &&
-                Objects.equals(runsScored, builder.runsScored) &&
-                Objects.equals(playersCrossed, builder.playersCrossed) &&
-                Objects.equals(delivery, builder.delivery) &&
-                Objects.equals(swing, builder.swing) &&
-                Objects.equals(trajectoryAtImpact, builder.trajectoryAtImpact) &&
-                Objects.equals(fielder, builder.fielder) &&
-                dismissalType == builder.dismissalType &&
-                Objects.equals(dismissedBatter, builder.dismissedBatter);
+            return Objects.equals(bowler, builder.bowler) && Objects.equals(striker, builder.striker) && Objects.equals(nonStriker, builder.nonStriker) && Objects.equals(runsScored, builder.runsScored) && Objects.equals(playersCrossed, builder.playersCrossed) && Objects.equals(delivery, builder.delivery) && Objects.equals(swing, builder.swing) && Objects.equals(trajectoryAtImpact, builder.trajectoryAtImpact) && Objects.equals(fielder, builder.fielder) && dismissalType == builder.dismissalType && Objects.equals(dismissedBatter, builder.dismissedBatter) && Objects.equals(overNumber, builder.overNumber) && Objects.equals(numberInOver, builder.numberInOver) && Objects.equals(numberInMatch, builder.numberInMatch);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, runsScored, playersCrossed, delivery, swing, trajectoryAtImpact, fielder, dismissalType, dismissedBatter);
+            return Objects.hash(super.hashCode(), bowler, striker, nonStriker, runsScored, playersCrossed, delivery, swing, trajectoryAtImpact, fielder, dismissalType, dismissedBatter, overNumber, numberInOver, numberInMatch);
         }
 
         @Override
@@ -398,7 +430,10 @@ public final class BallCompletedEvent extends BaseMatchEvent {
                 ", fielder=" + fielder +
                 ", dismissalType=" + dismissalType +
                 ", dismissedBatter=" + dismissedBatter +
-                "} " + super.toString();
+                ", overNumber=" + overNumber +
+                ", numberInOver=" + numberInOver +
+                ", numberInMatch=" + numberInMatch +
+                '}';
         }
     }
 

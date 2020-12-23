@@ -15,25 +15,26 @@ import java.util.UUID;
 public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends MatchEvent> {
 
     /**
+     * Sets values in the builder based on the state of the match.
+     * <p>If values are set before calling this, the builder should not override those.</p>
+     * @param match The current match state which can be used to derive values for the builder
+     * @return this builder
+     */
+    default @Nonnull B apply(@Nonnull Match match) { return (B)this; }
+
+    /**
      * Builds the event
-     * @param match The state of the current match which may be used to fill in certain values
      * @return A newly constructed T
      * @throws NullPointerException thrown when a required field is not set
      * @throws IllegalArgumentException thrown when a specified value is invalid
      */
-    @Nonnull T build(Match match);
+    @Nonnull T build();
 
     /**
      * @param id A unique ID for this event. If unset, a random UUID will be assigned.
      * @return this builder
      */
     @Nonnull B withID(UUID id);
-
-    /**
-     * @param generatedById The ID of the event that auto-generated this event, or null if it was created by the API user.
-     * @return this builder
-     */
-    @Nonnull B withGeneratedBy(@Nullable UUID generatedById);
 
     /**
      * @param time The time the event occurred
@@ -57,18 +58,26 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     B withCustomData(@Nullable Object customData);
 
     /**
+     * A transaction ID, used when multiple events are to be added (and perhaps later undo) together as a transaction.
+     * The main use-case is to be able to use a single undo operation to undo multiple events that were added together.
+     * @param transactionID A transaction ID that links multiple events together
+     * @return This builder
+     */
+    B withTransactionID(@Nullable UUID transactionID);
+
+    /**
      * @return The ID of the event
      */
     @Nonnull UUID id();
 
     /**
-     * @return The ID of the event that generated this event, or null if unset or if it wasn't generated
-     */
-    @Nullable UUID generatedBy();
-
-    /**
      * @return The time of the event, or null if unset
      */
     @Nullable Instant time();
+
+    /**
+     * @return An optional transaction ID that can link this event to others
+     */
+    @Nullable UUID transactionID();
 
 }

@@ -30,15 +30,18 @@ public class ReadMeExample {
             .build();
 
         MatchControl control = MatchControl.newMatch(
-            MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng))
+            MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng)).build()
         );
 
         control = control.onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting()) // first opener
+            .onEvent(batterInningsStarting()) // second opener
             .onEvent(overStarting(eng.battingOrder().get(10)))
             .onEvent(ballCompleted("0"))
             .onEvent(ballCompleted("0"))
             .onEvent(ballCompleted("4"))
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("1"))
             .onEvent(ballCompleted("2"))
@@ -64,6 +67,7 @@ public class ReadMeExample {
                 .withDismissedBatter(MARTIN_GUPTILL)
                 .withFielder(ROOT)
                 .withPlayersCrossed(true))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting());
 
         System.out.println();

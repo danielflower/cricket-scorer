@@ -18,8 +18,8 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(UUID id, @Nullable Instant time, @Nullable UUID generatedBy, MatchResult result, @Nullable Object customData) {
-        super(id, time, generatedBy, customData);
+    private MatchCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, MatchResult result) {
+        super(id, time, customData, transactionID);
         this.result = Objects.requireNonNull(result, "result");
     }
 
@@ -29,12 +29,30 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     @Override
     public @Nonnull Builder newBuilder() {
-        return new Builder()
+        return baseBuilder(new Builder())
             .withResult(result)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy())
             ;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MatchCompletedEvent that = (MatchCompletedEvent) o;
+        return Objects.equals(result, that.result);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(result);
+    }
+
+    @Override
+    public String toString() {
+        return "MatchCompletedEvent{" +
+            "result=" + result +
+            '}';
     }
 
     public final static class Builder extends BaseMatchEventBuilder<Builder, MatchCompletedEvent> {
@@ -49,18 +67,26 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
          * @param result The result of the match, or leave unset to have the library infer the winner
          * @return This builder
          */
-        public @Nonnull Builder withResult(MatchResult result) {
+        public @Nonnull Builder withResult(@Nullable MatchResult result) {
             this.result = result;
             return this;
         }
 
         @Nonnull
-        public MatchCompletedEvent build(Match match) {
-            MatchResult toUse = this.result;
-            if (toUse == null) {
-                toUse = match.calculateResult();
+        @Override
+        public Builder apply(@Nonnull Match match) {
+            if (result == null) {
+                result = match.calculateResult();
             }
-            return new MatchCompletedEvent(id(), time(), generatedBy(), toUse, customData());
+            return this;
+        }
+
+        @Nonnull
+        public MatchCompletedEvent build() {
+            if (result == null) {
+                throw new IllegalStateException("No match result for this completed match");
+            }
+            return new MatchCompletedEvent(id(), time(), customData(), transactionID(), result);
         }
 
         @Override

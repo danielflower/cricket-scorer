@@ -8,10 +8,9 @@ import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.time.*;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -20,8 +19,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * This class is the main entry point of the API.
- * <p>To generate a cricket match model, create a new control with {@link #newMatch(MatchStartingEvent.Builder)},
- * then feed in events to {@link #onEvent(MatchEventBuilder)}.</p>
+ * <p>To generate a cricket match model, create a new control with {@link #newMatch(MatchStartingEvent)},
+ * then feed in events to {@link #onEvent(MatchEvent)}.</p>
  * <p>After events have been passed in, the current state can be found by calling {@link #match()} and historical
  * states can be found in {@link #history()}.</p>
  * <p>You can also look up specific events, and then get a match control object at that point in time using the
@@ -31,7 +30,7 @@ import static java.util.Objects.requireNonNull;
  * events to existing objects and have the results be independent of other instances. For example, you can perform
  * &quot;what if &quot; scenarios (such as &quot;what if a dropped catch had been caught&quot;) by looking
  * up the state as at some specific event with {@link #eventStream(Class)}, get the match control at that
- * point of time using {@link #asAt(MatchEvent)}, and then add new events using {@link #onEvent(MatchEventBuilder)}
+ * point of time using {@link #asAt(MatchEvent)}, and then add new events using {@link #onEvent(MatchEvent)}
  * to add the dismissal, and then access the new state at {@link #match()}. This would all happen on a copy of the
  * match control, so the original match data would not be changed.</p>
  */
@@ -40,72 +39,52 @@ public final class MatchControl {
     private final ImmutableList<MatchControl> ancestors;
     private final MatchEvent event;
     private final Match match;
-    private final ImmutableList<MatchEventListener> eventListeners;
 
-    private MatchControl(ImmutableList<MatchControl> ancestors, MatchEvent event, Match match, ImmutableList<MatchEventListener> eventListeners) {
+    private MatchControl(ImmutableList<MatchControl> ancestors, MatchEvent event, Match match) {
         this.ancestors = ancestors;
         this.event = event;
         this.match = match;
-        this.eventListeners = eventListeners;
     }
 
     /**
      * Creates a new match control object
-     * @param builder A builder for a new-match event
+     * @param event A new-match event
      * @return A match control object you can use to build up match state
      * @see MatchEvents#matchStarting(int, Integer)
      */
-    public static @Nonnull MatchControl newMatch(MatchStartingEvent.Builder builder) {
-        requireNonNull(builder, "builder");
-        MatchStartingEvent event = builder.build(null);
+    public static @Nonnull MatchControl newMatch(MatchStartingEvent event) {
+        requireNonNull(event, "event");
         Match match = Match.newMatch(event);
-        return new MatchControl(ImmutableList.emptyList(), event, match, event.eventListeners()).callEventListeners(event);
+        return new MatchControl(ImmutableList.emptyList(), event, match);
     }
 
     /**
-     * Applies the given event to the match, and returns a new instance of match control.
-     * <p>The original object is not changed.</p>
-     * @param builder A builder for a match event
+     * Calls {@link MatchEventBuilder#apply(Match)} on the builder, then builds and applies the event to the match,
+     * returning a new instance of match control.
+     * <p>The original MatchControl instance is not changed.</p>
+     * @param builder A match event builder
      * @return A new Match Control object
      * @see MatchEvents MatchEvents class for a number of handy builder objects
      */
     public @Nonnull MatchControl onEvent(MatchEventBuilder<?,?> builder) {
         requireNonNull(builder, "builder");
-        MatchEvent event = builder.build(match());
-        Match newMatch = match().onEvent(event);
-        ImmutableList<MatchControl> newHistory = this.ancestors.add(this);
-        MatchControl newMatchControl = new MatchControl(newHistory, event, newMatch, eventListeners);
-
-        newMatchControl = newMatchControl.callEventListeners(event);
-
-        for (MatchEventBuilder<?,?> childBuilder : event.generatedEvents()) {
-            childBuilder.withGeneratedBy(event.id());
-            newMatchControl = newMatchControl.onEvent(childBuilder);
-        }
-
-        return newMatchControl;
+        MatchEventBuilder<?, ?> applied = builder.apply(match());
+        MatchEvent built = applied.build();
+        return onEvent(built);
     }
 
-    private @Nonnull MatchControl callEventListeners(MatchEvent event) {
-        MatchControl control = this;
-        MatchEventData data = new MatchEventDataImpl(event, control);
-        List<MatchEventBuilder<?,?>> allGenerated = new ArrayList<>();
-        for (MatchEventListener eventListener : this.eventListeners) {
-            try {
-                ImmutableList<MatchEventBuilder<?, ?>> generated = eventListener.onEvent(data);
-                if (generated != null) {
-                    for (MatchEventBuilder<?, ?> matchEventBuilder : generated) {
-                        allGenerated.add(matchEventBuilder);
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Unhandled exception from event listener " + eventListener, e);
-            }
-        }
-        for (MatchEventBuilder<?, ?> matchEventBuilder : allGenerated) {
-            control = control.onEvent(matchEventBuilder);
-        }
-        return control;
+    /**
+     * Applies the given event to the match, and returns a new instance of match control.
+     * <p>The original object is not changed.</p>
+     * @param event A match event
+     * @return A new Match Control object
+     * @see MatchEvents MatchEvents class for a number of handy builder objects
+     */
+    public @Nonnull MatchControl onEvent(MatchEvent event) {
+        requireNonNull(event, "event");
+        Match newMatch = match().onEvent(event);
+        ImmutableList<MatchControl> newHistory = this.ancestors.add(this);
+        return new MatchControl(newHistory, event, newMatch);
     }
 
     /**
@@ -123,7 +102,7 @@ public final class MatchControl {
     }
 
     /**
-     * @return true if {@link #parent()} has a parent match control; false if this is the control created by {@link #newMatch(MatchStartingEvent.Builder)}
+     * @return true if {@link #parent()} has a parent match control; false if this is the control created by {@link #newMatch(MatchStartingEvent)}
      * @see #parent()
      */
     public boolean hasParent() {
@@ -132,13 +111,9 @@ public final class MatchControl {
 
     /**
      * Returns the match control that is the parent of this one.
-     * <p>Note that the parent state may not be the state of the match as at the time the API user last added an
-     * event, as events may generate child events. To undo the last added user event, call {@link #undo()}
-     * instead.</p>
+     * <p>This can be used to effectively undo events.</p>
      * @return the parent of this control
      * @see #hasParent()
-     * @see #undo()
-     * @see #atLastUserGeneratedEvent()
      * @throws IllegalStateException if this has no parent
      */
     public @Nonnull MatchControl parent() {
@@ -265,17 +240,15 @@ public final class MatchControl {
         };
     }
 
-    /**
-     * Some events auto generate child events, in which case {@link #event()} would not link to the last event
-     * added by the API user. This method finds the most recent match control state generated by a user event.
-     * @return The match as at last event that was generated by the API user
-     * @see #undo()
-     */
-    public @Nonnull MatchControl atLastUserGeneratedEvent() {
+    private @Nonnull MatchControl atLastUserGeneratedEvent() {
         Iterator<MatchControl> all = history().reverseIterator();
+        UUID initialTransactionID = event().transactionID();
+        if (initialTransactionID == null) {
+            return this;
+        }
         while (all.hasNext()) {
             MatchControl control = all.next();
-            if (control.event().generatedBy() == null) {
+            if (control.parent().event().transactionID() != initialTransactionID) {
                 return control;
             }
         }
@@ -293,4 +266,5 @@ public final class MatchControl {
     public @Nonnull MatchControl undo() {
         return atLastUserGeneratedEvent().parent();
     }
+
 }

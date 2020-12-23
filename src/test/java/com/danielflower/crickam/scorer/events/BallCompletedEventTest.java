@@ -5,8 +5,9 @@ import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import org.junit.jupiter.api.Test;
 
-import static com.danielflower.crickam.scorer.events.MatchEvents.ballCompleted;
+import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 class BallCompletedEventTest {
@@ -14,11 +15,35 @@ class BallCompletedEventTest {
     private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private final Match match = MatchControl.newMatch(
-        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, aus))
+        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, aus)).build()
     )
-        .onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
-        .onEvent(MatchEvents.overStarting(aus.battingOrder().last()))
+        .onEvent(inningsStarting().withBattingTeam(nz))
+        .onEvent(batterInningsStarting())
+        .onEvent(batterInningsStarting())
+        .onEvent(overStarting(aus.battingOrder().last()))
         .match();
+
+    @Test
+    public void canBeRebuilt() {
+        BallCompletedEvent original = new BallCompletedEvent.Builder()
+            .withOverNumber(1)
+            .withNumberInOver(3)
+            .withNumberInMatch(29)
+            .withBowler(nz.battingOrder().get(7))
+            .withDelivery(Delivery.delivery().withDeliveryType(DeliveryType.ARM_BALL).withBowledFrom(WicketSide.AROUND).withChangeInLineAfterBounceInDegrees(123.0).withPositionOfBounce(8.0).withHorizontalPitchInMeters(0.5).withChangeInLineAfterBounceInDegrees(3.0).withSpeedInKilometers(86).build())
+            .withDismissedBatter(aus.battingOrder().get(1))
+            .withDismissal(DismissalType.CAUGHT)
+            .withFielder(nz.battingOrder().get(1))
+            .withStriker(aus.battingOrder().get(1))
+            .withNonStriker(aus.battingOrder().get(5))
+            .withPlayersCrossed(true)
+            .withRunsScored(Score.WICKET)
+            .withSwing(Swing.swing().withImpact(ImpactOnBat.EDGED).withPower(0.65).withFootDirection(0.53).withTiming(0.5).withShotType(ShotType.CUT).build())
+            .withTrajectoryAtImpact(Trajectory.trajectory().withDirectionInDegreesRelativeToBatter(12.0).withDistanceInMeters(20.0).withLaunchAngle(33.0).withSpeedInKms(123).build())
+            .withCustomData("Some-custom-data")
+            .build();
+        assertThat(original.newBuilder().build(), equalTo(original));
+    }
 
     @Test
     public void itGuessesIfTheBattersCrossedIfNotSet() {
@@ -47,7 +72,7 @@ class BallCompletedEventTest {
         if (score.wickets() > 0) {
             builder.withDismissal(DismissalType.BOWLED);
         }
-        return builder.build(match).playersCrossed();
+        return builder.apply(match).build().playersCrossed();
     }
 
 }

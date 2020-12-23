@@ -46,18 +46,23 @@ public class TestMatchTest {
                 .withTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))
                 .withScheduledStartTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 26, 10, 0))
                 .withTimeZone(JOHANNESBURG)
+                .build()
         );
 
         control = control.onEvent(inningsStarting()
             .withBattingTeam(sa)
             .withTime(control.localTime(14, 0, 0))
-        );
+        )
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
+        ;
 
 
         // Beginning of innings 1
 
         control = control.onEvent(overStarting(findFielder("Anderson")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Buttler")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
@@ -143,6 +148,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Bairstow")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -256,6 +262,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Stokes")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -361,6 +368,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Curran")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Root")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -390,6 +398,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Root")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
@@ -556,6 +565,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Root")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -711,6 +721,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Buttler")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -739,6 +750,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Stokes")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -812,6 +824,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting().withTime(Crictils.localTime(JOHANNESBURG, 2019, 12, 27, 10, 0)));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -830,12 +843,15 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Buttler")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(inningsCompleted().withTime(control.localTime(10, 10, 0)));
 
         // End of innings 1
 
         // Start of innings 2
         control = control.onEvent(inningsStarting().withBattingTeam(eng).withTime(control.localTime(15, 55, 0)));
+        control = control.onEvent(batterInningsStarting());
+        control = control.onEvent(batterInningsStarting());
 
         control = control.onEvent(overStarting(findFielder("Rabada")));
         control = control.onEvent(ballCompleted("0"));
@@ -868,6 +884,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Philander")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -883,6 +900,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -1050,6 +1068,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Philander")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1182,6 +1201,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -1192,6 +1212,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -1209,6 +1230,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1284,6 +1306,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Zubayr Hamza")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -1308,6 +1331,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Philander")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1321,6 +1345,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Elgar")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1329,18 +1354,22 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Philander")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(batterInningsCompleted());
 
         control = control.onEvent(inningsCompleted().withTime(control.localTime(15, 45, 0)));
         // End of innings 2
 
         // Start of innings 3
-        control = control.onEvent(inningsStarting().withOpeners(MARKRAM, ELGAR)); // swapped from first innings
+        control = control.onEvent(inningsStarting());
+        control = control.onEvent(batterInningsStarting().withBatter(MARKRAM)); // swapped from first innings
+        control = control.onEvent(batterInningsStarting().withBatter(ELGAR));
         control = control.onEvent(overStarting(findFielder("Anderson")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("lbw")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -1404,6 +1433,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Buttler")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1412,6 +1442,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Archer")));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Buttler")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1b"));
@@ -1469,6 +1500,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Curran")).withPlayersCrossed(true));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting().withBatter(NORTJE)); // night watchman coming in
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1686,6 +1718,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Archer")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("lbw")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1705,6 +1738,7 @@ public class TestMatchTest {
 
         control = control.onEvent(overStarting(findFielder("Archer")));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(CRAWLEY));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1716,6 +1750,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Stokes")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Sibley")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -1810,6 +1845,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Bairstow")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
@@ -1876,6 +1912,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Curran")).withPlayersCrossed(true));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
@@ -1905,6 +1942,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("6"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Bairstow")));
+        control = control.onEvent(batterInningsCompleted());
 
         control = control.onEvent(inningsCompleted());
 
@@ -1913,6 +1951,8 @@ public class TestMatchTest {
         // Start of innings 4
 
         control = control.onEvent(inningsStarting());
+        control = control.onEvent(batterInningsStarting());
+        control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overStarting(findFielder("Rabada")));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("2"));
@@ -2163,6 +2203,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(findFielder("Maharaj")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -2376,6 +2417,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Nortje")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Rabada")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2424,6 +2466,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("lbw")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2569,6 +2612,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2641,6 +2685,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Rabada")));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Zubayr Hamza")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2705,6 +2750,7 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Nortje")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2735,6 +2781,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("de-Kock")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("0"));
@@ -2745,6 +2792,7 @@ public class TestMatchTest {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("van-der-Dussen")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -2753,11 +2801,13 @@ public class TestMatchTest {
         control = control.onEvent(overStarting(findFielder("Rabada")));
         control = control.onEvent(ballCompleted("6"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("c")).withFielder(findFielder("Pretorius")).withPlayersCrossed(true));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.fromAbbreviation("b")));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(overCompleted());
 
         control = control.onEvent(inningsCompleted());

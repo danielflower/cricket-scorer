@@ -23,7 +23,7 @@ Dependency
 <dependency>
     <groupId>com.danielflower.crickam</groupId>
     <artifactId>cricket-scorer</artifactId>
-    <version>0.8.0</version>
+    <version>0.10.0</version>
 </dependency>
 ````
 
@@ -48,11 +48,14 @@ MatchControl control = MatchControl.newMatch(
 );
 
 control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
+    .onEvent(MatchEvents.batterInningsStarting()) // first opener
+    .onEvent(MatchEvents.batterInningsStarting()) // second opener
     .onEvent(MatchEvents.overStarting(eng.battingOrder().get(10)))
     .onEvent(MatchEvents.ballCompleted("0"))
     .onEvent(MatchEvents.ballCompleted("0"))
     .onEvent(MatchEvents.ballCompleted("4"))
     .onEvent(MatchEvents.ballCompleted("W").withDismissal(DismissalType.BOWLED))
+    .onEvent(MatchEvents.batterInningsCompleted())
     .onEvent(MatchEvents.batterInningsStarting())
     .onEvent(MatchEvents.ballCompleted("1"))
     .onEvent(MatchEvents.ballCompleted("2"))
@@ -104,7 +107,7 @@ Although the examples above show an ascii scorecard, the main usefulness comes i
 the generated model.
 
 To get the current state of the match, call `control.match()` which returns a 
-[Match object](https://www.javadoc.io/doc/com.danielflower.crickam/cricket-scorer/latest/com/danielflower/crickam/scorer/package-summary.html)
+[Match object](https://www.javadoc.io/doc/com.danielflower.crickam/cricket-scorer/latest/com/danielflower/crickam/scorer/Match.html)
 which gives access to the completed and current innings of the match, which in turn
 gives access to much more information about the match state.
 
@@ -136,11 +139,11 @@ to construct "what if" scenarios, or undo operations that were applied in error.
 Undoing events
 --------------
 
-To undo an operation, you need to remove the last event you added plus any generated events. This can
-be done with the undo method:
+Because of the immutable model, taking the parent of the current state and using that is the same
+as undoing an event:
 
 ```java
-MatchControl control = control.undo();
+MatchControl control = control.parent();
 ```
 
 Unusual events
@@ -189,3 +192,6 @@ are annotated with `@javax.annotation.Nonnull`.
 * From `0.7.x` to `0.8.x` many unnecessary objects were removed from the API. For example, there are no longer
 team/line-up/player builders (you can supply your own objects, or use the `SimplePlayer` etc classes), and no more
 `Venue` and `Series` classes.
+* From `0.9.x` to `0.10.x` the API was simplified by removing the concept of generated events and event listeners.
+This removed the need for dealing with event builders; now built events are passed to the `onEvent` method (an override taking a builder remains for convenience).
+This means you need to explicitly being and end batter innings, and remove any listeners.

@@ -107,6 +107,7 @@ public final class AsciiScorecardRenderer {
             List<MatchControl> dismissals = control.history().stream()
                 .filter(MatchControl.sameInnings(innings))
                 .filter(me -> me.event() instanceof BatterInningsCompletedEvent)
+                .filter(me -> ((BatterInningsCompletedEvent)me.event()).reason() != BattingState.INNINGS_ENDED)
                 .collect(Collectors.toList());
 
             int num = 0;

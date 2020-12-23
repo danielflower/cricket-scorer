@@ -44,12 +44,16 @@ public class T20Test {
                 .withTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 13, 0))
                 .withScheduledStartTime(Crictils.localTime(NZ_TIME, 2019, 11, 5, 14, 0))
                 .withTimeZone(NZ_TIME)
+                .build()
         );
 
         control = control.onEvent(inningsStarting()
             .withBattingTeam(nz)
             .withTime(control.localTime(14, 0, 0))
-        );
+        )
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
+        ;
 
         control = control.onEvent(overStarting(findFielder("Sam Curran")));
         control = control.onEvent(ballCompleted("1"));
@@ -84,6 +88,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TOM_CURRAN));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -92,6 +97,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MAHMOOD));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("4"));
@@ -123,6 +129,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -191,6 +198,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(BANTON));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -221,6 +229,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("6"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.LEG_BEFORE_WICKET));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
@@ -234,6 +243,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1w"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -244,6 +254,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("4"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.RUN_OUT).withDismissedBatter(MITCHELL_SANTNER).withFielder(BILLINGS));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(overCompleted());
 
 
@@ -252,6 +263,9 @@ public class T20Test {
             .withBattingTeam(eng)
             .withTime(control.localTime(14, 0, 0))
         );
+        control = control.onEvent(batterInningsStarting());
+        control = control.onEvent(batterInningsStarting());
+
 
         control = control.onEvent(overStarting(findFielder("Southee")));
         control = control.onEvent(ballCompleted("0"));
@@ -278,6 +292,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(overCompleted());
@@ -348,6 +363,7 @@ public class T20Test {
         control = control.onEvent(overStarting(findFielder("Sodhi")));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(MARTIN_GUPTILL).withPlayersCrossed(true));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
@@ -391,6 +407,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(COLIN_MUNRO));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -399,6 +416,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.RUN_OUT).withFielder(COLIN_MUNRO));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("0"));
@@ -412,6 +430,7 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(TIM_SOUTHEE));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(overCompleted());
 
@@ -419,9 +438,11 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("0"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.CAUGHT).withFielder(COLIN_MUNRO).withPlayersCrossed(true));
+        control = control.onEvent(batterInningsCompleted());
         control = control.onEvent(batterInningsStarting());
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(overCompleted());
@@ -444,6 +465,8 @@ public class T20Test {
         control = control.onEvent(ballCompleted("1"));
         control = control.onEvent(ballCompleted("2"));
         control = control.onEvent(overCompleted());
+        control = control.onEvent(batterInningsCompleted().withReason(BattingState.INNINGS_ENDED));
+        control = control.onEvent(batterInningsCompleted().withReason(BattingState.INNINGS_ENDED));
 
         control = control.onEvent(inningsCompleted().withTime(control.localTime(18, 38, 0)));
         control = control.onEvent(matchCompleted().withTime(control.localTime(18, 38, 0)));

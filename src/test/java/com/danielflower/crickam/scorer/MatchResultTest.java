@@ -23,10 +23,13 @@ class MatchResultTest {
             .withInningsPerTeam(1)
             .withOversPerInnings(1)
             .withBallsPerInnings(3)
+            .build()
         );
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
-        control = control.onEvent(inningsStarting().withBattingTeam(aus));
+        control = control.onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting());
 
         assertThat(control.match().currentInnings().target(), is(nullValue()));
 
@@ -37,10 +40,12 @@ class MatchResultTest {
             .onEvent(overCompleted())
             .onEvent(inningsCompleted())
             .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting(ausBowler).withBallsInOver(2))
             .onEvent(ballCompleted("1"));
 
-        assertThat(control.match().currentInnings().target(), is(Integer.valueOf(4)));
+        assertThat(control.match().currentInnings().target(), is(4));
 
         MatchControl threeToWin = control;
         assertThat(MatchResult.fromMatch(threeToWin.match()).toString(), is("No result"));
@@ -87,13 +92,17 @@ class MatchResultTest {
     @Test
     void firstClassMatchesCanBeWonOrTiedOrDrawn() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
-            .withTeamLineUps(ImmutableList.of(aus, nz)));
+            .withTeamLineUps(ImmutableList.of(aus, nz)).build());
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("No result"));
         control = control.onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("4"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"));
 
@@ -101,35 +110,49 @@ class MatchResultTest {
 
         MatchControl threeToWin = control.onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("4"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler).withBallsInOver(12));
 
-        assertThat(threeToWin.currentInnings().target(), is(Integer.valueOf(3)));
+        assertThat(threeToWin.currentInnings().target(), is(3));
         assertThat(MatchResult.fromMatch(threeToWin.match()).toString(), is("No result"));
 
         assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .match()
             ).toString(),
             is("Australia won by 2 runs"));
@@ -137,24 +160,34 @@ class MatchResultTest {
         assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("2"))
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .match()
             ).toString(),
             is("Match tied"));
@@ -163,6 +196,7 @@ class MatchResultTest {
             is("New Zealand won by 10 wickets"));
         assertThat(MatchResult.fromMatch(threeToWin
                 .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+                .onEvent(batterInningsCompleted())
                 .onEvent(batterInningsStarting())
                 .onEvent(ballCompleted("4"))
                 .match()
@@ -173,37 +207,53 @@ class MatchResultTest {
     @Test
     void knowsAboutBeingBeatenByAnInnings() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
-            .withTeamLineUps(ImmutableList.of(aus, nz)))
+            .withTeamLineUps(ImmutableList.of(aus, nz)).build())
             .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("0"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"))
             .onEvent(inningsCompleted().withDeclared(true))
             .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler).withBallsInOver(20))
             .onEvent(ballCompleted("2"))
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted());
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
     }
@@ -211,40 +261,56 @@ class MatchResultTest {
     @Test
     void knowsAboutBeingBeatenByAnInningsAfterFollowOn() {
         MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(5, null)
-            .withTeamLineUps(ImmutableList.of(aus, nz)))
+            .withTeamLineUps(ImmutableList.of(aus, nz)).build())
 
             .onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(ausBowler))
             .onEvent(ballCompleted("6"))
             .onEvent(inningsCompleted().withDeclared(true))
 
             .onEvent(inningsStarting().withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler))
             .onEvent(ballCompleted("0"))
             .onEvent(inningsCompleted().withDeclared(true))
 
             .onEvent(inningsStarting().withFollowingOn(true).withBattingTeam(aus))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(overStarting().withBowler(nzBowler).withBallsInOver(20))
             .onEvent(ballCompleted("2"))
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted());
 
         assertThat(MatchResult.fromMatch(control.match()).toString(), is("New Zealand won by an innings and 4 runs"));
     }

@@ -17,11 +17,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A lovely game of cricket between two teams.
  * <p>To create a new match, pass a builder from {@link MatchEvents#matchStarting(int, Integer)} to
- * {@link MatchControl#newMatch(MatchStartingEvent.Builder)}</p>
+ * {@link MatchControl#newMatch(MatchStartingEvent)}</p>
  */
 @Immutable
 public final class Match {
-
 
     public enum State {
         NOT_STARTED, IN_PROGRESS, COMPLETED
@@ -44,7 +43,8 @@ public final class Match {
         this.balls = requireNonNull(balls);
     }
 
-    static @Nonnull Match newMatch(MatchStartingEvent e) {
+    static @Nonnull
+    Match newMatch(MatchStartingEvent e) {
         FixedData fd = new FixedData(e.customData(), e.matchID(), e.time(), e.scheduledStartTime(),
             e.teamLineUps(), e.inningsPerTeam(), e.oversPerInnings(),
             e.numberOfScheduledDays(), e.ballsPerInnings(), e.timeZone());
@@ -54,14 +54,16 @@ public final class Match {
     /**
      * @return A list of every ball bowled in the match
      */
-    public @Nonnull Balls balls() {
+    public @Nonnull
+    Balls balls() {
         return balls;
     }
 
     /**
      * @return The current match state
      */
-    public @Nonnull State state() {
+    public @Nonnull
+    State state() {
         return state;
     }
 
@@ -70,91 +72,104 @@ public final class Match {
      * @see #inningsList()
      * @see #currentInnings()
      */
-    public @Nullable Innings currentInnings() {
+    public @Nullable
+    Innings currentInnings() {
         return currentInnings;
     }
 
     /**
      * @return The innings played in the match that have been completed
      */
-    public @Nonnull ImmutableList<Innings> completedInningsList() {
+    public @Nonnull
+    ImmutableList<Innings> completedInningsList() {
         return completedInningsList;
     }
 
     /**
      * @return All innings in the match, including any in-progress innings
      */
-    public @Nonnull ImmutableList<Innings> inningsList() {
+    public @Nonnull
+    ImmutableList<Innings> inningsList() {
         return currentInnings == null ? completedInningsList : completedInningsList.add(currentInnings);
     }
 
     /**
      * @return A unique ID for this match
      */
-    public @Nonnull UUID id() {
+    public @Nonnull
+    UUID id() {
         return data.matchID;
     }
 
     /**
      * @return The time when the match event was created
      */
-    public @Nullable Instant time() {
+    public @Nullable
+    Instant time() {
         return data.time;
     }
 
     /**
      * @return The timezone that the match is played in
      */
-    public @Nullable TimeZone timeZone() {
+    public @Nullable
+    TimeZone timeZone() {
         return data.timeZone;
     }
 
     /**
      * @return The scheduled start time of the match, if known.
      */
-    public @Nullable Instant scheduledStartTime() {
+    public @Nullable
+    Instant scheduledStartTime() {
         return data.scheduledStartTime;
     }
 
     /**
      * @return The teams playing in this match, in no particular order.
      */
-    public @Nonnull ImmutableList<LineUp<?>> teams() {
+    public @Nonnull
+    ImmutableList<LineUp<?>> teams() {
         return data.teams;
     }
 
     /**
      * @return The number of scheduled balls per innings, or null if there is no limit.
      */
-    public @Nullable Integer ballsPerInnings() {
+    public @Nullable
+    Integer ballsPerInnings() {
         return data.ballsPerInnings;
     }
 
     /**
      * @return The number of scheduled balls per innings, or -1 if there is no limit.
      */
-    public @Nullable Integer oversPerInnings() {
+    public @Nullable
+    Integer oversPerInnings() {
         return data.oversPerInnings;
     }
 
     /**
      * @return The number of innings per team. Generally 1 for limited overs matches and 2 for first class / test matches.
      */
-    public @Nonnegative int numberOfInningsPerTeam() {
+    public @Nonnegative
+    int numberOfInningsPerTeam() {
         return data.inningsPerTeam;
     }
 
     /**
      * @return The number of days this match goes for. Generally 1 for limited overs matches, and 5 for test matches.
      */
-    public @Nonnegative int numberOfScheduledDays() {
+    public @Nonnegative
+    int numberOfScheduledDays() {
         return data.numberOfScheduledDays;
     }
 
     /**
      * @return The final result of the match, or null if {@link #state()} is not {@link State#COMPLETED}
      */
-    public @Nullable MatchResult result() {
+    public @Nullable
+    MatchResult result() {
         return result;
     }
 
@@ -165,21 +180,26 @@ public final class Match {
      *
      * @return Calculates what the current result should be at the current point in time.
      */
-    public @Nonnull MatchResult calculateResult() {
+    public @Nonnull
+    MatchResult calculateResult() {
         return MatchResult.fromMatch(this);
     }
 
     /**
      * Returns any data associated with the match.
+     *
      * @return Arbitrary data associated with the match.
      */
     public Object customData() {
         return data.customData;
     }
 
-    @Nonnull Match onEvent(MatchEvent event) {
-        if (event instanceof BallCompletedEvent && currentInnings() == null) {
-            throw new IllegalStateException("Cannot process a ball when there is no active innings");
+    @Nonnull
+    Match onEvent(MatchEvent event) {
+        if (event instanceof BallCompletedEvent) {
+            Innings inn = currentInnings();
+            if (inn == null) throw new IllegalStateException("Cannot process a ball when there is no active innings");
+            if (inn.allOut()) throw new IllegalStateException("Cannot process a ball when the batting team is already all out");
         }
         State newState = this.state;
         MatchResult newResult = this.result;

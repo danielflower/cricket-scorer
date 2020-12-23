@@ -160,7 +160,7 @@ public final class Innings {
             } else if (nonStriker == null) {
                 nonStriker = newBatterInnings;
             } else {
-                throw new IllegalStateException("A new batter innings cannot start when there are already two batters in");
+                throw new IllegalStateException("A new batter innings cannot start when there are already two batters in. Did you forget to add a MatchEvents.batterInningsCompleted()?");
             }
         }
 

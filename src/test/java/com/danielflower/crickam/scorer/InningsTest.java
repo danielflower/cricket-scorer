@@ -22,13 +22,17 @@ class InningsTest {
     private final Player opener1 = nz.battingOrder().get(0);
     private final Player opener2 = nz.battingOrder().get(1);
     private final Player number3 = nz.battingOrder().get(2);
-    private MatchControl control = MatchControl.newMatch(MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(aus, nz)))
-        .onEvent(inningsStarting().withBattingTeam(nz));
-    
+    private MatchControl control = MatchControl.newMatch(
+        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(aus, nz)).build()
+    )
+        .onEvent(inningsStarting().withBattingTeam(nz))
+        .onEvent(batterInningsStarting())
+        .onEvent(batterInningsStarting());
+
     private final Player bowler1 = aus.battingOrder().get(10);
     private final Player bowler2 = aus.battingOrder().get(9);
     private final Player bowler3 = aus.battingOrder().get(8);
-    
+
     private Innings innings() {
         return control.currentInnings();
     }
@@ -103,9 +107,9 @@ class InningsTest {
     public void ballsAreAdded() {
 
         control = control.onEvent(overStarting()
-                .withBowler(bowler1)
-                .withStriker(opener1)
-                .withNonStriker(opener2));
+            .withBowler(bowler1)
+            .withStriker(opener1)
+            .withNonStriker(opener2));
 
         assertThat(innings().currentOver().overNumber(), is(0));
 
@@ -115,7 +119,7 @@ class InningsTest {
             .withNonStriker(opener2)
             .withRunsScored(SINGLE)
             .withPlayersCrossed(true)
-          );
+        );
 
         assertThat(innings().balls().size(), is(1));
         assertThat(innings().balls().score().teamRuns(), is(1));
@@ -147,8 +151,9 @@ class InningsTest {
         assertThat(innings().currentOver().remainingBalls(), is(1));
 
         control = control.onEvent(ballCompleted()
-                .withDismissal(DismissalType.BOWLED)
-                .withTime(Instant.now()));
+            .withDismissal(DismissalType.BOWLED)
+            .withTime(Instant.now()))
+            .onEvent(batterInningsCompleted());
         Over over = innings().currentOver();
         assertThat(over.isComplete(), is(true));
         assertThat(over.remainingBalls(), is(0));
@@ -360,7 +365,9 @@ class InningsTest {
         assertThat(innings().partnerships().get(0).wicketNumber(), is(1));
         control = control.onEvent(overStarting(bowler1))
             .onEvent(ballCompleted("1"))
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED));
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
+        ;
 
         assertThrows(IllegalStateException.class, () -> control.onEvent(ballCompleted("1")));
         assertThat(innings().currentStriker(), is(nullValue()));
@@ -378,6 +385,7 @@ class InningsTest {
             .onEvent(ballCompleted("1"))
             .onEvent(ballCompleted("1"))
             .onEvent(ballCompleted("W").withDismissal(DismissalType.BOWLED))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("4"))
             .onEvent(ballCompleted("0"))

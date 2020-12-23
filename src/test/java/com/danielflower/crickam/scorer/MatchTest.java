@@ -16,7 +16,7 @@ class MatchTest {
 
     @Test
     public void canBuildThem() {
-        MatchStartingEvent match = aMatch().build(null);
+        MatchStartingEvent match = aMatch().build();
         assertThat(match.oversPerInnings(), is(50));
     }
 

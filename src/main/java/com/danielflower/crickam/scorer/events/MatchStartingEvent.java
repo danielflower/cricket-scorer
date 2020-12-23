@@ -1,13 +1,16 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.ImmutableList;
+import com.danielflower.crickam.scorer.LineUp;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.time.Instant;
-import java.util.*;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.Crictils.requireNonNullElseGet;
 import static java.util.Objects.requireNonNull;
@@ -23,14 +26,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final int numberOfScheduledDays;
     private final Integer ballsPerInnings;
     private final TimeZone timeZone;
-    private final transient ImmutableList<MatchEventListener> eventListeners;
     private final Object customData;
 
-    private MatchStartingEvent(UUID id, @Nullable UUID generatedBy, UUID matchID, @Nullable Instant time, @Nullable Instant scheduledStartTime,
+    private MatchStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, UUID matchID, @Nullable Instant scheduledStartTime,
                                ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings,
-                               @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone,
-                               ImmutableList<MatchEventListener> eventListeners, @Nullable Object customData) {
-        super(id, time, generatedBy, customData);
+                               @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
+        super(id, time, customData, transactionID);
         this.matchID = requireNonNull(matchID, "matchID");
         this.scheduledStartTime = scheduledStartTime;
         this.lineUps = requireNonNull(lineUps, "lineUps");
@@ -39,12 +40,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         this.numberOfScheduledDays = numberOfScheduledDays;
         this.ballsPerInnings = ballsPerInnings;
         this.timeZone = timeZone;
-        this.eventListeners = eventListeners;
         this.customData = customData;
-    }
-
-    public @Nonnull ImmutableList<MatchEventListener> eventListeners() {
-        return eventListeners;
     }
 
     public @Nonnull UUID matchID() {
@@ -81,9 +77,8 @@ public final class MatchStartingEvent extends BaseMatchEvent {
 
     @Override
     public @Nonnull Builder newBuilder() {
-        return new Builder()
+        return baseBuilder(new Builder())
             .withMatchID(matchID)
-            .withCustomData(customData)
             .withScheduledStartTime(scheduledStartTime)
             .withTeamLineUps(lineUps)
             .withInningsPerTeam(inningsPerTeam)
@@ -91,14 +86,40 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             .withNumberOfScheduledDays(numberOfScheduledDays)
             .withBallsPerInnings(ballsPerInnings)
             .withTimeZone(timeZone)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy())
             ;
     }
 
     public Object customData() {
         return customData;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        MatchStartingEvent that = (MatchStartingEvent) o;
+        return inningsPerTeam == that.inningsPerTeam && numberOfScheduledDays == that.numberOfScheduledDays && Objects.equals(matchID, that.matchID) && Objects.equals(scheduledStartTime, that.scheduledStartTime) && Objects.equals(lineUps, that.lineUps) && Objects.equals(oversPerInnings, that.oversPerInnings) && Objects.equals(ballsPerInnings, that.ballsPerInnings) && Objects.equals(timeZone, that.timeZone) && Objects.equals(customData, that.customData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(matchID, scheduledStartTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone, customData);
+    }
+
+    @Override
+    public String toString() {
+        return "MatchStartingEvent{" +
+            "matchID=" + matchID +
+            ", scheduledStartTime=" + scheduledStartTime +
+            ", lineUps=" + lineUps +
+            ", inningsPerTeam=" + inningsPerTeam +
+            ", oversPerInnings=" + oversPerInnings +
+            ", numberOfScheduledDays=" + numberOfScheduledDays +
+            ", ballsPerInnings=" + ballsPerInnings +
+            ", timeZone=" + timeZone +
+            ", customData=" + customData +
+            '}';
     }
 
     /**
@@ -129,7 +150,6 @@ public final class MatchStartingEvent extends BaseMatchEvent {
         private int numberOfScheduledDays;
         private Integer ballsPerInnings;
         private TimeZone timeZone;
-        private ImmutableList<MatchEventListener> eventListeners = ImmutableList.emptyList();
 
         public @Nullable UUID matchID() {
             return matchID;
@@ -163,13 +183,9 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return timeZone;
         }
 
-        public @Nonnull Builder withMatchID(UUID matchID) {
+        public @Nonnull Builder withMatchID(@Nullable UUID matchID) {
             this.matchID = matchID;
             return this;
-        }
-
-        public ImmutableList<MatchEventListener> eventListeners() {
-            return eventListeners;
         }
 
         /**
@@ -217,39 +233,16 @@ public final class MatchStartingEvent extends BaseMatchEvent {
             return this;
         }
 
-        /**
-         * Event listeners allow you to listen to all events (including generated events) and add your own
-         * events to the match.
-         *
-         * @param eventListeners The list of listeners
-         * @return This builder
-         */
-        public @Nonnull Builder withEventListeners(ImmutableList<MatchEventListener> eventListeners) {
-            this.eventListeners = eventListeners;
-            return this;
-        }
-
-        /**
-         * Event listeners allow you to listen to all events (including generated events) and add your own
-         * events to the match.
-         *
-         * @param eventListeners The list of listeners
-         * @return This builder
-         */
-        public @Nonnull Builder withEventListeners(MatchEventListener... eventListeners) {
-            return withEventListeners(ImmutableList.of(eventListeners));
-        }
-
 
         @Nonnull
-        public MatchStartingEvent build(@Nullable Match match /* null for only this event type */) {
+        public MatchStartingEvent build() {
             Integer bpi = this.ballsPerInnings;
             if (bpi == null && oversPerInnings != null) {
                 bpi = 6 * oversPerInnings;
             }
-            UUID matchID = requireNonNullElseGet(this.matchID, () -> UUID.randomUUID());
-            return new MatchStartingEvent(id(), generatedBy(), matchID, time(), startTime, lineUps,
-                inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone, eventListeners, customData());
+            UUID matchID = requireNonNullElseGet(this.matchID, UUID::randomUUID);
+            return new MatchStartingEvent(id(), time(), customData(), transactionID(), matchID, startTime, lineUps,
+                inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone);
         }
 
         @Override
@@ -265,13 +258,12 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 Objects.equals(lineUps, builder.lineUps) &&
                 Objects.equals(oversPerInnings, builder.oversPerInnings) &&
                 Objects.equals(ballsPerInnings, builder.ballsPerInnings) &&
-                Objects.equals(timeZone, builder.timeZone) &&
-                Objects.equals(eventListeners, builder.eventListeners);
+                Objects.equals(timeZone, builder.timeZone);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), matchID, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone, eventListeners);
+            return Objects.hash(super.hashCode(), matchID, startTime, lineUps, inningsPerTeam, oversPerInnings, numberOfScheduledDays, ballsPerInnings, timeZone);
         }
 
         @Override
@@ -285,8 +277,8 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 ", numberOfScheduledDays=" + numberOfScheduledDays +
                 ", ballsPerInnings=" + ballsPerInnings +
                 ", timeZone=" + timeZone +
-                ", eventListeners=" + eventListeners +
                 "} " + super.toString();
         }
+
     }
 }

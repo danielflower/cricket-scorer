@@ -31,18 +31,25 @@ public class UnusualDismissalsTest {
         SimpleLineUp eng = Australia.oneDayLineUp().build();
         Player bowler1 = eng.battingOrder().get(10);
 
-        MatchControl control = MatchControl.newMatch(matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng)));
+        MatchControl control = MatchControl.newMatch(matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, eng)).build());
 
-        control = control.onEvent(inningsStarting().withBattingTeam(nz));
+        control = control.onEvent(inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
+        ;
 
         control = control.onEvent(overStarting(bowler1));
 
         // wickets from valid deliveries
         control = control.onEvent(ballCompleted("W").withDismissal(DismissalType.HANDLED_THE_BALL))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
             .onEvent(ballCompleted("W").withDismissal(DismissalType.HIT_THE_BALL_TWICE))
+            .onEvent(batterInningsCompleted())
             .onEvent(batterInningsStarting())
-            .onEvent(ballCompleted("W").withDismissal(DismissalType.OBSTRUCTING_THE_FIELD));
+            .onEvent(ballCompleted("W").withDismissal(DismissalType.OBSTRUCTING_THE_FIELD))
+            .onEvent(batterInningsCompleted())
+        ;
 
         // time out - batter didn't come out in time. This is the only case where a Dismissal object needs to
         // be manually created.
@@ -51,7 +58,8 @@ public class UnusualDismissalsTest {
             Dismissal.dismissal()
                 .withType(DismissalType.TIMED_OUT)
                 .withBatter(control.match().currentInnings().currentStriker().player())
-                .build()));
+                .build()))
+        ;
 
         control = control.onEvent(batterInningsStarting());
 
@@ -76,7 +84,9 @@ public class UnusualDismissalsTest {
             ballCompleted().withRunsScored(Score.score().withWickets(1).build())
                 .withDismissal(DismissalType.RUN_OUT)
                 .withFielder(bowler1)
-                .withDismissedBatter(control.match().currentInnings().currentNonStriker().player()));
+                .withDismissedBatter(control.match().currentInnings().currentNonStriker().player()))
+            .onEvent(batterInningsCompleted())
+        ;
 
 
         AsciiScorecardRenderer.render(control, System.out);
@@ -86,7 +96,7 @@ public class UnusualDismissalsTest {
             containsString("Yet to bat: I Sodhi, L Ferguson, B Tickner"),
             matchesRegex("Fall of wickets: 1-0 \\(Colin Munro, 0.1 ov\\)," + WS + "2-0 \\(Tim Seifert, 0.2 ov\\)," + WS
                 + "3-0 \\(Colin de Grandhomme, 0.3 ov\\)," + WS + "4-0 \\(Ross Taylor, 0.3 ov\\)," + WS + "4-0\\* \\(Martin Guptill, retired not out\\),"
-                + WS + "4-0\\* \\(Jimmy Neesham, retired out\\),"+ WS + "5-0 \\(Tim Southee, 0.3 ov\\)"),
+                + WS + "4-0\\* \\(Jimmy Neesham, retired out\\)," + WS + "5-0 \\(Tim Southee, 0.3 ov\\)"),
             matchesRegex("Lyon" + WS + "0.3" + WS + "0" + WS + "0" + WS + "0" + WS + "0.0" + WS + "3" + WS + "0" + WS + "0" + WS + "0" + WS + "0")
         ));
 

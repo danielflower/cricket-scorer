@@ -1,11 +1,14 @@
 package com.danielflower.crickam.scorer.events;
 
-import com.danielflower.crickam.scorer.*;
+import com.danielflower.crickam.scorer.ImmutableList;
+import com.danielflower.crickam.scorer.MatchControl;
+import com.danielflower.crickam.scorer.Score;
+import com.danielflower.crickam.scorer.SimpleLineUp;
 import com.danielflower.crickam.scorer.data.Australia;
 import com.danielflower.crickam.scorer.data.NewZealand;
 import org.junit.jupiter.api.Test;
 
-import static java.util.stream.Collectors.toList;
+import static com.danielflower.crickam.scorer.events.MatchEvents.batterInningsStarting;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -14,21 +17,33 @@ class InningsStartingEventTest {
     private final SimpleLineUp nz = NewZealand.oneDayLineUp().build();
     private final SimpleLineUp aus = Australia.oneDayLineUp().build();
     private MatchControl control = MatchControl.newMatch(
-        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, aus))
+        MatchEvents.matchStarting(1, 50).withTeamLineUps(ImmutableList.of(nz, aus)).build()
     );
 
     @Test
-    public void batterInningsEventsAreGenerated() {
-        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        assertThat(control.match().currentInnings().batterInningsList().size(), is(2));
-        assertThat(control.history().stream().map(MatchControl::event).collect(toList()),
-            contains(instanceOf(MatchStartingEvent.class), instanceOf(InningsStartingEvent.class),
-                instanceOf(BatterInningsStartingEvent.class), instanceOf(BatterInningsStartingEvent.class)));
+    void canBeRebuilt() {
+        InningsStartingEvent original = new InningsStartingEvent.Builder()
+            .withFinalInnings(true)
+            .withBowlingTeam(nz)
+            .withBattingTeam(aus)
+            .withInningsNumberForBattingTeam(2)
+            .withStartingScore(Score.FOUR)
+            .withInningsNumberForMatch(4)
+            .withMaxBalls(300)
+            .withMaxOvers(50)
+            .withTarget(222)
+            .withFollowingOn(true)
+            .withCustomData("Some-custom-data")
+            .build();
+        assertThat(original.newBuilder().build(), equalTo(original));
     }
 
     @Test
     public void parentEventIsFirstOpenerEvent() {
-        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
+        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
+        ;
         MatchEvent parent = control.parent().event();
         assertThat(parent, is(instanceOf(BatterInningsStartingEvent.class)));
         assertThat(((BatterInningsStartingEvent) parent).batter(), is(nz.battingOrder().get(0)));
@@ -41,28 +56,16 @@ class InningsStartingEventTest {
         assertThat(control.hasParent(), is(true));
     }
 
-    @Test
-    public void lastUserGeneratedEventIsInningsStartingEvent() {
-        assertThat(control.atLastUserGeneratedEvent().event(), is(instanceOf(MatchStartingEvent.class)));
-        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.atLastUserGeneratedEvent();
-        assertThat(lastUserEvent.event(), is(instanceOf(InningsStartingEvent.class)));
-    }
 
     @Test
-    public void undoAfterNewInningsEventIsMatchStartingEvent() {
-        control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz));
-        MatchControl lastUserEvent = control.undo();
-        assertThat(lastUserEvent.event(), is(instanceOf(MatchStartingEvent.class)));
-    }
-
-    @Test
-    public void undoCanEndOnGeneratedEvent() {
+    public void canUndo() {
         control = control.onEvent(MatchEvents.inningsStarting().withBattingTeam(nz))
+            .onEvent(batterInningsStarting())
+            .onEvent(batterInningsStarting())
             .onEvent(MatchEvents.overStarting(aus.battingOrder().get(10)));
-        MatchControl lastUserEvent = control.undo();
-        assertThat(lastUserEvent.event(), is(instanceOf(BatterInningsStartingEvent.class)));
-        assertThat(((BatterInningsStartingEvent)lastUserEvent.event()).batter(), is(nz.battingOrder().get(1)));
+        MatchControl lastEvent = control.parent();
+        assertThat(lastEvent.event(), is(instanceOf(BatterInningsStartingEvent.class)));
+        assertThat(((BatterInningsStartingEvent)lastEvent.event()).batter(), is(nz.battingOrder().get(1)));
     }
 
 

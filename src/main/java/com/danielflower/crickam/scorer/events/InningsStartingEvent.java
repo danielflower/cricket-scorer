@@ -19,7 +19,6 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final Score startingScore;
     private final LineUp battingTeam;
     private final LineUp bowlingTeam;
-    private final ImmutableList<Player> openers;
     private final int inningsNumberForMatch;
     private final int inningsNumberForBattingTeam;
     private final boolean isFinalInnings;
@@ -28,17 +27,15 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final boolean isFollowingOn;
     private final Integer maxOvers;
 
-    private InningsStartingEvent(UUID id, @Nullable UUID generatedBy, @Nullable Instant time, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, ImmutableList<Player> openers, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings, ImmutableList<MatchEventBuilder<?, ?>> generatedEvents, @Nullable Object customData) {
-        super(id, time, generatedBy, customData, generatedEvents);
+    private InningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings) {
+        super(id, time, customData, transactionID);
         this.startingScore = requireNonNull(startingScore, "startingScore");
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
         this.bowlingTeam = requireNonNull(bowlingTeam, "bowlingTeam");
-        this.openers = requireNonNull(openers, "openers");
         this.maxOvers = maxOvers;
         this.inningsNumberForMatch = requireInRange("inningsNumberForMatch", inningsNumberForMatch, isFinalInnings ? 2 : 1);
         this.inningsNumberForBattingTeam = requireInRange("inningsNumberForBattingTeam", inningsNumberForBattingTeam, 1);
         this.isFinalInnings = isFinalInnings;
-        if (openers.size() != 2) throw new IllegalArgumentException("There must be 2 openers");
         this.maxBalls = requireInRange("numberOfBalls", maxBalls, 1, Integer.MAX_VALUE);
         if (isFinalInnings) {
             requireNonNull(target, "The target cannot be null for the final innings");
@@ -62,10 +59,6 @@ public final class InningsStartingEvent extends BaseMatchEvent {
 
     public LineUp bowlingTeam() {
         return bowlingTeam;
-    }
-
-    public ImmutableList<Player> openers() {
-        return openers;
     }
 
     /**
@@ -92,21 +85,21 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     /**
      * @return The max number of (valid) balls allowed in this innings, or null if there is no limit
      */
-    public Integer maxBalls() {
+    public @Nullable Integer maxBalls() {
         return maxBalls;
     }
 
     /**
      * @return The max number of overs allowed in this innings, or null if there is no limit
      */
-    public Integer maxOvers() {
+    public @Nullable Integer maxOvers() {
         return maxOvers;
     }
 
     /**
      * @return The target runs for the batting team to reach in order to win the match or null if it is not the last innings.
      */
-    public Integer target() {
+    public @Nullable Integer target() {
         return target;
     }
 
@@ -119,40 +112,68 @@ public final class InningsStartingEvent extends BaseMatchEvent {
 
     @Override
     public @Nonnull Builder newBuilder() {
-        return new Builder()
-            .withBattingTeam(battingTeam)
-            .withBowlingTeam(bowlingTeam)
-            .withOpeners(openers)
-            .withMaxBalls(maxBalls)
-            .withTarget(target)
-            .withFollowingOn(isFollowingOn)
-            .withMaxOvers(maxOvers)
-            .withStartingScore(startingScore)
-            .withID(id())
-            .withTime(time())
-            .withGeneratedBy(generatedBy())
+        return baseBuilder(new Builder())
+            .withBattingTeam(battingTeam())
+            .withBowlingTeam(bowlingTeam())
+            .withMaxBalls(maxBalls())
+            .withTarget(target())
+            .withFollowingOn(followingOn())
+            .withMaxOvers(maxOvers())
+            .withStartingScore(startingScore())
+            .withInningsNumberForMatch(inningsNumberForMatch())
+            .withInningsNumberForBattingTeam(inningsNumberForBattingTeam())
+            .withFinalInnings(finalInnings())
             ;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        InningsStartingEvent that = (InningsStartingEvent) o;
+        return inningsNumberForMatch == that.inningsNumberForMatch && inningsNumberForBattingTeam == that.inningsNumberForBattingTeam && isFinalInnings == that.isFinalInnings && isFollowingOn == that.isFollowingOn && Objects.equals(startingScore, that.startingScore) && Objects.equals(battingTeam, that.battingTeam) && Objects.equals(bowlingTeam, that.bowlingTeam) && Objects.equals(maxBalls, that.maxBalls) && Objects.equals(target, that.target) && Objects.equals(maxOvers, that.maxOvers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startingScore, battingTeam, bowlingTeam, inningsNumberForMatch, inningsNumberForBattingTeam, isFinalInnings, maxBalls, target, isFollowingOn, maxOvers);
+    }
+
+    @Override
+    public String toString() {
+        return "InningsStartingEvent{" +
+            "startingScore=" + startingScore +
+            ", battingTeam=" + battingTeam +
+            ", bowlingTeam=" + bowlingTeam +
+            ", inningsNumberForMatch=" + inningsNumberForMatch +
+            ", inningsNumberForBattingTeam=" + inningsNumberForBattingTeam +
+            ", isFinalInnings=" + isFinalInnings +
+            ", maxBalls=" + maxBalls +
+            ", target=" + target +
+            ", isFollowingOn=" + isFollowingOn +
+            ", maxOvers=" + maxOvers +
+            '}';
     }
 
     public static final class Builder extends BaseMatchEventBuilder<Builder, InningsStartingEvent> {
 
         private LineUp battingTeam;
         private LineUp bowlingTeam;
-        private ImmutableList<Player> openers;
         private Integer maxBalls;
         private Integer target;
         private Boolean isFollowingOn;
         private Integer maxOvers;
         private Score startingScore;
+        private Integer inningsNumberForMatch;
+        private Integer inningsNumberForBattingTeam;
+        private Boolean finalInnings;
 
         public @Nullable LineUp battingTeam() {
             return battingTeam;
         }
         public @Nullable LineUp bowlingTeam() {
             return bowlingTeam;
-        }
-        public @Nullable ImmutableList<Player> openers() {
-            return openers;
         }
         public @Nullable Integer maxBalls() {
             return maxBalls;
@@ -169,6 +190,36 @@ public final class InningsStartingEvent extends BaseMatchEvent {
         public @Nullable Score startingScore() {
             return startingScore;
         }
+        public @Nullable Integer inningsNumberForMatch() { return inningsNumberForMatch; }
+        public @Nullable Integer inningsNumberForBattingTeam() { return inningsNumberForBattingTeam; }
+        public @Nullable Boolean finalInnings() { return finalInnings; }
+
+        /**
+         * @param inningsNumberForMatch The innings number of the match, where the first innings is 1
+         * @return This builder
+         */
+        public @Nonnull Builder withInningsNumberForMatch(@Nullable Integer inningsNumberForMatch) {
+            this.inningsNumberForMatch = inningsNumberForMatch;
+            return this;
+        }
+
+        /**
+         * @param inningsNumberForBattingTeam  The innings number of the current batting team, where the first innings is 1
+         * @return This builder
+         */
+        public @Nonnull Builder withInningsNumberForBattingTeam(@Nullable Integer inningsNumberForBattingTeam) {
+            this.inningsNumberForBattingTeam = inningsNumberForBattingTeam;
+            return this;
+        }
+
+        /**
+         * @param finalInnings True if this is the expected final innings of the match
+         * @return This builder
+         */
+        public @Nonnull Builder withFinalInnings(@Nullable Boolean finalInnings) {
+            this.finalInnings = finalInnings;
+            return this;
+        }
 
         /**
          * This sets the starting score of the batting team in this innings. This is almost also {@link Score#EMPTY}
@@ -178,7 +229,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param startingScore The score the innings starts at, which defaults to {@link Score#EMPTY}
          * @return This builder
          */
-        public @Nonnull Builder withStartingScore(Score startingScore) {
+        public @Nonnull Builder withStartingScore(@Nullable Score startingScore) {
             this.startingScore = startingScore;
             return this;
         }
@@ -187,7 +238,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param battingTeam The batting team. This must be set.
          * @return This builder
          */
-        public @Nonnull Builder withBattingTeam(LineUp battingTeam) {
+        public @Nonnull Builder withBattingTeam(@Nullable LineUp battingTeam) {
             this.battingTeam = battingTeam;
             return this;
         }
@@ -196,27 +247,9 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param bowlingTeam The bowling team. This can be left unset.
          * @return This builder
          */
-        public @Nonnull Builder withBowlingTeam(LineUp bowlingTeam) {
+        public @Nonnull Builder withBowlingTeam(@Nullable LineUp bowlingTeam) {
             this.bowlingTeam = bowlingTeam;
             return this;
-        }
-
-        /**
-         * @param openers The two openers for the batting team
-         * @return This builder
-         */
-        public @Nonnull Builder withOpeners(ImmutableList<Player> openers) {
-            this.openers = openers;
-            return this;
-        }
-
-        /**
-         * @param first  The opener who will face the first ball
-         * @param second The opener who will be at the non-striker's end
-         * @return This builder
-         */
-        public @Nonnull Builder withOpeners(Player first, Player second) {
-            return withOpeners(ImmutableList.of(first, second));
         }
 
         /**
@@ -228,7 +261,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param maxBalls The maximum number of deliveries allowed in this innings
          * @return This builder
          */
-        public @Nonnull Builder withMaxBalls(Integer maxBalls) {
+        public @Nonnull Builder withMaxBalls(@Nullable Integer maxBalls) {
             this.maxBalls = maxBalls;
             return this;
         }
@@ -242,7 +275,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param maxOvers The maximum number of deliveries allowed in this innings
          * @return This builder
          */
-        public @Nonnull Builder withMaxOvers(Integer maxOvers) {
+        public @Nonnull Builder withMaxOvers(@Nullable Integer maxOvers) {
             this.maxOvers = maxOvers;
             return this;
         }
@@ -254,7 +287,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param target The target runs for the batting team to reach in order to win the match
          * @return This builder
          */
-        public @Nonnull Builder withTarget(Integer target) {
+        public @Nonnull Builder withTarget(@Nullable Integer target) {
             this.target = target;
             return this;
         }
@@ -263,39 +296,27 @@ public final class InningsStartingEvent extends BaseMatchEvent {
          * @param followingOn true if the batting team is following on from their previous innings
          * @return This builder
          */
-        public @Nonnull Builder withFollowingOn(boolean followingOn) {
+        public @Nonnull Builder withFollowingOn(@Nullable Boolean followingOn) {
             isFollowingOn = followingOn;
             return this;
         }
 
         @Nonnull
-        public InningsStartingEvent build(Match match) {
-
+        @Override
+        public Builder apply(@Nonnull Match match) {
             Innings last = match.inningsList().last();
             if (battingTeam == null && bowlingTeam == null) {
-                if (last == null) {
-                    throw new NullPointerException("At least the batting team or bowling team must be set for the first innings of the match");
+                if (last != null) {
+                    battingTeam = last.bowlingTeam();
+                    bowlingTeam = last.battingTeam();
                 }
-                battingTeam = last.bowlingTeam();
-                bowlingTeam = last.battingTeam();
             } else if (battingTeam == null) {
                 battingTeam = match.otherTeam(bowlingTeam);
             } else if (bowlingTeam == null) {
                 bowlingTeam = match.otherTeam(battingTeam);
             }
-
-            boolean followOn;
-            if (last != null && last.battingTeam().sameTeam(battingTeam)) {
-                followOn = true;
-            } else {
-                followOn = isFollowingOn != null && isFollowingOn;
-            }
-
-            openers = openers == null ? battingTeam.battingOrder().subList(0, 1) : this.openers;
-            for (Player opener : openers) {
-                if (!battingTeam.battingOrder().contains(opener)) {
-                    throw new IllegalStateException("The opener " + opener + " is not in the batting team " + battingTeam);
-                }
+            if (isFollowingOn == null) {
+                isFollowingOn = last != null && last.battingTeam().sameTeam(battingTeam);
             }
 
             if (maxOvers == null && maxBalls == null) {
@@ -307,56 +328,52 @@ public final class InningsStartingEvent extends BaseMatchEvent {
                 maxBalls = maxOvers * 6;
             }
 
-            int inningsNumber = match.inningsList().size() + 1;
-            int battingInningsNumber = 1;
-            boolean finalInnings = false;
-            InningsStartingEvent.Builder builder = this;
-            if (match.ballsPerInnings() != null) {
-                builder.withMaxBalls(match.ballsPerInnings());
+            if (inningsNumberForMatch == null) {
+                inningsNumberForMatch = match.inningsList().size() + 1;
             }
-            if (last != null) {
-                if (battingTeam == null || bowlingTeam == null) {
-                    builder.withBattingTeam(last.bowlingTeam())
-                        .withBowlingTeam(last.battingTeam());
-                }
 
-                battingInningsNumber = (int) match.inningsList().stream().filter(i -> i.battingTeam().sameTeam(battingTeam)).count() + 1;
-                finalInnings = inningsNumber == (2 * match.numberOfInningsPerTeam());
-                if (finalInnings) {
+            if (maxBalls == null && match.ballsPerInnings() != null) {
+                maxBalls = match.ballsPerInnings();
+            }
+
+            if (last == null) {
+                if (inningsNumberForBattingTeam == null) inningsNumberForBattingTeam = 1;
+                if (finalInnings == null) finalInnings = false;
+            } else {
+                if (inningsNumberForBattingTeam == null) {
+                    inningsNumberForBattingTeam = (int) match.inningsList().stream().filter(i -> i.battingTeam().sameTeam(battingTeam)).count() + 1;
+                }
+                if (finalInnings == null) {
+                    finalInnings = (inningsNumberForMatch == (2 * match.numberOfInningsPerTeam()));
+                }
+                if (finalInnings && target == null) {
                     int battingScore = match.scoredByTeam(battingTeam).teamRuns();
                     int bowlingScore = match.scoredByTeam(bowlingTeam).teamRuns();
-                    int target = (bowlingScore - battingScore) + 1;
-                    builder.withTarget(target);
+                    target = (bowlingScore - battingScore) + 1;
                 }
             }
+            return this;
+        }
 
-            ImmutableList<MatchEventBuilder<?, ?>> generatedEvents = openers.stream()
-                .map(player -> MatchEvents.batterInningsStarting().withBatter(player).withTime(time()))
-                .collect(ImmutableList.toImmutableList());
+        @Nonnull
+        public InningsStartingEvent build() {
             Score startingScore = this.startingScore == null ? Score.EMPTY : this.startingScore;
-            return new InningsStartingEvent(id(), generatedBy(), time(), startingScore, battingTeam, bowlingTeam, openers, maxBalls, maxOvers, target, followOn,
-                inningsNumber, battingInningsNumber, finalInnings, generatedEvents, customData());
+            return new InningsStartingEvent(id(), time(), customData(), transactionID(), startingScore, battingTeam, bowlingTeam, maxBalls, maxOvers, target, isFollowingOn,
+                inningsNumberForMatch, inningsNumberForBattingTeam, finalInnings);
         }
 
         @Override
-        public boolean equals(@Nullable Object o) {
+        public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             if (!super.equals(o)) return false;
             Builder builder = (Builder) o;
-            return Objects.equals(battingTeam, builder.battingTeam) &&
-                Objects.equals(bowlingTeam, builder.bowlingTeam) &&
-                Objects.equals(openers, builder.openers) &&
-                Objects.equals(maxBalls, builder.maxBalls) &&
-                Objects.equals(target, builder.target) &&
-                Objects.equals(isFollowingOn, builder.isFollowingOn) &&
-                Objects.equals(maxOvers, builder.maxOvers) &&
-                Objects.equals(startingScore, builder.startingScore);
+            return Objects.equals(battingTeam, builder.battingTeam) && Objects.equals(bowlingTeam, builder.bowlingTeam) && Objects.equals(maxBalls, builder.maxBalls) && Objects.equals(target, builder.target) && Objects.equals(isFollowingOn, builder.isFollowingOn) && Objects.equals(maxOvers, builder.maxOvers) && Objects.equals(startingScore, builder.startingScore) && Objects.equals(inningsNumberForMatch, builder.inningsNumberForMatch) && Objects.equals(inningsNumberForBattingTeam, builder.inningsNumberForBattingTeam) && Objects.equals(finalInnings, builder.finalInnings);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(super.hashCode(), battingTeam, bowlingTeam, openers, maxBalls, target, isFollowingOn, maxOvers, startingScore);
+            return Objects.hash(super.hashCode(), battingTeam, bowlingTeam, maxBalls, target, isFollowingOn, maxOvers, startingScore, inningsNumberForMatch, inningsNumberForBattingTeam, finalInnings);
         }
 
         @Override
@@ -364,13 +381,15 @@ public final class InningsStartingEvent extends BaseMatchEvent {
             return "Builder{" +
                 "battingTeam=" + battingTeam +
                 ", bowlingTeam=" + bowlingTeam +
-                ", openers=" + openers +
                 ", maxBalls=" + maxBalls +
                 ", target=" + target +
                 ", isFollowingOn=" + isFollowingOn +
                 ", maxOvers=" + maxOvers +
                 ", startingScore=" + startingScore +
-                "} " + super.toString();
+                ", matchInningsNumber=" + inningsNumberForMatch +
+                ", battingInningsNumber=" + inningsNumberForBattingTeam +
+                ", finalInnings=" + finalInnings +
+                '}';
         }
     }
 }
