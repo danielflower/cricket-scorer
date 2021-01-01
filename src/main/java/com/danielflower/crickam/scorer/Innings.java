@@ -238,6 +238,22 @@ public final class Innings {
     }
 
     /**
+     * @return The current bowler innings, or null if there is no current bowler
+     */
+    public @Nullable BowlerInnings currentBowler() {
+        if (currentOver == null) return null;
+        return getBowlerInnings(currentOver.bowler());
+    }
+
+    /**
+     * @return The bowler innings of the previous bowler
+     */
+    public @Nullable BowlerInnings previousBowler() {
+        Over previous = completedOvers().last();
+        return previous == null ? null : getBowlerInnings(previous.bowler());
+    }
+
+    /**
      * @return The batter at the non-facing end. This may be null before the innings starts or directly after a dismissal.
      */
     public @Nullable BatterInnings currentNonStriker() {

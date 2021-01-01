@@ -7,7 +7,6 @@ import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import static com.danielflower.crickam.scorer.Score.SINGLE;
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
@@ -399,6 +398,28 @@ class InningsTest {
         assertThat(innings().partnerships().size(), is(2));
         assertThat(innings().partnerships().get(0).brokenByWicket(), is(true));
         assertThat(innings().partnerships().get(1).brokenByWicket(), is(false));
+    }
+
+    @Test
+    void theCurrentAndPreviousBowlersAreKnown() {
+        assertThat(innings().currentBowler(), nullValue());
+        assertThat(innings().previousBowler(), nullValue());
+        control = control.onEvent(overStarting(bowler1));
+        assertThat(innings().currentBowler().bowler(), is(bowler1));
+        assertThat(innings().previousBowler(), nullValue());
+
+        control = control.onEvent(ballCompleted("1"));
+        assertThat(innings().currentBowler().bowler(), is(bowler1));
+        assertThat(innings().previousBowler(), nullValue());
+
+        control = control.onEvent(overCompleted());
+        assertThat(innings().currentBowler(), nullValue());
+        assertThat(innings().previousBowler().bowler(), is(bowler1));
+
+        control = control.onEvent(overStarting(bowler2));
+        assertThat(innings().currentBowler().bowler(), is(bowler2));
+        assertThat(innings().previousBowler().bowler(), is(bowler1));
+
     }
 
     private OverStartingEvent.Builder oneBallOverStarting(Player bowler1) {
