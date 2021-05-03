@@ -1,7 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
-import com.danielflower.crickam.scorer.events.BatterInningsStartingEvent;
+import com.danielflower.crickam.scorer.events.InningsStartingEvent;
 import com.danielflower.crickam.scorer.events.MatchEvents;
 import com.danielflower.crickam.scorer.events.MatchStartingEvent;
 import com.danielflower.crickam.scorer.events.OverStartingEvent;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import static com.danielflower.crickam.scorer.data.England.MAHMOOD;
 import static com.danielflower.crickam.scorer.data.England.TOM_CURRAN;
@@ -18,6 +17,7 @@ import static com.danielflower.crickam.scorer.data.NewZealand.*;
 import static com.danielflower.crickam.scorer.events.MatchEvents.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static scaffolding.BatterInningsMatcher.withBatter;
 
 class MatchControlTest {
@@ -151,7 +151,7 @@ class MatchControlTest {
     }
 
     @Test
-    public void canUndoTransactions() {
+    public void canUndoEvents() {
         TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
         MatchControl control = MatchControl.newMatch(
             MatchEvents.matchStarting(5, null)
@@ -160,15 +160,16 @@ class MatchControlTest {
                 .withTimeZone(nz)
                 .build()
         );
-        UUID transactionID = UUID.randomUUID();
-        control = control.onEvent(inningsStarting().withBattingTeam(this.nz).withTransactionID(transactionID))
-            .onEvent(batterInningsStarting().withTransactionID(transactionID))
-            .onEvent(batterInningsStarting().withTransactionID(transactionID))
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz))
+            .onEvent(batterInningsStarting().withUndoPoint(false))
+            .onEvent(batterInningsStarting().withUndoPoint(false))
             .onEvent(overStarting().withBowler(aus.battingOrder().last()).withBallsInOver(100));
 
         assertThat(control.event(), instanceOf(OverStartingEvent.class));
-        assertThat(control.undo().event(), instanceOf(BatterInningsStartingEvent.class));
-        assertThat(control.undo().undo().event(), instanceOf(MatchStartingEvent.class));
+        assertThat(control.undo().event(), instanceOf(InningsStartingEvent.class));
+        MatchControl matchStartingControl = control.undo().undo();
+        assertThat(matchStartingControl.event(), instanceOf(MatchStartingEvent.class));
+        assertThrows(IllegalStateException.class, matchStartingControl::undo);
     }
 
 

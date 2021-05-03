@@ -18,8 +18,8 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
 
     private final MatchResult result;
 
-    private MatchCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, MatchResult result) {
-        super(id, time, customData, transactionID);
+    private MatchCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, MatchResult result) {
+        super(id, time, customData, undoPoint);
         this.result = Objects.requireNonNull(result, "result");
     }
 
@@ -86,7 +86,7 @@ public final class MatchCompletedEvent extends BaseMatchEvent {
             if (result == null) {
                 throw new IllegalStateException("No match result for this completed match");
             }
-            return new MatchCompletedEvent(id(), time(), customData(), transactionID(), result);
+            return new MatchCompletedEvent(id(), time(), customData(), undoPoint(), result);
         }
 
         @Override

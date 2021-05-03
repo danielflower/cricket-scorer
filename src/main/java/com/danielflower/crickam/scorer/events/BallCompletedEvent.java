@@ -30,11 +30,11 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     private final int numberInOver;
     private final int numberInMatch;
 
-    private BallCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player bowler, Player striker, Player nonStriker, Score runsScored,
+    private BallCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Player bowler, Player striker, Player nonStriker, Score runsScored,
                                boolean playersCrossed, @Nullable Dismissal dismissal, @Nullable Delivery delivery, @Nullable Swing swing,
                                @Nullable Trajectory trajectoryAtImpact, @Nullable Player fielder, @Nonnegative int overNumber,
                                @Nonnegative int numberInOver, @Nonnegative int numberInMatch) {
-        super(id, time, customData, transactionID);
+        super(id, time, customData, undoPoint);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -154,7 +154,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
@@ -391,7 +391,7 @@ public final class BallCompletedEvent extends BaseMatchEvent {
             Dismissal dismissal = dismissalType == null ? null :
                 new Dismissal.Builder().withType(dismissalType).withBatter(dismissedBatter != null ? dismissedBatter : striker).withBowler(dismissalType.creditedToBowler() ? bowler : null).withFielder(fielder).build();
 
-            return new BallCompletedEvent(id(), time(), customData(), transactionID(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
+            return new BallCompletedEvent(id(), time(), customData(), undoPoint(), bowler, striker, nonStriker, runsScored, playersCrossed, dismissal,
                 delivery, swing, trajectoryAtImpact, fielder, overNumber, numberInOver, numberInMatch);
         }
 

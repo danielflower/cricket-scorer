@@ -10,7 +10,6 @@ import javax.annotation.Nonnull;
 import java.time.*;
 import java.util.Iterator;
 import java.util.TimeZone;
-import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -240,31 +239,27 @@ public final class MatchControl {
         };
     }
 
-    private @Nonnull MatchControl atLastUserGeneratedEvent() {
+    private @Nonnull MatchControl atLastUndoPoint() {
         Iterator<MatchControl> all = history().reverseIterator();
-        UUID initialTransactionID = event().transactionID();
-        if (initialTransactionID == null) {
-            return this;
-        }
         while (all.hasNext()) {
             MatchControl control = all.next();
-            if (control.parent().event().transactionID() != initialTransactionID) {
+            if (control.parent().event().undoPoint()) {
                 return control;
             }
         }
-        // should not be possible to get here as the first event is always user generated
+        // should not be possible to get here as the first event is always an undo point
         throw new IllegalStateException("Cannot call this method on an empty match");
     }
 
     /**
      * Returns the match with the last user event (and any events that generated) removed.
-     * <p>This differs from {@link #atLastUserGeneratedEvent()} in that that method may return
+     * <p>This differs from {@link #atLastUndoPoint()} in that that method may return
      * the current state of the match.</p>
      * @return The match with the last user generated event undone.
-     * @see #atLastUserGeneratedEvent()
+     * @see #atLastUndoPoint()
      */
     public @Nonnull MatchControl undo() {
-        return atLastUserGeneratedEvent().parent();
+        return atLastUndoPoint().parent();
     }
 
 }

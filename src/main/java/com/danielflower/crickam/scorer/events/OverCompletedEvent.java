@@ -21,8 +21,8 @@ public final class OverCompletedEvent extends BaseMatchEvent {
     private final Score score;
     private final boolean isMaiden;
 
-    private OverCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player bowler, int inningsNumber, int overNumber, int ballsInOver, Score score, boolean isMaiden) {
-        super(id, time, customData, transactionID);
+    private OverCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Player bowler, int inningsNumber, int overNumber, int ballsInOver, Score score, boolean isMaiden) {
+        super(id, time, customData, undoPoint);
         this.bowler = bowler;
         this.inningsNumber = inningsNumber;
         this.overNumber = overNumber;
@@ -160,7 +160,7 @@ public final class OverCompletedEvent extends BaseMatchEvent {
 
         @Nonnull
         public OverCompletedEvent build() {
-            return new OverCompletedEvent(id(), time(), customData(), transactionID(), bowler, inningsNumber, overNumber, ballsInOver, score, isMaiden);
+            return new OverCompletedEvent(id(), time(), customData(), undoPoint(), bowler, inningsNumber, overNumber, ballsInOver, score, isMaiden);
         }
 
     }

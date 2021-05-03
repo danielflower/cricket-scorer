@@ -1,6 +1,7 @@
 package com.danielflower.crickam.scorer.events;
 
 import com.danielflower.crickam.scorer.Match;
+import com.danielflower.crickam.scorer.MatchControl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,12 +59,13 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     B withCustomData(@Nullable Object customData);
 
     /**
-     * A transaction ID, used when multiple events are to be added (and perhaps later undo) together as a transaction.
-     * The main use-case is to be able to use a single undo operation to undo multiple events that were added together.
-     * @param transactionID A transaction ID that links multiple events together
+     * When undoing an event with {@link MatchControl#undo()} the match will be rolled back to the previous undo point.
+     * <p>Undo points are often user generated events, whereas events automatically generated may not be undo points,
+     * such that when a user undoes an event, it undoes the last event they initiated.</p>
+     * @param undoPoint <code>true</code> if calling {@link MatchControl#undo()} should roll back to this point
      * @return This builder
      */
-    B withTransactionID(@Nullable UUID transactionID);
+    B withUndoPoint(boolean undoPoint);
 
     /**
      * @return The ID of the event
@@ -76,8 +78,8 @@ public interface MatchEventBuilder<B extends MatchEventBuilder<B,T>, T extends M
     @Nullable Instant time();
 
     /**
-     * @return An optional transaction ID that can link this event to others
+     * @return <code>true</code> if {@link MatchControl#undo()} stops at this event
      */
-    @Nullable UUID transactionID();
+    boolean undoPoint();
 
 }

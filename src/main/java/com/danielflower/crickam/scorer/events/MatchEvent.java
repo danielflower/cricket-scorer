@@ -36,8 +36,10 @@ public interface MatchEvent {
     @Nullable Object customData();
 
     /**
-     * @return An optional ID that can tie multiple events together. The main use is where you want to undo
-     * events as a transaction.
+     * When undoing an event with {@link MatchControl#undo()} the match will be rolled back to the previous undo point.
+     * <p>Undo points are often user generated events, whereas events automatically generated may not be undo points,
+     * such that when a user undoes an event, it undoes the last event they initiated.</p>
+     * @return <code>true</code> is this is an undo point.
      */
-    @Nullable UUID transactionID();
+    boolean undoPoint();
 }

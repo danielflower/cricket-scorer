@@ -14,13 +14,13 @@ public abstract class BaseMatchEvent implements MatchEvent {
     private final UUID id;
     private final Instant time;
     private final Object customData;
-    private final UUID transactionID;
+    private final boolean undoPoint;
 
-    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID) {
+    protected BaseMatchEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint) {
         this.id = requireNonNull(id, "id");
         this.time = time;
         this.customData = customData;
-        this.transactionID = transactionID;
+        this.undoPoint = undoPoint;
     }
 
     @Override
@@ -38,31 +38,30 @@ public abstract class BaseMatchEvent implements MatchEvent {
         return customData;
     }
 
-    @Nullable
     @Override
-    public UUID transactionID() {
-        return transactionID;
+    public boolean undoPoint() {
+        return undoPoint;
     }
 
     protected <T extends MatchEventBuilder<?,?>> T baseBuilder(T builder) {
         return (T)builder.withID(id())
             .withTime(time())
             .withCustomData(customData())
-            .withTransactionID(transactionID());
+            .withUndoPoint(undoPoint());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BaseMatchEvent that = (BaseMatchEvent) o;
         return Objects.equals(id, that.id) && Objects.equals(time, that.time)
-            && Objects.equals(customData, that.customData) && Objects.equals(transactionID, that.transactionID);
+            && Objects.equals(customData, that.customData) && Objects.equals(undoPoint, that.undoPoint);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, time, customData, transactionID);
+        return Objects.hash(id, time, customData, undoPoint);
     }
 
 }

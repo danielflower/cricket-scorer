@@ -19,8 +19,8 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
     private final int inningsNumber;
     private final Score score;
 
-    private InningsCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, boolean declared, @Nonnegative int inningsNumber, Score score) {
-        super(id, time, customData, transactionID);
+    private InningsCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, boolean declared, @Nonnegative int inningsNumber, Score score) {
+        super(id, time, customData, undoPoint);
         this.declared = declared;
         this.inningsNumber = inningsNumber;
         this.score = Objects.requireNonNull(score, "score");
@@ -121,7 +121,7 @@ public final class InningsCompletedEvent extends BaseMatchEvent {
 
         @Nonnull
         public InningsCompletedEvent build() {
-            return new InningsCompletedEvent(id(), time(), customData(), transactionID(), declared, inningsNumber, score);
+            return new InningsCompletedEvent(id(), time(), customData(), undoPoint(), declared, inningsNumber, score);
         }
 
         @Override

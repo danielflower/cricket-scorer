@@ -24,8 +24,8 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
     private final Dismissal dismissal;
     private final Score score;
 
-    private BatterInningsCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player batter, BattingState reason, @Nullable Dismissal dismissal, Score score) {
-        super(id, time, customData, transactionID);
+    private BatterInningsCompletedEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Player batter, BattingState reason, @Nullable Dismissal dismissal, Score score) {
+        super(id, time, customData, undoPoint);
         this.batter = requireNonNull(batter, "batter");
         this.reason = requireNonNull(reason, "reason");
         this.score = requireNonNull(score, "score");
@@ -198,7 +198,7 @@ public final class BatterInningsCompletedEvent extends BaseMatchEvent {
 
         public @Nonnull
         BatterInningsCompletedEvent build() {
-            return new BatterInningsCompletedEvent(id(), time(), customData(), transactionID(), this.batter, this.reason, this.dismissal, score);
+            return new BatterInningsCompletedEvent(id(), time(), customData(), undoPoint(), this.batter, this.reason, this.dismissal, score);
         }
 
         @Override

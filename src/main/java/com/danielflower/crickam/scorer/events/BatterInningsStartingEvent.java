@@ -16,8 +16,8 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
     private final Player batter;
 
-    private BatterInningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player batter) {
-        super(id, time, customData, transactionID);
+    private BatterInningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Player batter) {
+        super(id, time, customData, undoPoint);
         this.batter = Objects.requireNonNull(batter);
     }
 
@@ -91,7 +91,7 @@ public final class BatterInningsStartingEvent extends BaseMatchEvent {
 
         @Nonnull
         public BatterInningsStartingEvent build() {
-            return new BatterInningsStartingEvent(id(), time(), customData(), transactionID(), this.batter);
+            return new BatterInningsStartingEvent(id(), time(), customData(), undoPoint(), this.batter);
         }
 
         @Override

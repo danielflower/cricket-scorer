@@ -28,10 +28,10 @@ public final class MatchStartingEvent extends BaseMatchEvent {
     private final TimeZone timeZone;
     private final Object customData;
 
-    private MatchStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, UUID matchID, @Nullable Instant scheduledStartTime,
+    private MatchStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, UUID matchID, @Nullable Instant scheduledStartTime,
                                ImmutableList<LineUp<?>> lineUps, @Nonnegative int inningsPerTeam, @Nullable Integer oversPerInnings,
                                @Nonnegative int numberOfScheduledDays, @Nullable Integer ballsPerInnings, @Nullable TimeZone timeZone) {
-        super(id, time, customData, transactionID);
+        super(id, time, customData, undoPoint);
         this.matchID = requireNonNull(matchID, "matchID");
         this.scheduledStartTime = scheduledStartTime;
         this.lineUps = requireNonNull(lineUps, "lineUps");
@@ -241,7 +241,7 @@ public final class MatchStartingEvent extends BaseMatchEvent {
                 bpi = 6 * oversPerInnings;
             }
             UUID matchID = requireNonNullElseGet(this.matchID, UUID::randomUUID);
-            return new MatchStartingEvent(id(), time(), customData(), transactionID(), matchID, startTime, lineUps,
+            return new MatchStartingEvent(id(), time(), customData(), undoPoint(), matchID, startTime, lineUps,
                 inningsPerTeam, oversPerInnings, numberOfScheduledDays, bpi, this.timeZone);
         }
 

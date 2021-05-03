@@ -26,8 +26,8 @@ public final class OverStartingEvent extends BaseMatchEvent {
     private final int overNumber;
     private final int inningsNumber;
 
-    private OverStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber) {
-        super(id, time, customData, transactionID);
+    private OverStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Player bowler, Player striker, Player nonStriker, @Nonnegative int ballsInOver, @Nonnegative int overNumber, @Nonnegative int inningsNumber) {
+        super(id, time, customData, undoPoint);
         this.bowler = requireNonNull(bowler, "bowler");
         this.striker = requireNonNull(striker, "striker");
         this.nonStriker = requireNonNull(nonStriker, "nonStriker");
@@ -212,7 +212,7 @@ public final class OverStartingEvent extends BaseMatchEvent {
 
         @Nonnull
         public OverStartingEvent build() {
-            return new OverStartingEvent(id(), time(), customData(), transactionID(), bowler, striker, nonStriker, ballsInOver, numberInInnings, inningsNumber);
+            return new OverStartingEvent(id(), time(), customData(), undoPoint(), bowler, striker, nonStriker, ballsInOver, numberInInnings, inningsNumber);
         }
 
         private static @Nullable

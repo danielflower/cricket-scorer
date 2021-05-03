@@ -27,8 +27,8 @@ public final class InningsStartingEvent extends BaseMatchEvent {
     private final boolean isFollowingOn;
     private final Integer maxOvers;
 
-    private InningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, @Nullable UUID transactionID, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings) {
-        super(id, time, customData, transactionID);
+    private InningsStartingEvent(UUID id, @Nullable Instant time, @Nullable Object customData, boolean undoPoint, Score startingScore, LineUp battingTeam, LineUp bowlingTeam, @Nullable Integer maxBalls, @Nullable Integer maxOvers, @Nullable Integer target, boolean isFollowingOn, @Nonnegative int inningsNumberForMatch, @Nonnegative int inningsNumberForBattingTeam, boolean isFinalInnings) {
+        super(id, time, customData, undoPoint);
         this.startingScore = requireNonNull(startingScore, "startingScore");
         this.battingTeam = requireNonNull(battingTeam, "battingTeam");
         this.bowlingTeam = requireNonNull(bowlingTeam, "bowlingTeam");
@@ -358,7 +358,7 @@ public final class InningsStartingEvent extends BaseMatchEvent {
         @Nonnull
         public InningsStartingEvent build() {
             Score startingScore = this.startingScore == null ? Score.EMPTY : this.startingScore;
-            return new InningsStartingEvent(id(), time(), customData(), transactionID(), startingScore, battingTeam, bowlingTeam, maxBalls, maxOvers, target, isFollowingOn,
+            return new InningsStartingEvent(id(), time(), customData(), undoPoint(), startingScore, battingTeam, bowlingTeam, maxBalls, maxOvers, target, isFollowingOn,
                 inningsNumberForMatch, inningsNumberForBattingTeam, finalInnings);
         }
 

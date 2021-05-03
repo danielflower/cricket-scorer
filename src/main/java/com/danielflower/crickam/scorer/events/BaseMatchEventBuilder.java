@@ -11,7 +11,7 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     private UUID id = UUID.randomUUID();
     private Instant time;
     private Object customData;
-    private UUID transactionID;
+    private boolean undoPoint = true;
 
     @Override
     public @Nullable Instant time() {
@@ -26,10 +26,9 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     @Override
     public @Nullable Object customData() { return customData; }
 
-    @Nullable
     @Override
-    public UUID transactionID() {
-        return transactionID;
+    public boolean undoPoint() {
+        return undoPoint;
     }
 
     @Nonnull
@@ -53,8 +52,8 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
     }
 
     @Override
-    public B withTransactionID(@Nullable UUID transactionID) {
-        this.transactionID = transactionID;
+    public B withUndoPoint(boolean undoPoint) {
+        this.undoPoint = undoPoint;
         return (B)this;
     }
 
@@ -66,12 +65,12 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
         return Objects.equals(id, that.id) &&
             Objects.equals(customData, that.customData) &&
             Objects.equals(time, that.time) &&
-            Objects.equals(transactionID, that.transactionID);
+            Objects.equals(undoPoint, that.undoPoint);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customData, time, transactionID);
+        return Objects.hash(id, customData, time, undoPoint);
     }
 
     @Override
@@ -80,7 +79,7 @@ public abstract class BaseMatchEventBuilder<B extends MatchEventBuilder<B,T>, T 
             "id='" + id + '\'' +
             ", customData=" + customData +
             ", time=" + time +
-            ", transactionID=" + transactionID +
+            ", undoPoint=" + undoPoint +
             '}';
     }
 }
