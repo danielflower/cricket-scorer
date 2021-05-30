@@ -1,10 +1,7 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
-import com.danielflower.crickam.scorer.events.InningsStartingEvent;
-import com.danielflower.crickam.scorer.events.MatchEvents;
-import com.danielflower.crickam.scorer.events.MatchStartingEvent;
-import com.danielflower.crickam.scorer.events.OverStartingEvent;
+import com.danielflower.crickam.scorer.events.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -170,6 +167,24 @@ class MatchControlTest {
         MatchControl matchStartingControl = control.undo().undo();
         assertThat(matchStartingControl.event(), instanceOf(MatchStartingEvent.class));
         assertThrows(IllegalStateException.class, matchStartingControl::undo);
+    }
+
+    @Test
+    public void undoingWhenNotOnUndoPointGoesToPreviousUndoPoint() {
+        TimeZone nz = TimeZone.getTimeZone("Pacific/Auckland");
+        MatchControl control = MatchControl.newMatch(
+            MatchEvents.matchStarting(5, null)
+                .withTeamLineUps(ImmutableList.of(this.nz, aus))
+                .withTime(Crictils.localTime(nz, 2019, 9, 27, 10, 0))
+                .withTimeZone(nz)
+                .build()
+        );
+        control = control.onEvent(inningsStarting().withBattingTeam(this.nz))
+            .onEvent(batterInningsStarting().withUndoPoint(false))
+            .onEvent(batterInningsStarting().withUndoPoint(false));
+
+        assertThat(control.event(), instanceOf(BatterInningsStartingEvent.class));
+        assertThat(control.undo().event(), instanceOf(MatchStartingEvent.class));
     }
 
 

@@ -245,15 +245,19 @@ public final class MatchControl {
      * @return The match with the last user generated event undone.
      */
     public @Nonnull MatchControl undo() {
-        Iterator<MatchControl> all = parent().history().reverseIterator();
+        MatchControl startingPoint = currentUndoPoint();
+        return startingPoint.parent().currentUndoPoint();
+    }
+
+    private MatchControl currentUndoPoint() {
+        Iterator<MatchControl> all = history().reverseIterator();
         while (all.hasNext()) {
             MatchControl control = all.next();
             if (control.event().undoPoint()) {
                 return control;
             }
         }
-        // should not be possible to get here as the first event is always an undo point
-        throw new IllegalStateException("Cannot call this method on an empty match");
+        throw new IllegalStateException("Cannot undo the first match event");
     }
 
 }
