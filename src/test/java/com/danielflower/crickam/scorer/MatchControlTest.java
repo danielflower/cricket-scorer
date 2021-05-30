@@ -1,7 +1,10 @@
 package com.danielflower.crickam.scorer;
 
 import com.danielflower.crickam.scorer.data.Australia;
-import com.danielflower.crickam.scorer.events.*;
+import com.danielflower.crickam.scorer.events.BatterInningsStartingEvent;
+import com.danielflower.crickam.scorer.events.MatchEvents;
+import com.danielflower.crickam.scorer.events.MatchStartingEvent;
+import com.danielflower.crickam.scorer.events.OverStartingEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -163,7 +166,7 @@ class MatchControlTest {
             .onEvent(overStarting().withBowler(aus.battingOrder().last()).withBallsInOver(100));
 
         assertThat(control.event(), instanceOf(OverStartingEvent.class));
-        assertThat(control.undo().event(), instanceOf(InningsStartingEvent.class));
+        assertThat(control.undo().event(), instanceOf(BatterInningsStartingEvent.class));
         MatchControl matchStartingControl = control.undo().undo();
         assertThat(matchStartingControl.event(), instanceOf(MatchStartingEvent.class));
         assertThrows(IllegalStateException.class, matchStartingControl::undo);

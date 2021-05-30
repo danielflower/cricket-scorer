@@ -245,8 +245,7 @@ public final class MatchControl {
      * @return The match with the last user generated event undone.
      */
     public @Nonnull MatchControl undo() {
-        MatchControl startingPoint = currentUndoPoint();
-        return startingPoint.parent().currentUndoPoint();
+        return currentUndoPoint().parent();
     }
 
     private MatchControl currentUndoPoint() {
