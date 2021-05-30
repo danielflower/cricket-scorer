@@ -239,27 +239,21 @@ public final class MatchControl {
         };
     }
 
-    private @Nonnull MatchControl atLastUndoPoint() {
-        Iterator<MatchControl> all = history().reverseIterator();
+    /**
+     * Returns the match as at the last undo point (i.e. as at the previous time a match event
+     * has {@link MatchEvent#undoPoint()} equal to <code>true</code>
+     * @return The match with the last user generated event undone.
+     */
+    public @Nonnull MatchControl undo() {
+        Iterator<MatchControl> all = parent().history().reverseIterator();
         while (all.hasNext()) {
             MatchControl control = all.next();
-            if (control.parent().event().undoPoint()) {
+            if (control.event().undoPoint()) {
                 return control;
             }
         }
         // should not be possible to get here as the first event is always an undo point
         throw new IllegalStateException("Cannot call this method on an empty match");
-    }
-
-    /**
-     * Returns the match with the last user event (and any events that generated) removed.
-     * <p>This differs from {@link #atLastUndoPoint()} in that that method may return
-     * the current state of the match.</p>
-     * @return The match with the last user generated event undone.
-     * @see #atLastUndoPoint()
-     */
-    public @Nonnull MatchControl undo() {
-        return atLastUndoPoint().parent();
     }
 
 }
